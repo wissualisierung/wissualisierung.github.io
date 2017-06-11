@@ -6,5 +6,5 @@ A short email-notification or a detailed feedback / experience report is very mu
 ### Deutsch
 [Project-page](https://wissualisierung.github.io/deutsch/)
 
-### Sprechkunst
+### Sprecherziehung
 [Project-page](https://wissualisierung.github.io/sprechkunst/)
