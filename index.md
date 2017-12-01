@@ -1,7 +1,7 @@
-## Hi humans! Welcome to wissualisierung
+## Hi humans! 
 
-All published OER can be used for educational purposes. 
-A short email-notification or a detailed feedback / experience report is very much appreciated. 
+Alle hier veröffentlichten OER können für Lehr- und Lernzwecke eingesetzt werden.
+Ich freue mich über kurze Hinweise zum  Einsatz und vor allem auch über detailliertes Feedback über die standardisierten Evaluationsbögen.
 
 ### Geschichte
 [Project-page](https://wissualisierung.github.io/geschichte/)
