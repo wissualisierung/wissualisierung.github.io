@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Weimarer Klassik � DOS Edition</title>
+<title>Weimarer Klassik – DOS Edition</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   body { background:#000; overflow:hidden; width:100vw; height:100vh; display:flex; align-items:center; justify-content:center; }
@@ -62,43 +62,43 @@ const HB_JGL=[{f:523,d:.18},{f:659,d:.18},{f:784,d:.18},{f:880,d:.36},{f:784,d:.
 const MEPH_SND=[{f:220,d:.14,t:'sawtooth'},{f:165,d:.14,t:'sawtooth'},{f:110,d:.22,t:'sawtooth'},{f:82,d:.40,t:'sawtooth'}];
 
 const QUOTES=[
-  {t:["Was ist der Philister?","Ein hohler Darm,","mit Furcht und Hoffnung","ausgef�llt."],s:"Xenien (1797)"},
+  {t:["Was ist der Philister?","Ein hohler Darm,","mit Furcht und Hoffnung","ausgefüllt."],s:"Xenien (1797)"},
   {t:["Dummheit und Stolz","wachsen auf","einem Holz."],s:"Xenien (1797)"},
-  {t:["Wer nichts als B�cher kennt,","kennt auch die nicht."],s:"Xenien (1797)"},
+  {t:["Wer nichts als Bücher kennt,","kennt auch die nicht."],s:"Xenien (1797)"},
   {t:["Der Aberglaube ist","die Poesie des Lebens."],s:"Xenien (1797)"},
   {t:["Nur der Irrtum ist das Leben,","und das Wissen ist der Tod."],s:"Xenien (1797)"},
-  {t:["Die Botschaft h�r ich wohl,","allein mir fehlt der Glaube."],s:"Xenien (1797)"},
+  {t:["Die Botschaft hör ich wohl,","allein mir fehlt der Glaube."],s:"Xenien (1797)"},
   {t:["Mehr Licht!"],s:"Goethe, Faust I"},
   {t:["Im Anfang war die Tat."],s:"Faust I"},
-  {t:["Grau, teurer Freund,","ist alle Theorie �","und gr�n des Lebens","goldner Baum."],s:"Faust I"},
+  {t:["Grau, teurer Freund,","ist alle Theorie –","und grün des Lebens","goldner Baum."],s:"Faust I"},
   {t:["Zwei Seelen wohnen,","ach! in meiner Brust."],s:"Faust I"},
   {t:["Das also war","des Pudels Kern!"],s:"Faust I"},
   {t:["Ich bin der Geist,","der stets verneint!"],s:"Faust I, Mephistopheles"},
-  {t:["Mit dem Pfeil, dem Bogen","durch Gebirg und Tal","kommt der Sch�tze leicht voran."],s:"Wilhelm Tell, Schiller"},
-  {t:["Ans Vaterland, ans teure,","schlie� dich an,","das halte fest mit deinem ganzen Herzen."],s:"Wilhelm Tell, Schiller"},
+  {t:["Mit dem Pfeil, dem Bogen","durch Gebirg und Tal","kommt der Schütze leicht voran."],s:"Wilhelm Tell, Schiller"},
+  {t:["Ans Vaterland, ans teure,","schließ dich an,","das halte fest mit deinem ganzen Herzen."],s:"Wilhelm Tell, Schiller"},
   {t:["Das Land der Griechen","mit der Seele suchend."],s:"Iphigenie auf Tauris"},
   {t:["Zwischen uns sei Wahrheit!"],s:"Iphigenie auf Tauris"},
-  {t:["Es f�rchte die G�tter","das Menschengeschlecht!"],s:"Iphigenie auf Tauris"},
-  {t:["Ich sterbe als K�nigin."],s:"Maria Stuart, Schiller"},
-  {t:["Der Mensch braucht","wenig Erde","f�r sein Ende."],s:"Maria Stuart, Schiller"},
-  {t:["Nicht Bitt' noch Flehen �","Anklage sei","mein Letztes!"],s:"Maria Stuart, Schiller"},
-  {t:["�ber allen Gipfeln","ist Ruh."],s:"Wandrers Nachtlied"},
-  {t:["Wer reitet so sp�t","durch Nacht und Wind?"],s:"Erlk�nig"},
+  {t:["Es fürchte die Götter","das Menschengeschlecht!"],s:"Iphigenie auf Tauris"},
+  {t:["Ich sterbe als Königin."],s:"Maria Stuart, Schiller"},
+  {t:["Der Mensch braucht","wenig Erde","für sein Ende."],s:"Maria Stuart, Schiller"},
+  {t:["Nicht Bitt' noch Flehen –","Anklage sei","mein Letztes!"],s:"Maria Stuart, Schiller"},
+  {t:["Über allen Gipfeln","ist Ruh."],s:"Wandrers Nachtlied"},
+  {t:["Wer reitet so spät","durch Nacht und Wind?"],s:"Erlkönig"},
   {t:["Da steh ich nun,","ich armer Tor!"],s:"Faust I"},
-  {t:["Vom Eise befreit","sind Strom und B�che."],s:"Faust I"},
+  {t:["Vom Eise befreit","sind Strom und Bäche."],s:"Faust I"},
   {t:["Es irrt der Mensch,","solang er strebt."],s:"Faust I"},
   {t:["Das Wasser rauscht,","das Wasser schwoll."],s:"Der Fischer"},
   {t:["Die ich rief,","die Geister,","werd ich nun nicht los."],s:"Der Zauberlehrling"},
   {t:["Fest gemauert","in der Erden","steht die Form,","aus Lehm gebrannt."],s:"Das Lied von der Glocke"},
-  {t:["Der Menschheit W�rde","ist in eure Hand","gegeben."],s:"Die K�nstler"},
-  {t:["Es kann der Fr�mmste","nicht in Frieden leben."],s:"Wilhelm Tell"},
-  {t:["Drum pr�fe,","wer sich ewig bindet."],s:"Das Lied von der Glocke"},
+  {t:["Der Menschheit Würde","ist in eure Hand","gegeben."],s:"Die Künstler"},
+  {t:["Es kann der Frömmste","nicht in Frieden leben."],s:"Wilhelm Tell"},
+  {t:["Drum prüfe,","wer sich ewig bindet."],s:"Das Lied von der Glocke"},
   {t:["Mit dem Pfeil, dem Bogen","durch Gebirg und Tal"],s:"Wilhelm Tell"},
-  {t:["Dem Mimen flicht die Nachwelt","keine Kr�nze."],s:"An die Freunde"},
-  {t:["Es l�chelt der See,","er ladet zum Bade."],s:"Der Fischer"},
+  {t:["Dem Mimen flicht die Nachwelt","keine Kränze."],s:"An die Freunde"},
+  {t:["Es lächelt der See,","er ladet zum Bade."],s:"Der Fischer"},
   {t:["Und setzet ihr nicht das Leben ein,","nie wird euch das Leben","gewonnen sein."],s:"Wallensteins Lager"},
-  {t:["Es w�chst der Mensch","mit seinen gr��eren Zwecken."],s:"Wallenstein"},
-  {t:["Nimmer, das glaubt mir,","erscheinen die G�tter,","nimmer allein."],s:"Die Kraniche des Ibykus"}
+  {t:["Es wächst der Mensch","mit seinen größeren Zwecken."],s:"Wallenstein"},
+  {t:["Nimmer, das glaubt mir,","erscheinen die Götter,","nimmer allein."],s:"Die Kraniche des Ibykus"}
 ];
 
 const STARS=Array.from({length:300},()=>({x:Math.random(),y:10+Math.random()*160,s:Math.random()<.18?2:1,ph:Math.random()*Math.PI*2}));
@@ -115,29 +115,29 @@ function dialog(x,y,w,h,title){ box(x+4,y+4,w,h,C.BK); box(x,y,w,h,C.BL); ctx.st
 let mqX=W;
 // Newsticker: {tag, tagCol, text, year}
 const TICKER=[
-  {g:'GOETHE', gc:C.YE, t:'Goethe 1749 in Frankfurt geboren � Sohn eines kaiserlichen Rats.', y:'1749'},
+  {g:'GOETHE', gc:C.YE, t:'Goethe 1749 in Frankfurt geboren – Sohn eines kaiserlichen Rats.', y:'1749'},
   {g:'SCHILLER', gc:C.LN, t:'Schiller 1759 in Marbach am Neckar geboren.', y:'1759'},
-  {g:'GOETHE', gc:C.YE, t:'Goethes Werther (1774) l�st europaweites Aufsehen aus.', y:'1774'},
-  {g:'SCHILLER', gc:C.LN, t:'Schiller flieht 1782 aus W�rttemberg � Herzog verbot ihm das Schreiben.', y:'1782'},
+  {g:'GOETHE', gc:C.YE, t:'Goethes Werther (1774) löst europaweites Aufsehen aus.', y:'1774'},
+  {g:'SCHILLER', gc:C.LN, t:'Schiller flieht 1782 aus Württemberg – Herzog verbot ihm das Schreiben.', y:'1782'},
   {g:'GOETHE', gc:C.YE, t:'Goethe wird 1782 geadelt: ab sofort "von Goethe".', y:'1782'},
   {g:'WEIMAR', gc:C.LC, t:'Herzogin Anna Amalia macht Weimar zum kulturellen Zentrum Deutschlands.', y:'1772'},
-  {g:'GOETHE', gc:C.YE, t:'Goethe reist 1786 inkognito nach Italien � spricht von seiner Wiedergeburt.', y:'1786'},
-  {g:'KLASSIK', gc:C.LM, t:'Weimarer Klassik: nur 19 Jahre � ca. 1786 bis 1805.', y:'1786'},
-  {g:'KLASSIK', gc:C.LM, t:'Leitbegriffe: Humanit�t, Ma�, Harmonie � das Sch�ne als Weg zur Wahrheit.', y:'~1790'},
-  {g:'SCHILLER', gc:C.LN, t:'Schillers �sthetische Briefe (1795): Freiheit durch Sch�nheit.', y:'1795'},
-  {g:'GOETHE', gc:C.YE, t:'Goethe und Schiller � Freundschaft seit 1794, produktivste Partnerschaft der dt. Literatur.', y:'1794'},
-  {g:'KLASSIK', gc:C.LM, t:'Goethe & Schiller ver�ffentlichen 1797 gemeinsam die Xenien � �ber 400 Epigramme.', y:'1797'},
-  {g:'WEIMAR', gc:C.LC, t:'Weimar um 1800: nur ca. 7.000 Einwohner � und doch Weltniveau.', y:'1800'},
+  {g:'GOETHE', gc:C.YE, t:'Goethe reist 1786 inkognito nach Italien – spricht von seiner Wiedergeburt.', y:'1786'},
+  {g:'KLASSIK', gc:C.LM, t:'Weimarer Klassik: nur 19 Jahre – ca. 1786 bis 1805.', y:'1786'},
+  {g:'KLASSIK', gc:C.LM, t:'Leitbegriffe: Humanität, Maß, Harmonie – das Schöne als Weg zur Wahrheit.', y:'~1790'},
+  {g:'SCHILLER', gc:C.LN, t:'Schillers Ästhetische Briefe (1795): Freiheit durch Schönheit.', y:'1795'},
+  {g:'GOETHE', gc:C.YE, t:'Goethe und Schiller – Freundschaft seit 1794, produktivste Partnerschaft der dt. Literatur.', y:'1794'},
+  {g:'KLASSIK', gc:C.LM, t:'Goethe & Schiller veröffentlichen 1797 gemeinsam die Xenien – über 400 Epigramme.', y:'1797'},
+  {g:'WEIMAR', gc:C.LC, t:'Weimar um 1800: nur ca. 7.000 Einwohner – und doch Weltniveau.', y:'1800'},
   {g:'GOETHE', gc:C.YE, t:'Goethe leitet 26 Jahre das Weimarer Hoftheater.', y:'1791'},
-  {g:'SCHILLER', gc:C.LN, t:'Schiller litt sein Leben lang an Tuberkulose � schrieb trotzdem bis zuletzt.', y:'1805'},
-  {g:'GOETHE', gc:C.YE, t:'Goethe trifft Napoleon 1808 in Erfurt. Napoleon: Voil� un homme!', y:'1808'},
+  {g:'SCHILLER', gc:C.LN, t:'Schiller litt sein Leben lang an Tuberkulose – schrieb trotzdem bis zuletzt.', y:'1805'},
+  {g:'GOETHE', gc:C.YE, t:'Goethe trifft Napoleon 1808 in Erfurt. Napoleon: Voilà un homme!', y:'1808'},
   {g:'SCHILLER', gc:C.LN, t:'Schiller stirbt 1805 mit nur 45 Jahren in Weimar.', y:'1805'},
   {g:'SCHILLER', gc:C.LN, t:'Schiller wird 1802 geadelt: Friedrich von Schiller.', y:'1802'},
   {g:'WEIMAR', gc:C.LC, t:'Das Weimarer Hoftheater brennt 1825 nieder.', y:'1825'},
-  {g:'KLASSIK', gc:C.LM, t:'Goethe entwickelt die Idee der Weltliteratur � Literatur kennt keine Grenzen.', y:'1827'},
-  {g:'GOETHE', gc:C.YE, t:'Goethe arbeitet 60 Jahre an Faust � Teil II erscheint posthum 1832.', y:'1832'},
-  {g:'GOETHE', gc:C.YE, t:'Goethe stirbt am 22. M�rz 1832 in Weimar. Letzte Worte: Mehr Licht!', y:'1832'},
-  {g:'WEIMAR', gc:C.LC, t:'Goethe und Schiller sind beide in der Weimarer F�rstengruft beigesetzt.', y:'1832'},
+  {g:'KLASSIK', gc:C.LM, t:'Goethe entwickelt die Idee der Weltliteratur – Literatur kennt keine Grenzen.', y:'1827'},
+  {g:'GOETHE', gc:C.YE, t:'Goethe arbeitet 60 Jahre an Faust – Teil II erscheint posthum 1832.', y:'1832'},
+  {g:'GOETHE', gc:C.YE, t:'Goethe stirbt am 22. März 1832 in Weimar. Letzte Worte: Mehr Licht!', y:'1832'},
+  {g:'WEIMAR', gc:C.LC, t:'Goethe und Schiller sind beide in der Weimarer Fürstengruft beigesetzt.', y:'1832'},
 ];
 
 // Build flat render segments: [{text, col}]
@@ -232,7 +232,7 @@ function eggDWI(){
       box(OX+60,130,520,90,C.BK);
       ctx.strokeStyle=C.LN; ctx.lineWidth=2; ctx.strokeRect(OX+60,130,520,90);
       pxc('SCHILLER HAT FIEBER!',W/2,136,C.LN,2);
-      pxc('Thermometer: 39,8�C',W/2,167,C.LR,1);
+      pxc('Thermometer: 39,8°C',W/2,167,C.LR,1);
       pxc('(Er schrieb trotzdem weiter.)',W/2,183,C.LG,1);
       pxc('Wallenstein, 1799',W/2,199,C.DG,1);
       ctx.globalAlpha=1;
@@ -305,7 +305,7 @@ function eggMEPH(){ if(!MEPH.snd){ melody(MEPH_SND); MEPH.snd=true; } if(MEPH.ph
   box(mx+9,my+4,4,4,C.YE); box(mx+19,my+4,4,4,C.YE); box(mx+10,my+11,12,2,C.YE); box(mx+10,my+10,2,3,C.YE); box(mx+20,my+10,2,3,C.YE);
   const wo=(~~(T/14))%2; box(mx+32,my+8-wo*2,2,10,'#CC2200'); box(mx+34,my+4-wo*2,4,4,'#CC2200');
   ctx.restore();
-  if(MEPH.phase>=1 && blink){ box(OX+40,40,560,50,C.BK); ctx.strokeStyle=C.LR; ctx.lineWidth=2; ctx.strokeRect(OX+40,40,560,50); pxc('ICH BIN DER GEIST, DER STETS VERNEINT!',W/2,44,C.LR,1); pxc('� Mephistopheles, Faust I �',W/2,60,C.RE,1); }
+  if(MEPH.phase>=1 && blink){ box(OX+40,40,560,50,C.BK); ctx.strokeStyle=C.LR; ctx.lineWidth=2; ctx.strokeRect(OX+40,40,560,50); pxc('ICH BIN DER GEIST, DER STETS VERNEINT!',W/2,44,C.LR,1); pxc('– Mephistopheles, Faust I –',W/2,60,C.RE,1); }
 }
 function playBellTone(){
   try{
@@ -356,7 +356,7 @@ function eggBELL(){
     pxc('Fest gemauert in der Erden',W/2,115,C.YE,1);
     pxc('steht die Form, aus Lehm gebrannt.',W/2,131,C.YE,1);
     pxc('Heute muss die Glocke werden!',W/2,147,C.WH,1);
-    pxc('Das Lied von der Glocke  �  Schiller, 1799',W/2,160,C.DG,1);
+    pxc('Das Lied von der Glocke  –  Schiller, 1799',W/2,160,C.DG,1);
     ctx.globalAlpha=1;
   }
   if(BELL.timer>320){ EGG=null; BELL={timer:0,swing:0,swingDir:1,snd:false}; }
@@ -364,7 +364,7 @@ function eggBELL(){
 function playFarbeSound(){
   try{
     const a=ac();
-    // slow ascending sine sweep � "prismatic"
+    // slow ascending sine sweep – "prismatic"
     const osc=a.createOscillator(), g=a.createGain();
     osc.connect(g); g.connect(a.destination);
     osc.type='sine';
@@ -447,7 +447,7 @@ function eggFARBE(){
       const pct=~~(barProg*100);
       px(pct+'%',dx+334,winY+66,C.YE,1);
       if(barProg>=1){
-        px('Spektrum vollst�ndig geladen. [OK]',dx+8,winY+82,C.LN,1);
+        px('Spektrum vollständig geladen. [OK]',dx+8,winY+82,C.LN,1);
       }
     }
     // -- Phase 3: Newton verdict --

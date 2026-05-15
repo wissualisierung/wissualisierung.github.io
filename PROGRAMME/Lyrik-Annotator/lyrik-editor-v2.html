@@ -875,10 +875,10 @@ button:focus-visible {
         <header class="topbar">
             <div class="logo">?? Lyrik-Editor</div>
             <div class="topbar-actions">
-                <button id="btnAddPoem" class="btn-primary" aria-label="Neues Gedicht hinzuf�gen">+ Gedicht</button>
+                <button id="btnAddPoem" class="btn-primary" aria-label="Neues Gedicht hinzufügen">+ Gedicht</button>
                 <button id="btnTemplates" class="btn-primary" aria-label="Vorlage laden">?? Vorlagen</button>
                 <button id="btnShowHelp" class="btn-primary" aria-label="Hilfe anzeigen">? Hilfe</button>
-                <button id="btnExportDialog" class="btn-primary" aria-label="Export-Dialog �ffnen">? Export</button>
+                <button id="btnExportDialog" class="btn-primary" aria-label="Export-Dialog öffnen">? Export</button>
             </div>
         </header>
 
@@ -892,7 +892,7 @@ button:focus-visible {
             <!-- Preview Pane -->
             <div class="preview-pane" id="previewPane">
                 <div class="preview-header">
-                    <select id="previewPoemSelect" aria-label="Gedicht f�r Vorschau w�hlen"></select>
+                    <select id="previewPoemSelect" aria-label="Gedicht für Vorschau wählen"></select>
                     <label><input type="checkbox" id="chkShowAnnotations" checked> Annotationen ?</label>
                     <label><input type="checkbox" id="chkShowRhymes" checked> Reim ?</label>
                     <label><input type="checkbox" id="chkShowArrows" checked> Alle Pfeile</label>
@@ -947,28 +947,28 @@ button:focus-visible {
                 <button class="btn-icon close-modal" onclick="document.getElementById('helpModal').close()">&times;</button>
             </div>
             <div class="modal-content help-content" style="line-height: 1.6; font-size: 1.05rem;">
-                <p>Willkommen im <strong>Lyrik-Editor</strong>. Mit diesem Werkzeug kannst du Gedichte analysieren und p�dagogisch aufbereiten.</p>
+                <p>Willkommen im <strong>Lyrik-Editor</strong>. Mit diesem Werkzeug kannst du Gedichte analysieren und pädagogisch aufbereiten.</p>
                 
                 <h3 style="color:var(--purple); border-bottom: 2px solid var(--black); padding-bottom: 0.3rem;">1. Gedicht anlegen</h3>
                 <p>Klicke oben auf <strong>+ Gedicht</strong>, um ein leeres Projekt zu starten. Du kannst Titel, Autor, Jahr und Metrum direkt in der Kopfzeile des Gedichts bearbeiten.</p>
 
                 <h3 style="color:var(--purple); border-bottom: 2px solid var(--black); padding-bottom: 0.3rem;">2. Text & Verse bearbeiten</h3>
-                <p>Jeder Vers kann einzeln editiert werden. Mit dem Button <strong>+ Vers</strong> f�gst du neue Zeilen hinzu. In den kleinen Feldern rechts kannst du das <strong>Reimschema</strong> (z.B. "a", "b") und die <strong>Kadenz</strong> (?/?) festlegen.</p>
+                <p>Jeder Vers kann einzeln editiert werden. Mit dem Button <strong>+ Vers</strong> fügst du neue Zeilen hinzu. In den kleinen Feldern rechts kannst du das <strong>Reimschema</strong> (z.B. "a", "b") und die <strong>Kadenz</strong> (?/?) festlegen.</p>
 
                 <h3 style="color:var(--purple); border-bottom: 2px solid var(--black); padding-bottom: 0.3rem;">3. Farbmarkierungen setzen</h3>
-                <p>Klicke im Editor auf ein <strong>einzelnes Wort</strong>. Es �ffnet sich ein Men�, in dem du eine Farbe aus der Legende w�hlen kannst. Die Legende links l�sst sich frei benennen und farblich anpassen.</p>
+                <p>Klicke im Editor auf ein <strong>einzelnes Wort</strong>. Es öffnet sich ein Menü, in dem du eine Farbe aus der Legende wählen kannst. Die Legende links lässt sich frei benennen und farblich anpassen.</p>
 
-                <h3 style="color:var(--purple); border-bottom: 2px solid var(--black); padding-bottom: 0.3rem;">4. Wortgruppen & Verkn�pfungen</h3>
-                <p>Um thematische Zusammenh�nge zu zeigen (z.B. alle W�rter zur Natur), erstelle eine <strong>Wortgruppe</strong>. Klicke auf ein Wort und w�hle die gew�nschte Gruppe aus. Die W�rter werden dann mit einer farbigen Unterstreichung markiert.</p>
+                <h3 style="color:var(--purple); border-bottom: 2px solid var(--black); padding-bottom: 0.3rem;">4. Wortgruppen & Verknüpfungen</h3>
+                <p>Um thematische Zusammenhänge zu zeigen (z.B. alle Wörter zur Natur), erstelle eine <strong>Wortgruppe</strong>. Klicke auf ein Wort und wähle die gewünschte Gruppe aus. Die Wörter werden dann mit einer farbigen Unterstreichung markiert.</p>
 
                 <h3 style="color:var(--purple); border-bottom: 2px solid var(--black); padding-bottom: 0.3rem;">5. Verweispfeile (Connections)</h3>
-                <p>Ganz unten in jedem Gedicht-Abschnitt findest du den Editor f�r <strong>Verweispfeile</strong>. Gib die Start- und Ziel-Versnummer an, um geschwungene Pfeile in der Vorschau zu erzeugen. Ideal f�r Enjambements oder inhaltliche R�ckbez�ge.</p>
+                <p>Ganz unten in jedem Gedicht-Abschnitt findest du den Editor für <strong>Verweispfeile</strong>. Gib die Start- und Ziel-Versnummer an, um geschwungene Pfeile in der Vorschau zu erzeugen. Ideal für Enjambements oder inhaltliche Rückbezüge.</p>
 
                 <h3 style="color:var(--purple); border-bottom: 2px solid var(--black); padding-bottom: 0.3rem;">6. Export & Speichern</h3>
-                <p>Klicke auf <strong>Export</strong>, um deine Arbeit als interaktive <strong>HTML-Datei</strong> herunterzuladen. Diese Datei ist "self-contained" � sie enth�lt alles (Design, Daten, Logik) und kann ohne Internetverbindung in jedem Browser ge�ffnet werden.</p>
+                <p>Klicke auf <strong>Export</strong>, um deine Arbeit als interaktive <strong>HTML-Datei</strong> herunterzuladen. Diese Datei ist "self-contained" – sie enthält alles (Design, Daten, Logik) und kann ohne Internetverbindung in jedem Browser geöffnet werden.</p>
                 
                 <div style="background: var(--yellow); padding: 1rem; border: 2px solid var(--black); border-radius: 0.5rem; margin-top: 1rem;">
-                    <strong>Tipp:</strong> Die Daten werden automatisch in deinem Browser gespeichert. Du kannst sie aber auch als <strong>JSON-Datei</strong> sichern, um sie sp�ter an einem anderen Computer weiterzubearbeiten.
+                    <strong>Tipp:</strong> Die Daten werden automatisch in deinem Browser gespeichert. Du kannst sie aber auch als <strong>JSON-Datei</strong> sichern, um sie später an einem anderen Computer weiterzubearbeiten.
                 </div>
                 
                 <div style="margin-top: 2rem; text-align: center;">
@@ -986,7 +986,7 @@ button:focus-visible {
                 <button class="btn-icon close-modal" onclick="document.getElementById('templateModal').close()">&times;</button>
             </div>
             <div class="modal-content">
-                <p style="margin-bottom:1.5rem; font-size:0.95rem; color:#666;">W�hle eine fertig annotierte Beispielanalyse als Ausgangspunkt:</p>
+                <p style="margin-bottom:1.5rem; font-size:0.95rem; color:#666;">Wähle eine fertig annotierte Beispielanalyse als Ausgangspunkt:</p>
                 <div style="display:flex; flex-direction:column; gap:1rem;">
                     <button class="btn-ghost" style="text-align:left; padding:1rem; display:flex; flex-direction:column; gap:0.3rem;" onclick="loadTemplate('mondnacht')">
                         <strong style="font-size:1.1rem;">?? Mondnacht</strong>
@@ -998,7 +998,7 @@ button:focus-visible {
                     </button>
                 </div>
                 <div style="margin-top:1.5rem; background:var(--yellow); padding:0.8rem; border:2px solid var(--black); border-radius:0.5rem; font-size:0.85rem;">
-                    <strong>?? Achtung:</strong> Das Laden einer Vorlage ersetzt alle aktuellen Daten. Sichere vorher �ber Export &gt; JSON.
+                    <strong>?? Achtung:</strong> Das Laden einer Vorlage ersetzt alle aktuellen Daten. Sichere vorher über Export &gt; JSON.
                 </div>
             </div>
         </div>
@@ -1036,7 +1036,7 @@ const defaultState = {
         { id: "leg-2", color: "#4DD7FF", label: "Traumbildlichkeit" },
         { id: "leg-3", color: "#FF6FB3", label: "Liebe / Sehnsucht" },
         { id: "leg-4", color: "#92E48A", label: "Formales / Metrik" },
-        { id: "leg-5", color: "#5C6BFF", label: "Schl�sselbegriff" }
+        { id: "leg-5", color: "#5C6BFF", label: "Schlüsselbegriff" }
     ],
     // Thematic word groups for semantic connections
     wordgroups: [
@@ -1174,7 +1174,7 @@ function redo() {
  */
 function tokenize(text) {
     if (!text) return [];
-    return text.split(/(\s+|(?=[.,;:!?����"'])|(?<=[.,;:!?����"']))/).filter(Boolean);
+    return text.split(/(\s+|(?=[.,;:!?????"'])|(?<=[.,;:!?????"']))/).filter(Boolean);
 }
 
 /**
@@ -1298,7 +1298,7 @@ function renderEditor() {
             <button class="btn-icon btn-ghost" onclick="deleteLegend('${leg.id}')" style="color:var(--red); border-color:transparent; box-shadow:none;">&times;</button>
         </div>`;
     });
-    html += `<button class="btn-ghost" onclick="addLegend()">+ Farbe hinzuf�gen</button></div>`;
+    html += `<button class="btn-ghost" onclick="addLegend()">+ Farbe hinzufügen</button></div>`;
 
     // --- POEMS SECTION ---
     html += `<div class="section-header">?? Gedichte verwalten</div>`;
@@ -1455,7 +1455,7 @@ function renderEditor() {
                     </div>
                 </div>
             `;}).join('');})()}
-            <button class="btn-ghost" onclick="addConn('${poem.id}')">+ Pfeil hinzuf�gen</button>
+            <button class="btn-ghost" onclick="addConn('${poem.id}')">+ Pfeil hinzufügen</button>
         </div>
         </div>`;
     }
@@ -1812,7 +1812,7 @@ function showHelp() {
  */
 const TEMPLATES = {
     mondnacht: {"meta":{"title":"Lyrik Projekt","epoch":"Romantik","version":"1.0"},"legend":[{"id":"l1","color":"#FFD84D","label":"Motive und Wortwahl"},{"id":"l2","color":"#4DD7FF","label":"Person"},{"id":"l4","color":"#92E48A","label":"Raumstruktur"},{"id":"l3","color":"#FF6FB3","label":"Moduswahl"},{"id":"l5","color":"#5C6BFF","label":"Nacht"}],"wordgroups":[{"id":"wg1","label":"Traumwelt","color":"#4DD7FF","members":[{"poemId":"brentano-1","verseNr":4,"tokenIndex":7,"tokenText":"Tr\u00e4umen"},{"poemId":"brentano-1","verseNr":5,"tokenIndex":7,"tokenText":"Wolken"},{"poemId":"brentano-1","verseNr":6,"tokenIndex":8,"tokenText":"Schlaflied"},{"poemId":"brentano-1","verseNr":5,"tokenIndex":9,"tokenText":"wiegen"},{"poemId":"poem-50tz2ij33","verseNr":4,"tokenIndex":6,"tokenText":"tr\u00e4umen"},{"poemId":"poem-50tz2ij33","verseNr":8,"tokenIndex":8,"tokenText":"Nacht"},{"poemId":"poem-50tz2ij33","verseNr":11,"tokenIndex":6,"tokenText":"stillen"}]},{"id":"wg-kr5k9n8m5","label":"Naturerfahrung","color":"#00ff00","members":[{"poemId":"poem-50tz2ij33","verseNr":3,"tokenIndex":6,"tokenText":"Bl\u00fctenschimmer"},{"poemId":"poem-50tz2ij33","verseNr":5,"tokenIndex":10,"tokenText":"Felder"},{"poemId":"poem-50tz2ij33","verseNr":6,"tokenIndex":2,"tokenText":"\u00c4hren"},{"poemId":"poem-50tz2ij33","verseNr":7,"tokenIndex":8,"tokenText":"W\u00e4lder"},{"poemId":"poem-50tz2ij33","verseNr":8,"tokenIndex":2,"tokenText":"sternklar"}]}],"poems":[{"id":"poem-50tz2ij33","author":"Joseph von Eichendorff","title":"Mondnacht","year":"1835","meter":"Dreihebiger Jambus","theme":"Transzendenz durch Naturerfahrung","strophen":[{"randnotiz":"","verses":[{"nr":1,"text":"Es w\u00e1r, als h\u00e4tt' der H\u00edmmel","reim":"(a)","kadenz":"\u2640","marks":[{"tokenIndex":7,"legendId":"l3"},{"tokenIndex":11,"legendId":"l4"},{"tokenIndex":2,"legendId":"l3"}],"annotation":"Unm\u00f6gliche Darstellung: Ann\u00e4herung \u00fcber Vergleich im Konjunktiv; Himmel und Erde: Anklang an Urmythos von Uranos und Gaia"},{"nr":2,"text":"Die \u00c9rde st\u00edll gek\u00fc\u00dft,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":6,"legendId":"l1"}],"annotation":"Kuss als Ausdruck inniger Liebe = Bild f\u00fcr Harmonie"},{"nr":3,"text":"Da\u00df s\u00ede im Bl\u00fctenschimmer","reim":"(a)","kadenz":"\u2640","marks":[{"tokenIndex":6,"legendId":"l1"}],"annotation":"Bl\u00fctenschimmer: Neologismus"},{"nr":4,"text":"Von \u00edhm nun tr\u00e4umen m\u00fc\u00dft'.","reim":"b","kadenz":"\u2642","marks":[],"annotation":""},{"nr":5,"text":"Die Luft ging durch die Felder,","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":4,"legendId":"l3"}],"annotation":"Wechsel in Indikativ"},{"nr":6,"text":"Die \u00c4hren wogten sacht,","reim":"d","kadenz":"\u2642","marks":[{"tokenIndex":4,"legendId":"l3"}],"annotation":"Verinnerlichte Naturerfahrung"},{"nr":7,"text":"Es rauschten leis' die W\u00e4lder,","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"}],"annotation":""},{"nr":8,"text":"So sternklar war die Nacht.","reim":"d","kadenz":"\u2642","marks":[{"tokenIndex":4,"legendId":"l3"},{"tokenIndex":8,"legendId":"l5"}],"annotation":"Erinnerungsraum Nacht"},{"nr":9,"text":"Und meine Seele spannte","reim":"(e)","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l2"}],"annotation":"Erstmals explizit \"meine\""},{"nr":10,"text":"Weit ihre Fl\u00fcgel aus,","reim":"f","kadenz":"\u2642","marks":[{"tokenIndex":4,"legendId":"l1"}],"annotation":"Metapher vom Seelenflug"},{"nr":11,"text":"Flog durch die stillen Lande,","reim":"(e)","kadenz":"\u2640","marks":[{"tokenIndex":6,"legendId":"l1"}],"annotation":"Ruhe"},{"nr":12,"text":"Als fl\u00f6ge sie nach Haus","reim":"f","kadenz":"\u2642","marks":[{"tokenIndex":8,"legendId":"l4"}],"annotation":"M\u00f6glichkeit, Gott zu finden"}]}],"connections":[{"id":"conn-1","from":9,"to":12,"label":"Seele kehrt \"nach Hause\" zu Gott","lineStyle":"solid","lineColor":"#008000","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"},{"id":"conn-2","from":5,"to":9,"label":"Syn\u00e4sthetische Wahrnehmung f\u00fchrt zu Transzendenz","lineStyle":"solid","lineColor":"#0000ff","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"straight"},{"id":"conn-3","from":1,"to":8,"label":"Erinnerungsraum aufgespannt \u00fcber \"war\"","lineStyle":"dashed","lineColor":"#ff8000","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"}]},{"id":"brentano-1","author":"Clemens Brentano","title":"H\u00f6rst du, wie die Brunnen rauschen","year":"1801","meter":"Troch\u00e4us","theme":"Natur und Traumwelt der Romantik","strophen":[{"randnotiz":"Strophe 1","verses":[{"nr":1,"text":"H\u00f6rst du, wie die Brunnen rauschen,","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":6,"legendId":"l1"}],"annotation":"Brunnen als Transzendenzzeichen"},{"nr":2,"text":"H\u00f6rst du, wie die Grille zirpt?","reim":"b","kadenz":"\u2642","marks":[],"annotation":""},{"nr":3,"text":"Stille, stille, la\u00df uns lauschen,","reim":"a","kadenz":"\u2640","marks":[],"annotation":""},{"nr":4,"text":"Selig, wer in Tr\u00e4umen stirbt.","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":5,"legendId":"l2"}],"annotation":""}]},{"randnotiz":"Mittelteil","verses":[{"nr":5,"text":"Selig, wen die Wolken wiegen,","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":4,"legendId":"l1"}],"annotation":""},{"nr":6,"text":"Wem der Mond ein Schlaflied singt,","reim":"d","kadenz":"\u2642","marks":[{"tokenIndex":2,"legendId":"l2"}],"annotation":""},{"nr":7,"text":"O, wie selig kann der fliegen,","reim":"c","kadenz":"\u2640","marks":[],"annotation":""},{"nr":8,"text":"Dem der Traum den Fl\u00fcgel schwingt,","reim":"d","kadenz":"\u2642","marks":[{"tokenIndex":2,"legendId":"l2"}],"annotation":"Enjambement"}]},{"randnotiz":"Schluss","verses":[{"nr":9,"text":"Da\u00df an blauer Himmelsdecke","reim":"e","kadenz":"\u2640","marks":[],"annotation":""},{"nr":10,"text":"Sterne er wie Blumen pfl\u00fcckt,","reim":"f","kadenz":"\u2642","marks":[],"annotation":""},{"nr":11,"text":"Bis ihn seine Liebe wecke","reim":"e","kadenz":"\u2640","marks":[{"tokenIndex":3,"legendId":"l3"}],"annotation":"Klammer zum Anfang"},{"nr":12,"text":"Und an seinen Busen dr\u00fcckt.","reim":"f","kadenz":"\u2642","marks":[],"annotation":""}]}],"connections":[{"id":"c1","from":11,"to":1,"label":"Klammer zum Anfang","lineStyle":"dashed","lineColor":"#9B72CF","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"}]}]},
-    spinnerin: {"meta":{"title":"Lyrik Projekt","epoch":"Romantik","version":"1.0"},"legend":[{"id":"l1","color":"#FFD84D","label":"Motive und Wortwahl"},{"id":"l2","color":"#fe7a23","label":"M\u00e4rchenton"},{"id":"l4","color":"#92E48A","label":"Symbole"},{"id":"l3","color":"#FF6FB3","label":"Moduswahl"},{"id":"l5","color":"#5C6BFF","label":"Nacht"}],"wordgroups":[{"id":"wg1","label":"Liebeserfahrung","color":"#ff0080","members":[{"poemId":"poem-amnb0xr1h","verseNr":24,"tokenIndex":6,"tokenText":"m\u00f6chte"},{"poemId":"poem-amnb0xr1h","verseNr":24,"tokenIndex":8,"tokenText":"weinen"},{"poemId":"poem-amnb0xr1h","verseNr":20,"tokenIndex":4,"tokenText":"zusammen"},{"poemId":"poem-amnb0xr1h","verseNr":20,"tokenIndex":6,"tokenText":"waren"},{"poemId":"poem-amnb0xr1h","verseNr":9,"tokenIndex":4,"tokenText":"zusammen"},{"poemId":"poem-amnb0xr1h","verseNr":9,"tokenIndex":6,"tokenText":"waren"},{"poemId":"poem-amnb0xr1h","verseNr":5,"tokenIndex":6,"tokenText":"k\u00e1nn"},{"poemId":"poem-amnb0xr1h","verseNr":5,"tokenIndex":8,"tokenText":"nicht"},{"poemId":"poem-amnb0xr1h","verseNr":5,"tokenIndex":10,"tokenText":"w\u00e9inen"},{"poemId":"poem-amnb0xr1h","verseNr":4,"tokenIndex":4,"tokenText":"zus\u00e1mmen"},{"poemId":"poem-amnb0xr1h","verseNr":4,"tokenIndex":6,"tokenText":"w\u00e1ren"}]},{"id":"wg-kr5k9n8m5","label":"Naturerfahrung","color":"#00ff00","members":[{"poemId":"poem-amnb0xr1h","verseNr":2,"tokenIndex":6,"tokenText":"N\u00e1chtig\u00e1ll"},{"poemId":"poem-amnb0xr1h","verseNr":8,"tokenIndex":6,"tokenText":"M\u00f3nd"},{"poemId":"poem-amnb0xr1h","verseNr":10,"tokenIndex":6,"tokenText":"Nachtigall"},{"poemId":"poem-amnb0xr1h","verseNr":13,"tokenIndex":6,"tokenText":"Mond"},{"poemId":"poem-amnb0xr1h","verseNr":18,"tokenIndex":6,"tokenText":"Nachtigall"},{"poemId":"poem-amnb0xr1h","verseNr":23,"tokenIndex":2,"tokenText":"Mond"}]}],"poems":[{"id":"poem-amnb0xr1h","author":"Clemens Brentano","title":"Der Spinnerin Nachtlied","year":"1818","meter":"dreihebiger Jambus","theme":"Harmonie und Transzendenz durch Liebe","strophen":[{"randnotiz":"","verses":[{"nr":1,"text":"Es s\u00e1ng vor l\u00e1ngen J\u00e1hren","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l2"},{"tokenIndex":0,"legendId":"l2"}],"annotation":"M\u00e4rchenton"},{"nr":2,"text":"Wohl \u00e1uch die N\u00e1chtig\u00e1ll,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":6,"legendId":"l4"}],"annotation":"Nachtigall: Symbol der Liebe"},{"nr":3,"text":"Das w\u00e1r wohl s\u00fc\u00dfer Sch\u00e1ll,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":6,"legendId":"l4"},{"tokenIndex":8,"legendId":"l4"}],"annotation":""},{"nr":4,"text":"Da w\u00edr zus\u00e1mmen w\u00e1ren.","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"}],"annotation":""}]},{"randnotiz":"","verses":[{"nr":5,"text":"Ich s\u00edng' und k\u00e1nn nicht w\u00e9inen,","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":0,"legendId":"l3"},{"tokenIndex":2,"legendId":"l4"}],"annotation":"Tempuswechsel; Apokope"},{"nr":6,"text":"Und sp\u00ednne s\u00f3 all\u00e9in","reim":"d","kadenz":"\u2642","marks":[],"annotation":""},{"nr":7,"text":"Den F\u00e1den kl\u00e1r und r\u00e9in,","reim":"d","kadenz":"\u2642","marks":[],"annotation":"Faden: Spinnen + Schicksalsfaden"},{"nr":8,"text":"So l\u00e1ng der M\u00f3nd wird sch\u00e9inen.","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":6,"legendId":"l5"}],"annotation":"Mond als Sehnsuchtsmotiv"}]},{"randnotiz":"","verses":[{"nr":9,"text":"Da wir zusammen waren,","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"}],"annotation":"Variierte Wiederholung"},{"nr":10,"text":"Da sang die Nachtigall,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":6,"legendId":"l4"},{"tokenIndex":2,"legendId":"l4"}],"annotation":""},{"nr":11,"text":"Nun mahnet mich ihr Schall,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":4,"legendId":"l3"},{"tokenIndex":8,"legendId":"l4"}],"annotation":"Antithese: ich/wir"},{"nr":12,"text":"Da\u00df du von mir gefahren","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"}],"annotation":"Erste Anrede des lyr. Du"}]},{"randnotiz":"","verses":[{"nr":13,"text":"So oft der Mond mag scheinen,","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":6,"legendId":"l5"}],"annotation":""},{"nr":14,"text":"Gedenk' ich dein allein,","reim":"d","kadenz":"\u2642","marks":[],"annotation":"Apokope"},{"nr":15,"text":"Mein Herz ist klar und rein,","reim":"d","kadenz":"\u2642","marks":[],"annotation":"Schl\u00fcsselwort \u201eHerz\u201c"},{"nr":16,"text":"Gott wolle uns vereinen.","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":0,"legendId":"l1"}],"annotation":"Sakralisierung, Konjunktiv"}]},{"randnotiz":"","verses":[{"nr":17,"text":"Seit du von mir gefahren,","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"},{"tokenIndex":6,"legendId":"l3"}],"annotation":""},{"nr":18,"text":"Singt stets die Nachtigall,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":6,"legendId":"l4"},{"tokenIndex":0,"legendId":"l4"}],"annotation":"Vergegenw�rtigungsreflex"},{"nr":19,"text":"Ich denk bei ihrem Schall,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":8,"legendId":"l4"}],"annotation":""},{"nr":20,"text":"Wie wir zusammen waren","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"}],"annotation":"Anklang Liebesvereinigung"}]},{"randnotiz":"","verses":[{"nr":21,"text":"Gott wolle uns vereinen,","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":4,"legendId":"l3"},{"tokenIndex":0,"legendId":"l1"}],"annotation":"Bitte um jenseitige Vereinigung"},{"nr":22,"text":"Hier spinn ich so allein,","reim":"d","kadenz":"\u2642","marks":[],"annotation":""},{"nr":23,"text":"Der Mond scheint klar und rein,","reim":"d","kadenz":"\u2642","marks":[{"tokenIndex":2,"legendId":"l5"}],"annotation":""},{"nr":24,"text":"Ich sing und m\u00f6chte weinen!","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l4"}],"annotation":""}]}],"connections":[{"id":"conn-1","from":16,"to":21,"label":"Anrufung Gottes: Transzendenz","lineStyle":"dashed","lineColor":"#ff8000","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"},{"id":"conn-2","from":13,"to":23,"label":"Nacht: erweiterte Wahrnehmung","lineStyle":"dashed","lineColor":"#0000ff","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"},{"id":"conn-3","from":2,"to":10,"label":"Liebesvogel: Harmonie","lineStyle":"dashed","lineColor":"#00db00","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"},{"id":"conn-4","from":10,"to":18,"label":"Liebesvogel: Harmonie","lineStyle":"dashed","lineColor":"#00db00","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"}]}]}
+    spinnerin: {"meta":{"title":"Lyrik Projekt","epoch":"Romantik","version":"1.0"},"legend":[{"id":"l1","color":"#FFD84D","label":"Motive und Wortwahl"},{"id":"l2","color":"#fe7a23","label":"M\u00e4rchenton"},{"id":"l4","color":"#92E48A","label":"Symbole"},{"id":"l3","color":"#FF6FB3","label":"Moduswahl"},{"id":"l5","color":"#5C6BFF","label":"Nacht"}],"wordgroups":[{"id":"wg1","label":"Liebeserfahrung","color":"#ff0080","members":[{"poemId":"poem-amnb0xr1h","verseNr":24,"tokenIndex":6,"tokenText":"m\u00f6chte"},{"poemId":"poem-amnb0xr1h","verseNr":24,"tokenIndex":8,"tokenText":"weinen"},{"poemId":"poem-amnb0xr1h","verseNr":20,"tokenIndex":4,"tokenText":"zusammen"},{"poemId":"poem-amnb0xr1h","verseNr":20,"tokenIndex":6,"tokenText":"waren"},{"poemId":"poem-amnb0xr1h","verseNr":9,"tokenIndex":4,"tokenText":"zusammen"},{"poemId":"poem-amnb0xr1h","verseNr":9,"tokenIndex":6,"tokenText":"waren"},{"poemId":"poem-amnb0xr1h","verseNr":5,"tokenIndex":6,"tokenText":"k\u00e1nn"},{"poemId":"poem-amnb0xr1h","verseNr":5,"tokenIndex":8,"tokenText":"nicht"},{"poemId":"poem-amnb0xr1h","verseNr":5,"tokenIndex":10,"tokenText":"w\u00e9inen"},{"poemId":"poem-amnb0xr1h","verseNr":4,"tokenIndex":4,"tokenText":"zus\u00e1mmen"},{"poemId":"poem-amnb0xr1h","verseNr":4,"tokenIndex":6,"tokenText":"w\u00e1ren"}]},{"id":"wg-kr5k9n8m5","label":"Naturerfahrung","color":"#00ff00","members":[{"poemId":"poem-amnb0xr1h","verseNr":2,"tokenIndex":6,"tokenText":"N\u00e1chtig\u00e1ll"},{"poemId":"poem-amnb0xr1h","verseNr":8,"tokenIndex":6,"tokenText":"M\u00f3nd"},{"poemId":"poem-amnb0xr1h","verseNr":10,"tokenIndex":6,"tokenText":"Nachtigall"},{"poemId":"poem-amnb0xr1h","verseNr":13,"tokenIndex":6,"tokenText":"Mond"},{"poemId":"poem-amnb0xr1h","verseNr":18,"tokenIndex":6,"tokenText":"Nachtigall"},{"poemId":"poem-amnb0xr1h","verseNr":23,"tokenIndex":2,"tokenText":"Mond"}]}],"poems":[{"id":"poem-amnb0xr1h","author":"Clemens Brentano","title":"Der Spinnerin Nachtlied","year":"1818","meter":"dreihebiger Jambus","theme":"Harmonie und Transzendenz durch Liebe","strophen":[{"randnotiz":"","verses":[{"nr":1,"text":"Es s\u00e1ng vor l\u00e1ngen J\u00e1hren","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l2"},{"tokenIndex":0,"legendId":"l2"}],"annotation":"M\u00e4rchenton"},{"nr":2,"text":"Wohl \u00e1uch die N\u00e1chtig\u00e1ll,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":6,"legendId":"l4"}],"annotation":"Nachtigall: Symbol der Liebe"},{"nr":3,"text":"Das w\u00e1r wohl s\u00fc\u00dfer Sch\u00e1ll,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":6,"legendId":"l4"},{"tokenIndex":8,"legendId":"l4"}],"annotation":""},{"nr":4,"text":"Da w\u00edr zus\u00e1mmen w\u00e1ren.","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"}],"annotation":""}]},{"randnotiz":"","verses":[{"nr":5,"text":"Ich s\u00edng' und k\u00e1nn nicht w\u00e9inen,","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":0,"legendId":"l3"},{"tokenIndex":2,"legendId":"l4"}],"annotation":"Tempuswechsel; Apokope"},{"nr":6,"text":"Und sp\u00ednne s\u00f3 all\u00e9in","reim":"d","kadenz":"\u2642","marks":[],"annotation":""},{"nr":7,"text":"Den F\u00e1den kl\u00e1r und r\u00e9in,","reim":"d","kadenz":"\u2642","marks":[],"annotation":"Faden: Spinnen + Schicksalsfaden"},{"nr":8,"text":"So l\u00e1ng der M\u00f3nd wird sch\u00e9inen.","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":6,"legendId":"l5"}],"annotation":"Mond als Sehnsuchtsmotiv"}]},{"randnotiz":"","verses":[{"nr":9,"text":"Da wir zusammen waren,","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"}],"annotation":"Variierte Wiederholung"},{"nr":10,"text":"Da sang die Nachtigall,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":6,"legendId":"l4"},{"tokenIndex":2,"legendId":"l4"}],"annotation":""},{"nr":11,"text":"Nun mahnet mich ihr Schall,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":4,"legendId":"l3"},{"tokenIndex":8,"legendId":"l4"}],"annotation":"Antithese: ich/wir"},{"nr":12,"text":"Da\u00df du von mir gefahren","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"}],"annotation":"Erste Anrede des lyr. Du"}]},{"randnotiz":"","verses":[{"nr":13,"text":"So oft der Mond mag scheinen,","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":6,"legendId":"l5"}],"annotation":""},{"nr":14,"text":"Gedenk' ich dein allein,","reim":"d","kadenz":"\u2642","marks":[],"annotation":"Apokope"},{"nr":15,"text":"Mein Herz ist klar und rein,","reim":"d","kadenz":"\u2642","marks":[],"annotation":"Schl\u00fcsselwort \u201eHerz\u201c"},{"nr":16,"text":"Gott wolle uns vereinen.","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":0,"legendId":"l1"}],"annotation":"Sakralisierung, Konjunktiv"}]},{"randnotiz":"","verses":[{"nr":17,"text":"Seit du von mir gefahren,","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"},{"tokenIndex":6,"legendId":"l3"}],"annotation":""},{"nr":18,"text":"Singt stets die Nachtigall,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":6,"legendId":"l4"},{"tokenIndex":0,"legendId":"l4"}],"annotation":"Vergegenwärtigungsreflex"},{"nr":19,"text":"Ich denk bei ihrem Schall,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":8,"legendId":"l4"}],"annotation":""},{"nr":20,"text":"Wie wir zusammen waren","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"}],"annotation":"Anklang Liebesvereinigung"}]},{"randnotiz":"","verses":[{"nr":21,"text":"Gott wolle uns vereinen,","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":4,"legendId":"l3"},{"tokenIndex":0,"legendId":"l1"}],"annotation":"Bitte um jenseitige Vereinigung"},{"nr":22,"text":"Hier spinn ich so allein,","reim":"d","kadenz":"\u2642","marks":[],"annotation":""},{"nr":23,"text":"Der Mond scheint klar und rein,","reim":"d","kadenz":"\u2642","marks":[{"tokenIndex":2,"legendId":"l5"}],"annotation":""},{"nr":24,"text":"Ich sing und m\u00f6chte weinen!","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l4"}],"annotation":""}]}],"connections":[{"id":"conn-1","from":16,"to":21,"label":"Anrufung Gottes: Transzendenz","lineStyle":"dashed","lineColor":"#ff8000","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"},{"id":"conn-2","from":13,"to":23,"label":"Nacht: erweiterte Wahrnehmung","lineStyle":"dashed","lineColor":"#0000ff","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"},{"id":"conn-3","from":2,"to":10,"label":"Liebesvogel: Harmonie","lineStyle":"dashed","lineColor":"#00db00","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"},{"id":"conn-4","from":10,"to":18,"label":"Liebesvogel: Harmonie","lineStyle":"dashed","lineColor":"#00db00","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"}]}]}
 };
 
 function loadTemplate(name) {
@@ -1965,7 +1965,7 @@ function addVerse(poemId) {
 }
 
 function deleteVerse(poemId, sIdx, vIdx) {
-    if (confirm("Vers wirklich l�schen?")) {
+    if (confirm("Vers wirklich löschen?")) {
         const poem = state.poems.find(p => p.id === poemId);
         if (!poem?.strophen?.[sIdx]?.verses?.[vIdx]) return;
         poem.strophen[sIdx].verses.splice(vIdx, 1);
@@ -2038,7 +2038,7 @@ function addLegend() {
 }
 
 function deleteLegend(id) {
-    if (confirm("Kategorie wirklich l�schen?")) {
+    if (confirm("Kategorie wirklich löschen?")) {
         state.legend = state.legend.filter(l => l.id !== id);
         state.poems.forEach(p => p.strophen.forEach(s => s.verses.forEach(v => {
             v.marks = v.marks.filter(m => m.legendId !== id);
@@ -2095,7 +2095,7 @@ function addGroup() {
 }
 
 function deleteGroup(id) {
-    if (confirm("Gruppe l�schen?")) {
+    if (confirm("Gruppe löschen?")) {
         state.wordgroups = state.wordgroups.filter(g => g.id !== id);
         requestRender();
     }
@@ -2140,7 +2140,7 @@ function updateConn(poemId, cIdx, prop, val) {
     if (prop === 'from' || prop === 'to') {
         const validNrs = getValidVerseNumbers(poem);
         if (!validNrs.has(val)) {
-            console.warn(`Vers ${val} existiert nicht. G�ltig: ${[...validNrs].join(', ')}`);
+            console.warn(`Vers ${val} existiert nicht. Gültig: ${[...validNrs].join(', ')}`);
         }
     }
     requestRender();
@@ -2170,7 +2170,7 @@ function deleteConn(poemId, cIdx) {
 }
 
 function deletePoem(id) {
-    if (confirm("Gedicht l�schen?")) {
+    if (confirm("Gedicht löschen?")) {
         state.poems = state.poems.filter(p => p.id !== id);
         if (currentPoemId === id) currentPoemId = state.poems[0]?.id || null;
         requestRender();

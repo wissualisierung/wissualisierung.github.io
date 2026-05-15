@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Der Wanderer � Romantik-Screensaver</title>
+<title>Der Wanderer – Romantik-Screensaver</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
@@ -20,17 +20,17 @@ const CFG = {
   dayDuration: 2400,
   quotes: [
     { text: "Wem Gott will rechte Gunst erweisen,\nden schickt er in die weite Welt.", author: "Joseph von Eichendorff" },
-    { text: "Es war, als h�tt der Himmel\ndie Erde still gek�sst.", author: "Joseph von Eichendorff" },
-    { text: "Schl�ft ein Lied in allen Dingen,\ndie da tr�umen fort und fort.", author: "Joseph von Eichendorff" },
-    { text: "Mondbegl�nzte Zaubernacht,\ndie den Sinn gefangen h�lt.", author: "Ludwig Tieck" },
-    { text: "Die Philosophie ist eigentlich Heimweh �\nTrieb, �berall zu Hause zu sein.", author: "Novalis" },
-    { text: "Die Welt muss romantisiert werden.\nSo findet man den urspr�nglichen Sinn wieder.", author: "Novalis" },
+    { text: "Es war, als hätt der Himmel\ndie Erde still geküsst.", author: "Joseph von Eichendorff" },
+    { text: "Schläft ein Lied in allen Dingen,\ndie da träumen fort und fort.", author: "Joseph von Eichendorff" },
+    { text: "Mondbeglänzte Zaubernacht,\ndie den Sinn gefangen hält.", author: "Ludwig Tieck" },
+    { text: "Die Philosophie ist eigentlich Heimweh –\nTrieb, überall zu Hause zu sein.", author: "Novalis" },
+    { text: "Die Welt muss romantisiert werden.\nSo findet man den ursprünglichen Sinn wieder.", author: "Novalis" },
     { text: "Sprich aus der Ferne,\nheimliche Welt.", author: "Clemens Brentano" },
-    { text: "Alle M�rchen sind blo� Tr�ume\nvon jener heimatlichen Welt.", author: "Novalis" },
+    { text: "Alle Märchen sind bloß Träume\nvon jener heimatlichen Welt.", author: "Novalis" },
     { text: "So oft der Mond mag scheinen,\ngedenk ich dein allein.", author: "Clemens Brentano" },
     { text: "Da steht im Wald geschrieben\nein stilles, ernstes Wort.", author: "Joseph von Eichendorff" },
     { text: "Alles ist ewig im Innern verwandt.", author: "Clemens Brentano" },
-    { text: "Sie ist die romantischste aller K�nste �\nbeinahe allein echt romantisch.", author: "E.T.A. Hoffmann" }
+    { text: "Sie ist die romantischste aller Künste –\nbeinahe allein echt romantisch.", author: "E.T.A. Hoffmann" }
   ],
   eggs: {
     wisp:      { interval: 220, chance: 0.30 },
@@ -158,7 +158,7 @@ function spawnEagle(){ eggs.eagle={x:-15, y:randi(12,20), speed:1.6}; }
 function spawnQuote(){ const q=CFG.quotes[randi(0,CFG.quotes.length-1)]; eggs.quoteBox={...q, alpha:0, timer:0}; }
 function spawnGhost(){ eggs.ghost={x:wanderer.gx-14, life:420}; }
 function spawnUFO(){
-  // Ritter kommt von rechts, UFO von links � Ritter spielt Gitarre
+  // Ritter kommt von rechts, UFO von links – Ritter spielt Gitarre
   const knightX = GW + 20;
   eggs.ufo = {
     ufox: -28, ufoy: 10,
@@ -272,8 +272,8 @@ function drawUFOSprite(x,y){
   rect(x+6,y+1,6,2,'#003355'); // Cockpit-Glas
 }
 function drawKnight(kx, ky, noteTimer){
-  // ky = Boden-Y (F��e stehen hier)
-  // Gesamth�he: 22px ? Kopf beginnt bei ky-22
+  // ky = Boden-Y (Füße stehen hier)
+  // Gesamthöhe: 22px ? Kopf beginnt bei ky-22
   const y = ky - 22;
 
   // --- Helm (4px hoch, 7px breit) ---
@@ -286,13 +286,13 @@ function drawKnight(kx, ky, noteTimer){
   // --- Hals ---
   rect(kx+4, y+6, 3, 2, '#AAAAAA');
 
-  // --- K�rper / R�stung ---
+  // --- Körper / Rüstung ---
   rect(kx+1, y+8,  9, 7, PAL.lgray);          // Brustharnisch
   rect(kx+2, y+9,  7, 5, '#999999');           // Brust-Highlight
   rect(kx+4, y+8,  3, 7, '#AAAAAA');           // Mittellinie
   px(kx+4, y+11, PAL.dgray); px(kx+6, y+11, PAL.dgray); // Nieten
 
-  // --- H�fte ---
+  // --- Hüfte ---
   rect(kx+2, y+15, 7, 2, '#888888');
 
   // --- Beine ---
@@ -301,7 +301,7 @@ function drawKnight(kx, ky, noteTimer){
   rect(kx+2, y+22, 4, 1, '#555555');           // Stiefel L
   rect(kx+5, y+22, 4, 1, '#555555');           // Stiefel R (ky = y+22 = Boden)
 
-  // --- Linker Arm (h�lt Gitarren-Hals) ---
+  // --- Linker Arm (hält Gitarren-Hals) ---
   rect(kx-2, y+9,  3, 6, PAL.lgray);
   rect(kx-3, y+14, 2, 2, PAL.lgray);           // Hand
 
@@ -328,7 +328,7 @@ function drawKnight(kx, ky, noteTimer){
   rect(kx+15, y+1,  2, 5, '#AA6622');          // Hals
   rect(kx+14, y-1,  4, 3, '#8B4513');          // Kopfplatte
   px(kx+14,   y,    '#CC8844'); px(kx+17, y, '#CC8844'); // Wirbel
-  // Saiten (3 d�nne Linien �ber Hals)
+  // Saiten (3 dünne Linien über Hals)
   px(kx+15, y+2, '#FFFF88'); px(kx+16, y+2, '#FFFF88'); px(kx+17, y+2, '#FFFF88');
   px(kx+15, y+4, '#FFFF88'); px(kx+16, y+4, '#FFFF88'); px(kx+17, y+4, '#FFFF88');
 
@@ -360,7 +360,7 @@ function updateUFO(){
   const kx=u.knightX, ky=wanderer.gy+1;
 
   if(u.phase==='approach'){
-    // UFO f�hrt von links auf den Ritter zu; Ritter geht von rechts nach links
+    // UFO fährt von links auf den Ritter zu; Ritter geht von rechts nach links
     u.ufox += 1.2;
     u.knightX -= 0.7;
     if(u.knightX < -30) { eggs.ufo=null; return; }
@@ -401,11 +401,11 @@ function updateUnicorn(){
   if(u.x>GW+40||u.life<=0){ eggs.unicorn=null; return; }
   u.frame=(u.frame+1)%4;
 
-  // Einhorn l�uft nach rechts ? Schweif links
+  // Einhorn läuft nach rechts ? Schweif links
   const bx = Math.floor(u.x);
   const by = GH - 40;  // Boden
 
-  // Schweif (Regenbogen, links vom K�rper)
+  // Schweif (Regenbogen, links vom Körper)
   u.tail.push({x:bx, y:by+10, c:[PAL.red,PAL.yellow,PAL.green,PAL.cyan,PAL.blue,PAL.magenta][u.tail.length%6]});
   if(u.tail.length>44) u.tail.shift();
   u.tail.forEach((p,i)=>{
@@ -413,7 +413,7 @@ function updateUnicorn(){
     px(p.x, p.y + Math.round(Math.sin(i*0.35+frame*0.22)*2), p.c, a);
   });
 
-  // === K�RPER ===
+  // === KÖRPER ===
   rect(bx+4,  by+8,  16, 8, '#FF66CC');   // Rumpf
   rect(bx+4,  by+9,  16, 6, '#FF88DD');   // Rumpf-Highlight
 
@@ -425,14 +425,14 @@ function updateUnicorn(){
   rect(bx+23, by+1,  6, 5, '#FF88DD');
   // Maul / Schnauze
   rect(bx+28, by+3,  4, 3, '#FF99EE');
-  px(bx+30,   by+5,  '#CC44AA');           // N�ster
+  px(bx+30,   by+5,  '#CC44AA');           // Nüster
   // Auge
   px(bx+25,   by+2,  PAL.white);
   px(bx+26,   by+2,  PAL.white);
   px(bx+25,   by+3,  '#9933CC');           // Iris violett
   px(bx+25,   by+4,  '#000000');           // Pupille
 
-  // === HORN (spiralf�rmig, 5px hoch) ===
+  // === HORN (spiralförmig, 5px hoch) ===
   rect(bx+26, by-5,  2, 5, PAL.yellow);
   px(bx+27,   by-6,  PAL.yellow);
   px(bx+26,   by-4,  '#FFFF00');
@@ -441,13 +441,13 @@ function updateUnicorn(){
   // Horn-Glanz
   px(bx+26,   by-5,  PAL.white);
 
-  // === M�HNE (wehend nach links) ===
+  // === MÄHNE (wehend nach links) ===
   const mOff = Math.floor(Math.sin(frame*0.25)*2);
   [[PAL.magenta,0],[PAL.cyan,1],[PAL.yellow,2]].forEach(([c,i])=>{
     rect(bx+19+mOff-i, by+1+i, 3, 5, c);
   });
 
-  // === BEINE (animiert, 4 St�ck) ===
+  // === BEINE (animiert, 4 Stück) ===
   const lg = u.frame%2;
   const legColor = '#EE55BB';
   const hoofColor = '#AA2288';
@@ -458,7 +458,7 @@ function updateUnicorn(){
   rect(bx+8,  by+16, 2, 4+lg,   legColor); rect(bx+8,  by+20+lg, 3, 2, hoofColor);
   rect(bx+12, by+16, 2, 5-lg,   legColor); rect(bx+12, by+21-lg, 3, 2, hoofColor);
 
-  // === SCHWEIF-ANSATZ (buntes B�schel am Hinterteil) ===
+  // === SCHWEIF-ANSATZ (buntes Büschel am Hinterteil) ===
   [[PAL.red,0],[PAL.yellow,1],[PAL.green,2]].forEach(([c,i])=>{
     px(bx+4-i, by+10+i, c, 0.9);
   });
@@ -507,7 +507,7 @@ function updateHaensel(){
   rect(houseX+3,hy+6,16,12,'#AA5500'); rect(houseX+1,hy+3,20,4,PAL.red);
   px(houseX+5,hy+9,PAL.cyan); px(houseX+14,hy+9,PAL.cyan); rect(houseX+8,hy+11,4,5,'#552200');
   px(houseX+2,hy+2,PAL.white); px(houseX+6,hy+1,PAL.white); px(houseX+12,hy+1,PAL.white); px(houseX+18,hy+2,PAL.white);
-  // Zuckerst�cke
+  // Zuckerstücke
   [1,5,9,13,17].forEach(ox=>px(houseX+ox,hy+2,PAL.white,0.7));
   if(h.phase==='walk'){
     h.x+=0.5;
@@ -515,7 +515,7 @@ function updateHaensel(){
   } else if(h.phase==='arrive'){
     h.arriveTimer--;
     if(h.arriveTimer<=0){ h.phase='enter'; h.enterTimer=90; }
-    // Hexe erscheint in T�r
+    // Hexe erscheint in Tür
     const wx=houseX+8;
     rect(wx,hy+6,5,10,'#553300'); rect(wx+1,hy+2,3,4,'#222222'); px(wx+2,hy+1,'#553300'); px(wx+1,hy+5,PAL.white); px(wx+3,hy+5,PAL.white);
     rect(wx-1,hy+7,2,4,PAL.black); rect(wx+5,hy+7,2,4,PAL.black);
@@ -542,10 +542,10 @@ function drawWolf(wx,y,dir){
   }
 }
 function drawRotkaeppchen(rx,ry){
-  // K�rper (roter Umhang)
+  // Körper (roter Umhang)
   rect(rx+1,ry+4,6,6,PAL.red); rect(rx+2,ry,4,4,PAL.lgray); rect(rx+2,ry+10,1,5,PAL.black); rect(rx+5,ry+10,1,5,PAL.black);
   rect(rx,ry+5,1,4,PAL.lgray); rect(rx+7,ry+5,1,4,PAL.lgray);
-  // Rote M�tze (Dreieck)
+  // Rote Mütze (Dreieck)
   rect(rx+1,ry-4,6,4,PAL.red); px(rx+3,ry-5,PAL.red); px(rx+4,ry-5,PAL.red);
   rect(rx+1,ry-1,6,1,PAL.darkRed);
 }
@@ -571,18 +571,18 @@ function updateSandman(){
   const s=eggs.sandman; if(!s) return; s.life--; s.x+=1.5; s.y += Math.sin(frame*0.22)*0.18;
   if(s.life<=0||s.x>GW+22){ eggs.sandman=null; return; }
   const x=Math.floor(s.x), y=Math.floor(s.y);
-  // K�rper (Pyjama-blau)
+  // Körper (Pyjama-blau)
   rect(x+3,y+7,8,8,'#0000AA');
   // Kopf
   rect(x+4,y+2,6,6,PAL.lgray);
-  // Schlafm�tze (langer Zipfelm�tzen-Stil)
+  // Schlafmütze (langer Zipfelmützen-Stil)
   rect(x+4,y-1,6,3,'#0000AA'); rect(x+5,y-3,4,3,'#0000AA'); rect(x+6,y-5,2,3,'#0000AA');
   px(x+6,y-6,PAL.yellow); px(x+7,y-6,PAL.yellow); // Stern auf Spitze
-  // Augen (geschlossen � Sandmann schl�ft selbst)
+  // Augen (geschlossen – Sandmann schläft selbst)
   px(x+5,y+4,'#555555'); px(x+6,y+4,'#555555'); px(x+8,y+4,'#555555'); px(x+9,y+4,'#555555');
   // Sandsack (unter Arm)
   rect(x+10,y+9,5,6,'#AA5500'); rect(x+9,y+10,2,4,'#AA5500');
-  // Kleine Fl�gel (Federchen)
+  // Kleine Flügel (Federchen)
   rect(x,y+7,3,4,'#FFFFFF'); rect(x-2,y+8,2,3,'#FFFFFF');
   rect(x+11,y+7,3,4,'#FFFFFF'); rect(x+14,y+8,2,3,'#FFFFFF');
   // Beine

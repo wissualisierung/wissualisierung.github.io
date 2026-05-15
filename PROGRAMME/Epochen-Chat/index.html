@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!--
   EpochenChat Editor
   CC-BY-SA 4.0 Sebastian Wolf 2026
@@ -10,7 +10,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="EpochenChat Editor � Erstellen Sie interaktive literarische Chats f�r den Deutschunterricht.">
+        content="EpochenChat Editor – Erstellen Sie interaktive literarische Chats für den Deutschunterricht.">
     <title>EpochenChat Editor v0.2</title>
 
     <!-- Fonts & Themes -->
@@ -35,7 +35,7 @@
 
     <!-- Favicon (inline SVG) -->
     <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>??</text></svg>">
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
 </head>
 
 <body class="editor-body">
@@ -45,28 +45,28 @@
         <!-- ===== Top Bar ===== -->
         <header class="editor-topbar">
             <div class="editor-topbar__brand">
-                <span class="editor-topbar__brand-icon">??</span>
+                <span class="editor-topbar__brand-icon">💬</span>
                 <span>EpochenChat</span>
                 <span class="editor-topbar__version">v0.2 MVP</span>
             </div>
             <div class="editor-topbar__actions">
-                <button class="btn btn--secondary btn--sm" id="btnTemplates" title="Vorlagenbibliothek �ffnen">
-                    ?? Vorlagen
+                <button class="btn btn--secondary btn--sm" id="btnTemplates" title="Vorlagenbibliothek öffnen">
+                    📚 Vorlagen
                 </button>
                 <button class="btn btn--secondary btn--sm" id="btnImportMd" title="Markdown-Datei importieren">
-                    ?? Import
+                    📂 Import
                 </button>
                 <button class="btn btn--secondary btn--sm" id="btnLoad" title="Projekt laden (Ctrl+O)">
-                    ?? Laden
+                    📁 Laden
                 </button>
                 <button class="btn btn--secondary btn--sm" id="btnSave" title="Projekt speichern (Ctrl+Shift+S)">
-                    ?? Speichern
+                    💾 Speichern
                 </button>
                 <button class="btn btn--export" id="btnExportHtml" title="Als HTML-Datei exportieren (Ctrl+S)">
-                    ? HTML exportieren
+                    ⬇ HTML exportieren
                 </button>
                 <button class="btn btn--secondary btn--sm" id="btnExportScorm" title="Als SCORM 1.2 ZIP exportieren">
-                    ?? SCORM
+                    📦 SCORM
                 </button>
             </div>
         </header>
@@ -81,10 +81,10 @@
                 <div class="persona-config">
                     <div class="persona-config__avatar-wrap">
                         <img class="persona-config__avatar" id="personaAvatarImg" src="assets/avatars/eichendorff.png"
-                            alt="Persona-Avatar" title="Klicken zum �ndern des Avatars" />
+                            alt="Persona-Avatar" title="Klicken zum Ändern des Avatars" />
                         <button class="persona-config__avatar-upload" id="avatarUploadBtn"
                             title="Eigenes Bild hochladen" aria-label="Avatar-Bild hochladen">
-                            ?
+                            ✏
                         </button>
                         <input type="file" id="avatarFileInput" class="sr-only"
                             accept="image/jpeg,image/png,image/svg+xml" />
@@ -98,19 +98,19 @@
                         <div class="persona-config__field persona-config__field--epoch">
                             <label class="persona-config__label" for="personaTheme">Epoche / Theme</label>
                             <select class="persona-config__select" id="personaTheme">
-                                <option value="modern_hell" selected>?? Modern-Hell (Standard)</option>
-                                <option value="mittelalter">?? Mittelalter</option>
-                                <option value="renaissance">?? Renaissance</option>
-                                <option value="barock">?? Barock</option>
-                                <option value="aufklaerung">?? Aufkl�rung</option>
-                                <option value="klassik">??? Klassik</option>
-                                <option value="romantik">?? Romantik</option>
-                                <option value="vormaerz">??? Vorm�rz</option>
-                                <option value="realismus">?? Realismus</option>
-                                <option value="expressionismus">?? Expressionismus</option>
-                                <option value="moderne">?? Moderne</option>
-                                <option value="postmoderne">?? Postmoderne</option>
-                                <option value="barrierefrei">? Barrierefrei</option>
+                                <option value="modern_hell" selected>☀ Modern-Hell (Standard)</option>
+                                <option value="mittelalter">⚔ Mittelalter</option>
+                                <option value="renaissance">🌿 Renaissance</option>
+                                <option value="barock">🎭 Barock</option>
+                                <option value="aufklaerung">💡 Aufklärung</option>
+                                <option value="klassik">🏛️ Klassik</option>
+                                <option value="romantik">🌙 Romantik</option>
+                                <option value="vormaerz">✊ Vormärz</option>
+                                <option value="realismus">🔬 Realismus</option>
+                                <option value="expressionismus">🎨 Expressionismus</option>
+                                <option value="moderne">⚙ Moderne</option>
+                                <option value="postmoderne">🔀 Postmoderne</option>
+                                <option value="barrierefrei">♿ Barrierefrei</option>
                             </select>
                         </div>
                         <div class="persona-config__field persona-config__field--source">
@@ -141,7 +141,7 @@
                 </div>
 
                 <!-- Snippet Toolbar -->
-                <div class="toolbar-snippets" id="snippetToolbar" role="toolbar" aria-label="Module einf�gen"></div>
+                <div class="toolbar-snippets" id="snippetToolbar" role="toolbar" aria-label="Module einfügen"></div>
 
                 <!-- Textarea -->
                 <div class="editor-textarea-wrap">
@@ -152,13 +152,13 @@ Beispiel:
 Hinweis zur didaktischen Konstruktion
 
 [PERSONA]
-Gr�� Gott! Ich bin...
+Grüß Gott! Ich bin...
 
 [LERNER]
-Was f�llt dir auf?
+Was fällt dir auf?
 
 [ZITAT]
-&quot;Zitierter Text&quot; � Quelle
+&quot;Zitierter Text&quot; – Quelle
 
 [QUIZ:single]
 Frage
@@ -181,7 +181,7 @@ Abschlusstext
                         <span><span id="statusLines">0</span> Zeilen</span>
                     </div>
                     <div class="editor-statusbar__item">
-                        EpochenChat Editor v0.2 � <kbd>Ctrl+S</kbd> Export � <kbd>Ctrl+Shift+S</kbd> Save
+                        EpochenChat Editor v0.2 – <kbd>Ctrl+S</kbd> Export – <kbd>Ctrl+Shift+S</kbd> Save
                     </div>
                 </div>
             </div>
@@ -206,12 +206,12 @@ Abschlusstext
         aria-modal="true">
         <div class="modal">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-                <h2 class="modal__title">?? Vorlagenbibliothek</h2>
-                <button class="btn btn--secondary btn--sm" onclick="EpochenEditor.hideTemplateModal()">?
-                    Schlie�en</button>
+                <h2 class="modal__title">📚 Vorlagenbibliothek</h2>
+                <button class="btn btn--secondary btn--sm" onclick="EpochenEditor.hideTemplateModal()">✕
+                    Schließen</button>
             </div>
             <p style="color:#999;font-size:0.85rem;margin-bottom:1rem;">
-                W�hle eine Epochen-Persona als Ausgangspunkt. Du kannst alles anpassen.
+                Wähle eine Epochen-Persona als Ausgangspunkt. Du kannst alles anpassen.
             </p>
             <div class="template-grid" id="templateGrid"></div>
         </div>
@@ -222,18 +222,18 @@ Abschlusstext
         <div class="modal" style="max-width:620px;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
                 <h2 class="modal__title">? Chat-Syntax Referenz</h2>
-                <button class="btn btn--secondary btn--sm" id="btnCloseSyntax">? Schlie�en</button>
+                <button class="btn btn--secondary btn--sm" id="btnCloseSyntax">✕ Schließen</button>
             </div>
             <p style="color:#999;font-size:0.85rem;margin-bottom:1rem;">
                 Jedes Modul wird mit einem <code
                     style="background:#2a2a40;padding:2px 6px;border-radius:3px;color:#7B9EA8;">[TAG]</code> auf einer
-                eigenen Zeile eingeleitet. Der Inhalt folgt in den n�chsten Zeilen.
+                eigenen Zeile eingeleitet. Der Inhalt folgt in den nächsten Zeilen.
             </p>
             <div
                 style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;font-size:0.82rem;max-height:60vh;overflow-y:auto;padding-right:0.5rem;">
                 <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
                     <strong style="color:#7B9EA8;">[RAHMUNG]</strong>
-                    <div style="color:#aaa;margin-top:0.3rem;">Didaktischer Rahmen<br><em>Hinweistext f�r Sch�ler</em>
+                    <div style="color:#aaa;margin-top:0.3rem;">Didaktischer Rahmen<br><em>Hinweistext für Schüler</em>
                     </div>
                 </div>
                 <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
@@ -246,7 +246,7 @@ Abschlusstext
                 </div>
                 <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
                     <strong style="color:#7B9EA8;">[ZITAT]</strong>
-                    <div style="color:#aaa;margin-top:0.3rem;">Zitatbox mit Quelle<br><em>"Text" � Quelle</em></div>
+                    <div style="color:#aaa;margin-top:0.3rem;">Zitatbox mit Quelle<br><em>"Text" – Quelle</em></div>
                 </div>
                 <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
                     <strong style="color:#7B9EA8;">[KONTEXT]</strong>
@@ -285,11 +285,11 @@ Abschlusstext
                 </div>
                 <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
                     <strong style="color:#7B9EA8;">[CHECKPOINT]</strong>
-                    <div style="color:#aaa;margin-top:0.3rem;">Verst�ndnis-Check<br><em>Reflexionsfrage</em></div>
+                    <div style="color:#aaa;margin-top:0.3rem;">Verständnis-Check<br><em>Reflexionsfrage</em></div>
                 </div>
                 <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
                     <strong style="color:#7B9EA8;">[SELBST]</strong>
-                    <div style="color:#aaa;margin-top:0.3rem;">Selbsteinsch�tzung<br><em>Item1 | Item2 | �</em></div>
+                    <div style="color:#aaa;margin-top:0.3rem;">Selbsteinschätzung<br><em>Item1 | Item2 | …</em></div>
                 </div>
                 <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
                     <strong style="color:#7B9EA8;">[ZEITSTRAHL]</strong>

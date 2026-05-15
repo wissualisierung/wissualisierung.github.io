@@ -224,7 +224,7 @@
 <div class="wrap">
   <div class="tool">
     <div class="titlebar">
-      <span>�� BE-Taschenrechner.exe ��</span>
+      <span>🔢 BE-Taschenrechner.exe 🔢</span>
     </div>
 
     <div class="grid">
@@ -232,13 +232,13 @@
       <section class="panel">
         <div class="screen">
           <div class="screen-line">&gt; SYSTEM READY</div>
-          <div class="screen-line">&gt; SCHL�SSEL GELADEN ...</div>
+          <div class="screen-line">&gt; SCHLÜSSEL GELADEN ...</div>
           <div class="result-main" id="resultMain">--</div>
-          <div class="result-sub" id="resultSub">Schema w�hlen &amp; Punkte eingeben.</div>
+          <div class="result-sub" id="resultSub">Schema wählen &amp; Punkte eingeben.</div>
         </div>
 
         <div>
-          <label for="schemaSelect">Schl�ssel w�hlen</label>
+          <label for="schemaSelect">Schlüssel wählen</label>
           <select id="schemaSelect"></select>
         </div>
         <div>
@@ -254,7 +254,7 @@
 
       <!-- RIGHT -->
       <section class="tablePanel">
-        <div class="schema-title" id="tableTitle">�bersicht</div>
+        <div class="schema-title" id="tableTitle">Übersicht</div>
         <div id="tableWrap"></div>
 
       </section>
@@ -265,7 +265,7 @@
 <script>
 const schemas = {
   "16": {
-    label:"16-Punkte-Schl�ssel", mode:"grades", max:16, unit:"Note",
+    label:"16-Punkte-Schlüssel", mode:"grades", max:16, unit:"Note",
     entries:[
       {label:"1",min:14,max:16},{label:"2",min:12,max:13.5},
       {label:"3",min:10,max:11.5},{label:"4",min:8,max:9.5},
@@ -273,7 +273,7 @@ const schemas = {
     ]
   },
   "18A": {
-    label:"18-Punkte-Schl�ssel � Variante A", mode:"grades", max:18, unit:"Note",
+    label:"18-Punkte-Schlüssel – Variante A", mode:"grades", max:18, unit:"Note",
     entries:[
       {label:"1",min:16,max:18},{label:"2",min:13.5,max:15.5},
       {label:"3",min:11.5,max:13},{label:"4",min:9,max:11},
@@ -281,7 +281,7 @@ const schemas = {
     ]
   },
   "18B": {
-    label:"18-Punkte-Schl�ssel � Variante B", mode:"grades", max:18, unit:"Note",
+    label:"18-Punkte-Schlüssel – Variante B", mode:"grades", max:18, unit:"Note",
     entries:[
       {label:"1",min:16,max:18},{label:"2",min:13,max:15},
       {label:"3",min:10,max:12},{label:"4",min:7,max:9},
@@ -289,7 +289,7 @@ const schemas = {
     ]
   },
   "20": {
-    label:"20-Punkte-Schl�ssel", mode:"grades", max:20, unit:"Note",
+    label:"20-Punkte-Schlüssel", mode:"grades", max:20, unit:"Note",
     entries:[
       {label:"1",min:17.5,max:20},{label:"2",min:15,max:17},
       {label:"3",min:12.5,max:14.5},{label:"4",min:10,max:12},
@@ -297,7 +297,7 @@ const schemas = {
     ]
   },
   "20B": {
-    label:"20-Punkte-Schl�ssel � Variante B", mode:"grades", max:20, unit:"Note",
+    label:"20-Punkte-Schlüssel – Variante B", mode:"grades", max:20, unit:"Note",
     entries:[
       {label:"1",min:18,max:20},{label:"2",min:15,max:17},
       {label:"3",min:12,max:14},{label:"4",min:9,max:11},
@@ -305,7 +305,7 @@ const schemas = {
     ]
   },
   "20C": {
-    label:"20-Punkte-Schl�ssel � Variante C", mode:"grades", max:20, unit:"Note",
+    label:"20-Punkte-Schlüssel – Variante C", mode:"grades", max:20, unit:"Note",
     entries:[
       {label:"1",min:17.5,max:20},{label:"2",min:14.5,max:17},
       {label:"3",min:11.5,max:14},{label:"4",min:8.5,max:11},
@@ -313,7 +313,7 @@ const schemas = {
     ]
   },
   "24A": {
-    label:"24-Punkte-Schl�ssel � Variante A", mode:"grades", max:24, unit:"Note",
+    label:"24-Punkte-Schlüssel – Variante A", mode:"grades", max:24, unit:"Note",
     entries:[
       {label:"1",min:21,max:24},{label:"2",min:18,max:20.5},
       {label:"3",min:15,max:17.5},{label:"4",min:12,max:14.5},
@@ -321,7 +321,7 @@ const schemas = {
     ]
   },
   "24B": {
-    label:"24-Punkte-Schl�ssel � Variante B", mode:"grades", max:24, unit:"Note",
+    label:"24-Punkte-Schlüssel – Variante B", mode:"grades", max:24, unit:"Note",
     entries:[
       {label:"1",min:21,max:24},{label:"2",min:17,max:20},
       {label:"3",min:13,max:16},{label:"4",min:9,max:12},
@@ -329,7 +329,7 @@ const schemas = {
     ]
   },
   "24Q": {
-    label:"24-Punkte-Schl�ssel � Q-Phase", mode:"qphase", max:24, unit:"Notenpunkte",
+    label:"24-Punkte-Schlüssel – Q-Phase", mode:"qphase", max:24, unit:"Notenpunkte",
     entries:[
       {label:"15",min:23,max:24},{label:"14",min:22,max:22},
       {label:"13",min:21,max:21},{label:"12",min:20,max:20},
@@ -342,7 +342,7 @@ const schemas = {
     ]
   },
   "28": {
-    label:"28-Punkte-Schl�ssel", mode:"grades", max:28, unit:"Note",
+    label:"28-Punkte-Schlüssel", mode:"grades", max:28, unit:"Note",
     entries:[
       {label:"1",min:25,max:28},{label:"2",min:21.5,max:24.5},
       {label:"3",min:18,max:21},{label:"4",min:14,max:17.5},
@@ -350,7 +350,7 @@ const schemas = {
     ]
   },
   "30Q": {
-    label:"30-Punkte-Schl�ssel � Q-Phase", mode:"qphase", max:30, unit:"Notenpunkte",
+    label:"30-Punkte-Schlüssel – Q-Phase", mode:"qphase", max:30, unit:"Notenpunkte",
     entries:[
       {label:"15",min:28.5,max:30},{label:"14",min:27.0,max:28.0},
       {label:"13",min:25.5,max:26.5},{label:"12",min:24.0,max:25.0},
@@ -363,7 +363,7 @@ const schemas = {
     ]
   },
   "32": {
-    label:"32-Punkte-Schl�ssel", mode:"grades", max:32, unit:"Note",
+    label:"32-Punkte-Schlüssel", mode:"grades", max:32, unit:"Note",
     entries:[
       {label:"1",min:28,max:32},{label:"2",min:24,max:27.5},
       {label:"3",min:20,max:23.5},{label:"4",min:16,max:19.5},
@@ -371,7 +371,7 @@ const schemas = {
     ]
   },
   "36": {
-    label:"36-Punkte-Schl�ssel", mode:"grades", max:36, unit:"Note",
+    label:"36-Punkte-Schlüssel", mode:"grades", max:36, unit:"Note",
     entries:[
       {label:"1",min:31.5,max:36},{label:"2",min:27,max:31},
       {label:"3",min:22.5,max:26.5},{label:"4",min:18,max:22},
@@ -379,7 +379,7 @@ const schemas = {
     ]
   },
   "40Q": {
-    label:"40-Punkte-Schl�ssel � Q-Phase", mode:"qphase", max:40, unit:"Notenpunkte",
+    label:"40-Punkte-Schlüssel – Q-Phase", mode:"qphase", max:40, unit:"Notenpunkte",
     entries:[
       {label:"15",min:38.0,max:40},{label:"14",min:36.0,max:37.5},
       {label:"13",min:34.0,max:35.5},{label:"12",min:32.0,max:33.5},
@@ -402,7 +402,7 @@ const tableTitle   = document.getElementById("tableTitle");
 const schemaMeta   = document.getElementById("schemaMeta");
 
 function fmt(v){ return Number.isInteger(v) ? String(v) : String(v).replace(".",","); }
-function rangeText(e){ return e.min===e.max ? fmt(e.max) : fmt(e.max)+" � "+fmt(e.min); }
+function rangeText(e){ return e.min===e.max ? fmt(e.max) : fmt(e.max)+" – "+fmt(e.min); }
 
 function npCls(np){
   const n=parseInt(np);
@@ -417,18 +417,18 @@ function gradeCls(g){
 const ratings = {
   "16":  {typ:"? streng",  schwelle:"50 %"},
   "18A": {typ:"? streng",  schwelle:"50 %"},
-  "18B": {typ:"?? gn�dig",  schwelle:"39 %"},
+  "18B": {typ:"?? gnädig",  schwelle:"39 %"},
   "20":  {typ:"? streng",  schwelle:"50 %"},
   "20B": {typ:"?? mittel",  schwelle:"45 %"},
-  "20C": {typ:"?? gn�dig",  schwelle:"43 %"},
+  "20C": {typ:"?? gnädig",  schwelle:"43 %"},
   "24A": {typ:"? streng",  schwelle:"50 %"},
-  "24B": {typ:"?? gn�dig",  schwelle:"38 %"},
+  "24B": {typ:"?? gnädig",  schwelle:"38 %"},
   "28":  {typ:"? streng",  schwelle:"50 %"},
   "32":  {typ:"? streng",  schwelle:"50 %"},
   "36":  {typ:"? streng",  schwelle:"50 %"},
   "24Q": {typ:"?? mittel",  schwelle:"42 %"},
-  "30Q": {typ:"?? gn�dig",  schwelle:"40 %"},
-  "40Q": {typ:"?? gn�dig",  schwelle:"40 %"},
+  "30Q": {typ:"?? gnädig",  schwelle:"40 %"},
+  "40Q": {typ:"?? gnädig",  schwelle:"40 %"},
 };
 
 function renderTable(){
@@ -453,8 +453,8 @@ function renderTable(){
     tableWrap.innerHTML = h;
   }
 
-  const r = ratings[key] || {typ:"�", schwelle:"�"};
-  const tip = s.mode==="qphase" ? "Q-Phase: Notenpunkte 0�15." : "Schritte: 0,5 BE.";
+  const r = ratings[key] || {typ:"?", schwelle:"?"};
+  const tip = s.mode==="qphase" ? "Q-Phase: Notenpunkte 0–15." : "Schritte: 0,5 BE.";
   schemaMeta.innerHTML =
     '<div style="display:flex;flex-direction:column;gap:6px;">' +
       '<div style="font-weight:bold;font-size:1rem;">' + s.label + '</div>' +
@@ -482,12 +482,12 @@ function calculate(){
   const points = parseFloat(pointsInput.value.replace(",","."));
   if(isNaN(points)){
     resultMain.textContent="ERR";
-    resultSub.innerHTML='<span class="bad">Bitte g�ltige Punkte eingeben.</span>';
+    resultSub.innerHTML='<span class="bad">Bitte gültige Punkte eingeben.</span>';
     return;
   }
   if(points<0 || points>s.max){
     resultMain.textContent="OUT";
-    resultSub.innerHTML='<span class="bad">Erlaubt: 0 � '+s.max+' BE.</span>';
+    resultSub.innerHTML='<span class="bad">Erlaubt: 0 – '+s.max+' BE.</span>';
     return;
   }
   const hit = findResult(points, s);
@@ -502,7 +502,7 @@ function calculate(){
 
 function resetOutput(){
   resultMain.textContent="--";
-  resultSub.textContent="Schema w�hlen & Punkte eingeben.";
+  resultSub.textContent="Schema wählen & Punkte eingeben.";
   pointsInput.value="";
 }
 
@@ -511,7 +511,7 @@ function populateSchemas(){
   const qKeys     = ["24Q","30Q","40Q"];
 
   const grp1 = document.createElement("optgroup");
-  grp1.label = "-- Normalschl�ssel (Note 1�6)";
+  grp1.label = "-- Normalschlüssel (Note 1–6)";
   gradeKeys.forEach(k => {
     if(!schemas[k]) return;
     const o = document.createElement("option");
@@ -520,7 +520,7 @@ function populateSchemas(){
   });
 
   const grp2 = document.createElement("optgroup");
-  grp2.label = "-- Q-Phase (Notenpunkte 0�15)";
+  grp2.label = "-- Q-Phase (Notenpunkte 0–15)";
   qKeys.forEach(k => {
     if(!schemas[k]) return;
     const o = document.createElement("option");
