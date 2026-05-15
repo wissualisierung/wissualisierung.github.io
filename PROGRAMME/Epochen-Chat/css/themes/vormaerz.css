@@ -1,0 +1,27 @@
+/* ============================================
+   EpochenChat – Theme: Vormärz / Heine
+   Epoche: 1815–1848
+   Modus: Hellmodus
+   ============================================ */
+
+[data-theme="vormaerz"] {
+    --color-primary: #1C3A1C;
+    --color-primary-light: #2a522a;
+    --color-accent: #8B1A1A;
+    --color-accent-light: #a52a2a;
+    --color-bg: #f2ede3;
+    --color-surface: #e8e2d6;
+    --color-surface-hover: #ddd6c8;
+    --color-bubble-persona: #ddd6c5;
+    --color-bubble-persona-text: #1a1a18;
+    --color-bubble-learner: #f0ece4;
+    --color-bubble-learner-text: #1a1a18;
+    --color-text: #1a1a18;
+    --color-text-muted: #5a5848;
+    --color-text-inverse: #f2ede3;
+    --color-border: #c5bfb0;
+    --color-shadow: rgba(28, 58, 28, 0.1);
+    --color-overlay: rgba(28, 58, 28, 0.5);
+
+    --texture-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect width='120' height='120' fill='none'/%3E%3Cline x1='0' y1='0' x2='120' y2='0' stroke='%231C3A1C' stroke-opacity='.05' stroke-width='.3'/%3E%3Cline x1='0' y1='8' x2='120' y2='8' stroke='%231C3A1C' stroke-opacity='.03' stroke-width='.2'/%3E%3Cline x1='0' y1='16' x2='120' y2='16' stroke='%231C3A1C' stroke-opacity='.05' stroke-width='.3'/%3E%3C/svg%3E");
+}

@@ -1,0 +1,53 @@
+/* ============================================
+   EpochenChat – Font Declarations
+   Lokal eingebettete Schriften (WOFF2)
+   Kein Google Fonts CDN – alles offline
+   ============================================ */
+
+/* Playfair Display – Persona-Bubbles & Überschriften */
+@font-face {
+    font-family: 'Playfair Display';
+    src: url('../fonts/PlayfairDisplay-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Playfair Display';
+    src: url('../fonts/PlayfairDisplay-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Playfair Display Italic – Fallback auf Regular mit synthetic italic */
+@font-face {
+    font-family: 'Playfair Display';
+    src: url('../fonts/PlayfairDisplay-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+
+/* Inter – Variable Font: eine Datei für Regular (400) bis Bold (700) */
+@font-face {
+    font-family: 'Inter';
+    src: url('../fonts/Inter-Regular.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* CSS Custom Properties für Font-Stacks */
+:root {
+    --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-size-persona: 1.05rem;
+    --font-size-ui: 0.95rem;
+    --font-size-quote: 1.15rem;
+    --font-size-small: 0.8rem;
+    --font-size-label: 0.85rem;
+    --line-height-body: 1.6;
+    --line-height-tight: 1.3;
+}

@@ -1,0 +1,28 @@
+/* ============================================
+   EpochenChat – Theme: Romantik
+   Epoche: 1795–1835
+   Modus: Hellmodus Standard
+   ============================================ */
+
+[data-theme="romantik"] {
+    --color-primary: #2D4A3E;
+    --color-primary-light: #3d6454;
+    --color-accent: #7B9EA8;
+    --color-accent-light: #9bb8c0;
+    --color-bg: #f0ede6;
+    --color-surface: #e8e4dc;
+    --color-surface-hover: #ddd8ce;
+    --color-bubble-persona: #ddd8cc;
+    --color-bubble-persona-text: #2a2520;
+    --color-bubble-learner: #f5f2ec;
+    --color-bubble-learner-text: #2a2520;
+    --color-text: #2a2520;
+    --color-text-muted: #6b6560;
+    --color-text-inverse: #f0ede6;
+    --color-border: #cdc7bb;
+    --color-shadow: rgba(45, 74, 62, 0.12);
+    --color-overlay: rgba(45, 74, 62, 0.6);
+
+    /* Texture – Aquarell-Wash Pattern */
+    --texture-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.035' numOctaves='4' seed='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.88 0 0 0 0 0.86 0 0 0 0 0.82 0 0 0 0.12 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23a)'/%3E%3C/svg%3E");
+}

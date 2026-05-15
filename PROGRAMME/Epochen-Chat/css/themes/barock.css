@@ -1,0 +1,27 @@
+/* ============================================
+   EpochenChat – Theme: Barock
+   Epoche: 1600–1720
+   Modus: Dunkelmodus Standard
+   ============================================ */
+
+[data-theme="barock"] {
+    --color-primary: #8B1A1A;
+    --color-primary-light: #a52a2a;
+    --color-accent: #C9A84C;
+    --color-accent-light: #d4ba6a;
+    --color-bg: #1a1008;
+    --color-surface: #2d1f0e;
+    --color-surface-hover: #3a2a15;
+    --color-bubble-persona: #3d2a10;
+    --color-bubble-persona-text: #e8dcc8;
+    --color-bubble-learner: #2a2015;
+    --color-bubble-learner-text: #e8dcc8;
+    --color-text: #e8dcc8;
+    --color-text-muted: #a09080;
+    --color-text-inverse: #1a1008;
+    --color-border: #4a3820;
+    --color-shadow: rgba(0, 0, 0, 0.3);
+    --color-overlay: rgba(26, 16, 8, 0.7);
+
+    --texture-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M30 5 Q35 15 30 25 Q25 15 30 5Z M5 30 Q15 35 25 30 Q15 25 5 30Z M30 35 Q35 45 30 55 Q25 45 30 35Z M35 30 Q45 35 55 30 Q45 25 35 30Z' fill='%23C9A84C' fill-opacity='.04'/%3E%3C/svg%3E");
+}

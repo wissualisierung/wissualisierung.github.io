@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WissualisierungOS – Config-Editor</title>
+  <link href="../css/fonts.css" rel="stylesheet">
+  <link rel="stylesheet" href="config-editor.css">
+</head>
+<body>
+  <!-- ===== Header ===== -->
+  <header id="editor-header">
+    <div class="header-left">
+      <span class="header-icon">⚙️</span>
+      <h1>WissualisierungOS <span class="header-sub">Config-Editor</span></h1>
+    </div>
+    <div class="header-actions">
+      <button id="btn-import" class="bevel-btn" title="config.json importieren">📂 Importieren</button>
+      <button id="btn-export" class="bevel-btn btn-primary" title="Beide Dateien exportieren (config.json + config-data.js)">💾 Exportieren</button>
+      <input type="file" id="file-input" accept=".json" hidden>
+    </div>
+  </header>
+
+  <!-- ===== Tab Navigation ===== -->
+  <nav id="tab-bar" role="tablist" aria-label="Editor-Bereiche">
+    <button class="tab-btn active" data-tab="programs" role="tab" aria-selected="true">Programme</button>
+    <button class="tab-btn" data-tab="sysprograms" role="tab">System-Programme</button>
+    <button class="tab-btn" data-tab="menu" role="tab">Startmenü</button>
+    <button class="tab-btn" data-tab="desktop" role="tab">Desktop</button>
+    <button class="tab-btn" data-tab="tips" role="tab">Tipps</button>
+    <button class="tab-btn" data-tab="jokes" role="tab">Witze</button>
+    <button class="tab-btn" data-tab="terminal" role="tab">Terminal</button>
+    <button class="tab-btn" data-tab="boot" role="tab">Boot</button>
+    <button class="tab-btn" data-tab="wallpapers" role="tab">Wallpapers</button>
+    <button class="tab-btn" data-tab="screensavers" role="tab">Screensaver</button>
+    <button class="tab-btn" data-tab="settings" role="tab">Einstellungen</button>
+    <button class="tab-btn" data-tab="eastereggs" role="tab">Easter Eggs</button>
+  </nav>
+
+  <!-- ===== Tab Panels ===== -->
+  <main id="editor-main">
+    <!-- Programs Tab -->
+    <section id="tab-programs" class="tab-panel active" role="tabpanel">
+      <div class="panel-header">
+        <h2>Programme</h2>
+        <button id="btn-add-program" class="bevel-btn btn-accent">＋ Neues Programm</button>
+      </div>
+      <p class="hint">Reguläre Programme, die im Startmenü und/oder auf dem Desktop erscheinen.</p>
+      <div id="programs-list" class="card-list"></div>
+    </section>
+
+    <!-- System Programs Tab -->
+    <section id="tab-sysprograms" class="tab-panel" role="tabpanel">
+      <div class="panel-header">
+        <h2>System-Programme</h2>
+        <button id="btn-add-sysprog" class="bevel-btn btn-accent">＋ Neues System-Programm</button>
+      </div>
+      <p class="hint">Systemprogramme wie Papierkorb, Terminal, Hilfe oder Screensaver. Diese haben eine <code>action</code> statt einer URL.</p>
+      <div id="sysprograms-list" class="card-list"></div>
+    </section>
+
+    <!-- Menu Tab -->
+    <section id="tab-menu" class="tab-panel" role="tabpanel">
+      <div class="panel-header">
+        <h2>Startmenü – Ordner</h2>
+        <button id="btn-add-folder" class="bevel-btn btn-accent">＋ Neuer Ordner</button>
+      </div>
+      <div id="menu-folders-list" class="card-list"></div>
+      <div class="panel-header" style="margin-top:24px">
+        <h2>System-Einträge</h2>
+        <button id="btn-add-sysentry" class="bevel-btn btn-accent">＋ Neuer Eintrag</button>
+      </div>
+      <div id="menu-system-list" class="card-list"></div>
+    </section>
+
+    <!-- Desktop Tab -->
+    <section id="tab-desktop" class="tab-panel" role="tabpanel">
+      <div class="panel-header"><h2>Desktop-Vorschau</h2></div>
+      <p class="hint">Icons mit <code>showOnDesktop: true</code> werden hier angezeigt. Links = Standard, Rechts = <code>align: "right"</code>. Position über col/row in der Programm-Karte ändern.</p>
+      <div id="desktop-preview"></div>
+    </section>
+
+    <!-- Tips Tab -->
+    <section id="tab-tips" class="tab-panel" role="tabpanel">
+      <div class="panel-header">
+        <h2>Didaktische Tipps</h2>
+        <button id="btn-add-tip" class="bevel-btn btn-accent">＋ Neuer Tipp</button>
+      </div>
+      <div id="tips-list" class="string-list"></div>
+    </section>
+
+    <!-- Jokes Tab -->
+    <section id="tab-jokes" class="tab-panel" role="tabpanel">
+      <div class="panel-header">
+        <h2>Papierkorb-Witze</h2>
+        <button id="btn-add-joke" class="bevel-btn btn-accent">＋ Neuer Witz</button>
+      </div>
+      <div id="jokes-list" class="string-list"></div>
+    </section>
+
+    <!-- Terminal Tab -->
+    <section id="tab-terminal" class="tab-panel" role="tabpanel">
+      <div class="panel-header"><h2>Terminal-Konfiguration</h2></div>
+      <div class="form-group">
+        <label for="term-prompt">Prompt</label>
+        <input id="term-prompt" type="text" class="field">
+      </div>
+      <div class="form-group">
+        <label for="term-welcome">Willkommensnachricht</label>
+        <textarea id="term-welcome" class="field" rows="3"></textarea>
+      </div>
+      <div class="panel-header" style="margin-top:20px">
+        <h3>Befehle</h3>
+        <button id="btn-add-cmd" class="bevel-btn btn-accent">＋ Neuer Befehl</button>
+      </div>
+      <div id="terminal-cmds" class="card-list"></div>
+    </section>
+
+    <!-- Boot Tab -->
+    <section id="tab-boot" class="tab-panel" role="tabpanel">
+      <div class="panel-header">
+        <h2>Boot-Nachrichten</h2>
+        <button id="btn-add-boot" class="bevel-btn btn-accent">＋ Neue Nachricht</button>
+      </div>
+      <div id="boot-list" class="string-list"></div>
+      <div class="panel-header" style="margin-top:24px"><h2>Bluescreen of Deutsch</h2></div>
+      <div class="form-group">
+        <label for="bs-title">Titel</label>
+        <input id="bs-title" type="text" class="field">
+      </div>
+      <div class="form-group">
+        <label for="bs-code">Error-Code</label>
+        <input id="bs-code" type="text" class="field">
+      </div>
+      <div class="form-group">
+        <label for="bs-msg">Nachricht</label>
+        <textarea id="bs-msg" class="field" rows="6"></textarea>
+      </div>
+    </section>
+
+    <!-- Wallpapers Tab -->
+    <section id="tab-wallpapers" class="tab-panel" role="tabpanel">
+      <div class="panel-header">
+        <h2>Wallpapers</h2>
+        <button id="btn-add-wallpaper" class="bevel-btn btn-accent">＋ Neues Wallpaper</button>
+      </div>
+      <p class="hint">Definiert die verfügbaren Desktop-Hintergründe. Dateien liegen in <code>assets/wallpapers/</code>.</p>
+      <div id="wallpapers-list" class="card-list"></div>
+    </section>
+
+    <!-- Screensavers Tab -->
+    <section id="tab-screensavers" class="tab-panel" role="tabpanel">
+      <div class="panel-header">
+        <h2>Screensaver</h2>
+        <button id="btn-add-screensaver" class="bevel-btn btn-accent">＋ Neuer Screensaver</button>
+      </div>
+      <p class="hint">Verfügbare Bildschirmschoner. Typ <code>builtin</code> = JS-Canvas (z.B. Kaffee), Typ <code>iframe</code> = beliebige HTML-Datei. Für neue HTML-Screensaver: Datei in <code>PROGRAMME/</code> ablegen und hier als <code>iframe</code>-Eintrag hinzufügen.</p>
+      <div id="screensavers-list" class="card-list"></div>
+    </section>
+
+    <!-- Settings Tab -->
+    <section id="tab-settings" class="tab-panel" role="tabpanel">
+      <div class="panel-header"><h2>OS-Metadaten</h2></div>
+      <div class="form-group">
+        <label for="os-name">Name</label>
+        <input id="os-name" type="text" class="field">
+      </div>
+      <div class="form-group">
+        <label for="os-version">Version</label>
+        <input id="os-version" type="text" class="field">
+      </div>
+      <div class="form-group">
+        <label for="os-tagline">Tagline</label>
+        <input id="os-tagline" type="text" class="field">
+      </div>
+      <div class="form-group">
+        <label for="os-license">Lizenz</label>
+        <input id="os-license" type="text" class="field">
+      </div>
+      <div class="panel-header" style="margin-top:24px"><h2>Einstellungen</h2></div>
+      <div class="form-group">
+        <label for="set-theme">Theme</label>
+        <select id="set-theme" class="field">
+          <option value="retro-classic">retro-classic</option>
+          <option value="vaporwave">vaporwave</option>
+          <option value="schreibstube">schreibstube</option>
+          <option value="pommes">pommes</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="set-wallpaper">Standard-Wallpaper</label>
+        <input id="set-wallpaper" type="text" class="field" placeholder="z.B. default">
+      </div>
+      <div class="form-group inline">
+        <label><input id="set-sound" type="checkbox"> Sound aktiviert</label>
+      </div>
+      <div class="form-group inline">
+        <label><input id="set-boot" type="checkbox"> Boot beim ersten Besuch</label>
+      </div>
+      <div class="form-group">
+        <label for="set-idle">Bücherwurm Idle (Sekunden)</label>
+        <input id="set-idle" type="number" class="field" min="10" style="width:120px">
+      </div>
+    </section>
+
+    <!-- Easter Eggs Tab -->
+    <section id="tab-eastereggs" class="tab-panel" role="tabpanel">
+      <div class="panel-header"><h2>Easter Eggs</h2></div>
+      
+      <div class="panel-header" style="margin-top:24px"><h3>Boot-Animation</h3></div>
+      <div class="form-group inline">
+        <label><input id="ee-boot-enabled" type="checkbox"> Boot-Animation aktiviert</label>
+      </div>
+
+      <div class="panel-header" style="margin-top:24px"><h3>Sound</h3></div>
+      <div class="form-group inline">
+        <label><input id="ee-sound-enabled" type="checkbox"> System-Sounds aktiviert</label>
+      </div>
+      <div class="form-group">
+        <label for="ee-sound-types">Sound-Typen (kommagetrennt)</label>
+        <input id="ee-sound-types" type="text" class="field" placeholder="startup, click, error">
+      </div>
+
+      <div class="panel-header" style="margin-top:24px"><h3>Bluescreen</h3></div>
+      <div class="form-group inline">
+        <label><input id="ee-bluescreen-enabled" type="checkbox"> Bluescreen aktiviert</label>
+      </div>
+      <div class="form-group">
+        <label for="ee-bluescreen-prob">Wahrscheinlichkeit (0.0 - 1.0)</label>
+        <input id="ee-bluescreen-prob" type="number" step="0.001" class="field" style="width:120px">
+      </div>
+
+      <div class="panel-header" style="margin-top:24px"><h3>Bücherwurm</h3></div>
+      <div class="form-group inline">
+        <label><input id="ee-bookworm-enabled" type="checkbox"> Bücherwurm aktiviert</label>
+      </div>
+      <div class="form-group">
+        <label for="ee-bookworm-idle">Idle-Zeit (Sekunden)</label>
+        <input id="ee-bookworm-idle" type="number" class="field" style="width:120px">
+      </div>
+      <div class="form-group">
+        <label for="ee-bookworm-text">Text (optional)</label>
+        <input id="ee-bookworm-text" type="text" class="field">
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Status Bar ===== -->
+  <footer id="status-bar">
+    <span id="status-text">Bereit</span>
+    <span id="status-count"></span>
+  </footer>
+
+  <!-- Embedded config for file:// fallback -->
+  <script src="../js/config-data.js"></script>
+  <script src="config-editor.js"></script>
+</body>
+</html>
+
+

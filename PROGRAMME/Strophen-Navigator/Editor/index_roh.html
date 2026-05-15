@@ -1,0 +1,1367 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strophen-Navigator – Formanalyse für die Oberstufe</title>
+    <meta name="description" content="Interaktives Tool zur Bestimmung und Analyse von Strophenformen der deutschen Lyrik. Für die gymnasiale Oberstufe.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================
+           CSS DESIGN SYSTEM – STROPHEN-NAVIGATOR
+           ============================================ */
+
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: rgba(17, 24, 39, 0.7);
+            --bg-glass: rgba(255, 255, 255, 0.04);
+            --bg-glass-hover: rgba(255, 255, 255, 0.08);
+            --bg-glass-active: rgba(255, 255, 255, 0.12);
+            --bg-detail: #111827;
+
+            --accent-primary: #818cf8;
+            --accent-secondary: #a78bfa;
+            --accent-tertiary: #c084fc;
+            --accent-warm: #f0abfc;
+            --accent-gold: #fbbf24;
+            --accent-emerald: #34d399;
+            --accent-rose: #fb7185;
+
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-tertiary: #64748b;
+            --text-accent: #c7d2fe;
+
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-medium: rgba(255, 255, 255, 0.12);
+            --border-accent: rgba(129, 140, 248, 0.3);
+
+            --gradient-hero: linear-gradient(135deg, #0f0c29 0%, #1a1145 30%, #24243e 60%, #0f172a 100%);
+            --gradient-accent: linear-gradient(135deg, #818cf8, #a78bfa, #c084fc);
+            --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+            --gradient-warm: linear-gradient(135deg, #f0abfc, #818cf8);
+
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+            --shadow-glow: 0 0 30px rgba(129, 140, 248, 0.15);
+
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+
+            --font-ui: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-literary: 'Merriweather', Georgia, 'Times New Roman', serif;
+
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.25s ease;
+            --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-ui);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Ambient Background */
+        .ambient-bg { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+        .ambient-bg .orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.15; animation: orbFloat 20s ease-in-out infinite; }
+        .ambient-bg .orb:nth-child(1) { width: 600px; height: 600px; background: var(--accent-primary); top: -200px; left: -100px; }
+        .ambient-bg .orb:nth-child(2) { width: 500px; height: 500px; background: var(--accent-tertiary); top: 40%; right: -150px; animation-delay: -7s; animation-duration: 25s; }
+        .ambient-bg .orb:nth-child(3) { width: 400px; height: 400px; background: var(--accent-warm); bottom: -100px; left: 30%; animation-delay: -14s; animation-duration: 22s; }
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -40px) scale(1.05); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+
+        .app-container { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+
+        /* Hero */
+        .hero { padding: 56px 0 40px; text-align: center; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: 100px; font-size: 0.75rem; font-weight: 500; color: var(--text-secondary); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 20px; }
+        .hero-badge .dot { width: 6px; height: 6px; background: var(--accent-emerald); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
+        .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; letter-spacing: -0.03em; background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.15; margin-bottom: 12px; }
+        .hero .subtitle { font-family: var(--font-literary); font-size: 1.05rem; font-weight: 300; color: var(--text-secondary); max-width: 600px; margin: 0 auto; font-style: italic; }
+
+        /* Stats */
+        .stats-bar { display: flex; justify-content: center; gap: 32px; padding: 20px 0; margin-bottom: 8px; flex-wrap: wrap; }
+        .stat-item { text-align: center; }
+        .stat-number { font-size: 1.5rem; font-weight: 700; color: var(--accent-primary); }
+        .stat-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); margin-top: 2px; }
+
+        /* Versmaß-Infobox */
+        .info-panel { background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); margin-bottom: 24px; overflow: hidden; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        .info-toggle { width: 100%; padding: 16px 32px; background: none; border: none; color: var(--text-secondary); font-family: var(--font-ui); font-size: 0.82rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: var(--transition-fast); text-align: left; }
+        .info-toggle:hover { color: var(--text-primary); }
+        .info-toggle svg { width: 16px; height: 16px; color: var(--accent-primary); transition: transform 0.3s ease; }
+        .info-toggle.open svg { transform: rotate(90deg); }
+        .info-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+        .info-content.open { max-height: 2000px; }
+        .info-inner { padding: 0 32px 28px; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+        .info-card { padding: 16px 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); }
+        .info-card h4 { font-size: 0.88rem; font-weight: 700; color: var(--accent-primary); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+        .info-card .schema { font-family: var(--font-literary); font-size: 0.82rem; color: var(--accent-gold); margin-bottom: 6px; letter-spacing: 0.05em; }
+        .info-card p { font-size: 0.78rem; color: var(--text-tertiary); line-height: 1.5; }
+        .info-card .example { font-family: var(--font-literary); font-style: italic; color: var(--text-secondary); margin-top: 6px; font-size: 0.78rem; }
+
+        /* Filter Section */
+        .filter-section { background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 28px 32px 24px; margin-bottom: 32px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        .filter-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+        .filter-title { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; display: flex; align-items: center; gap: 8px; }
+        .filter-title svg { width: 16px; height: 16px; color: var(--accent-primary); }
+        .filter-reset { padding: 6px 14px; background: none; border: 1px solid var(--border-medium); border-radius: 100px; color: var(--text-secondary); font-size: 0.75rem; font-family: var(--font-ui); cursor: pointer; transition: var(--transition-fast); }
+        .filter-reset:hover { border-color: var(--accent-rose); color: var(--accent-rose); }
+        .search-wrapper { position: relative; margin-bottom: 20px; }
+        .search-wrapper svg { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--text-tertiary); pointer-events: none; }
+        .search-input { width: 100%; padding: 12px 16px 12px 46px; background: rgba(0,0,0,0.25); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); color: var(--text-primary); font-size: 0.95rem; font-family: var(--font-ui); outline: none; transition: var(--transition-fast); }
+        .search-input::placeholder { color: var(--text-tertiary); }
+        .search-input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.1); }
+        .filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+        .filter-group label { display: block; font-size: 0.72rem; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+        .filter-group select { width: 100%; padding: 10px 14px; background: rgba(0,0,0,0.25); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 0.88rem; font-family: var(--font-ui); cursor: pointer; outline: none; transition: var(--transition-fast); appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
+        .filter-group select:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.1); }
+        .filter-group select option { background: var(--bg-secondary); color: var(--text-primary); }
+        .active-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; min-height: 0; transition: var(--transition-normal); }
+        .active-filters:empty { display: none; }
+        .filter-tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: rgba(129, 140, 248, 0.12); border: 1px solid rgba(129, 140, 248, 0.2); border-radius: 100px; font-size: 0.75rem; color: var(--accent-primary); animation: tagIn 0.2s ease; }
+        @keyframes tagIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        .filter-tag .remove { cursor: pointer; opacity: 0.6; transition: var(--transition-fast); font-size: 1rem; line-height: 1; }
+        .filter-tag .remove:hover { opacity: 1; color: var(--accent-rose); }
+
+        /* Results */
+        .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+        .results-count { font-size: 0.82rem; color: var(--text-secondary); }
+        .results-count strong { color: var(--accent-primary); font-weight: 700; }
+        .view-toggle { display: flex; gap: 4px; background: var(--bg-glass); border-radius: var(--radius-sm); padding: 3px; border: 1px solid var(--border-subtle); }
+        .view-toggle button { padding: 6px 10px; background: none; border: none; border-radius: 6px; color: var(--text-tertiary); cursor: pointer; transition: var(--transition-fast); display: flex; align-items: center; }
+        .view-toggle button.active { background: var(--bg-glass-active); color: var(--text-primary); }
+        .view-toggle button svg { width: 16px; height: 16px; }
+        .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; margin-bottom: 40px; }
+        .results-grid.list-view { grid-template-columns: 1fr; }
+
+        /* Result Card */
+        .result-card { background: var(--gradient-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 22px 24px; cursor: pointer; transition: var(--transition-normal); position: relative; overflow: hidden; animation: cardIn 0.35s ease backwards; }
+        .result-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--gradient-accent); opacity: 0; transition: var(--transition-normal); }
+        .result-card:hover { border-color: var(--border-accent); background: var(--bg-glass-hover); transform: translateY(-2px); box-shadow: var(--shadow-glow); }
+        .result-card:hover::before { opacity: 1; }
+        @keyframes cardIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 12px; }
+        .card-name { font-size: 1.05rem; font-weight: 700; color: var(--text-primary); line-height: 1.3; }
+        .card-verse-badge { flex-shrink: 0; padding: 3px 10px; background: rgba(129, 140, 248, 0.12); border: 1px solid rgba(129, 140, 248, 0.2); border-radius: 100px; font-size: 0.7rem; font-weight: 600; color: var(--accent-primary); white-space: nowrap; }
+        .card-alt-names { font-size: 0.75rem; color: var(--text-tertiary); font-style: italic; margin-bottom: 12px; }
+        .card-params { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+        .param-chip { padding: 3px 10px; background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 100px; font-size: 0.68rem; color: var(--text-secondary); }
+        .param-chip.match { border-color: rgba(52, 211, 153, 0.3); color: var(--accent-emerald); background: rgba(52, 211, 153, 0.06); }
+        .card-excerpt { font-family: var(--font-literary); font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-subtle); }
+        .card-examples-count { font-size: 0.7rem; color: var(--text-tertiary); }
+        .card-examples-count span { color: var(--accent-gold); font-weight: 600; }
+        .card-arrow { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--bg-glass); color: var(--text-tertiary); transition: var(--transition-fast); }
+        .result-card:hover .card-arrow { background: rgba(129, 140, 248, 0.15); color: var(--accent-primary); transform: translateX(2px); }
+        .card-arrow svg { width: 14px; height: 14px; }
+
+        /* No Results */
+        .no-results { text-align: center; padding: 60px 20px; color: var(--text-tertiary); }
+        .no-results svg { width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.4; }
+        .no-results h3 { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 8px; }
+        .no-results p { font-size: 0.88rem; }
+
+        /* Detail Overlay */
+        .detail-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 1000; display: flex; justify-content: center; align-items: flex-start; padding: 40px 20px; overflow-y: auto; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .detail-overlay.active { opacity: 1; pointer-events: all; }
+        .detail-panel { background: var(--bg-detail); border: 1px solid var(--border-medium); border-radius: var(--radius-xl); width: 100%; max-width: 820px; padding: 0; position: relative; transform: translateY(20px) scale(0.98); transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; }
+        .detail-overlay.active .detail-panel { transform: translateY(0) scale(1); }
+        .detail-top-bar { position: relative; padding: 36px 36px 28px; background: linear-gradient(135deg, rgba(129,140,248,0.08), rgba(192,132,252,0.06)); border-bottom: 1px solid var(--border-subtle); }
+        .detail-close { position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--bg-glass); border: 1px solid var(--border-subtle); color: var(--text-secondary); cursor: pointer; transition: var(--transition-fast); font-size: 1.2rem; }
+        .detail-close:hover { background: rgba(251, 113, 133, 0.15); border-color: rgba(251, 113, 133, 0.3); color: var(--accent-rose); }
+        .detail-form-name { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 4px; padding-right: 40px; }
+        .detail-alt-names { font-size: 0.82rem; color: var(--text-tertiary); font-style: italic; }
+        .detail-param-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+        .detail-param { padding: 5px 14px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-subtle); border-radius: 100px; font-size: 0.75rem; color: var(--text-secondary); }
+        .detail-param strong { color: var(--text-primary); font-weight: 600; }
+        .detail-body { padding: 32px 36px 36px; }
+        .detail-section { margin-bottom: 28px; }
+        .detail-section:last-child { margin-bottom: 0; }
+        .detail-section-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-primary); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .detail-section-label::after { content: ''; flex: 1; height: 1px; background: var(--border-subtle); }
+        .detail-text { font-family: var(--font-literary); font-size: 0.92rem; color: var(--text-secondary); line-height: 1.8; }
+        .detail-hints { list-style: none; padding: 0; }
+        .detail-hints li { position: relative; padding: 10px 16px 10px 28px; margin-bottom: 6px; background: rgba(255,255,255,0.02); border-radius: var(--radius-sm); font-size: 0.86rem; color: var(--text-secondary); line-height: 1.6; border-left: 2px solid var(--accent-primary); }
+        .detail-hints li::before { content: '→'; position: absolute; left: 10px; color: var(--accent-primary); font-weight: 700; }
+        .werk-list { display: flex; flex-direction: column; gap: 10px; }
+        .werk-item { padding: 14px 18px; background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); transition: var(--transition-fast); }
+        .werk-item:hover { border-color: var(--border-accent); background: var(--bg-glass-hover); }
+        .werk-author-title { font-size: 0.88rem; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+        .werk-author-title .werk-author { color: var(--accent-secondary); }
+        .werk-link { font-size: 0.72rem; margin-top: 4px; }
+        .werk-link a { color: var(--accent-emerald); text-decoration: none; font-weight: 500; transition: var(--transition-fast); }
+        .werk-link a:hover { color: var(--accent-gold); text-decoration: underline; }
+        .werk-hinweis { font-family: var(--font-literary); font-size: 0.8rem; color: var(--text-tertiary); font-style: italic; line-height: 1.5; }
+        .detail-wiki-link { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: rgba(129, 140, 248, 0.08); border: 1px solid rgba(129, 140, 248, 0.2); border-radius: 100px; color: var(--accent-primary); font-size: 0.82rem; font-weight: 500; text-decoration: none; transition: var(--transition-fast); margin-top: 4px; }
+        .detail-wiki-link:hover { background: rgba(129, 140, 248, 0.15); border-color: rgba(129, 140, 248, 0.4); }
+        .detail-wiki-link svg { width: 14px; height: 14px; }
+
+        /* Footer */
+        .app-footer { text-align: center; padding: 32px 0 40px; border-top: 1px solid var(--border-subtle); margin-top: 20px; }
+        .app-footer p { font-size: 0.72rem; color: var(--text-tertiary); line-height: 1.8; }
+        .app-footer a { color: var(--accent-primary); text-decoration: none; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-medium); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero { padding: 36px 0 28px; }
+            .hero h1 { font-size: 1.8rem; }
+            .filter-section { padding: 20px; border-radius: var(--radius-lg); }
+            .filter-grid { grid-template-columns: 1fr 1fr; }
+            .results-grid { grid-template-columns: 1fr; }
+            .detail-top-bar, .detail-body { padding-left: 20px; padding-right: 20px; }
+            .detail-form-name { font-size: 1.3rem; }
+            .stats-bar { gap: 20px; }
+            .detail-overlay { padding: 20px 10px; }
+            .info-grid { grid-template-columns: 1fr; }
+            .info-toggle, .info-inner { padding-left: 20px; padding-right: 20px; }
+        }
+        @media (max-width: 480px) {
+            .filter-grid { grid-template-columns: 1fr; }
+            .hero .subtitle { font-size: 0.92rem; }
+        }
+
+        /* Warum Button */
+        .warum-btn { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; padding: 10px 28px; background: var(--bg-glass); border: 1px solid var(--border-accent); border-radius: 100px; color: var(--accent-primary); font-family: var(--font-ui); font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: var(--transition-normal); letter-spacing: 0.03em; }
+        .warum-btn:hover { background: rgba(129, 140, 248, 0.12); border-color: var(--accent-primary); transform: translateY(-1px); box-shadow: var(--shadow-glow); }
+        .warum-btn.active { background: rgba(129, 140, 248, 0.15); border-color: var(--accent-primary); }
+
+        /* Hintergrund Panel */
+        .hintergrund-panel { background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); overflow: hidden; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); max-height: 0; transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, margin 0.3s ease; opacity: 0; margin-bottom: 0; }
+        .hintergrund-panel.open { max-height: 1200px; opacity: 1; margin-bottom: 24px; }
+        .hintergrund-inner { padding: 32px; }
+        .hintergrund-title { font-size: 1.05rem; font-weight: 700; color: var(--accent-primary); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .hintergrund-text { font-family: var(--font-literary); font-size: 0.9rem; color: var(--text-secondary); line-height: 1.85; }
+        .hintergrund-quelle { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border-subtle); font-family: var(--font-literary); font-size: 0.82rem; color: var(--text-tertiary); line-height: 1.7; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="ambient-bg">
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+</div>
+
+<div class="app-container">
+
+    <!-- Hero -->
+    <header class="hero" id="hero">
+        <div class="hero-badge"><span class="dot"></span> Literaturwerkzeug für die Oberstufe</div>
+        <h1>Strophen-Navigator</h1>
+        <p class="subtitle">Bestimme die Strophenform – entdecke den Interpretationskontext.</p>
+        <div style="text-align:center; margin-top:16px;">
+            <button class="warum-btn" id="warum-btn" onclick="toggleHintergrund()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Warum?
+            </button>
+        </div>
+    </header>
+
+    <!-- Stats -->
+    <div class="stats-bar" id="stats-bar">
+        <div class="stat-item"><div class="stat-number" id="stat-forms">0</div><div class="stat-label">Strophenformen</div></div>
+        <div class="stat-item"><div class="stat-number" id="stat-werke">0</div><div class="stat-label">Vergleichswerke</div></div>
+        <div class="stat-item"><div class="stat-number" id="stat-metra">0</div><div class="stat-label">Versmaße</div></div>
+    </div>
+
+    <!-- Hintergrund Panel -->
+    <div class="hintergrund-panel" id="hintergrund-panel">
+        <div class="hintergrund-inner">
+            <h3 class="hintergrund-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+                Zur Strophenform als Analysekategorie
+            </h3>
+            <div class="hintergrund-text">Die Strophe bildet das klangliche, rhythmische und semantische Gerüst eines Gedichts. Während die Metrik traditionell umfassende Berücksichtigung in der Poetik fand, wurde die Strophik bis auf wenige Standardwerke stiefmütterlich behandelt. Nach Frank lassen sich Strophenformen durch sechs Bestimmungsgrößen definieren: Zeilenzahl, Hebungszahl, Verseingang (Auftakt), Versfüllung, Kadenzenfolge und Reimordnung. Die Untersuchung der Strophenform ermöglicht struktursemantisches Wissen und erlaubt die konsequente Untersuchung der Isotopieebenen. Die Analyse führt zu Vorbildern, Traditionslinien und möglichen Widersprüchen. Während „Allerweltsformen“ wie der jambische Vierheber universell verwendbar sind, tragen spezifische Formen (Terzine, Odenstrophen) charakteristische Ausdruckswerte, die durch ihre Verwendungsgeschichte geprägt wurden.</div>
+            <div class="hintergrund-quelle">Die vorliegende Übersicht beruht vor allem auf der wissenschaftlichen Aufarbeitung durch Horst Joachim Frank. Das „Handbuch der deutschen Strophenformen“ dokumentiert und kategorisiert über 34.000 Gedichte und bietet für jede Form umfangreiche Beispiele, chronologisch und nach Häufigkeit geordnet. Die Kenntnis der Strophenformen ermöglicht eine differenzierte lyrische Analyse und zeigt die formale Vielfalt deutscher Lyrik vom 16.&nbsp;Jahrhundert bis zur Moderne.</div>
+        </div>
+    </div>
+
+    <!-- Versmaß-Erläuterung (aufklappbar) -->
+    <div class="info-panel" id="info-panel">
+        <button class="info-toggle" id="info-toggle" onclick="toggleInfo()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            Grundwissen Versmaße – Was bedeuten Jambus, Trochäus &amp; Co.?
+        </button>
+        <div class="info-content" id="info-content">
+            <div class="info-inner">
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h4>⏑ — Jambus</h4>
+                        <div class="schema">unbetont – betont (⏑ —)</div>
+                        <p>Der häufigste Versfuß der deutschen Lyrik. Der Jambus steigt auf, drängt vorwärts. Er kommt dem natürlichen deutschen Sprechrhythmus nahe.</p>
+                        <div class="example">„Wer <strong>nie</strong> sein <strong>Brot</strong> mit <strong>Trä</strong>nen <strong>aß</strong>" (Goethe, Wilhelm Meister)</div>
+                    </div>
+                    <div class="info-card">
+                        <h4>— ⏑ Trochäus</h4>
+                        <div class="schema">betont – unbetont (— ⏑)</div>
+                        <p>Fallender Rhythmus: Der Trochäus beginnt betont und fällt ab. Wirkt bestimmt, gravitätisch oder volksliedhaft.</p>
+                        <div class="example">„Fréude, schöner Götter·fúnken" (Schiller)</div>
+                    </div>
+                    <div class="info-card">
+                        <h4>— ⏑ ⏑ Daktylus</h4>
+                        <div class="schema">betont – unbetont – unbetont (— ⏑ ⏑)</div>
+                        <p>Dreisilbiger, wiegender Versfuß. Erzeugt einen fließenden, tänzerischen oder feierlichen Rhythmus. Grundlage des antiken Hexameters.</p>
+                        <div class="example">„Wóllet ihr Lében ge·wínnen" (Schiller)</div>
+                    </div>
+                    <div class="info-card">
+                        <h4>⏑ ⏑ — Anapäst</h4>
+                        <div class="schema">unbetont – unbetont – betont (⏑ ⏑ —)</div>
+                        <p>Spiegelform des Daktylus. Der Anapäst hüpft und beschleunigt – besonders in Limericks und komischer Dichtung.</p>
+                        <div class="example">„Es war éin·mal ein Mánn aus Berlín"</div>
+                    </div>
+                    <div class="info-card">
+                        <h4>🏛️ Antike Versmaße</h4>
+                        <div class="schema">quantitierend (Länge der Silben)</div>
+                        <p>Alkäische, sapphische und asklepiadeische Strophen folgen antiken Mustern, die auf Silbenlänge statt Betonung basieren. Klopstock und Hölderlin übertragen sie ins Deutsche.</p>
+                        <div class="example">Sapphische Strophe: 3 Langverse + kurzer Adoneus</div>
+                    </div>
+                    <div class="info-card">
+                        <h4>🌊 Freie Rhythmen</h4>
+                        <div class="schema">kein festes Metrum, kein Reim</div>
+                        <p>Bewusster Verzicht auf regelmäßiges Metrum. Der Dichter schafft seinen eigenen Rhythmus. Signalisiert Individualität und Aufbegehren – seit Klopstock und Goethe.</p>
+                        <div class="example">„Bedecke deinen Himmel, Zeus…" (Goethe, Prometheus)</div>
+                    </div>
+                    <div class="info-card">
+                        <h4>📜 Silbenzählung</h4>
+                        <div class="schema">Verslänge nach Silbenanzahl</div>
+                        <p>Die Verszeile wird durch die Anzahl der Silben definiert, nicht durch ein Hebungs-Senkungs-Muster. Im Deutschen vor Opitz (1624) dominant, in modernen Formen wie Haiku (5-7-5) und Tanka (5-7-5-7-7) wiederbelebt.</p>
+                        <div class="example">Haiku: 5-7-5 Silben · Tanka: 5-7-5-7-7 Silben</div>
+                    </div>
+                    <div class="info-card">
+                        <h4>⚔️ Alliteration / Stabreim</h4>
+                        <div class="schema">Gleiche Anfangslaute betonter Silben</div>
+                        <p>Bindung von Versen durch gleiche Anfangslaute statt Endreim. Grundform germanischer Dichtung (Hildebrandslied, Edda). Archaisch, kraftvoll, evokativ.</p>
+                        <div class="example">Wagner: „Winterstürme wichen dem Wonnemond“</div>
+                    </div>
+                    <div class="info-card">
+                        <h4>🇮🇹 Endecasillabo</h4>
+                        <div class="schema">11 Silben (≈ jamb. Fünfheber, weibl.)</div>
+                        <p>Der klassische italienische Vers. Grundlage von Sonett, Stanze und Terzine. Im Deutschen als jambischer Fünfheber mit weiblicher Kadenz übertragen.</p>
+                        <div class="example">Dante, Petrarca; dt.: Goethe „Zueignung“, Platen, Rilke</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <section class="filter-section" id="filter-section">
+        <div class="filter-header">
+            <div class="filter-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+                Strophenform bestimmen
+            </div>
+            <button class="filter-reset" id="btn-reset" onclick="resetFilters()">Alle Filter zurücksetzen</button>
+        </div>
+        <div class="search-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="search-input" id="search-input" placeholder="Name, Alternativname oder Stichwort suchen..." oninput="applyFilters()">
+        </div>
+        <div class="filter-grid">
+            <div class="filter-group">
+                <label for="filter-verse">Versanzahl</label>
+                <select id="filter-verse" onchange="applyFilters()">
+                    <option value="">— beliebig —</option>
+                    <option value="2">2 Verse</option>
+                    <option value="3">3 Verse</option>
+                    <option value="4">4 Verse</option>
+                    <option value="5">5 Verse</option>
+                    <option value="6">6 Verse</option>
+                    <option value="7">7 Verse</option>
+                    <option value="8">8 Verse</option>
+                    <option value="9">9 Verse</option>
+                    <option value="10">10 Verse</option>
+                    <option value="14">14 Verse</option>
+                    <option value="variabel">variabel</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filter-metrum">Metrum / Versmaß</label>
+                <select id="filter-metrum" onchange="applyFilters()">
+                    <option value="">— beliebig —</option>
+                    <option value="Jambus">Jambus</option>
+                    <option value="Trochäus">Trochäus</option>
+                    <option value="Daktylus">Daktylus</option>
+                    <option value="Anapäst">Anapäst</option>
+                    <option value="Freier Rhythmus">Freier Rhythmus</option>
+                    <option value="Antik">Antik (quantitierend)</option>
+                    <option value="Silbenzählung">Silbenzählung (kein festes Metrum)</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filter-reim">Reimschema</label>
+                <select id="filter-reim" onchange="applyFilters()">
+                    <option value="">— beliebig —</option>
+                    <option value="abab">Kreuzreim (abab)</option>
+                    <option value="aabb">Paarreim (aabb)</option>
+                    <option value="abba">Umarmender Reim (abba)</option>
+                    <option value="xaxa">Waisenreim (xaxa)</option>
+                    <option value="aabccb">Schweifreim (aabccb)</option>
+                    <option value="reimlos">reimlos</option>
+                    <option value="Kettenreim">Kettenreim (aba bcb …)</option>
+                    <option value="Sonderform">Sonderform / komplex</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filter-kadenz">Kadenz</label>
+                <select id="filter-kadenz" onchange="applyFilters()">
+                    <option value="">— beliebig —</option>
+                    <option value="wechselnd">wechselnd (m/w)</option>
+                    <option value="männlich">durchgehend männlich</option>
+                    <option value="weiblich">durchgehend weiblich</option>
+                    <option value="variabel">variabel / frei</option>
+                </select>
+            </div>
+        </div>
+        <div class="active-filters" id="active-filters"></div>
+    </section>
+
+    <!-- Results -->
+    <div class="results-header">
+        <div class="results-count" id="results-count">Zeige <strong>50</strong> von 50 Formen</div>
+        <div class="view-toggle">
+            <button class="active" onclick="setView('grid', this)" title="Kachelansicht">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            </button>
+            <button onclick="setView('list', this)" title="Listenansicht">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            </button>
+        </div>
+    </div>
+    <div class="results-grid" id="results-grid"></div>
+
+    <footer class="app-footer">
+        <p>Strophen-Navigator · Gymnasiale Oberstufe · Formanalyse der deutschen Lyrik<br>
+        Datenbasis: Horst Joachim Frank, <em>Handbuch der deutschen Strophenformen</em> · <a href="https://de.wikipedia.org/wiki/Liste_von_Strophen-_und_Gedichtformen" target="_blank" rel="noopener">Wikipedia</a> · <a href="https://oracleapex.com/ords/r/strophenformen/frank/liste" target="_blank" rel="noopener">Frank-DB</a></p>
+    </footer>
+</div>
+
+<!-- Detail Overlay -->
+<div class="detail-overlay" id="detail-overlay" onclick="closeDetailIfBg(event)">
+    <div class="detail-panel" id="detail-panel">
+        <div class="detail-top-bar">
+            <button class="detail-close" onclick="closeDetail()" title="Schließen">✕</button>
+            <h2 class="detail-form-name" id="detail-name"></h2>
+            <div class="detail-alt-names" id="detail-alt"></div>
+            <div class="detail-param-grid" id="detail-params"></div>
+        </div>
+        <div class="detail-body" id="detail-body"></div>
+    </div>
+</div>
+
+<script>
+// =============================================
+// STROPHENFORMEN-DATENBANK – KORRIGIERTE FASSUNG
+// Alle Beispielzuordnungen nach Versanzahl verifiziert
+// Terminologie: „Vers" statt „Zeile"
+// =============================================
+// =============================================
+// STROPHENFORMEN-DATEN
+// Roh-Indexdatei: Diese Datei dient als Vorlage.
+// Befülle die Daten mit dem Strophen-Editor
+// (strophen_editor.html) und exportiere die
+// fertige index.html zurück in diesen Slot.
+// =============================================
+const STROPHENFORMEN = [];
+
+
+// =============================================
+// APPLICATION LOGIC
+// =============================================
+let currentView = 'grid';
+let currentResults = [...STROPHENFORMEN];
+
+function init() {
+    applyFilters();
+    updateDynamicStats();
+}
+
+function updateDynamicStats() {
+    const n = STROPHENFORMEN.length;
+    const werke = STROPHENFORMEN.reduce((acc, f) => acc + (f.vergleichswerke || []).length, 0);
+    const metraSet = new Set();
+    STROPHENFORMEN.forEach(f => {
+        const m = f.kriterien?.metrum;
+        if (Array.isArray(m)) m.forEach(x => metraSet.add(x));
+        else if (m) metraSet.add(m);
+    });
+    const sf = document.getElementById('stat-forms');
+    const sw = document.getElementById('stat-werke');
+    const sm = document.getElementById('stat-metra');
+    if (sf) sf.textContent = n;
+    if (sw) sw.textContent = werke;
+    if (sm) sm.textContent = metraSet.size;
+}
+
+function toggleInfo() {
+    const toggle = document.getElementById('info-toggle');
+    const content = document.getElementById('info-content');
+    toggle.classList.toggle('open');
+    content.classList.toggle('open');
+}
+
+function normalizeVersanzahl(val) {
+    if (typeof val === 'number') return String(val);
+    if (typeof val === 'string') {
+        const match = val.match(/^(\d+)/);
+        if (match) return match[1];
+        return 'variabel';
+    }
+    return 'variabel';
+}
+
+function matchesMetrum(form, filter) {
+    if (!filter) return true;
+    const metren = form.kriterien.metrum || [];
+    if (filter === 'Antik') return metren.some(m => m.includes('Antik') || m.includes('quantitierend'));
+    if (filter === 'Silbenzählung') return metren.some(m => m.includes('Silbenzählung') || m.includes('kein festes Metrum'));
+    if (filter === 'Freier Rhythmus') return metren.some(m => m.includes('Freier Rhythmus') || m.includes('Freier Vers') || m.includes('kein festes Metrum'));
+    return metren.some(m => m.includes(filter));
+}
+
+function matchesReim(form, filter) {
+    if (!filter) return true;
+    const schemas = form.kriterien.reimschema || [];
+    if (filter === 'reimlos') return schemas.some(s => s.toLowerCase().includes('reimlos'));
+    if (filter === 'abab') return schemas.some(s => s.includes('abab') || s.includes('Kreuzreim'));
+    if (filter === 'aabb') return schemas.some(s => s.includes('aabb') || s.includes('Paarreim') || s.includes('aa'));
+    if (filter === 'abba') return schemas.some(s => s.includes('abba'));
+    if (filter === 'xaxa') return schemas.some(s => s.includes('xaxa') || s.includes('Waisenreim'));
+    if (filter === 'aabccb') return schemas.some(s => s.includes('aabccb') || s.includes('Schweifreim'));
+    if (filter === 'Kettenreim') return schemas.some(s => s.includes('bcb') || s.includes('Kettenreim'));
+    if (filter === 'Sonderform') return schemas.some(s => s.includes('Radif') || s.includes('Rotation') || s.includes('Kehrvers') || s.includes('ABaA') || s.includes('komplex') || s.includes('Stollen') || s.includes('Motto'));
+    return false;
+}
+
+function matchesKadenz(form, filter) {
+    if (!filter) return true;
+    const k = (form.kriterien.kadenz || '').toLowerCase();
+    if (filter === 'wechselnd') return k.includes('wechselnd') || k.includes('m/w') || k.includes('männlich/weiblich');
+    if (filter === 'männlich') return k.includes('durchgehend männlich') || k === 'männlich';
+    if (filter === 'weiblich') return k.includes('durchgehend weiblich') || k === 'weiblich';
+    if (filter === 'variabel') return k.includes('variabel') || k.includes('frei');
+    return false;
+}
+
+function applyFilters() {
+    const searchVal = document.getElementById('search-input').value.toLowerCase().trim();
+    const filterVerse = document.getElementById('filter-verse').value;
+    const filterMetrum = document.getElementById('filter-metrum').value;
+    const filterReim = document.getElementById('filter-reim').value;
+    const filterKadenz = document.getElementById('filter-kadenz').value;
+    currentResults = STROPHENFORMEN.filter(form => {
+        if (searchVal) {
+            const nameStr = (form.name + ' ' + (form.alternativnamen || []).join(' ')).toLowerCase();
+            const contextStr = (form.interpretation.wirkung + ' ' + form.interpretation.epoche_kontext).toLowerCase();
+            const werkStr = (form.vergleichswerke || []).map(w => w.autor + ' ' + w.titel).join(' ').toLowerCase();
+            if (!nameStr.includes(searchVal) && !contextStr.includes(searchVal) && !werkStr.includes(searchVal)) return false;
+        }
+        if (filterVerse) {
+            const formVerse = normalizeVersanzahl(form.kriterien.versanzahl);
+            if (filterVerse === 'variabel') { if (formVerse !== 'variabel') return false; }
+            else { if (formVerse !== filterVerse && formVerse !== 'variabel') return false; }
+        }
+        if (!matchesMetrum(form, filterMetrum)) return false;
+        if (!matchesReim(form, filterReim)) return false;
+        if (!matchesKadenz(form, filterKadenz)) return false;
+        return true;
+    });
+    renderResults(); renderActiveFilters(); updateResultsCount();
+}
+
+function resetFilters() {
+    document.getElementById('search-input').value = '';
+    document.getElementById('filter-verse').value = '';
+    document.getElementById('filter-metrum').value = '';
+    document.getElementById('filter-reim').value = '';
+    document.getElementById('filter-kadenz').value = '';
+    applyFilters();
+}
+
+function updateResultsCount() {
+    document.getElementById('results-count').innerHTML = `Zeige <strong>${currentResults.length}</strong> von ${STROPHENFORMEN.length} Formen`;
+}
+
+function renderActiveFilters() {
+    const container = document.getElementById('active-filters');
+    const tags = [];
+    const search = document.getElementById('search-input').value.trim();
+    if (search) tags.push({ label: `Suche: „${search}"`, field: 'search-input', type: 'text' });
+    ['filter-verse', 'filter-metrum', 'filter-reim', 'filter-kadenz'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el.value) tags.push({ label: el.options[el.selectedIndex].text, field: id, type: 'select' });
+    });
+    container.innerHTML = tags.map(t => `<span class="filter-tag">${t.label} <span class="remove" onclick="clearFilter('${t.field}', '${t.type}')">×</span></span>`).join('');
+}
+
+function clearFilter(fieldId, type) { document.getElementById(fieldId).value = ''; applyFilters(); }
+
+function setView(view, btn) {
+    currentView = view;
+    document.getElementById('results-grid').classList.toggle('list-view', view === 'list');
+    document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+function getMatchingParams(form) {
+    const matches = new Set();
+    if (document.getElementById('filter-metrum').value && matchesMetrum(form, document.getElementById('filter-metrum').value)) matches.add('metrum');
+    if (document.getElementById('filter-reim').value && matchesReim(form, document.getElementById('filter-reim').value)) matches.add('reim');
+    if (document.getElementById('filter-verse').value) matches.add('verse');
+    if (document.getElementById('filter-kadenz').value && matchesKadenz(form, document.getElementById('filter-kadenz').value)) matches.add('kadenz');
+    return matches;
+}
+
+function renderResults() {
+    const grid = document.getElementById('results-grid');
+    if (currentResults.length === 0) {
+        if (STROPHENFORMEN.length === 0) {
+            grid.innerHTML = `<div class="no-results" style="grid-column:1/-1;padding:60px 20px">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="52" height="52"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <h3 style="margin:16px 0 8px;color:var(--text-secondary);font-size:1.1rem">Noch keine Strophenformen vorhanden</h3>
+                <p style="max-width:480px;margin:0 auto;line-height:1.7">Dies ist die <strong style="color:var(--accent-primary)">Roh-Indexdatei</strong> des Strophen-Navigators.<br>
+                Öffne den <strong>Daten-Editor</strong>, lade diese Datei, füge Strophenformen hinzu und exportiere die fertige index.html.</p>
+            </div>`;
+            return;
+        }
+        grid.innerHTML = `<div class="no-results" style="grid-column:1/-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><h3>Keine Strophenform gefunden</h3><p>Versuche, weniger Filter zu setzen oder andere Kombinationen auszuprobieren.</p></div>`;
+        return;
+    }
+    grid.innerHTML = currentResults.map((form, i) => {
+        const matches = getMatchingParams(form);
+        const verseDisplay = typeof form.kriterien.versanzahl === 'number' ? `${form.kriterien.versanzahl} Verse` : (form.kriterien.versanzahl === 'variabel' ? 'var.' : form.kriterien.versanzahl);
+        const altNames = (form.alternativnamen || []).filter(n => n).join(', ');
+        const werkeCount = (form.vergleichswerke || []).length;
+        return `<div class="result-card" style="animation-delay:${Math.min(i*0.04,0.8)}s" onclick="openDetail('${form.id}')">
+            <div class="card-header"><div class="card-name">${form.name}</div><div class="card-verse-badge">${verseDisplay}</div></div>
+            ${altNames ? `<div class="card-alt-names">${altNames}</div>` : ''}
+            <div class="card-params">
+                <span class="param-chip ${matches.has('metrum')?'match':''}">${(form.kriterien.metrum||[]).slice(0,2).join(', ')}</span>
+                <span class="param-chip ${matches.has('reim')?'match':''}">${(form.kriterien.reimschema||[]).slice(0,1).join('')}</span>
+                <span class="param-chip">${form.kriterien.hebungen||'—'} Heb.</span>
+            </div>
+            <div class="card-excerpt">${form.interpretation.wirkung}</div>
+            <div class="card-footer"><div class="card-examples-count"><span>${werkeCount}</span> Vergleichswerk${werkeCount!==1?'e':''}</div>
+            <div class="card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div></div></div>`;
+    }).join('');
+}
+
+// Detail View
+function openDetail(id) {
+    const form = STROPHENFORMEN.find(f => f.id === id);
+    if (!form) return;
+    document.getElementById('detail-name').textContent = form.name;
+    document.getElementById('detail-alt').textContent = (form.alternativnamen||[]).filter(n=>n).join(' · ');
+    document.getElementById('detail-params').innerHTML = [
+        `<span class="detail-param"><strong>Verse:</strong> ${form.kriterien.versanzahl}</span>`,
+        `<span class="detail-param"><strong>Metrum:</strong> ${(form.kriterien.metrum||[]).join(', ')}</span>`,
+        `<span class="detail-param"><strong>Hebungen:</strong> ${form.kriterien.hebungen||'—'}</span>`,
+        `<span class="detail-param"><strong>Reim:</strong> ${(form.kriterien.reimschema||[]).slice(0,2).join(', ')}</span>`,
+        `<span class="detail-param"><strong>Kadenz:</strong> ${form.kriterien.kadenz||'—'}</span>`
+    ].join('');
+
+    let bodyHtml = `<div class="detail-section"><div class="detail-section-label">Wirkung & Charakter</div><div class="detail-text">${form.interpretation.wirkung}</div></div>`;
+    bodyHtml += `<div class="detail-section"><div class="detail-section-label">Literarhistorischer Kontext</div><div class="detail-text">${form.interpretation.epoche_kontext}</div></div>`;
+    if (form.interpretation.interpretationshinweise && form.interpretation.interpretationshinweise.length > 0) {
+        bodyHtml += `<div class="detail-section"><div class="detail-section-label">Interpretationshinweise</div><ul class="detail-hints">${form.interpretation.interpretationshinweise.map(h=>`<li>${h}</li>`).join('')}</ul></div>`;
+    }
+    if (form.vergleichswerke && form.vergleichswerke.length > 0) {
+        bodyHtml += `<div class="detail-section"><div class="detail-section-label">Vergleichswerke</div><div class="werk-list">${form.vergleichswerke.map(w => {
+            let linkHtml = '';
+            if (w.link) { linkHtml = `<div class="werk-link"><a href="${w.link}" target="_blank" rel="noopener">↗ Volltext auf Wikisource</a></div>`; }
+            return `<div class="werk-item"><div class="werk-author-title"><span class="werk-author">${w.autor}:</span> ${w.titel}</div><div class="werk-hinweis">${w.hinweis}</div>${linkHtml}</div>`;
+        }).join('')}</div></div>`;
+    }
+    if (form.wikipedia_link) {
+        bodyHtml += `<div class="detail-section"><a class="detail-wiki-link" href="${form.wikipedia_link}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Weiterführend auf Wikipedia</a></div>`;
+    }
+    document.getElementById('detail-body').innerHTML = bodyHtml;
+    document.getElementById('detail-overlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDetail() { document.getElementById('detail-overlay').classList.remove('active'); document.body.style.overflow = ''; }
+function closeDetailIfBg(e) { if (e.target === document.getElementById('detail-overlay')) closeDetail(); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+
+<script>
+const FRANK_DATA = {
+  "hintergrund": {
+    "titel": "Zur Strophenform als Analysekategorie",
+    "erlaeuterung": "Die Strophe bildet das klangliche, rhythmische und semantische Gerüst eines Gedichts. Während die Metrik traditionell umfassende Berücksichtigung in der Poetik fand, wurde die Strophik bis auf wenige Standardwerke stiefmütterlich behandelt. Nach Frank lassen sich Strophenformen durch sechs Bestimmungsgrößen definieren: Zeilenzahl, Hebungszahl, Verseingang (Auftakt), Versfüllung, Kadenzenfolge und Reimordnung. Die Untersuchung der Strophenform ermöglicht struktursemantisches Wissen und erlaubt die konsequente Untersuchung der Isotopieebenen. Die Analyse führt zu Vorbildern, Traditionslinien und möglichen Widersprüchen. Während „Allerweltsformen\" wie der jambische Vierheber universell verwendbar sind, tragen spezifische Formen (Terzine, Odenstrophen) charakteristische Ausdruckswerte, die durch ihre Verwendungsgeschichte geprägt wurden.",
+    "quelle": "Die vorliegende Übersicht beruht vor allem auf der wissenschaftlichen Aufarbeitung durch Horst Joachim Frank. Das „Handbuch der deutschen Strophenformen\" dokumentiert und kategorisiert über 34.000 Gedichte und bietet für jede Form umfangreiche Beispiele, chronologisch und nach Häufigkeit geordnet. Die Kenntnis der Strophenformen ermöglicht eine differenzierte lyrische Analyse und zeigt die formale Vielfalt deutscher Lyrik vom 16. Jahrhundert bis zur Moderne."
+  },
+  "strophenformen": [
+    {
+      "id": "1_sonett",
+      "name": "Sonett",
+      "muster_der_strophe": "Der klassische deutschsprachige Sonetttyp besteht aus 14 jambischen Fünfhebern, gegliedert in zwei Vierzeiler (Quartette) und zwei Dreizeiler (Terzette). Die Quartette reimen häufig abba abba (petrarkistisch) oder abab abab (shakespearisch orientiert), die Terzette variieren stark (cdc dcd, cde cde, ccd eed u.a.). Ab der Goethezeit finden sich Misch- und Übergangsformen (z.B. abba cddc efe fgg), die strenge italienische Muster lockern, aber die Grundspannung „Oktav vs. Sextett\" beibehalten.",
+      "formale_besonderheiten": "Konstitutiv ist die Volta: eine semantisch-argumentative Wendung zwischen Vers 8 und 9, die oft durch syntaktische Zäsur, Konnektoren („doch\", „aber\", „indes\") oder Wechsel der Bildführung markiert wird. Barocke Sonette neigen zu streng geregelten Rhetorikfiguren (Antithese, Parallelismus, Chiasmus) und nutzen die Oktave zur Entfaltung, das Sextett zur Pointe oder Sentenzbildung. Die deutsche Tradition tendiert zu sicheren jambischen Fünfhebern, lässt jedoch gelegentlich trochäische oder daktylische Einbrüche zur Expressivität zu, ohne die Form als Sonett zu verlassen.",
+      "aspekte_zur_interpretation": "Interpretatorisch eignet sich das Sonett ideal für dialektische Konstellationen: These–Antithese–Synthese, Problem–Wende–Lösung, Selbstanklage–Selbstbehauptung. Die Spannung zwischen strengem Formkorsett und subjektivem Affekt ist besonders produktiv: Überfüllte oder „berstende\" Sonette signalisieren subjektiven Druck, extrem glatte Sonette eher Distanz und Kontrollanspruch. Traditionsbewusste Sonette (z.B. zu Liebe, Zeit, Tod) sind zugleich intertextuelle Gesten, die den Dialog mit Petrarca, Shakespeare, Gryphius u.a. voraussetzen; Anspielungen auf klassische „Sonett-Topoi\" (Auge–Herz-Dichotomie, Liebessklaverei, Dichterkonkurrenz) sind daher oft bewusst und interpretatorisch ergiebig.",
+      "werke_und_traditionen": "Barock: Opitz, Fleming, Gryphius, insbesondere die Vanitas-Sonette Gryphius' („Es ist alles eitel\"). Klassik/Romantik: Goethe („Natur und Kunst\", „Trilogie der Leidenschaft\"), Schlegel, Tieck; Moderne: Rilke („Sonette an Orpheus\"), George, Trakl, Benn, Eich."
+    },
+    {
+      "id": "2_terzine",
+      "name": "Terzine",
+      "muster_der_strophe": "Die „echte\" Terzine besteht aus jambischen Fünfhebern mit Reimverkettung: aba bcb cdc ded …, oft mit einem abschließenden Einzelvers (yzy z) oder Paarreim, der den letzten Mittelvers einfängt. Neben durchgängig weiblich gereimten Folgen (italienisches Muster) finden sich deutsche Varianten mit alternierenden oder gemischten Kadenzen (z.B. m w m).",
+      "formale_besonderheiten": "Die Verkettung lässt keine „tote\" Strophe zu: jeder Mittelvers muss von der nachfolgenden Strophe beantwortet werden, was die Form für kurze Gedichte problematisch, für längere narrativ-meditative Dichtungen ideal macht. Schreibpraxis schwankt zwischen blockweiser Notation (Terzinen als Strophen) und laufender Zeilung (Terzine als Reimprinzip), wobei in beiden Fällen die Dreier-Einheit als semantische „Takteinheit\" fungiert. Abweichungen – interruptierte Kette, neue Reimanfänge, reimlose Mittelverse – markieren bewusst gesetzte Einschnitte (neue Szene, Redewechsel, Bewusstseinsbruch) und sollten interpretatorisch nicht als „Schlamperei\", sondern als Formgeste gelesen werden.",
+      "aspekte_zur_interpretation": "Die Terzine ist die Form von Weg, Gang, Prozess: Dante strukturiert mit ihr die Jenseitsreise, Goethe geistige Entwicklungsphasen („Faust II\", „Bei Betrachtung von Schillers Schädel\"). Semantische Ruhepunkte fallen mit Strophen-Schlussreimen zusammen; der Leser erwartet an diesen Stellen eine mikro-Bilanz, so dass Brüche (z.B. Enjambement über Strophengrenzen) besonders auffällig sind. Das stete „Weiterströmen\" der Reime kann in modernen Texten auch Desorientierung, Traumlogik oder assoziatives Denken iconisieren (Hofmannsthal, Weinheber, Stadler).",
+      "werke_und_traditionen": "Dante, „Divina Commedia\"; deutsch u.a. Melissus (frühe Fehlversuche), dann Romantik (Fr. Schlegel, Tieck, Platen), Goethe („Faust II\", „Schädel\"-Gedicht), Chamisso, Freiligrath, Hofmannsthal („Terzinen über Vergänglichkeit\"), Weinheber, Becher."
+    },
+    {
+      "id": "3_stanze",
+      "name": "Stanze (Ottave rime)",
+      "muster_der_strophe": "Acht jambische Fünfheber, klassisch mit Reimschema abababcc. Im Deutschen gelegentliche Varianten (abababdd), doch das Spott- oder Kommentar-Kuplett am Schluss bleibt strukturbildend.",
+      "formale_besonderheiten": "Die ersten sechs Verse entwickeln eine Szene oder Argumentation mit relativ „neutraler\" Reimbewegung, die letzten zwei verdichten oder brechen das bisher Gesagte. Eine Häufung von Enjambements in Versen 1–6 und syntaktischer Schlusspunkt im Kuplett ist typisch und metrisch-semantisch funktional: die Pointe soll „fallen\".",
+      "aspekte_zur_interpretation": "Die Form erlaubt epische Continuity und lyrisch-sentenziöse Selbstkommentierung; sie eignet sich für ironische, reflektierende oder moralische Distanz zum Erzählten. Wo Autoren bewusst das Schlusskuplett „entdramatisieren\" (keine Pointe, offene Frage), markiert dies oft Skepsis gegenüber geschlossenen moralischen Deutungen.",
+      "werke_und_traditionen": "Italienische Epik (Ariost, Tasso); deutsch: experimentelle Verwendung bei Goethe und in erzählender Dichtung des 18./19. Jahrhunderts, u.a. in Verserzählungen und episch-didaktischen Texten."
+    },
+    {
+      "id": "4_alkaeische_odenstrophe",
+      "name": "Alkäische Odenstrophe",
+      "muster_der_strophe": "Vier Verse: zwei längere alkäische Langverse, ein kürzerer, meist dreihebiger Vers und ein metrisch verwandter Schlussvers; im Deutschen in der Regel als Trochäen- oder Jamben-Kombination nachgebildet. Charakteristisch sind Binnenzäsuren und komplexe Hebungs-Senkungs-Konfigurationen, die antike Quantitätsmuster qualitativ approximieren.",
+      "formale_besonderheiten": "Die völlige Asymmetrie der Zeilenlängen (lang–lang–mittel–modifiziert lang) erzeugt eine Strophe, die kaum „läuft\", sondern sich in Schüben bewegt. Übergänge zwischen Vers 2/3 und 3/4 sind oft syntaktische Bruchstellen; Wechsel vom episch-beschreibenden Ton zu apostrophischen Ausrufen liegt nahe.",
+      "aspekte_zur_interpretation": "Alkäische Strophen signalisieren bei Klopstock und Hölderlin Hochform: der Dichter stellt sich explizit in die Tradition der antiken Odenkunst und beansprucht entsprechend hohe thematische Reichweite (Freiheit, Vaterland, Götter, Geschichte). Die gebrochenen Bewegungsfiguren lassen sich als Formäquivalent für Erregung, Pathos, auch Sturz und Katastrophe lesen.",
+      "werke_und_traditionen": "Horaz als Modell; deutsche Ausprägungen bei Klopstock, Hölty, Hölderlin; im 20. Jahrhundert bei formbewussten Lyrikern (Weinheber, Schröder) als klassizistischer Gestus."
+    },
+    {
+      "id": "5_sapphische_odenstrophe",
+      "name": "Sapphische Odenstrophe",
+      "muster_der_strophe": "Drei sapphische Langverse und ein Adonius bilden eine in sich geschlossene Vierergruppe. In der deutschen Quantitäten-Nachbildung erscheinen die Langverse meist als auftaktlose Vier- bis Fünfheber mit charakteristischer Einsenkung im Mittelbereich, der Adonius als zweihebiger Schlussvers mit Doppelsenkung.",
+      "formale_besonderheiten": "Die Doppelsenkung im Mittelteil der Langverse ist die metrische „Signatur\": sie unterbricht die gleichmäßige Alternanz und erzeugt einen Moment der Dehnung, bevor der Vers in den regulären Takt zurückfindet. Klopstocks „Wanderdaktylus\", der diese Senkungsgruppe über verschiedene Positionen des Verses wandern lässt, zeigt, wie stark bereits kleine Verschiebungen den Charakter der Strophe verändern.",
+      "aspekte_zur_interpretation": "Sapphische Strophen markieren eine bewusste Entscheidung für kunstvoll regulierte, aber nicht „glatte\" Form: Gefühl wird in ein enges Maß gebracht, dessen innere Spannungen hörbar bleiben. Gerade die Stelle der Doppelsenkung (ob mit Schlüsselvokabeln besetzt oder syntaktisch markant) ist interpretatorisch oft hochbelastet, weil sie die „Schwerepunkte\" des Gedankens im Vers mit dem metrischen Schwerpunkt koppelt.",
+      "werke_und_traditionen": "Antike: Sappho, später Horaz; deutsch Klopstock und der Hainbund, dann vor allem Hölderlin, Weinheber, Schröder. In der neueren Lyrik dient die sapphische Strophe häufig als klassizistischer Gestus, mit dem Dichtungs- oder Liebesthemen in eine „alte\" Ordnung eingeschrieben werden."
+    },
+    {
+      "id": "6_asklepiadeische_odenstrophe",
+      "name": "Asklepiadeische Odenstrophe",
+      "muster_der_strophe": "Kern sind asklepiadeische Langverse, die in der deutschen Nachbildung aus vier oder fünf Hebungen mit choriambischem Zentrum bestehen; dazu treten kürzere Versformen (pherekratisch, glykonisch), die zusammen eine Vierer-Strophe bilden. Alle Verse der Strophe tragen die gleiche choriambische „Impulsfigur\", so dass trotz unterschiedlicher Länge ein einheitlicher Grundpuls entsteht.",
+      "formale_besonderheiten": "Im Unterschied zur Alkäischen wirkt die asklepiadeische Strophe symmetrischer: die beiden ersten Verse sind einander sehr ähnlich, Vers 3 und 4 variieren diese Figur, anstatt sie zu brechen. In der deutschen Tradition wurde diese Ausgewogenheit gerne genutzt, um den Eindruck klassischer Ruhe zu erzeugen – selbst dann, wenn der Inhalt spannungsreich ist.",
+      "aspekte_zur_interpretation": "Asklepiadeische Strophen tragen meist reflektierende, „mittlere\" Tonlagen: keine ekstatische Hymnik, keine volkstümliche Einfachheit, sondern gedanklich durchdrungene, feierlich-nüchterne Rede. Das Zusammenspiel von Verslängen (lang–lang–mittel–kurz) kann als Bewegungsfigur gelesen werden: Annäherung an ein Thema, Variation, Zusammenfassung.",
+      "werke_und_traditionen": "Antike: Horaz; deutsch Klopstock, die Göttinger Hainbündler, später Hölderlin („Heidelberg\", „An die jungen Dichter\" u.a.). Moderne Aneignungen setzen die Form vor allem dort ein, wo klassische Bildung und zeitgenössische Problematik bewusst miteinander verschränkt werden sollen."
+    },
+    {
+      "id": "7_elegisches_distichon",
+      "name": "Elegisches Distichon",
+      "muster_der_strophe": "Jedes Distichon besteht aus Hexameter und Pentameter; im Deutschen werden diese antiken Metren qualitativ nachgebildet, meist als daktylisch gefüllte Sechsheber mit variabler Füllung und ein kürzerer Vers mit dominanter Mittelzäsur und nur zwei Hebungen nach der Zäsur.",
+      "formale_besonderheiten": "Der Hexameter entfaltet, der Pentameter nimmt zurück: syntaktisch wird oft eine Periode über beide Verse geführt, metrisch aber durch den Einschnitt im Pentameter „gebrochen\". In der deutschen Praxis schwankt der Grad der Daktylisierung; wo der Hexameter stark spondeisiert wird, nähert er sich dem jambischen Langvers, ohne die antike Identität völlig preiszugeben.",
+      "aspekte_zur_interpretation": "Elegisches Sprechen balanciert zwischen Erzählung, Klage und Sentenz; der Pentameter fungiert dabei als Ort der Einsicht oder der bitteren Pointe. Moderne Distichen können das klassische Pathos unterlaufen, indem sie triviale Inhalte in diese „erhabene\" Form setzen; aus der Diskrepanz gewinnt das Gedicht seine Ironie.",
+      "werke_und_traditionen": "Antike Elegiker und Epigrammatiker; deutsch Goethe/Schiller (Xenien, „Römische Elegien\"), Hölderlin (Elegien), Platen, Rückert. Im 20. Jahrhundert eher als bewusst historisierende Form im klassischen oder neoklassischen Umfeld, selten in experimenteller Lyrik."
+    },
+    {
+      "id": "8_deutsche_odenstrophe",
+      "name": "Deutsche Odenstrophe (allgemein)",
+      "muster_der_strophe": "Unter „deutscher Odenstrophe\" fasst Frank eine Vielzahl eigens erfundener oder antik nachgebildeter Strophen zusammen, die sich durch Wiederkehr eines komplexen Schemas in jeder Strophe, gehobenen Ton und häufig hymnisch-biblischen oder horazischen Sprachgestus auszeichnen. Verslängen variieren stark, von freien Rhythmen bis zu streng regulierten Nachbildungen antiker Maße (Alkäisch, Sapphisch, Asklepiadeisch).",
+      "formale_besonderheiten": "Charakteristisch ist die Kombination aus hoher Formbewusstheit und experimenteller Freiheit: Dichter erfinden „eigene\" Odenstrophen, die keine traditionellen Namen tragen, aber innerhalb eines Werkes strikt wiederholt werden. Dadurch entstehen „intradiegetische\" Formen: wer das Gedicht liest, lernt seine Strophe beim Lesen gewissermaßen neu kennen.",
+      "aspekte_zur_interpretation": "Die Odenstrophe fungiert hier weniger als starre metrische Kategorie, sondern als „Formsignal\": Sie markiert Themen mit Anspruch auf Allgemeinheit (Freiheit, Nation, Religion, Dichtung) und eine erhöhte, teilweise pathetische Sprechhaltung. Unterschiede zwischen Oden eines Dichters (z.B. zwischen Klopstocks freien Rhythmen und seinen horazischen Nachbildungen) sind interpretatorisch aussagekräftig: sie zeigen verschiedene Modelle, „erhabene Rede\" zu gestalten.",
+      "werke_und_traditionen": "Klopstocks Oden (frei rhythmisch und horazisch), Schillers Oden, viele hymnisch-odische Hölderlin-Gedichte, später neuklassizistische und expressionistische Oden, die an diese Linie anknüpfen."
+    },
+    {
+      "id": "9_freie_rhythmen",
+      "name": "Freie Rhythmen",
+      "muster_der_strophe": "Freie Rhythmen sind akzentuell gebundene, aber nicht auf regelmäßige Füßeschemata fixierte Verszeilen; sie gruppieren sich zu Strophen, deren Länge und Binnenstruktur stark variieren. Typisch ist eine erkennbare Hebungsorganisation, die sich an syntaktischen und semantischen Einheiten orientiert, nicht an vordefinierten Taktmustern.",
+      "formale_besonderheiten": "Der Rhythmus ist stark von biblischer und psalmischer Rede geprägt: Parallelismen, anaphorische Beginnstrukturen, parataktische Reihungen, „Atembögen\" statt identischer Versfüße. Anders als der spätere Freie Vers sind Freie Rhythmen meist deutlich „poetisch\" gefärbt; sie vermeiden den Eindruck bloßer Prosazeilen.",
+      "aspekte_zur_interpretation": "Freie Rhythmen eignen sich für enthusiastische, prophetische, hymnische Rede, die in Wellenbewegungen verläuft: Steigerung – Kulmination – Abfall. Der Verzicht auf festes Maß kann als Versuch gelesen werden, religiöse oder existenzielle Erfahrung nicht in als „formelhaft\" empfundene Schemata zu pressen; zugleich bleibt eine spürbare Ordnung, die die Rede vor dem Zerfallen schützt.",
+      "werke_und_traditionen": "Klopstock als zentraler Vertreter; Goethe („Prometheus\", „Ganymed\"), Hölderlins freie Hymnen, später unterschiedliche hymnische Lyrik des 19. Jahrhunderts, die sich von Reim- und Liedformen löst, ohne in Freien Vers überzugehen."
+    },
+    {
+      "id": "10_hymne",
+      "name": "Hymne (gebunden/hymnisch)",
+      "muster_der_strophe": "Hymnen werden häufig nicht in kurzen Strophen, sondern in größeren, zum Teil unregelmäßigen Abschnitten gegliedert, die durch Sinn- und Tonwechsel (nicht durch metrische Wiederkehr) markiert sind. Innerhalb dieser Abschnitte dominieren freie Rhythmen oder großzeilige Metren mit hoher Variation.",
+      "formale_besonderheiten": "Hymnische Texte sind reich an rhetorischen Figuren: Apostrophe („O …\"), Exclamatio, Anapher, Enumeratio; die formale Kohärenz wird eher durch diese Figuren als durch Reimschemata gewährleistet. In vielen deutschen Hymnen finden sich noch Spuren antiker oder biblischer Strophensysteme (pindarische Triade, Psalmenparallelismus), ohne dass diese streng durchgehalten wären.",
+      "aspekte_zur_interpretation": "Hymnische Form markiert Rede an transzendente oder kollektive Instanzen – Gott, Volk, Menschheit, Idee – und erhebt implizit den Anspruch, für „mehr als das Individuum\" zu sprechen. Brüche in der Form (plötzliche Verkürzungen, Silbensprünge, Prosaeinbrüche) können als Stellen gelesen werden, an denen das Ich diese Rolle nicht halten kann oder will.",
+      "werke_und_traditionen": "Klopstocks Hymnen; große Hölderlin-Hymnen („Germanien\", „Der Rhein\", „Patmos\"); nationale und weltanschauliche Hymnen des 19. Jahrhunderts; im 20. Jahrhundert bewusst gebrochene Hymnik (z.B. expressionistische „Anti-Hymnen\")."
+    },
+    {
+      "id": "11_balladenstrophe",
+      "name": "Balladenstrophe (allgemein)",
+      "muster_der_strophe": "Balladen bedienen sich verschiedener, meist volksliednaher Strophen: vier- und sechszeilige Formen mit Drei- oder Vierhebern in Kreuz-, Paar- oder Schweifreim; typisch sind 4-3-4-3-Kreuzreimstrophen und Erweiterungen mit Refrain. Die Strophen bleiben in einem Gedicht üblicherweise durchgehend gleich gebaut, auch wenn Redetypen wechseln (Erzählerrede, Dialog, Lied im Lied).",
+      "formale_besonderheiten": "Balladenstrophen sind auf mündlichen Vortrag bzw. Gesang hin gebaut; die metrische Regelmäßigkeit bildet ein Gerüst für komplexe Handlungsführung, Sprecherwechsel und Szenensprünge. Wiederkehrende Refrains oder formale Einsprengsel (z.B. kürzere Einsätze) dienen als Strukturanker in narrativ dichten Texten.",
+      "aspekte_zur_interpretation": "Die Spannung zwischen einfacher, eintönig wiederkehrender Strophe und dramatisch aufgeladenem Inhalt gehört zur Grundwirkung der Ballade. Abweichungen (z.B. eine „aus dem Takt\" geratene Strophe, ein nicht gereimter Vers) markieren oft entscheidende Momente: Perspektivwechsel, Einbruch des Übernatürlichen, moralische Pointe.",
+      "werke_und_traditionen": "Volksballaden, Bürger („Lenore\"), Schiller („Der Handschuh\", „Die Bürgschaft\" u.a.), Goethe, Uhland, Heine, Fontane, Storm; im 20. Jahrhundert Brecht und andere, die balladenhafte Formen für politische Stoffe adaptieren."
+    },
+    {
+      "id": "12_alexandriner_strophe",
+      "name": "Alexandriner Strophe",
+      "muster_der_strophe": "Die Alexandriner-Strophe besteht aus vier (oder mehr) jambischen Sechshebern mit fester Zäsur nach der dritten Hebung; Reim meist paarig oder gekreuzt, oft mit alternierenden Kadenzen m/w. Barocke Grundform: 6 Hebungen mit regelmäßiger Alternanz und strenger Zäsurstruktur.",
+      "formale_besonderheiten": "Jeder Vers ist in zwei Halbverse geteilt, die häufig antithetisch oder parallel angeordnet sind („Diesseits / Jenseits\", „Zeit / Ewigkeit\"); in Kombination mit Paarreim entsteht eine sehr „rhetorisierte\" Strophe. Späterer Gebrauch (z.B. im 19. Jahrhundert) lockert die Strenge: Zäsuren werden verschoben, unregelmäßige Füllungen zugelassen, um stilistische Steifheit zu vermeiden.",
+      "aspekte_zur_interpretation": "Der Alexandriner ist Signatur des Barock: seine Struktur codiert weltanschauliche Dualismen (Welt/Gott, Körper/Seele), die emblematisch zugespitzt werden. In moderner Verwendung kann der Rückgriff auf den Alexandriner als historisierende, ironische oder kritische Geste gegenüber barocker Rhetorik gelesen werden.",
+      "werke_und_traditionen": "Französische Klassik (Corneille, Racine) als Vorbild; deutsch Opitz, Gryphius, Hofmannswaldau und andere Barockdichter. Spätere Beispiele bei Dichtern, die bewusst an die barocke Formtradition anknüpfen oder sie brechen."
+    },
+    {
+      "id": "13_ghasel",
+      "name": "Ghasel",
+      "muster_der_strophe": "Das Ghasel besteht aus einer Folge von mindestens fünf Zweizeilern; formal ist jede Strophe zugleich „Verspaar\" der Gesamtform. Im Deutschen sind die Verse fast immer jambische Fünfheber; die Reimordnung folgt dem Muster: im ersten Distichon reimen beide Verse (aa), in allen folgenden Distichen nur der zweite Vers (ba, ca, da …), also aa / ba / ca / da … Häufig tritt zusätzlich ein vorgeschalteter Refrain (Radīf) nach dem Reimwort auf, den Goethe und seine Nachfolger unterschiedlich konsequent nachbilden.",
+      "formale_besonderheiten": "Ursprünglich persisch-arabische Form, in der Liebes-, Wein- und Gottesdichtung dominiert; im Deutschen wird sie über Rückert und Goethe adaptiert. Formale Signatur ist die Kombination aus streng wiederkehrendem Grundreim plus freier thematischer und syntaktischer Entfaltung in den jeweils vorgeschalteten Vershälften: Der erste Vers jedes Distichons bringt eine neue, häufig in sich abgeschlossene Bild- oder Gedankenfigur, der zweite zieht sie mit dem Grundreim in den Klangraum des Ganzen zurück. Die Gedichte sind oft nur locker narrativ verbunden; Kohärenz entsteht über Motivwiederholung, Grundreim, ggf. Radīf und über das poetische „Ich\", nicht über kontinuierliche Handlung.",
+      "aspekte_zur_interpretation": "Das Ghasel eignet sich für reihende, assoziative Lyrik, in der wechselnde Miniaturen um ein Grundthema kreisen (Liebe, Trennung, Gott, Rausch). Das Reimwort gewinnt durch seine ständige Wiederkehr eine Art Leitwort-Status: jedes Distichon schreibt seine Bedeutung ein Stück fort oder ironisiert frühere Gebrauchsweisen. In deutscher Verwendung ist oft interessant, welche semantische Rolle das Reimwort erhält (z.B. Alltagswort vs. erhabene Vokabel), ob der orientalische Kontext exotistisch benutzt wird oder ob er zum Spiegel deutscher Zustände wird (Goethes Divan als dialogische Kontrafaktur).",
+      "werke_und_traditionen": "Vorbilder: Hafis und andere persische Ghaseldichter; Goethe liest Hafis über Übersetzungen. Deutsch: Goethe, „West-östlicher Divan\" (zahlreiche Ghasel-ähnliche Gedichte), Rückert (Ghaselen frei nach dem Orient), Platen (strenge Kunst-Ghaselen), auch Heine in einzelnen Gedichten mit ghaselähnlicher Struktur."
+    },
+    {
+      "id": "14_schweifreimstrophe",
+      "name": "Schweifreimstrophe",
+      "muster_der_strophe": "Die klassische Schweifreimstrophe ist sechzeilig und kombiniert einen Reimpaar-Block mit einem „Schweif\" aus kürzeren Versen. Ein typisches Schema ist aabccb: zwei längere, meist vier- oder fünfhebige Verse (aa), ein kürzerer b-Vers, dann wieder aa, b – der Schweifvers (b) ist je nach Tradition metrisch verkürzt, oft dreihebig. Varianten wie aabaab kommen vor, in denen der Schweif formal weniger abgesetzt wirkt.",
+      "formale_besonderheiten": "Entstanden aus Erweiterung des Paarreims: an das Reimpaar wird ein „Nachsatz\" gehängt, der formal (kürzer, metrisch leichter, manchmal mit anderer Kadenz) hervortritt. In vielen Texten bewegt sich der Schweifvers in Richtung der Spruch- oder Moralformel: er fasst das Vorangehende zusammen, wendet es ins Allgemeine oder liefert eine überraschende Pointe. Überdies existieren Mischformen mit Lied- und Erzählstrophen, in denen Schweifverse als Kehrreime (refrainartig) fungieren.",
+      "aspekte_zur_interpretation": "Da der Schweif formal „hinten her\" kommt, eignet sich die Strophe ideal für moralische oder satirische Dichtungen, in denen der eigentliche „Stich\" am Schluss steht. Lesestrategisch lohnt es, Aufbau (aab) und Schweif (ccb) zu unterscheiden: Wird nur zusammengefasst? Wird widersprochen? Wird banalisiert? Häufig entsteht Ironie, wenn der Schweif das zuvor Gedichtete trivialisierend kommentiert.",
+      "werke_und_traditionen": "Barocke und aufklärerische Lehr-, Fabel- und Spottgedichte; bei Gellert und Hagedorn in Fabeln und moralischen Gedichten. In späteren Jahrhunderten gelegentlich als bewusst historisierende Form in Moritaten und kunstvollen Balladen eingesetzt."
+    },
+    {
+      "id": "15_romanzenstrophe",
+      "name": "Romanzenstrophe",
+      "muster_der_strophe": "Vier trochäische Vierheber mit alternierender Kadenz (w–m–w–m) im Kreuzreim (abab). Dieses Schema bildet im „Handbuch\" eine der beiden prototypischen, extrem häufigen Kreuzreimformen (neben dem halben Hildebrandston in jambischen Dreihebern).",
+      "formale_besonderheiten": "Der Trochäus (betont–unbetont …) erzeugt eine schwingende, vorwärtstreibende Bewegung, die aber durch die abwechselnden Kadenzen rhythmisch reich bleibt. Das Metrum ist relativ „weit\", erlaubt viele Füllungen und ist daher für verschiedenste Sprachregister zugänglich: Volkslied, erzählende Lyrik, schlichte Reflexion, ironische Sprechtöne. Die Strophe kann leicht verlängert werden (Doppelstrophen, Einfügung von Refrain-Versen), ohne ihr Gepräge zu verlieren.",
+      "aspekte_zur_interpretation": "Geschichtlich verbindet sich mit der Romanzenstrophe besonders die Kunstballade und das romantische Lied; sie wird zum Carrier von Historien- und Schauerstoffen. Interpretationen sollten beachten, dass die Form eine „Allerweltsform\" ist (Frank nennt solche uncharakteristischen, extrem vielseitig genutzten Formen so): ihr Ausdruckswert hängt stark von Kontext und Tradition ab. Gerade bei Autoren wie Eichendorff oder Heine ist die Spannung zwischen harmlos wirkender Form und gebrochener, ironischer oder dunkler Semantik zentral.",
+      "werke_und_traditionen": "Zahlreiche Volkslieder und Volksballaden, Bürger („Lenore\" in verwandten Formen), Uhland, Eichendorff, Heine (Lied-Gedichte im volksliednahen Ton), Fontane („Herr von Ribbeck\" u.a.), Storm, C.F. Meyer."
+    },
+    {
+      "id": "16_triolett",
+      "name": "Triolett",
+      "muster_der_strophe": "Acht Verse mit nur zwei Reimen und festgelegten Wiederholungen; das Standardmuster ist:\n1 A\n2 B\n3 a (Reim A)\n4 A (Wiederholung von Vers 1)\n5 a\n6 b (Reim B)\n7 A (Wiederholung von Vers 1)\n8 B (Wiederholung von Vers 2).\nDas Triolett steht damit zwischen Liedstrophe und Refrain-Gedicht.",
+      "formale_besonderheiten": "Die zweimalige Wiederkehr der Anfangszeile und die Wiederholung der zweiten Zeile im Schluss machen aus dem Gedicht eine Art „Rundgesang\". Die nicht wiederholten a- und b-Verse müssen bei minimaler Variation semantisch möglichst viel leisten: Ironisierung, Brechung, Konkretisierung des Refrains. Metrisch kommen meist drei- bis vierhebige Jamben oder Trochäen zum Einsatz; wegen der starken Wiederholung wirkt jede metrische Abweichung auffällig.",
+      "aspekte_zur_interpretation": "Trioletten werden häufig für spielerische, scherzhafte, aber auch melancholische Miniaturen genutzt; der Wiederholungszwang eignet sich für fixierte Gedanken, Ohrwürmer, monotone Stimmungen. Interpretatorisch interessant ist, wie sich die Bedeutung der wiederkehrenden Verse im Verlauf verschiebt: Steigert sich der Affekt? Wird der Refrain sarkastisch? Verblasst er?",
+      "werke_und_traditionen": "Französische Rokoko- und Biedermeier-Lyrik; im Deutschen eher selten, meist in Formexperimenten des 19. Jahrhunderts und in spielerischer Lyrik des 20. Jahrhunderts (z.B. im Umfeld symbolistischer und neuromantischer Dichtung)."
+    },
+    {
+      "id": "17_villanelle",
+      "name": "Villanelle",
+      "muster_der_strophe": "Neunzehn Verse: fünf Dreizeiler (Tercets) und ein abschließender Vierzeiler (Quatrain). Nur zwei Reime werden verwendet (a und b), zudem zwei Refrainzeilen (A1 und A2). Das schematische Muster lautet:\nA1 b A2 / a b A1 / a b A2 / a b A1 / a b A2 / a b A1 A2.\nDie Versmaße variieren je nach Sprache; im Englischen häufig jambische Pentameter, im Deutschen meist vier- bis fünfhebige Jamben.",
+      "formale_besonderheiten": "Die Form ist eines der repetitivsten europäischen Strophensysteme: Zwei Zeilen kehren insgesamt je viermal (A1) bzw. viermal (A2) zurück. Die Herausforderung für Dichter besteht darin, die Refrainzeilen bei jeder Wiederkehr minimal anders zu kontextualisieren, ohne den Wortlaut zu verändern – ein Paradefall für semantische „Drehung\" bei formaler Identität. Reime und Refrains sind so dominant, dass kleinste metrische oder syntaktische Abweichungen als Bruch oder Steigerung wirken; bewusste Verletzung des Schemas ist interpretatorisch hochsignifikant.",
+      "aspekte_zur_interpretation": "Villanellen eignen sich für obsessive, kreisende Themen: Trauerarbeit, Trauma, monomanische Liebe, Zwangsgedanken. Der Leser erlebt das Gedicht als Kreislauf, in dem Entwicklung nur im „Dazwischen\" der Refrains stattfindet; viele bedeutende Villanellen spielen damit, dass die Refrains am Ende in einem anderen Licht erscheinen (z.B. als Selbsttäuschung).",
+      "werke_und_traditionen": "Renaissance-Villanellen von Jean Passerat; im Englischen u.a. Dylan Thomas („Do not go gentle into that good night\"), Elizabeth Bishop („One Art\"). Im Deutschen vereinzelt Experimente im 20. Jahrhundert, meist im Bewusstsein der englisch-französischen Tradition."
+    },
+    {
+      "id": "18_sestine",
+      "name": "Sestine",
+      "muster_der_strophe": "Sechs Sechszeiler (Sestets) plus dreizeiliger Schluss (Envoi); statt Reimen werden sechs Endwörter (Lexeme) der ersten Strophe in einem festen Permutationsschema in den folgenden Strophen wiederholt. Ein traditionelles Muster: Wenn die erste Strophe die Endwörter 1–6 hat, lauten die Reihenfolgen in den folgenden Strophen 6–1–5–2–4–3, 3–6–4–1–2–5 usw.; im Envoi erscheinen alle sechs Wörter nochmals, je zwei in den drei Schlusszeilen.",
+      "formale_besonderheiten": "Die Sestine verzichtet vollkommen auf Reim und baut stattdessen ein rotierendes System semantischer Knotenwörter; die syntaktische Einbindung dieser Wörter muss stets neu erfunden werden. Sie ist dadurch extrem anspruchsvoll: Themenwahl und Wortwahl sind strukturbestimmend; „schwache\" Endwörter ruinieren die Form. Variationen (Doppel-Sestine, verkürzte Sestine) kommen vor, bleiben aber selten.",
+      "aspekte_zur_interpretation": "Die endlose Wiederkehr derselben Wörter eignet sich für meditative, obsessiv kreisende Themen (Trauer, unerwiderte Liebe, Schuld, Erinnerung); Bedeutungsverschiebungen der Endwörter liefern entscheidende Interpretationssignale. Da kein Reim lenkt, rückt das syntaktische Geflecht stärker in den Vordergrund: Satzbau und Zeilenbruch werden zu Hauptträgern der Bewegung.",
+      "werke_und_traditionen": "Erfinder: Arnaut Daniel; hochartifizielle Sestinen bei Dante und Petrarca. Moderne Renaissance der Form bei Pound, Eliot, Auden u.a.; in deutschsprachiger Lyrik nur sehr wenige, meist bewusst experimentelle Beispiele."
+    },
+    {
+      "id": "19_madrigal_strophe",
+      "name": "Madrigal Strophe",
+      "muster_der_strophe": "Relativ kurze Strophen (meist 5–8 Verse) mit ungleicher Verslänge und freier, aber sorgfältig komponierter Reimordnung. Die Versmaße wechseln typischerweise zwischen drei- und fünfhebigen Jamben oder Trochäen; häufig wird Silbenlänge (statt Hebungszahl) stärker gewichtet, da das Madrigal eng mit Musik verbunden ist.",
+      "formale_besonderheiten": "Das Madrigal löst die starre Isometrie zugunsten eines flexiblen, sprechnahen, ja dialogischen Rhythmus, bewahrt aber strophische Einheit und Reim. Es zeigt eine Tendenz zur „sprechenden\" Syntax: Fragen, Ausrufe, Parenthesen, Einschübe; dabei bleibt die Strophe deutlich begrenzt.",
+      "aspekte_zur_interpretation": "Madrigal-Strophen eignen sich für pastorale Szenen, galante Gespräche, Liebesdialoge und kleine Reflexionen, in denen das Spiel mit Tonlagen wichtiger ist als strenge Form. Da die Zeilenlängen variieren, lassen sich Bedeutungsgewichtungen über metrische „Dehnung\" (lange Zeile) oder „Stauchung\" (kurze Zeile) besonders gut verfolgen.",
+      "werke_und_traditionen": "Barocke und aufklärerische Dichter (Hagedorn, Gellert) verwenden die Form; die italienische Madrigaltradition wirkt über Musik und Übersetzungen ein."
+    },
+    {
+      "id": "20_knittelvers_strophe",
+      "name": "Knittelvers Strophe",
+      "muster_der_strophe": "Regel: vierhebige Verse, zeilenweise im Paarreim, zu Strophen beliebiger Länge gruppiert. Im älteren Knittelvers ist die Silbenzahl stark schwankend, im jüngeren (z.B. bei Goethe) wird eine strengere alternierende Füllung angestrebt, ohne die Senkungszahl völlig zu normieren.",
+      "formale_besonderheiten": "Historisch wandelbar: vom spätmittelalterlichen, silbenzählenden Vers zum frühneuhochdeutschen, akzentuierenden „freieren\" Vierheber. Füllungsfreiheit erlaubt ungewöhnlich lange Wortgruppen, Nebensätze und Einschübe im Vers; das macht den Knittelvers besonders geeignet für erzählende, dialogische und komische Passagen. Die strophische Bündelung kann sehr unterschiedlich ausfallen: Zweizeiler-, Vierzeiler-, langzeilige Blöcke, die nur grafisch gegliedert sind.",
+      "aspekte_zur_interpretation": "Knittelvers konnotiert Volkstümlichkeit, Derbheit und Narrativität – selbst wo der Stoff hoch ist (z.B. „Faust\"). Das reizvolle Spannungsmoment entsteht, wenn hochreflexive oder metaphysische Inhalte in dieser „niedrigen\" Form auftauchen. Die metrische Elastizität ermöglicht feine Nachahmung gesprochener Rede; Störungen des Vierhebigkeitsempfindens (Überfüllungen, „Hänger\") sollten genau betrachtet werden.",
+      "werke_und_traditionen": "Hans Sachs, Fastnachtsspiele und Schwänke; Lutherzeitliche Dichtung; Goethe, „Faust I\"; Nachwirkung in humoristischer Lyrik und Kinderlyrik (Busch u.a.)."
+    },
+    {
+      "id": "21_blankvers",
+      "name": "Blankvers",
+      "muster_der_strophe": "Reimloser jambischer Fünfheber, meist ohne feste Strophengliederung (durchlaufende Verszeilen) oder in lose Abschnitte gegliedert. Satzbau folgt meist nicht strikt der Versgrenze; Enjambements sind sehr häufig.",
+      "formale_besonderheiten": "Der Blankvers erlaubt – ähnlich wie Prosa – lange Sätze, Parenthesen, verschachtelte Perioden, während der durchgängige Fünfheber ein untergründiges rhythmisches „Pulsieren\" sichert. Das Fehlen des Reims verschiebt die formale Verantwortung auf Wortstellung, Intonation, syntaktische Parallelismen und Leitbilder.",
+      "aspekte_zur_interpretation": "Im Deutschen verbindet sich der Blankvers primär mit dem Theater (Lessing, Goethe, Schiller) und mit erzählender, philosophischer Rede. Sonetten- und Liedtraditionen fehlen hier als Formhintergrund, daher wird die Wahl des Blankverses oft als Anspruch auf „höchste\" Dignität der Rede verstanden. Wo Lyriker (etwa im 20. Jahrhundert) Blankvers verwenden, ist das meist ein bewusster Schritt in Richtung dramatisch-reflexiver, sprechnaher Dichtung.",
+      "werke_und_traditionen": "Lessings „Nathan\", Goethes „Iphigenie\" und Teile von „Faust II\", Schillers Dramen („Wallenstein\" u.a.), zahlreiche neuere Dramen und Verserzählungen."
+    },
+    {
+      "id": "22_vagantenstrophe",
+      "name": "Vagantenstrophe",
+      "muster_der_strophe": "Vier Verse alternierender Länge, typischerweise ein vierhebiger und ein kürzerer (dreihebiger) jambischer Vers im Wechsel, im Kreuzreim. Im „Handbuch\" werden entsprechende Vierzeiler u.a. als Formen mit Schemazahl 43 43 beschrieben: ungerade Zeilen länger, gerade kürzer.",
+      "formale_besonderheiten": "Die Strophe geht auf die mittelalterliche Vagantenzeile zurück, eine Langzeile, die typographisch und metrisch in zwei Halbverse (4+3 Hebungen) zerlegt wurde. Die besonderen Längenverhältnisse erzeugen eine „wippende\" Bewegung; häufig endet der kurze Vers mit einer markanten Kadenz, die wie eine Schlagzeile wirkt.",
+      "aspekte_zur_interpretation": "Traditionell verknüpft mit Goliarden- und Studentenliedern, mit Spott, antiklerikaler Polemik, Weltlust, Wanderschaft. In der Kunstlyrik kann die Form historisierend eingesetzt werden (mittelalterliche oder studentische Stoffe) oder als ironische Maskierung („dionysischer\" Ton in moderner Reflexion).",
+      "werke_und_traditionen": "Carmina Burana (lateinische Vagantenlieder), frühe deutsche Studentenlieder; Nachbildungen und Kontrafakturen in der romantischen und späteren Lyrik."
+    },
+    {
+      "id": "23_lutherstrophe",
+      "name": "Lutherstrophe",
+      "muster_der_strophe": "Spezifische Ausprägung der Barform im Kirchenlied: in der Regel sieben Verse, mit einem vierzeiligen Aufgesang (Stollen/Gegenstollen) und einem dreizeiligen Abgesang. Die Versmaße sind volksliednah (drei- oder vierhebige Jamben/Trochäen), die Reimordnung kombiniert Kreuz- und Paarreime (z.B. abab cdd).",
+      "formale_besonderheiten": "Luthers Lieder systematisieren und transformieren ältere geistliche und weltliche Formmodelle zu gemeindetauglichen, leicht memorierbaren Strophen. Der Abgesang hebt sich metrisch und inhaltlich ab: häufig kürzerer Schlussvers, Verdichtung der Aussage, eine Art „Lehrsatz\" oder tröstliche Summation.",
+      "aspekte_zur_interpretation": "Die Lutherstrophe ist eine der wirkungsmächtigsten Formen der deutschsprachigen Kulturgeschichte; sie prägt nicht nur Kirchenlied, sondern auch die Wahrnehmung lyrischer Vier- und Siebenzeiler insgesamt. In Interpretationen sollte der dreiteilige Verlauf (These – Entfaltung – Trost/Bekenntnis) mitgehört werden; Kontrafakturen, die diese Struktur für weltliche oder politisch protestierende Texte nutzen, schreiben sich bewusst in die kirchliche Tradition ein.",
+      "werke_und_traditionen": "Luthers Kampflieder („Ein feste Burg ist unser Gott\"), Trost- und Bekenntnislieder („Nun freut euch, lieben Christen g'mein\" u.a.) und zahlreiche Choräle der nachfolgenden evangelischen Lieddichtung."
+    },
+    {
+      "id": "24_barform",
+      "name": "Barform",
+      "muster_der_strophe": "Allgemeiner Formtypus A–A–B: zwei metrisch und melodisch gleiche Stollen, gefolgt von einem abweichenden Abgesang. Verszahl und inneres Reimschema können variieren (z.B. 3+3+4 Verse, 4+4+6 Verse), doch der dreiteilige Großbogen bleibt konstitutiv.",
+      "formale_besonderheiten": "Die Barform ist primär musikalisch gedacht (Minnesang, Meistersang, Kirchenlied); poetische Strophen sind auf sie „aufgesetzt\". Der Wiederholungsblock (Stollen/Gegenstollen) etabliert Thema und Grundbewegung, der Abgesang führt weiter, weitet, kontrastiert oder resümiert. In vielen späteren Texten ist die barförmige Anlage noch erkennbar, obwohl das Bewusstsein für den terminus technicus bei den Dichtern nicht mehr vorhanden sein muss.",
+      "aspekte_zur_interpretation": "Die Form eignet sich für Lieder, die ein Motiv erst etablieren, dann „drehen\": Liebeslieder, geistliche Lieder, politische Gesänge. In der Lehr- und Bekenntnisdichtung stabilisiert die Barform Wiedererkennung und verweist zugleich durch ihre Herkunft auf ältere, höfische oder geistliche Traditionsschichten.",
+      "werke_und_traditionen": "Minnesang und Meistersang traditionell in Barform; viele Choräle (Luther, Paul Gerhardt u.a.) übernehmen sie; in der Kunstmusik (Bach-Choräle) ist sie strukturbildend."
+    },
+    {
+      "id": "26_haiku",
+      "name": "Haiku",
+      "muster_der_strophe": "Dreizeilige, ungereimte Kurzform; in der japanischen Tradition 5–7–5 Moren (silbennahe Einheiten), im Deutschen meist als 5–7–5 Silben approximiert. Es gibt keine Reime, dafür sind Schnitt (Kire) und Jahreszeitenwort (Kigo) strukturbildend: Ein innerer Einschnitt teilt das Gedicht in zwei Bild- oder Aussageeinheiten.",
+      "formale_besonderheiten": "Haiku verzichten bewusst auf Reim und komplexe Metrik, um Konzentration auf den Moment und die Bildspannung zu lenken. Traditionelle japanische Haiku sind Teil eines größeren Text- und Ritualzusammenhangs (z.B. Renga-Ketten); moderne deutsche Haiku lösen das Schema oft (abweichende Silbenzahl), behalten aber Kürze, Bildhaftigkeit und Schnittstruktur bei.",
+      "aspekte_zur_interpretation": "Haiku sind Form der maximalen Reduktion: Ein konkretes Wahrnehmungsdetail steht stellvertretend für einen größeren, oft existentiellen Zusammenhang. Die Spannung zwischen den beiden „Hälften\" (vor und nach dem Schnitt) ist interpretatorisch zentral: oft stehen Naturbild und menschliche Emotion unverbunden nebeneinander, so dass die Leserin die Beziehung stiften muss.",
+      "werke_und_traditionen": "Japanische Klassiker: Bashō, Buson, Issa. Deutschsprachige Haiku seit dem 20. Jahrhundert in Zeitschriften und Sammlungen, z.B. bei Oskar Pastior, zeitgenössischen Haiku-Gruppen u.a."
+    },
+    {
+      "id": "27_limerick",
+      "name": "Limerick",
+      "muster_der_strophe": "Fünf Verse mit Reimschema aabba; die Verse 1, 2 und 5 sind drei-taktig (drei Hebungen), die Verse 3 und 4 nur zwei-taktig. Metrisch wird in der englischen Tradition überwiegend im anapästischen bzw. amphibrachischen Dreitakt gedichtet (da-da-DA), im Deutschen oft freier, aber mit deutlich „hüpfendem\" Rhythmus.",
+      "formale_besonderheiten": "Die längeren Rahmenverse 1, 2, 5 stellen Person und Situation vor und liefern die Pointe, während 3 und 4 als kurzer Zwischenschritt Spannung und Erwartung modulieren. Limericks nutzen häufig Binnenreime, Alliterationen und Überfüllung des Metrums, was den Eindruck mündlicher Erzählfreude verstärkt.",
+      "aspekte_zur_interpretation": "Limericks sind historisch stark mit Nonsens, Obszönität und Grenzüberschreitung verbunden; Verletzung von Tabus gehört zu ihrer Funktionslogik. In didaktischen Kontexten (Kinderlieder, Sprachspiele) werden die Obszönitäten oft entschärft, das formale Schema bleibt aber als Vehikel für humoristische, absurde Miniaturen erhalten.",
+      "werke_und_traditionen": "Popularisiert durch Edward Lear im 19. Jahrhundert; zahlreiche anonyme Limericks in der englischen und irischen Volkstradition. Deutsch: Morgenstern, Ringelnatz, viele Kinder- und Nonsensgedichte knüpfen am Schema an."
+    },
+    {
+      "id": "28_ritornell",
+      "name": "Ritornell",
+      "muster_der_strophe": "Dreizeilige Strophe: kurzer Auftaktvers („Blumenruf\") + zwei jambische Fünfheber; Vers 1 und 3 reimen, Vers 2 bleibt reimlos, also axa. Traditionell ist der erste Vers deutlich verkürzt (zwei- bis dreihebig), die beiden folgenden voll ausgeprägt.",
+      "formale_besonderheiten": "Der Blumenruf fungiert als emphatische, häufig exclamative Anrufung („Blumen im Garten!\"), während Vers 2 und 3 eine kleine Szene, Reflexion oder emotionale Bewegung entfalten. Das deutsche Ritornell ist eine bewusste Nachbildung italienischer Villanellen- und Liedformen; das metrische Profil des Blumenrufs wandelte sich im Verlauf (daktylisch bei Rückert, später eher jambisch bei Borchardt, Loerke, Weinheber).",
+      "aspekte_zur_interpretation": "Das Ritornell eignet sich für kleine, geschlossene „Bild-Gedanken-Einheiten\": Ein Eindruck wird im Blumenruf exponiert, dann in zwei Langversen entfaltet und kommentiert. Der Gegensatz zwischen verkürztem Einwurf und fließenden Fünfhebern verstärkt den Effekt von Einfall vs. Ausführung, Spontaneität vs. Reflexion.",
+      "werke_und_traditionen": "Regnart (16. Jh.) im weltlichen Lied; in der Romantik Rückert („Ritornelle von Ariccia\"), später Waiblinger, Loerke, Weinheber, Jünger."
+    },
+    {
+      "id": "29_in_memoriam_strophe",
+      "name": "In Memoriam Strophe",
+      "muster_der_strophe": "Vier jambische Vierheber mit umarmendem Reim abba; in der englischen Tradition häufig durchgehend männliche Kadenzen, im Deutschen variabel.",
+      "formale_besonderheiten": "Die enge Reimklammer zwischen Vers 1 und 4 rahmt das Binnenpaar 2/3; dadurch entsteht ein Gefühl von „Einkreisung\" und Geschlossenheit. Als Grundform elegischer Reflexion in Tennysons „In Memoriam\" wirkt die Strophe stark typprägend, auch in späteren Nachahmungen in anderen Sprachen.",
+      "aspekte_zur_interpretation": "Die Form ist prädestiniert für wiederholte, seriell angeordnete Strophen, in denen Trauer, Zweifel und Trost in kleinen Mikro-Reflexionen entfaltet werden. Interpretatorisch lässt sich verfolgen, wie stark die formale Geschlossenheit (abba) mit dem Inhalt (Trauer, oszillierende Gedanken) harmoniert oder in Spannung tritt: Strophen, die syntaktisch „aus der Form fallen\", signalisieren oft krisenhafte Momente.",
+      "werke_und_traditionen": "Tennyson, „In Memoriam A.H.H.\" (englisches Muster); deutschsprachige Elegien, die das Quatrain-Schema übernehmen, sowie zahlreiche Nachbildungen im 19./20. Jahrhundert."
+    },
+    {
+      "id": "30_epigramm_strophe",
+      "name": "Epigramm Strophe",
+      "muster_der_strophe": "Zumeist Zwei- oder Vierzeiler, formal häufig Distichon (Hexameter + Pentameter) oder paarweise gereimte Vierheber- bzw. Fünfheberschemata. Entscheidend ist nicht ein einzelnes Schema, sondern die extreme Kürze der Einheit.",
+      "formale_besonderheiten": "Die Form verlangt maximale Verdichtung: Pointenlogik (Aufbau–Bruch), starke Antithesen, scharfe Parallelismen und überraschende Schlusswendungen. Metrisch fungieren antike Distichen, Alexandrinerpaare oder Vierheberpaare als Standardträger für Sentenzen und Spott.",
+      "aspekte_zur_interpretation": "Epigramm-Strophen erzeugen hohe semantische Dichte bei minimaler Länge; interpretatorisch wichtig ist das Verhältnis der Vershälften (v.a. im Distichon) und die Art des „Drehpunkts\" im zweiten Vers. In satirischen Epigrammen wird oft Formvollendung gegen semantische Zertrümmerung ausgespielt; in Grab- und Denkversen dient dieselbe Form der ehrenden Verdichtung.",
+      "werke_und_traditionen": "Martial; deutsch Logau, Opitz, Gryphius, Goethe/Schiller (Xenien), Lichtenberg, Kästner."
+    },
+    {
+      "id": "31_glosse",
+      "name": "Glosse",
+      "muster_der_strophe": "Ein Motto (oft Vierzeiler) bildet die Vorlage; jede nachfolgende Strophe übernimmt eine Verszeile dieses Mottos wörtlich als Schlussvers, meist in gleicher Metrik und Reimlage wie im Motto. Üblich sind vier Glossenstrophen zu vier Mottozeilen, so dass eine Art „strophisches Kommentarwerk\" entsteht.",
+      "formale_besonderheiten": "Motto und Glossenstrophen stehen in einem engen intertextuellen Verhältnis: Die wiederkehrenden Schlußverse sind formal identisch, ihr semantisches Umfeld aber wechselt von Strophe zu Strophe. Oft wird die Metrik des Mottos exakt nachgeahmt; die Reimstellung des zitierten Verses innerhalb der Glossenstrophe ist zentral (meist als abschließende, stark betonte Kadenz).",
+      "aspekte_zur_interpretation": "Die Glosse ist eine poetische Kommentierungsform: jede Strophe „glossiert\" den jeweiligen Motto-Vers, indem sie seine Grundbedeutung variiert, erweitert oder infrage stellt. Damit eignet sie sich besonders für Gedichte über Gedichte (Meta-Lyrik), für religiöse und moralische Betrachtungen und für ironische Auseinandersetzung mit bekannten Versen.",
+      "werke_und_traditionen": "Spanischer Barock (Lope de Vega u.a.); im Deutschen vereinzelt romantische und moderne Beispiele, in denen volkstümliche oder kanonische Verse glossiert werden."
+    },
+    {
+      "id": "32_dezime_espinela",
+      "name": "Dezime / Espinela",
+      "muster_der_strophe": "Zehn achtsilbige Verse mit Reimschema abbaaccddc; dieses Schema ist in der spanischen Poesie als „Décima\" oder „Espinela\" fest etabliert.",
+      "formale_besonderheiten": "Die Espinela kombiniert den umarmenden Anfang (abba) mit einem inneren Kuplettpaar (cc) und einem abschließenden Dreischritt (ddc), der Anfang und Ende der Strophe stark miteinander verknüpft. Der gleichbleibende Acht-Silben-Ton ermöglicht sowohl gesanglich-volkstümliche als auch kunstvoll-literarische Verwendungen; in der improvisierten Dichtung (payadores, repentistas) dient die Décima als Regelkorsett.",
+      "aspekte_zur_interpretation": "In romanischen Kontexten ist die Form stark mit improvisierender, politisch-satirischer und erzählender Lyrik verbunden; im Deutschen werden Décimen meist als bewusste Übernahme einer fremden Tradition eingesetzt. Interpretatorisch interessant ist der Umgang mit dem letzten Vers (c): er kann die Strophe schließen, relativieren oder offen lassen.",
+      "werke_und_traditionen": "Vicente Espinel (Namensgeber); in lateinamerikanischen und spanischen Traditionen weit verbreitet. Deutsch: nur wenige Übertragungen und formbewusste Nachbildungen in der Moderne."
+    },
+    {
+      "id": "33_onegin_strophe",
+      "name": "Onegin Strophe",
+      "muster_der_strophe": "Vierzehn jambische Vierheber (im Russischen vierhebig, im Deutschen meist als Vier- oder Fünfheber übertragen) mit einem komplexen Reimsystem, das insgesamt zwölf Reime in einer Strophe realisiert. Das Standardmuster in Puschkins „Eugen Onegin\" kombiniert abwechselnd männliche und weibliche Reime in einer festgelegten, sehr kunstvollen Abfolge (z.B. abab ccdd effe gg, mit differenzierten Kadenz-Mustern).",
+      "formale_besonderheiten": "Die Strophe ist für den Versroman konzipiert: Sie muss Dialog, Erzählung, Kommentar und Reflexion tragen. Die Variation der Reimfolgen (Kreuz-, Paar-, umarmender Reim in einer einzigen Strophe) erlaubt fein abgestufte Tonwechsel; kadenzbezogene Differenzierung (männlich/weiblich) trägt zusätzlich zur charakteristischen „Schaukelbewegung\" bei.",
+      "aspekte_zur_interpretation": "Im Russischen ist die Onegin-Strophe zu einem Signum des ironisch gebrochenen Realismus geworden; jede Übernahme in andere Sprachen ruft diese Konnotation auf. Wo deutschsprachige Versepen diese Strophe nachbilden, ist quasi automatisch eine Intertextualität zu Puschkin im Spiel: Der Erzähler tritt als reflektierter, ironisch gebrochener Beobachter auf.",
+      "werke_und_traditionen": "Puschkin, „Eugen Onegin\"; moderne Versromane und Pastiche-Texte, die bewusst an diese Tradition anschließen."
+    },
+    {
+      "id": "34_spenser_strophe",
+      "name": "Spenser Strophe",
+      "muster_der_strophe": "Neun Verse: acht jambische Fünfheber und ein abschließender jambischer Sechsheber (Alexandriner); Reimschema ababbcbcc.",
+      "formale_besonderheiten": "Die ersten acht Verse erzeugen formal Einheit, während der Alexandriner (Vers 9) die gedachte Bewegung abschließt oder in eine neue Richtung lenkt. Die Versform wurde von Edmund Spenser eigens für „The Faerie Queene\" geschaffen, möglicherweise in Anlehnung an Ottave rime und französische Balladenstrophen. Der längere Schlussvers verträgt besondere rhetorische Lasten: moralische Sentenzen, ironische Brechungen, prophetische Ausblicke.",
+      "aspekte_zur_interpretation": "Die Spenser-Strophe ist äußerst vielseitig: in „The Faerie Queene\" trägt sie sowohl rasch erzählende Passagen als auch statische Naturbeschreibungen, allegorische Szenen und Reflexionen. In der Romantik (Byron, Keats, Shelley) wird sie zum Symbol hochartifizieller, oft selbstreflexiver Epik; Übernahmen in andere Sprachen signalisieren Bewusstsein für diese anglo-romanische Traditionslinie.",
+      "werke_und_traditionen": "Edmund Spenser, „The Faerie Queene\" (Erfindung und Hauptbeispiel). 19. Jh.: Byron („Childe Harold's Pilgrimage\"), Keats („The Eve of St. Agnes\"), Shelley („Adonais\"); vereinzelte Experimente in deutschsprachigen Verserzählungen."
+    },
+    {
+      "id": "35_rhyme_royal",
+      "name": "Rhyme Royal",
+      "muster_der_strophe": "Sieben jambische Fünfheber mit Reimschema ababbcc. Man kann sie als Quartett + Terzett (abab bcc) oder als Terzett + zwei Kuplettpaare (aba bb cc) empfinden.",
+      "formale_besonderheiten": "Das abschließende Kuplettpaar (cc) bringt einen neuen Reim und damit ein starkes Gefühl des Schlusses; die vorhergehenden fünf Verse entwickeln die Situation. Rhyme Royal bietet mehr Raum als der Sonett-Quartett, aber stärkere Schlusspunktsetzung als durchlaufende Paare oder Kreuzreime.",
+      "aspekte_zur_interpretation": "Historisch wurde die Strophe für ernsthafte Stoffe eingesetzt: religiöse, philosophische, historische und höfisch-erotische Erzählungen. Die Kopplung von erzählendem Fluss und „royalem\" Kuplet-Schluss eignet sich für Texte, die zwischen narrativem und reflektierendem Modus oszillieren.",
+      "werke_und_traditionen": "Chaucer (u.a. „Troilus and Criseyde\"); im späteren englischen Spätmittelalter und in der Renaissance verbreitet. In deutschsprachigen Kontexten vor allem über Übersetzungen und formbewusste Nachbildungen präsent."
+    },
+    {
+      "id": "36_hildebrandston",
+      "name": "Hildebrandston",
+      "muster_der_strophe": "Ursprünglich altdeutsche Langzeilen mit Alliteration, jeweils in zwei Halbverse mit Zäsur geteilt; in neueren Rekonstruktionen und Kunstballaden häufig als Achtzeiler mit dreihebigen Kurzversen (33 33 33 33) realisiert. Die moderne Form kann paarig oder gekreuzt gereimt sein, wobei je zwei Kurzverse eine Langzeile repräsentieren.",
+      "formale_besonderheiten": "Der historische Hildebrandston ist nicht primär durch Endreim, sondern durch Alliteration, Hebungszahl und Zäsur bestimmt. Neuere Fassungen übertragen das altgermanische Klang- und Rhythmusgefühl in akzentuierenden Vers und integrieren Endreim, um Anschluss an neuere Lyriktraditionen zu gewinnen. Die Möglichkeit, durch Spaltung der Langzeile (Hildebrandston) andere Strophenformen zu gewinnen (z.B. Sechs- oder Vierzeiler), zeigt Franks Formenverwandlungs-Konzept: Strophenformen stehen genealogisch miteinander in Beziehung.",
+      "aspekte_zur_interpretation": "Die Form konnotiert Heldendichtung, archaische Männlichkeits- und Konfliktbilder; moderne Verwendungen sind meist historisierend, parodistisch oder experimentell (Archaismus-Effekte). Spannend ist, wie weit Dichter*innen Alliteration und freie Hebungsorganisation übernehmen oder ob sie die Form „zivilisieren\" und stärker regulieren.",
+      "werke_und_traditionen": "„Hildebrandslied\" als altgermanischer Ursprung; Nachbildungen in romantischer und neueren Balladendichtung, etwa bei Uhland und im Umkreis historisierender Lyrik des 19. Jahrhunderts."
+    },
+    {
+      "id": "37_volksliedstrophe",
+      "name": "Volksliedstrophe (sechszeilig)",
+      "muster_der_strophe": "Häufig sechs Verse, die Vier- und Dreiheber kombinieren; typisch sind Muster wie 4 3 4 3 4 3 oder 4 4 3 4 4 3, jeweils mit einfachen Reimordnungen (z.B. ababcc, aabccb, abcbdd). Die Hebungszahlen ähneln den gängigen vierzeiligen Volksliedstrophen, werden aber durch zusätzliche „Anhängsel-Verse\" (Refrain, Kommentar) erweitert.",
+      "formale_besonderheiten": "Viele sechzeilige Volksliedstrophen entstehen historisch durch Erweiterung eines Vierzeilers: ein oder zwei zusätzliche Verse werden eingefügt, oft als refrainartig wiederkehrende oder kommentierende Zeilen. Die Strophe bleibt metrisch sehr regelmäßig und melodietauglich – sie ist nicht primär eine Schriftform, sondern an Gesang gebunden (Liederhort, Kirchenlieder, Tanz- und Spottlieder).",
+      "aspekte_zur_interpretation": "Die Sechszeiler geben pro Strophe mehr narrativen Raum als Vierzeiler und erlauben kleine Binnenwendungen: etwa Szene (V. 1–4) + Kommentar oder Refrain (V. 5–6). In Kunstlied und Kunstballade übernimmt die Form volksliedhafte Authentizität; Abweichungen von der erwartbaren Symmetrie (z.B. metrisch abgesetzter Schlussvers) markieren oft inhaltliche Brüche.",
+      "werke_und_traditionen": "Zahlreiche Texte in „Des Knaben Wunderhorn\", viele historische und geistliche Volkslieder (Erk-Böhme, Wackernagel, Liliencron, Hartmann). Kunstlieder und Balladen, die volksliednahe Sechszeiler nachbilden, etwa bei Uhland, Arnim/Brentano, teilweise bei Heine und späteren Lyrikern."
+    },
+    {
+      "id": "38_freirhythmische_hymne",
+      "name": "Freirhythmische Hymne (pindarisch)",
+      "muster_der_strophe": "Großstrophische Gebilde, meist aus freien Rhythmen, oft triadisch gegliedert (Strophe–Antistrophe–Epode) nach dem Vorbild pindarischer Oden. Es gibt keine durchgehend festen Hebungszahlen oder Reimschemata; wiederkehrende syntaktische und rhetorische Muster schaffen die Form.",
+      "formale_besonderheiten": "Die triadische Anlage: Strophe und Antistrophe sind metrisch korrespondierende Großverse oder Perioden, die Epode kontrastiert und schließt. In deutschen Nachbildungen werden antike Quantitätsmuster qualitativ approximiert, häufig durch variable Hebungszahlen, freie Rhythmen und komplexe Satzperioden; der musikalische Hintergrund (Chorlyrik) bleibt spürbar.",
+      "aspekte_zur_interpretation": "Solche Hymnen sind Träger höchster Themen (Gott, Vaterland, Geschichte, Dichtung); ihre Form inszeniert ein Wechselspiel von Wiederkehr (Strophe/Antistrophe) und Neusetzung (Epode). In Hölderlins Spätwerk lassen sich historische und theologische Spannungen an der Strophenarchitektur ablesen: abgebrochene Triaden, „unvollständige\" Pendelbewegungen, unaufgelöste Schlusspartien.",
+      "werke_und_traditionen": "Klopstocks Hymnen und Oden; Hölderlins große Hymnen („Germanien\", „Der Rhein\", „Patmos\" u.a.), in denen die triadische Anlage oft noch erkennbar ist, aber individuell modifiziert wird."
+    },
+    {
+      "id": "39_burns_strophe",
+      "name": "Burns Strophe (Standard Habbie)",
+      "muster_der_strophe": "Sechs Verse mit Reimschema aaabab; Vers 1, 2, 3, 4 und 6 sind drei- oder vierhebige Zeilen, Vers 5 ist deutlich kürzer (zweihebiger Vers). Die Form variiert, doch charakteristisch ist der Kontrast zwischen vier langen, zwei kürzeren Versen und der Reimkonstellation mit Dreifach-a.",
+      "formale_besonderheiten": "Die Strophe entsteht im schottischen Dialektumfeld, oft in anapästischem oder gemischtem Takt. Der kurze fünfte Vers fungiert als komischer oder nachdrücklich betonter Einschnitt, bevor der sechste Vers den Reimkreis schließt. Die dichte a-Reimkette erzeugt einen drängenden, fast gesungenen Ton; b-Reime bringen minimale Entlastung.",
+      "aspekte_zur_interpretation": "Burns-Strophen tragen bevorzugt satirische, gesellschaftskritische, aber auch sentimental-idyllische Inhalte; der formale „Swing\" kann mit derben Beobachtungen kontrastieren. In deutschsprachigen Nachbildungen wird die Form meist zur Ironisierung oder zur Evokation „volkstoniger\" Schärfe benutzt; Abweichungen im Reimschema signalisieren oft bewusste Lockerung.",
+      "werke_und_traditionen": "Robert Burns („To a Mouse\", „Holy Willie's Prayer\" u.a.); vereinzelte deutsche Nachbildungen in satirischer Lyrik des 19. und 20. Jahrhunderts."
+    },
+    {
+      "id": "40_kanzone",
+      "name": "Kanzone",
+      "muster_der_strophe": "Großstrophische, vielfach verschieden lange Strophen mit wiederkehrendem Muster aus Verslängen und Reimreihen; jede Strophe wiederholt das Schema der ersten, analog zur italienischen Canzone. Zwischen den Strophen kann ein kürzerer „commiato\" oder „Sendungsvers\" stehen, der die Gesamtaussage pointiert.",
+      "formale_besonderheiten": "Die Kanzonenstrophe ist hochartifiziell: wechselnde Verslängen (z.B. Elfsilbler + Siebensilbler) und komplexe Reimfiguren (verstreute Binnenreime, verschobene Reimpaare) sind typisch. Deutsche Autoren nutzen die Form meist in enger Anlehnung an Petrarca und die italienische Tradition; häufig wird sie in Liebes- und Reflexionslyrik übertragen, selten vollständig, oft in Tendenz.",
+      "aspekte_zur_interpretation": "Die Kanzone erlaubt breite Entfaltung eines Themas innerhalb einer Strophe; Strophen stehen oft in einem dialektischen oder argumentativen Verhältnis zueinander (zunehmende Dringlichkeit, Perspektivwechsel, retractatio). In Übersetzungen und Nachbildungen ist die Frage wichtig, welche strukturellen Komplexitäten (Reimfiguren, Verslängenkontraste) erhalten bleiben und welche geopfert werden.",
+      "werke_und_traditionen": "Petrarca und andere italienische Trecento-Dichter; im Deutschen vereinzelte hochartifizielle Nachbildungen im Umkreis der Romantik und des Neu-Humanismus."
+    },
+    {
+      "id": "41_siziliane",
+      "name": "Siziliane",
+      "muster_der_strophe": "Kein starrer, in der deutschen Tradition kanonisierter Typ, sondern Sammelbegriff für süd-italienische Liedstrophen: meist fünf- bis sechszeilige Strophen aus Endecasillabi (elfsilbigen Versen) mit einfachen Reimfolgen. In deutschen Nachbildungen stehen vier- bis fünfhebige Jamben mit Kreuz- oder Schweifreim im Vordergrund.",
+      "formale_besonderheiten": "Die Siziliane ist eng mit Tanz und Gesang verbunden; häufiges Merkmal sind kleine Refrainformeln und reizvolle Binnenrhythmen (Daktylen, verkürzte Takte). Im Deutschen erscheint die Form zumeist in Übersetzungen oder pseudofolkloristischen Nachbildungen.",
+      "aspekte_zur_interpretation": "Die Form konnotiert südliches Kolorit, Volksliedlichkeit und Pastoralität; in deutschsprachigen Kontexten wird sie nicht selten „exotisiert\". Interpretationen sollten den Gefahrpunkt der Folklorisierung mitbedenken: was als „sizilianisch\" bezeichnet wird, folgt oft literarischen Klischees.",
+      "werke_und_traditionen": "Italienische Volks- und Kunstlieder; deutsche Nachdichtungen in Sammlungen romantischer und biedermeierlicher Lyrik, seltener in der Moderne."
+    },
+    {
+      "id": "42_tanka",
+      "name": "Tanka",
+      "muster_der_strophe": "Fünf Zeilen mit Silbenmuster 5–7–5–7–7 in der japanischen Tradition; im Deutschen meist nur angenähert. Es handelt sich um die älteste japanische Kurzgedichtform (Waka), aus der das Haiku historisch hervorgeht.",
+      "formale_besonderheiten": "Strenger als Haiku: zusätzlich zu den drei „Haiku-Zeilen\" folgen zwei weitere Siebensilbler, die oft eine emotionale oder kommentierende Bewegung enthalten. Tanka sind historisch häufig dialogisch strukturiert (Antwortgedichte, Liebeswechsel); der Aufbau eignet sich dafür, auf ein vorgegebenes Bild zu reagieren oder es umzudeuten.",
+      "aspekte_zur_interpretation": "Die 3+2 Gliederung (Bild + Reaktion) ist zentral: die ersten drei Zeilen bieten meist eine Szene oder Situation, die letzten zwei geben Antwort, Kommentar, Gegensicht. Im Deutschen wird häufig mit dieser Struktur gespielt, ohne die Silbenzahlen exakt einzuhalten; relevant ist, ob das Gedicht die doppelte Bewegungsfigur (Beobachtung + affektive/interpretierende Nachbewegung) wahrnimmt.",
+      "werke_und_traditionen": "Japanische Klassik von Man'yō-shū über Kokinshū bis zur höfischen Liebeslyrik; deutschsprachige Nachdichtungen in der Moderne, häufig in Haiku-Kreisen und bei lyrischen Experimenten mit Ostasienrezeption."
+    },
+    {
+      "id": "43_heine_strophe",
+      "name": "Heine Strophe",
+      "muster_der_strophe": "Meist vierzeilige, volksliednahe Strophen in drei- oder vierhebigen Jamben mit Kreuzreim; Alternanz der Kadenzen ist erwünscht, wird aber oft ironisch gebrochen. Heine nutzt das Standardrepertoire der Volkslied-Vierzeiler (vgl. 4.20 und 4.49 bei Frank) in großer Freiheit.",
+      "formale_besonderheiten": "Die Heine-Strophe ist keine eigene metrische Form, sondern eine historisch gewachsene Funktion: naive Volksliedform, in die hochreflexive, ironische, politische oder psychologisch tiefe Inhalte eingetragen werden. Durch gezielte „schlechte\" Reime, Füllsel, verblüffende Enjambements und syntaktische Brüche unterläuft Heine die Erwartung des „harmlosen Liedchens\".",
+      "aspekte_zur_interpretation": "Wesentlich ist die Diskrepanz zwischen Form und Ton: harmlos wirkende, einprägsame Liedstrophen tragen gebrochene Liebesgeschichten, politische Polemik oder poetologische Selbstreflexion. Lesen heißt hier, das, was zwischen den einfachen Versen „kippt\", mitzuverfolgen: Ironie, Sarkasmus, Sentimentalität und deren ständige Unterminierung.",
+      "werke_und_traditionen": "Heines „Buch der Lieder\", „Neue Gedichte\", viele weitere Gedichte; nachwirkend bei Kästner, Tucholsky u.a., die volksliednahe Vierzeiler für politische und satirische Zwecke einsetzen."
+    },
+    {
+      "id": "44_expressionistische_reihungsstrophe",
+      "name": "Expressionistische Reihungsstrophe",
+      "muster_der_strophe": "Variabel lange Strophen mit freien oder stark gelockerten Metren, überwiegend ohne Reim, in denen kurze, oft nominale Verse reihend aneinandergefügt werden. Die Strophengrenzen markieren Bild- oder Motivblöcke eher als metrische Einheiten.",
+      "formale_besonderheiten": "Statt regelmäßiger Hebungen dominieren Satzfragmente, Schlagworte, aggressive Enjambements, abrupte Zeilenbrüche; Interpunktion wird häufig reduziert. Typisch ist der „Telegrammstil\": Substantivballungen, Verzicht auf syntaktische Ausformulierung, assoziative Verdichtung.",
+      "aspekte_zur_interpretation": "Die Form versucht, Großstadt-, Kriegs-, Krisen-Erfahrung nicht in traditionelle Lied- oder Odenformen zu pressen; Auflösung der metrischen Ordnung ist semantisch: sie steht für Zerfall von Weltordnung. Strophen sind hier „Schockblöcke\", keine runden Perioden; interpretatorisch wichtig sind Brüche zwischen Strophen, Wiederaufnahmen (Leitbilder), zunehmende Destruktion oder gelegentliche Ordnungsgesten.",
+      "werke_und_traditionen": "Georg Heym, Jakob van Hoddis, Ernst Stadler, Trakl, frühe Benn-Gedichte; viele expressionistische Lyriker, die vom regelmäßigen Vers zu radikalisierten freien Formen übergehen."
+    },
+    {
+      "id": "45_freier_vers",
+      "name": "Freier Vers",
+      "muster_der_strophe": "Verszeilen ohne festes Metrum und Reim; Strophen (falls vorhanden) entstehen durch graphische Gruppierung, motivische Bündelung oder syntaktische Klammern. Hebungszahlen schwanken, Zeilenlängen variieren stark.",
+      "formale_besonderheiten": "Der Freie Vers verzichtet auf alle traditionellen metrischen Normen, bemüht sich aber meist um eigenen Rhythmus: Wiederholung von Satzmustern, Parallelismen, bewusste Pausen (Zeilenumbrüche) und klangliche Verdichtungen (Alliteration, Assonanz). In vielen Gedichten der Nachkriegs-Moderne wird der Freie Vers mit bewusst „antilyrischer\" Sprache kombiniert, um Pathosverdacht zu unterlaufen.",
+      "aspekte_zur_interpretation": "Formentscheidend ist, wie Zeilen- und Strophenbrüche mit Sinn- und Atembrüchen korrespondieren: Bricht der Vers mitten im Satz? Fällt ein Leitwort ans Zeilenende? Wird durch Wiederholung von Strukturen (z.B. Anaphern) ein quasi-metrischer Rhythmus erzeugt? Freier Vers markiert auch eine Haltung: Absage an vorgegebene Ordnung, Versuch, Sprache direkt an Wahrnehmung, Bewusstsein oder Diskurs anzuschließen.",
+      "werke_und_traditionen": "In Deutschland zunächst vereinzelt (George, frühe Avantgarden), dann nach 1945 dominante Form, etwa bei Celan, Bachmann, Enzensberger, Nelly Sachs, später bei sehr vielen Gegenwartsliteraten."
+    },
+    {
+      "id": "46_bob_and_wheel",
+      "name": "Bob and Wheel Strophe",
+      "muster_der_strophe": "Strukturell: auf einen Block längerer, meist alliterierender unrhymed Lines folgt eine kurze „bob\"-Zeile (meist ein- bis zweihebig) und ein vierzeiliger „wheel\"-Block, dessen Verse kurz sind und mit balladenartigem Reimschema (z.B. ababa) auf die bob-Zeile bezogen sind. In „Sir Gawain and the Green Knight\" besteht der Bob and Wheel Abschnitt aus fünf Zeilen: 1 kurze bob-Zeile + 4 dreihebige reimende wheel-Zeilen.",
+      "formale_besonderheiten": "Der bob sprengt den vorangehenden Versfluss – er ist metrisch kurz und inhaltlich oft exclamativ oder schroff; das wheel setzt mit neuem, geregeltem Klang (Endreim) ein und schafft einen Nachklang oder Kommentar. Im Mittelenglischen dient Bob and Wheel als Übergang zwischen alliterativem Langvers und gereimter Kurzstrophe; beide Teile bilden die „Cauda\" der Langstrophe.",
+      "aspekte_zur_interpretation": "Bob and Wheel markiert im Text Scharnierstellen: Übergänge zwischen Szenen, pointierende Zusammenfassungen, Umstimmungen (z.B. von epischer Erhabenheit zu humoristischer oder volkstümlicher Rede). Die abrupte metrische und klangliche Veränderung macht solche Abschnitte interpretatorisch besonders gewichtige Knotenpunkte.",
+      "werke_und_traditionen": "Vor allem mittelenglische Dichtung: „Sir Gawain and the Green Knight\", „Pearl\" und andere Texte des „Gawain-Poeten\". Spätere Texte greifen die Technik gelegentlich historisierend auf."
+    },
+    {
+      "id": "47_kyrielle",
+      "name": "Kyrielle",
+      "muster_der_strophe": "Vierzeilige Strophen mit variablen Reimschemata (aabB / ccbB …), wobei B ein ständig wiederkehrender Refrainvers ist; häufig jambische oder trochäische Vierheber. Länge des Gedichts beliebig: Jede neue Strophe endet mit demselben Refrain.",
+      "formale_besonderheiten": "Die Kyrielle stammt aus französisch-liturgischer Tradition („Kyrie eleison\" – daher der Name) und überführt die liturgische Wiederholungsstruktur in poetische Strophik. Der Refrainvers ist meist inhaltlich zentral (Bitte, Klage, Bekenntnis) und gewinnt mit jeder Wiederkehr an Gewicht oder Ambivalenz.",
+      "aspekte_zur_interpretation": "Kyriellen eignen sich für Beschwörung, Klage, Gebet, aber auch für spöttische oder ironische Themen; entscheidend ist, wie sich die Bedeutung des Refrains im Verlauf verschiebt (vom glaubensgewissen Aufruf zur hohlen Formel, vom Scherz zur Ernstrede etc.). Die formale Starrheit des kehrenden Verses steht in Spannung zur thematischen Entwicklung – diese Spannung kann produktiv ausgelesen werden.",
+      "werke_und_traditionen": "Französische spätmittelalterliche und Renaissance-Lyrik (u.a. Villon); im Deutschen selten, aber als bewusst historische oder religiöse Form gelegentlich genutzt."
+    },
+    {
+      "id": "48_konkrete_poesie",
+      "name": "Konkrete Poesie / Figurengedicht",
+      "muster_der_strophe": "Es gibt kein einheitliches metrisches Schema; konstitutiv ist die visuelle Gestalt: Anordnung der Wörter, Buchstaben, Zeichen zu einer Form (Figur, Bild, geometrische Struktur), die semantisch relevant ist. In Figurengedichten der Barockzeit etwa werden Verse so gesetzt, dass sie ein Kreuz, einen Kelch, Flügel oder andere Symbole bilden.",
+      "formale_besonderheiten": "Bei konkreter Poesie ist der typographische Effekt wichtiger als der lineare, rein semantische Verlauf des Textes. Typographie (Schriftgröße, -art, Abstand, Ausrichtung), Weißraum, graphische Figuren werden zu gleichberechtigten Bedeutungsträgern neben Wörtern und Lautwerten. Historisch reicht die Tradition von barocken Figurengedichten über Apollinaires Calligramme bis zu den „verbivocovisuellen\" Experimenten der konkreten Poesie in der Mitte des 20. Jahrhunderts.",
+      "aspekte_zur_interpretation": "Lesen bedeutet hier zugleich sehen: Der Blick muss das Bild erfassen, bevor oder während der Text gelesen wird; Reihenfolge der Lektüre ist oft nicht eindeutig vorgegeben. Konkrete Gedichte stellen traditionelle Unterscheidungen zwischen Text und Bild, zwischen Lyrik und Grafik in Frage; sie eignen sich für selbstreflexive Untersuchungen von Sprache, Medien und Wahrnehmung. Bei barocken Figurengedichten tritt stärker eine emblematische Funktion hinzu: das Bild (z.B. Kreuzform) kommentiert oder rahmt den religiösen Inhalt.",
+      "werke_und_traditionen": "Barocke Figurengedichte (George Herbert „Easter Wings\" als englisches Beispiel), später Apollinaires Calligramme. Konkrete Poesie der 1950er/60er Jahre (u.a. Eugen Gomringer, Augusto und Haroldo de Campos, Ernst Jandl), zahlreiche visuelle Gedichte bis heute."
+    },
+    {
+      "id": "49_zweizeiler_strophen",
+      "name": "Zweizeiler Strophen (allgemein)",
+      "muster_der_strophe": "Zweizeilige Strophen bestehen aus zwei gleichmetrischen Versen, meist in Paarreim, und kommen in sehr verschiedenen Versmaßen vor: klassische Vierheberpaare (jambisch oder trochäisch), Alexandriner-Paare, aber auch sieben- und achthebige Langzeilenpaare. Frank zeigt, dass Zweizeiler teils eigenständige Strophenformen sind (z.B. vierhebiger Trochäus bei Busch, Langzeilenpaare nach antikem oder lateinischem Vorbild), teils verkürzte Varianten häufiger Vierzeilerstrophen (z.B. 4.20).",
+      "formale_besonderheiten": "Da innerhalb der Zwei-Vers-Einheit kaum Platz für Enjambements bleibt, tendiert der Zweizeiler zur Satz- und Sinnvollendung: er zwingt zur Prägnanz und begünstigt epigrammatische oder sentenzhafte Wendungen. Längere Langzeilenpaare (Sieben-, Achtheber) erhalten oft eine starke Zäsur in der Mitte (z.B. nach der vierten Hebung), die die Zeile in zwei Halbvers-Segmente teilt und antithetische oder parallelisierende Strukturen unterstützt. Historisch sind viele zweizeilige Typen aus Volkslied- oder Kirchenliedformen ableitbar (z.B. aus 4.20 oder 4.34), erscheinen aber als eigene Strophenform dort, wo sie seriell wiederholt werden.",
+      "aspekte_zur_interpretation": "Zweizeiler-Strophen sind formbedingt knapp und exponieren polemische, komische oder pathetische Pointen in konzentrierter Form. In längeren Gedichten (z.B. Buschs Verserzählungen, Spitteler, Groth, Lichtenstein) erzeugt die Folge von Zweizeilern einen „Staccato-Effekt\": jede Strophe setzt einen Mikro-Akzent, wodurch erzählerische oder komische Effekte verdichtet werden. Wichtig ist, ob die Strophen streng abgeschlossen bleiben oder ob durch wiederholte Motive, Binnenreime, syntaktische Fortsetzungen zwischen den Zweizeilern eine größere Kohärenz entsteht.",
+      "werke_und_traditionen": "Volks- und Kirchenlieder mit zweizeiliger Strophik (Wunderhorn, alte Marienlieder), Spruchformen (Logau, Gryphius). Humoristische und epische Texte bei Busch („Max und Moritz\" – metrisch verwandt), bei Spitteler (Fabeln, Parabeln), Platen, Groth; moderne Kurzformen bei Lasker-Schüler (Klein Sterbelied), Lersch, Lichtenstein."
+    },
+    {
+      "id": "50_dreizeiler_strophen",
+      "name": "Dreizeiler Strophen (allgemein)",
+      "muster_der_strophe": "Dreizeiler sind metrisch und reimlich äußerst heterogen: Frank unterscheidet u.a. gleichreimende aaa-Dreizeiler, Varianten mit Reimpaar plus Einzelvers (aax / xaa), Ritornell-Typen (axa) und natürlich die verkettende Terzine (aba bcb …). Versmaße reichen von drei- bis fünfhebigen Jamben und Trochäen, gelegentlich Hexameter/Pentameter-Kombinationen.",
+      "formale_besonderheiten": "Der Dreizeiler liegt „quer\" zur dominanten geradzahligen Strophik (2, 4, 6, 8 Verse) und hat keine ihm „natürlich\" entsprechende Reimgeometrie. Viele Formen versuchen, durch innere Struktur die „Astrophie\" zu kompensieren:\n•  gleichreimender Dreizeiler (aaa) mit starkem Klangdruck,\n•  Reimpaar + Refrainvers (aax) als Mini-Barform,\n•  Ritornell (axa) mit besonderem Mittelvers,\n•  Terzine (aba) als bausteinartige Kettenglieder.\nHäufig entstehen Dreizeilerstrophen aus Verkürzungen oder Erweiterungen bekannter Liedformen (z.B. Schweifreim- oder Volksliedstrophen, Waisenterzine).",
+      "aspekte_zur_interpretation": "Dreizeiler sind prädestiniert für kleine Einheiten mit „Nachschlag\": Bild + Bild + Kommentar, oder These + Variation + Sentenz. Bei gleichreimenden Dreizeilern ist der dreifache Klangdrang potentiell pathetisch oder pathetisch-komisch; die neuere Lyrik reagiert darauf entweder mit ironischer Nutzung (Dauthendey, Weinheber) oder mit Auflösung (reimloser Mittelvers, freie Kadenzgestaltung). Im Fall von Terzine und Ritornell ist der Dreizeiler zugleich Teil einer größeren Form; hier sollte man die Doppelrolle von Strophenabschluss und Reimverkettung im Auge behalten.",
+      "werke_und_traditionen": "Kirchenlieder (Sequenz-Nachbildungen mit Dreizeilern), barocke Hymnen, kleine Biedermeier-Lieder (Uhland, Chamisso). Klopstocks „Rosenband\" als berühmter reimloser Dreizeiler, zahlreiche Varianten bei Dauthendey, Weinheber, George, Hofmannsthal, Trakl; moderne Kurzformen in Miniaturen und Spruchgedichten."
+    },
+    {
+      "id": "51_vierzeiler_strophen",
+      "name": "Vierzeiler Strophen (allgemein)",
+      "muster_der_strophe": "Vierzeiler sind quantitativ die wichtigste Strophenfamilie: 126 von Franks 300 Formen sind vierzeilig und umfassen etwa 60 % aller im Korpus erfassten Gedichte. Formdominant sind isometrische Vierzeiler (alle Verse gleich viele Hebungen), vor allem drei-, vier- und fünfhebige Metren; Reimordnungen: aaaa, aabb, abab, abba, sowie reimlose xxxx. Eine zweite Großgruppe bilden Kreuzreim-Vierzeiler, bei denen die geraden Verse gegenüber den ungeraden kürzer oder länger sind (z.B. 4 3 4 3, 3 2 3 2, 4 5 4 5).",
+      "formale_besonderheiten": "Vierzeiler verwirklichen elementare Symmetrien: zwei Zweizeiler zu Paarreimen (aabb), zwei Langzeilen zu vier Kurzzeilen „gebrochen\" (abab, xaxa), umarmende Klammern (abba). Paarreimform (aabb) neigt zur Auflösung in Zweizeiler; Kreuzreim (abab) bindet zwei erneute Bewegungen; umarmender Reim (abba) schafft Gedrängtheit und Geschlossenheit. Frank zeigt, dass gewisse Kreuzreim-Vierzeiler (etwa jambische Dreiheber, trochäische Vierheber mit alternierenden Kadenzen) zu den „Allerweltsformen\" gehören: sie sind formal wenig prägnant, dafür extrem vielseitig verwendbar.",
+      "aspekte_zur_interpretation": "Vierzeiler tragen nahezu alle Gattungen: Volkslied, Kirchenlied, Ballade, Lied, Epigramm, Reflexionslyrik; formale Aussagekraft liegt daher primär in den Details: Versmaß, Kadenzfolge, Reimordnung, Hebungs- und Längenverhältnissen. Kreuzreim-Vierhebertrochaeus (Romanzenstrophe) konnotiert Erzählton, Kreuzreim-Dreiheberjambus Volkslied-/Balladenton, umarmender Vierheberjambus eher reflexive, geschlossene Miniaturen. In der Interpretation lohnt es, die Vierzeiler systematisch nach diesen Mikro-Parametern zu typisieren, um Traditionslinien zu erkennen (z.B. ob ein Text sich eher in eine Kirchenlied- oder eine Romanzenlinie stellt).",
+      "werke_und_traditionen": "Großteil der deutschsprachigen Kirchen- und Volkslieder, zahllose Balladen, Heines Lyrik, Heine-Nachfolge, ein Großteil der modernen Song-Texte; die Vierzeiler sind das „Normalmaß\" der neuhochdeutschen Strophik."
+    },
+    {
+      "id": "52_fuenfzeiler_strophen",
+      "name": "Fünfzeiler Strophen (allgemein)",
+      "muster_der_strophe": "Fünfzeilige Strophen treten in einer Reihe von Formen auf: Limerick-Schema (aabba), Quintette mit variablen Kreuz- und Paarreim-Konstellationen (abaab, abbba) und freie Fünfzeiler in moderner Lyrik. Versmaße reichen von dreihebigen anapästischen Taktformen (Limerick) über jambische Vierheber bis zu freien Rhythmen.",
+      "formale_besonderheiten": "Die ungerade Verszahl erschwert symmetrische Teilung; vielfach wird der mittlere Vers als „Scharnier\" genutzt: er kann metrisch oder syntaktisch hervorstechen, zum Beispiel kürzer oder länger sein oder eine überraschende Wendung vorbereiten. Limericks nutzen diesen Effekt systematisch, indem Vers 3 und 4 kürzer sind und eine Zwischenspannung erzeugen, bevor Vers 5 die große Pointe bringt. In ernster Lyrik können Fünfzeiler als „erweiterte Vierzeiler\" gelesen werden, bei denen der fünfte Vers kommentiert, relativiert oder bricht.",
+      "aspekte_zur_interpretation": "Fünfzeiler bieten mehr Raum für Binnenentwicklung als Vierzeiler, bleiben aber komprimiert; sie eignen sich sowohl für scherzhafte Miniaturen als auch für konzentrierte Reflexionen und Beobachtungen. In Fünfzeilern lohnt es, den Status des Zentralverses (Vers 3) genau zu untersuchen: ob er neue Motivik einführt, Perspektive kippt oder lediglich metrische Balance herstellt.",
+      "werke_und_traditionen": "Englische Limerick-Tradition (Lear u.a.), deutsche Nonsens- und Kinderlyrik; moderne deutschsprachige Lyrik mit freien Quintettformen, in denen Lyriker mit ungeraden Strophenzahlen experimentieren."
+    },
+    {
+      "id": "53_sechszeiler_strophen",
+      "name": "Sechszeiler Strophen (allgemein)",
+      "muster_der_strophe": "Sechszeiler verbinden häufig Vierzeiler-Schemata mit einem angehängten Paarreim oder einem Refrain; gängige Reimordnungen: aabccb (Schweifreim), ababcc, abcbdd usw. Versmaße meist drei- bis fünfhebige Jamben oder Trochäen; Kombinationen aus Vier- und Dreihebern sind typisch für volksliednahe Formen.",
+      "formale_besonderheiten": "Sechszeiler sind strukturell flexibler als Vierzeiler und erlauben Verhältnisse wie 4+2, 3+3 oder 2+2+2 Verse; häufig bildet sich eine Gliederung in „Obersatz\" (erste vier Verse) und „Untersatz\" (zwei Schlussverse). Schweifreimstrophen (aabccb) sind ein prominenter Typ: Der Schweif (Verse 3 und 6, oder 5 und 6) ist metrisch und semantisch hervorgehoben. In anderen Formen fungieren Vers 5 und 6 als Kommentar, moralische Pointe oder refrainartige Wiederholung.",
+      "aspekte_zur_interpretation": "Sechszeiler eignen sich sehr gut für Balladen, Fabeln, Moritaten und längere Lieder, weil sie innerhalb einer Strophe eine kleine Dramaturgie bereitstellen: Exposition – Komplikation – Pointe. In Interpretationen ist zu klären, ob die Strophe als Einheit wirkt oder ob sie sich eher aus Vierzeiler + Zusatz verstanden erklärt – letztere Fälle signalisieren oft Übertretung oder „Überbietung\" der einfacheren Volksform.",
+      "werke_und_traditionen": "Volkslied, Moritaten, viele Kunstballaden (z.B. Bänkelsang-artige Formen), geistliche Lieder; Schweifreimstrophen bei Gellert, Hagedorn u.a."
+    },
+    {
+      "id": "54_achtzeiler_strophen",
+      "name": "Achtzeiler Strophen (allgemein)",
+      "muster_der_strophe": "Achtzeiler sind entweder Doppel-Vierzeiler (zwei Vierzeiler-Schemata direkt hintereinander) oder eigenständige Formen wie Stanze (abababcc), Hildebrandston-Achtzeiler (vier gespaltene Langzeilen aus Dreihebern) oder andere achtversige Liedstrophen. Versmaße reichen von dreihebigen Balladenmetren bis zu fünfhebigen jambischen Stanzen; Reimordnungen sind entsprechend divers.",
+      "formale_besonderheiten": "Achtzeiler erlauben eine deutlich komplexere Strophendramaturgie: etwa Aufbau (Verse 1–4) + Erweiterung/Umkehrung (Verse 5–8), oder Dreiteilungen (2+2+4). Formverwandlungen spielen hier eine besondere Rolle: Frank zeigt, wie aus Vierzeilern durch Versspaltung achtzeilige Hildebrandstöne entstehen, oder wie acht dreihebige Verse zu vier sechshebigen zusammengezogen werden können (und umgekehrt). So stehen Achtzeiler genealogisch in enger Beziehung zu kürzeren Formen; sie sind gewissermaßen „aufgefächerte\" oder „verdichtete\" Vierzeiler.",
+      "aspekte_zur_interpretation": "Achtzeiler erlauben pro Strophe größere semantische Spannweiten: sie eignen sich hervorragend für erzählende Lyrik, längere Beschreibungen, allegorische Szenen und reflexive Passagen, ohne dass der Strophenrahmen gesprengt wird. In Balladen oder epischen Gedichten signalisiert die Wahl achtzeiliger Strophen oft einen Schritt in Richtung stärkerer kunstpoetischer Formung (z.B. Stanze, Hildebrandston), während achtzeilige Volksliedformen die seriell erweiterte Einfachheit beibehalten.",
+      "werke_und_traditionen": "Stanze in erzählender und reflektierender Epik (s.o. Nr. 3); Hildebrandston-Achtzeiler in historisierenden Balladen und in der Rezeption des „Hildebrandsliedes\". Viele längere Lieder und Chorwerke, in denen achtzeilige Strophen als musikalisch günstige Einheit fungieren."
+    }
+  ],
+  "metren": [
+    {
+      "id": "metrum_1_jambus",
+      "name": "Jambus",
+      "wirkung_und_charakter": "Der Jambus (◡—) ist das am häufigsten vertretene Metrum in der deutschen Lyrik. Der Wechsel von unbetonter und betonter Silbe erzeugt vorwärtsdrängende, steigende Bewegung. Der Jambus wirkt natürlich, da er dem deutschen Wortakzent nahekommt (Auftakt entspricht Präfixen). Als „ernster, würdevoller, gehobener\" Vers charakterisiert.",
+      "literarhistorischer_kontext": "Opitz etablierte 1624 das alternierende Prinzip (regelmäßiger Wechsel von Hebung und Senkung) gegen die ältere Silbenzählung. Der jambische Fünfheber (Blankvers) wurde durch Shakespeare und Milton zum klassischen dramatischen Vers. In Deutschland seit dem 18. Jahrhundert dominierend, besonders für Drama (Lessing, Schiller, Goethe) und Odendichtung (Klopstock).",
+      "interpretationshinweise": "Jambische Dichtung suggeriert Natürlichkeit bei kunstvoller Durchformung. Regelmäßiger Jambus eignet sich für erhabene, ernste Stoffe. Durch Füllungsfreiheit (Doppelsenkungen) kann der Jambus volkstümlicher und lebendiger wirken. Enjambements über Versgrenzen erzeugen Spannung und Dynamik.",
+      "vergleichswerke": "Blankvers (jambischer Fünfheber): Lessing „Nathan der Weise\", Schiller „Maria Stuart\". Jambischer Vierheber: zahllos (häufigste deutsche Versform). Jambische Dreiheber: Volksliedstrophe (Goethe, Eichendorff). Alexandriner (jambischer Sechsheber): Barockdrama (Gryphius)."
+    },
+    {
+      "id": "metrum_2_trochaeus",
+      "name": "Trochäus",
+      "wirkung_und_charakter": "Der Trochäus (—◡) beginnt mit betonter Silbe und erzeugt fallende, abschließende Bewegung. Trochäische Verse wirken bestimmter, markanter als jambische. Die weibliche Kadenz (unbetonte Endsilbe) ist typisch für Trochäen und verleiht Sangbarkeit.",
+      "literarhistorischer_kontext": "Der Trochäus ist das zweithäufigste Metrum nach dem Jambus. Er dominiert in älteren Liedformen und im Volkslied. Die „Romanzenstrophe\" (4.49) aus trochäischen Vierhebern wurde zur klassischen Balladenstrophe. Im 19. Jahrhundert besonders für erzählende und balladeske Dichtung geschätzt.",
+      "interpretationshinweise": "Trochäische Dichtung wirkt volkstümlicher und liedhafter als jambische. Das auftaktlose Einsetzen verleiht Unmittelbarkeit und Entschiedenheit. Trochäen eignen sich für erzählende, beschreibende und liedhafte Dichtung. Die regelmäßige weibliche Kadenz erzeugt sanften, schwebenden Ausklang.",
+      "vergleichswerke": "Romanzenstrophe (trochäische Vierheber): Balladen von Bürger, Fontane. Trochäische Dreiheber: Schiller „Wilhelm Tell\" („Mit dem Pfeil, dem Bogen\"). Trochäische Fünfheber: Aufklärungslyrik, Oden. Odenstrophen: teilweise trochäische Elemente (sapphisch)."
+    },
+    {
+      "id": "metrum_3_daktylus",
+      "name": "Daktylus",
+      "wirkung_und_charakter": "Der Daktylus (—◡◡) besteht aus einer betonten und zwei unbetonten Silben und erzeugt rollende, beschwingte Bewegung. Daktylische Verse wirken feierlich, hymnisch oder heiter-bewegt, je nach Kontext. Die Doppelsenkung verleiht dem Vers Flüssigkeit und Schwung.",
+      "literarhistorischer_kontext": "Der Daktylus ist das klassische Metrum des antiken Hexameters und damit der Epik. Im Deutschen besonders im Distichon (elegisches Reimpaar aus Hexameter und Pentameter) verwendet. Klopstock und Voss führten daktylische Metren ins Deutsche ein. Im 19. Jahrhundert für klassizistische und epische Dichtung geschätzt.",
+      "interpretationshinweise": "Daktylische Dichtung trägt Konnotationen des Erhabenen und Antikisierenden. Das Distichon eignet sich für Epigramme, elegische Betrachtung und erzählende Dichtung. Rein daktylische Verse ohne Spondensubstitution wirken monoton und sind im Deutschen selten. Mischung von Daktylen und Trochäen in Odenstrophen (sapphisch, alkäisch) schafft rhythmische Vielfalt.",
+      "vergleichswerke": "Hexameter: Voss „Luise\", Goethe „Hermann und Dorothea\". Distichon: Goethe/Schiller „Xenien\", Goethe „Römische Elegien\". Odenstrophen (mit daktylischen Elementen): alkäisch, sapphisch, asklepiadeisch. Daktylische Zweiheber (Kurzvers): Goethe „Frühzeitiger Frühling\"."
+    },
+    {
+      "id": "metrum_4_anapaest",
+      "name": "Anapäst",
+      "wirkung_und_charakter": "Der Anapäst (◡◡—) besteht aus zwei unbetonten und einer betonten Silbe und erzeugt beschleunigte, galoppierende Bewegung. Anapästische Verse wirken lebhaft, heiter oder drängend. Das Metrum eignet sich für komische Dichtung und rhythmisch markante Verse.",
+      "literarhistorischer_kontext": "Der Anapäst ist im Deutschen selten als durchgehendes Metrum. Am bekanntesten im Limerick (englische Scherzform). In der deutschen Lyrik meist in Mischung mit Jamben verwendet. Im 19. Jahrhundert gelegentlich für Marsch- und Trinklieder.",
+      "interpretationshinweise": "Rein anapästische Dichtung wirkt markant rhythmisch und eignet sich für komische oder virtuose Effekte. Die Doppelsenkung vor der Hebung erzeugt Anlaufcharakter und Beschleunigung. Im Deutschen schwerer zu realisieren als Jambus oder Trochäus, da dem natürlichen Wortakzent weniger entsprechend.",
+      "vergleichswerke": "Limerick: englische Volksdichtung, deutsche Nachdichtungen (Morgenstern). Anapästisch-jambische Mischformen: Heine, moderne Lyrik. Marschlieder: 19. Jahrhundert."
+    },
+    {
+      "id": "metrum_5_freier_rhythmus",
+      "name": "Freier Rhythmus",
+      "wirkung_und_charakter": "Freie Rhythmen sind reimlose, metrisch ungebundene Verse mit beliebiger Silbenanzahl und unterschiedlich vielen Hebungen und Senkungen. Im Unterschied zur Prosa sind Korrespondenzen in der Verteilung der Hebungen erkennbar. Sie ermöglichen unmittelbaren Ausdruck begeisterter Empfindung ohne formalen Zwang.",
+      "literarhistorischer_kontext": "Freie Rhythmen sind eine Erfindung Klopstocks (1758/59), der sich vom Opitz'schen Metrenzwang loslöste. Klopstock suchte bewusst Anlehnung an antike Odenmaße (Dithyramben Pindars), Psalmen Davids und Ossian. Otto Knörrich: „bedeutendster Beitrag der deutschen Dichtung zur internationalen Formensprache des Verses\". Goethe führte die Form in früher Hymnik weiter. Hölderlin schuf in späten Hymnen Höhepunkte.",
+      "interpretationshinweise": "Freie Rhythmen suggerieren Authentizität, Spontaneität und unmittelbare Empfindung. Sie eignen sich für hymnische Dichtung, Naturlyrik mit pantheistischer Grundstimmung und philosophische Gedankenlyrik. Die Verse können in Scheinstrophen gegliedert sein. Der Verzicht auf Reim und Metrum erfordert umso präziseres rhythmisches Gefühl.",
+      "vergleichswerke": "Klopstock: „Dem Allgegenwärtigen\", „Frühlingsfeier\". Goethe: „Prometheus\", „Ganymed\", „Wanderers Sturmlied\". Hölderlin: „Patmos\", „Der Rhein\", „Germanien\". Rilke: „Duineser Elegien\". Trakl: späte Gedichte."
+    },
+    {
+      "id": "metrum_6_antike_metren",
+      "name": "Antike Metren (quantitierend/akzentuierend nachgebildet)",
+      "wirkung_und_charakter": "Die Nachbildung antiker Metren erfolgt im Deutschen durch Übertragung quantitierender (auf Silbenlänge beruhender) in akzentuierende (auf Betonung beruhende) Strukturen. Dies erzeugt charakteristische rhythmische Muster: Hexameter, Pentameter, sapphisches Metrum, alkäisches Metrum, asklepiadeisches Metrum etc. Choriamben (—◡◡—) und andere komplexe Füße bereichern das rhythmische Repertoire.",
+      "literarhistorischer_kontext": "Klopstock begründete die deutsche Odendichtung in Nachbildung antiker Metren (1747ff.). Platen rang um möglichst getreue Wiedergabe durch Spondeen (——) und exakte metrische Entsprechung. Hölderlin schuf die vollendetsten deutschen Oden in antiken Metren (alkäisch, asklepiadeisch). Die antiken Metren trugen zur Erweiterung des deutschen Formenrepertoires bei.",
+      "interpretationshinweise": "Antike Metren tragen Konnotationen des Klassischen, Erhabenen und Zeitlosen. Sie verpflichten auf anspruchsvollen Stil und würdevolle Themen. Die Nachbildung erfordert Kompromisse zwischen antiker Treue und deutscher Sprachnatur. Erfolgreiche antikisierende Dichtung findet deutsche Äquivalente statt sklavischer Nachahmung.",
+      "vergleichswerke": "Hexameter/Pentameter (Distichon): Goethe „Römische Elegien\", Schiller „Spaziergang\". Alkäische Strophe: Hölderlin „An die Parzen\", Weinheber „Adel und Untergang\". Sapphische Strophe: Platen, Weinheber. Asklepiadeische Strophe: Klopstock „Zürchersee\", Hölderlin „Heidelberg\"."
+    },
+    {
+      "id": "metrum_7_silbenzaehlung",
+      "name": "Silbenzählung",
+      "wirkung_und_charakter": "Bei Silbenzählung (statt festem Metrum) wird die Verszeile durch Anzahl der Silben definiert, nicht durch Hebungs-Senkungs-Muster. Dies ermöglicht größere rhythmische Freiheit bei klarer formaler Bindung. Im Deutschen vor Opitz dominant, später verdrängt.",
+      "literarhistorischer_kontext": "Silbenzählung war im Frühneuhochdeutschen (15./16. Jh.) das herrschende Prinzip nach französischem Vorbild. Der strenge Knittelvers beruhte auf Silbenzählung (8 oder 9 Silben). Opitz' Reform (1624) ersetzte Silbenzählung durch Akzentzählung. In modernen Formen wie Haiku und Tanka kehrt Silbenzählung zurück.",
+      "interpretationshinweise": "Silbenzählende Verse erzeugen andere rhythmische Wirkungen als akzentuierende. Die Gleichsilbigkeit verleiht formale Geschlossenheit, ermöglicht aber variierende Betonungsmuster. Bei Übernahme japanischer Formen (Haiku 5-7-5, Tanka 5-7-5-7-7) resultiert charakteristische Kürze und Prägnanz.",
+      "vergleichswerke": "Knittelvers (alt): Hans Sachs. Haiku: moderne deutsche Nachdichtungen. Tanka: vereinzelt in deutscher Lyrik. Französische Verse (Alexandriner ursprünglich silbenzählend)."
+    },
+    {
+      "id": "metrum_8_alliteration",
+      "name": "Alliteration / Stabreim",
+      "wirkung_und_charakter": "Alliteration (Stabreim) ist die Bindung von Versen durch gleiche Anfangslaute betonter Silben statt durch Endreim. Sie erzeugt klangliche Kohärenz und markiert rhythmische Struktur. Stabreim wirkt archaisch, kraftvoll und evokativ.",
+      "literarhistorischer_kontext": "Stabreim ist das charakteristische Merkmal germanischer Dichtung (Hildebrandslied, Edda). Im Mittelhochdeutschen vom Endreim verdrängt. Im 19./20. Jahrhundert historisierend wiederbelebt (Wagner-Opern, neuere Germanendichtung). In englischer Tradition als Teil von „Bob and Wheel\" erhalten.",
+      "interpretationshinweise": "Stabgereimte Dichtung evoziert germanisches Altertum und heroische Konnotationen. Die Alliteration strukturiert den Vers durch klangliche Entsprechung und markiert wichtige Wörter. Moderne Verwendung oft ironisch-parodistisch oder als formales Experiment.",
+      "vergleichswerke": "Altgermanische Dichtung: „Hildebrandslied\". Mittelalter: „Nibelungenlied\" (mit Endreim kombiniert). 19. Jh.: Richard Wagner (Operntexte). Moderne: vereinzelt als archaisierende Stilisierung."
+    },
+    {
+      "id": "metrum_9_endecasillabo",
+      "name": "Endecasillabo (italienischer Elfsilbler)",
+      "wirkung_und_charakter": "Der Endecasillabo ist der klassische italienische Vers aus elf Silben, meist als jambischer Fünfheber mit weiblicher Kadenz realisiert. Er wirkt flüssig, geschmeidig und eignet sich für narrative und lyrische Dichtung. Im Deutschen als Annäherung an romanische Verskultur verstanden.",
+      "literarhistorischer_kontext": "Der Endecasillabo ist der Grundvers italienischer Dichtung (Dante, Petrarca, Ariost, Tasso). Im Deutschen im 19. Jahrhundert durch Rückert und Platen eingeführt. Die Form diente der Nachahmung italienischer Vers- und Strophenformen (Terzine, Stanze, Sonett). Als „edler\" und „romanischer\" Vers geschätzt.",
+      "interpretationshinweise": "Deutsche Endecasillabi tragen Konnotationen des Südlichen, Romanischen, Kultiviert-Eleganten. Die durchgängig weibliche Kadenz erzeugt sanften, schwebenden Klang. Die Form eignet sich für Nachdichtungen italienischer Lyrik und für eigene Dichtung mit südlichen oder mediterranen Themen.",
+      "vergleichswerke": "Terzine (jambischer Fünfheber mit weiblicher Kadenz): Dante-Übersetzungen, Goethe. Stanze (Ottaverime): Goethe „Zueignung\". Sonett (nach italienischem Vorbild): Petrarca-Nachdichtungen. Italienisierende Lyrik: Platen, Rückert, George."
+    }
+  ]
+};
+
+const FORM_ID_MAP = {
+  "1_sonett": "sonett",
+  "2_terzine": "terzine",
+  "3_stanze": "stanze",
+  "4_alkaeische_odenstrophe": "alkaische_ode",
+  "5_sapphische_odenstrophe": "sapphische_ode",
+  "6_asklepiadeische_odenstrophe": "asklepiadeische_ode",
+  "7_elegisches_distichon": "distichon",
+  "8_deutsche_odenstrophe": null,
+  "9_freie_rhythmen": "freie_rhythmen",
+  "10_hymne": "hymne_frei",
+  "11_balladenstrophe": "chevy_chase_strophe",
+  "12_alexandriner_strophe": "alexandrinercouplet",
+  "13_ghasel": "ghasel",
+  "14_schweifreimstrophe": "schweifreimstrophe",
+  "15_romanzenstrophe": "romanzenstrophe",
+  "16_triolett": "triolett",
+  "17_villanelle": "villanelle",
+  "18_sestine": "sestine",
+  "19_madrigal_strophe": "madrigalstrophe",
+  "20_knittelvers_strophe": "knittelvers",
+  "21_blankvers": "blankvers",
+  "22_vagantenstrophe": "vagantenstrophe",
+  "23_lutherstrophe": "lutherstrophe",
+  "24_barform": "barform",
+  "26_haiku": "haiku",
+  "27_limerick": "limerick",
+  "28_ritornell": "ritornell",
+  "29_in_memoriam_strophe": "in_memoriam_strophe",
+  "30_epigramm_strophe": "epigramm",
+  "31_glosse": "glosse",
+  "32_dezime_espinela": "dezime",
+  "33_onegin_strophe": "onegin_strophe",
+  "34_spenser_strophe": "spenserstrophe",
+  "35_rhyme_royal": "rhyme_royal",
+  "36_hildebrandston": "hildebrandston",
+  "37_volksliedstrophe": "volksliedstrophe_6v",
+  "38_freirhythmische_hymne": "hymne_frei",
+  "39_burns_strophe": "burns_strophe",
+  "40_kanzone": "kanzone",
+  "41_siziliane": "siziliane",
+  "42_tanka": "tanka",
+  "43_heine_strophe": "heine_strophe",
+  "44_expressionistische_reihungsstrophe": "expressionistische_strophe",
+  "45_freier_vers": "nachkriegs_vers",
+  "46_bob_and_wheel": "bob_and_wheel",
+  "47_kyrielle": "kyrielle",
+  "48_konkrete_poesie": "konkrete_poesie",
+  "49_zweizeiler_strophen": "kurzvers_strophe",
+  "50_dreizeiler_strophen": null,
+  "51_vierzeiler_strophen": "volksliedstrophe_4v",
+  "52_fuenfzeiler_strophen": "fuenfversige_strophe",
+  "53_sechszeiler_strophen": null,
+  "54_achtzeiler_strophen": "achtversige_strophe"
+};
+
+// Datenanreicherung: Frank-Daten in bestehende Eintraege mergen
+(function enrichData() {
+  if (!FRANK_DATA || !FRANK_DATA.strophenformen) return;
+  FRANK_DATA.strophenformen.forEach(function(frank) {
+    var targetId = FORM_ID_MAP[frank.id];
+    if (!targetId) return;
+    var form = STROPHENFORMEN.find(function(f) { return f.id === targetId; });
+    if (!form) return;
+    if (frank.muster_der_strophe) form.interpretation.muster = frank.muster_der_strophe;
+    if (frank.formale_besonderheiten) form.interpretation.formales = frank.formale_besonderheiten;
+    if (frank.aspekte_zur_interpretation) form.interpretation.aspekte = frank.aspekte_zur_interpretation;
+    if (frank.werke_und_traditionen) form.interpretation.traditionslinien = frank.werke_und_traditionen;
+  });
+  // Links aus Vergleichswerken entfernen
+  STROPHENFORMEN.forEach(function(form) {
+    if (form.vergleichswerke) form.vergleichswerke.forEach(function(w) { delete w.link; });
+  });
+})();
+
+// Hintergrund-Panel Toggle
+function toggleHintergrund() {
+  var panel = document.getElementById('hintergrund-panel');
+  var btn = document.getElementById('warum-btn');
+  panel.classList.toggle('open');
+  btn.classList.toggle('active');
+}
+
+// Erweiterte Detailansicht (ueberschreibt Original)
+window.openDetail = function(id) {
+    var form = STROPHENFORMEN.find(function(f) { return f.id === id; });
+    if (!form) return;
+    document.getElementById('detail-name').textContent = form.name;
+    document.getElementById('detail-alt').textContent = (form.alternativnamen||[]).filter(function(n){return n;}).join(' \u00b7 ');
+    document.getElementById('detail-params').innerHTML = [
+        '<span class="detail-param"><strong>Verse:</strong> ' + form.kriterien.versanzahl + '</span>',
+        '<span class="detail-param"><strong>Metrum:</strong> ' + (form.kriterien.metrum||[]).join(', ') + '</span>',
+        '<span class="detail-param"><strong>Hebungen:</strong> ' + (form.kriterien.hebungen||'\u2014') + '</span>',
+        '<span class="detail-param"><strong>Reim:</strong> ' + (form.kriterien.reimschema||[]).slice(0,2).join(', ') + '</span>',
+        '<span class="detail-param"><strong>Kadenz:</strong> ' + (form.kriterien.kadenz||'\u2014') + '</span>'
+    ].join('');
+
+    var bodyHtml = '';
+
+    // Neue Felder: Muster, Formales, Aspekte
+    if (form.interpretation.muster) {
+        bodyHtml += '<div class="detail-section"><div class="detail-section-label">Muster der Strophe</div><div class="detail-text">' + form.interpretation.muster + '</div></div>';
+    }
+    if (form.interpretation.formales) {
+        bodyHtml += '<div class="detail-section"><div class="detail-section-label">Formale Besonderheiten</div><div class="detail-text">' + form.interpretation.formales + '</div></div>';
+    }
+
+    // Bestehende Felder
+    bodyHtml += '<div class="detail-section"><div class="detail-section-label">Wirkung & Charakter</div><div class="detail-text">' + form.interpretation.wirkung + '</div></div>';
+    bodyHtml += '<div class="detail-section"><div class="detail-section-label">Literarhistorischer Kontext</div><div class="detail-text">' + form.interpretation.epoche_kontext + '</div></div>';
+
+    if (form.interpretation.aspekte) {
+        bodyHtml += '<div class="detail-section"><div class="detail-section-label">Aspekte zur Interpretation</div><div class="detail-text">' + form.interpretation.aspekte + '</div></div>';
+    }
+    if (form.interpretation.interpretationshinweise && form.interpretation.interpretationshinweise.length > 0) {
+        bodyHtml += '<div class="detail-section"><div class="detail-section-label">Interpretationshinweise</div><ul class="detail-hints">' + form.interpretation.interpretationshinweise.map(function(h){return '<li>' + h + '</li>';}).join('') + '</ul></div>';
+    }
+
+    // Traditionslinien
+    if (form.interpretation.traditionslinien) {
+        bodyHtml += '<div class="detail-section"><div class="detail-section-label">Traditionslinien & Beispielwerke</div><div class="detail-text">' + form.interpretation.traditionslinien + '</div></div>';
+    }
+
+    // Vergleichswerke (ohne Links)
+    if (form.vergleichswerke && form.vergleichswerke.length > 0) {
+        bodyHtml += '<div class="detail-section"><div class="detail-section-label">Vergleichswerke</div><div class="werk-list">' + form.vergleichswerke.map(function(w) {
+            return '<div class="werk-item"><div class="werk-author-title"><span class="werk-author">' + w.autor + ':</span> ' + w.titel + '</div><div class="werk-hinweis">' + w.hinweis + '</div></div>';
+        }).join('') + '</div></div>';
+    }
+
+    // Wikipedia-Link (bleibt erhalten)
+    if (form.wikipedia_link) {
+        bodyHtml += '<div class="detail-section"><a class="detail-wiki-link" href="' + form.wikipedia_link + '" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Weiterf\u00fchrend auf Wikipedia</a></div>';
+    }
+
+    document.getElementById('detail-body').innerHTML = bodyHtml;
+    document.getElementById('detail-overlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+};
+
+
+</script>
+</body>
+</html>
+
+

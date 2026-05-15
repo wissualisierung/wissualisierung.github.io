@@ -1,0 +1,509 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Weimarer Klassik � DOS Edition</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#000; overflow:hidden; width:100vw; height:100vh; display:flex; align-items:center; justify-content:center; }
+  canvas { display:block; width:100vw; height:100vh; image-rendering:pixelated; image-rendering:crisp-edges; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+const canvas=document.getElementById('c');
+const ctx=canvas.getContext('2d');
+let W=640, H=400, S=1, OX=0;
+function resize(){
+  const winW = window.innerWidth;
+  const winH = window.innerHeight;
+  canvas.width = winW;
+  canvas.height = winH;
+  
+  // Logical height is always 400. Width is dynamic.
+  S = winH / 400;
+  W = winW / S;
+  H = 400;
+  OX = (W - 640) / 2; // Offset to center the 640-unit wide scene
+}
+resize(); window.addEventListener('resize',resize);
+
+const C={
+  BK:'#000000', BL:'#0000AA', GR:'#00AA00', CY:'#00AAAA', RE:'#AA0000', MA:'#AA00AA', BR:'#AA5500', LG:'#AAAAAA',
+  DG:'#555555', LB:'#5555FF', LN:'#55FF55', LC:'#55FFFF', LR:'#FF5555', LM:'#FF55FF', YE:'#FFFF55', WH:'#FFFFFF',
+  GND:'#1A3A1A', GRS:'#2A5A2A', RIV:'#0044AA', RIV2:'#3377CC', STN:'#887766', STN2:'#665544', PTH:'#AA8855'
+};
+function box(x,y,w,h,col){ ctx.fillStyle=col; ctx.fillRect(~~x,~~y,w,h); }
+function px(str,x,y,col,sz){ sz=sz||1; ctx.save(); ctx.font=(8*sz)+'px monospace'; ctx.imageSmoothingEnabled=false; ctx.fillStyle=col||C.WH; ctx.fillText(str,~~x,~~y+(8*sz)); ctx.restore(); }
+function pxc(str,x,y,col,sz){ sz=sz||1; ctx.save(); ctx.font=(8*sz)+'px monospace'; const mw=ctx.measureText(str).width; ctx.imageSmoothingEnabled=false; ctx.fillStyle=col||C.WH; ctx.fillText(str,~~(x-mw/2),~~y+(8*sz)); ctx.restore(); }
+
+let AC=null;
+function ac(){ if(!AC) AC=new(window.AudioContext||window.webkitAudioContext)(); return AC; }
+function beep(f,d,tp,v){ try{ const a=ac(), o=a.createOscillator(), g=a.createGain(); o.connect(g); g.connect(a.destination); o.type=tp||'square'; o.frequency.value=f; g.gain.setValueAtTime(v||0.12,a.currentTime); g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+d); o.start(); o.stop(a.currentTime+d+0.01);}catch(e){} }
+function melody(notes){ let off=0; notes.forEach(n=>{ try{ const a=ac(), o=a.createOscillator(), g=a.createGain(); o.connect(g); g.connect(a.destination); o.type=n.t||'square'; o.frequency.value=n.f; g.gain.setValueAtTime(n.v||0.10,a.currentTime+off); g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+off+n.d); o.start(a.currentTime+off); o.stop(a.currentTime+off+n.d+0.02);}catch(e){} off+=n.d+(n.g||0.035); }); }
+
+const ODE=[
+  {f:330,d:.22},{f:330,d:.22},{f:349,d:.22},{f:392,d:.22},{f:392,d:.22},{f:349,d:.22},{f:330,d:.22},{f:294,d:.22},
+  {f:262,d:.22},{f:262,d:.22},{f:294,d:.22},{f:330,d:.22},{f:330,d:.32},{f:294,d:.10},{f:294,d:.48},
+  {f:330,d:.22},{f:330,d:.22},{f:349,d:.22},{f:392,d:.22},{f:392,d:.22},{f:349,d:.22},{f:330,d:.22},{f:294,d:.22},
+  {f:262,d:.22},{f:262,d:.22},{f:294,d:.22},{f:330,d:.22},{f:294,d:.32},{f:262,d:.10},{f:262,d:.48},
+  {f:294,d:.22},{f:294,d:.22},{f:330,d:.22},{f:262,d:.22},{f:294,d:.22},{f:330,d:.10},{f:349,d:.34},
+  {f:330,d:.22},{f:262,d:.22},{f:294,d:.22},{f:330,d:.10},{f:349,d:.34},{f:330,d:.22},{f:294,d:.22},{f:262,d:.22},{f:294,d:.48},
+  {f:392,d:.30},{f:440,d:.30},{f:494,d:.30},{f:523,d:.30},{f:494,d:.30},{f:440,d:.30},
+  {f:392,d:.30},{f:349,d:.30},{f:330,d:.30},{f:294,d:.46},
+  {f:392,d:.30},{f:440,d:.30},{f:494,d:.30},{f:523,d:.30},{f:494,d:.30},{f:440,d:.30},
+  {f:392,d:.30},{f:349,d:.30},{f:330,d:.30},{f:262,d:.56},
+  {f:330,d:.22},{f:330,d:.22},{f:349,d:.22},{f:392,d:.22},{f:392,d:.22},{f:349,d:.22},{f:330,d:.22},{f:294,d:.22},
+  {f:262,d:.22},{f:262,d:.22},{f:294,d:.22},{f:330,d:.22},{f:294,d:.32},{f:262,d:.10},{f:262,d:.62}
+];
+const HB_JGL=[{f:523,d:.18},{f:659,d:.18},{f:784,d:.18},{f:880,d:.36},{f:784,d:.18},{f:659,d:.18},{f:523,d:.46}];
+const MEPH_SND=[{f:220,d:.14,t:'sawtooth'},{f:165,d:.14,t:'sawtooth'},{f:110,d:.22,t:'sawtooth'},{f:82,d:.40,t:'sawtooth'}];
+
+const QUOTES=[
+  {t:["Was ist der Philister?","Ein hohler Darm,","mit Furcht und Hoffnung","ausgef�llt."],s:"Xenien (1797)"},
+  {t:["Dummheit und Stolz","wachsen auf","einem Holz."],s:"Xenien (1797)"},
+  {t:["Wer nichts als B�cher kennt,","kennt auch die nicht."],s:"Xenien (1797)"},
+  {t:["Der Aberglaube ist","die Poesie des Lebens."],s:"Xenien (1797)"},
+  {t:["Nur der Irrtum ist das Leben,","und das Wissen ist der Tod."],s:"Xenien (1797)"},
+  {t:["Die Botschaft h�r ich wohl,","allein mir fehlt der Glaube."],s:"Xenien (1797)"},
+  {t:["Mehr Licht!"],s:"Goethe, Faust I"},
+  {t:["Im Anfang war die Tat."],s:"Faust I"},
+  {t:["Grau, teurer Freund,","ist alle Theorie �","und gr�n des Lebens","goldner Baum."],s:"Faust I"},
+  {t:["Zwei Seelen wohnen,","ach! in meiner Brust."],s:"Faust I"},
+  {t:["Das also war","des Pudels Kern!"],s:"Faust I"},
+  {t:["Ich bin der Geist,","der stets verneint!"],s:"Faust I, Mephistopheles"},
+  {t:["Mit dem Pfeil, dem Bogen","durch Gebirg und Tal","kommt der Sch�tze leicht voran."],s:"Wilhelm Tell, Schiller"},
+  {t:["Ans Vaterland, ans teure,","schlie� dich an,","das halte fest mit deinem ganzen Herzen."],s:"Wilhelm Tell, Schiller"},
+  {t:["Das Land der Griechen","mit der Seele suchend."],s:"Iphigenie auf Tauris"},
+  {t:["Zwischen uns sei Wahrheit!"],s:"Iphigenie auf Tauris"},
+  {t:["Es f�rchte die G�tter","das Menschengeschlecht!"],s:"Iphigenie auf Tauris"},
+  {t:["Ich sterbe als K�nigin."],s:"Maria Stuart, Schiller"},
+  {t:["Der Mensch braucht","wenig Erde","f�r sein Ende."],s:"Maria Stuart, Schiller"},
+  {t:["Nicht Bitt' noch Flehen �","Anklage sei","mein Letztes!"],s:"Maria Stuart, Schiller"},
+  {t:["�ber allen Gipfeln","ist Ruh."],s:"Wandrers Nachtlied"},
+  {t:["Wer reitet so sp�t","durch Nacht und Wind?"],s:"Erlk�nig"},
+  {t:["Da steh ich nun,","ich armer Tor!"],s:"Faust I"},
+  {t:["Vom Eise befreit","sind Strom und B�che."],s:"Faust I"},
+  {t:["Es irrt der Mensch,","solang er strebt."],s:"Faust I"},
+  {t:["Das Wasser rauscht,","das Wasser schwoll."],s:"Der Fischer"},
+  {t:["Die ich rief,","die Geister,","werd ich nun nicht los."],s:"Der Zauberlehrling"},
+  {t:["Fest gemauert","in der Erden","steht die Form,","aus Lehm gebrannt."],s:"Das Lied von der Glocke"},
+  {t:["Der Menschheit W�rde","ist in eure Hand","gegeben."],s:"Die K�nstler"},
+  {t:["Es kann der Fr�mmste","nicht in Frieden leben."],s:"Wilhelm Tell"},
+  {t:["Drum pr�fe,","wer sich ewig bindet."],s:"Das Lied von der Glocke"},
+  {t:["Mit dem Pfeil, dem Bogen","durch Gebirg und Tal"],s:"Wilhelm Tell"},
+  {t:["Dem Mimen flicht die Nachwelt","keine Kr�nze."],s:"An die Freunde"},
+  {t:["Es l�chelt der See,","er ladet zum Bade."],s:"Der Fischer"},
+  {t:["Und setzet ihr nicht das Leben ein,","nie wird euch das Leben","gewonnen sein."],s:"Wallensteins Lager"},
+  {t:["Es w�chst der Mensch","mit seinen gr��eren Zwecken."],s:"Wallenstein"},
+  {t:["Nimmer, das glaubt mir,","erscheinen die G�tter,","nimmer allein."],s:"Die Kraniche des Ibykus"}
+];
+
+const STARS=Array.from({length:300},()=>({x:Math.random(),y:10+Math.random()*160,s:Math.random()<.18?2:1,ph:Math.random()*Math.PI*2}));
+function drawGoethe(x,y,fr,flip){ ctx.save(); if(flip){ctx.translate(x+16,0);ctx.scale(-1,1);x=0;} box(x+3,y-5,10,7,C.LG); box(x+2,y-3,2,5,C.LG); box(x+12,y-3,2,5,C.LG); box(x+4,y,8,8,C.YE); box(x+5,y+2,2,2,C.BK); box(x+9,y+2,2,2,C.BK); box(x+6,y+5,4,2,C.LR); box(x+5,y+8,6,3,C.WH); box(x+3,y+11,10,12,C.BL); box(x+6,y+8,4,15,C.WH); const ao=fr%2; box(x,y+11+ao,3,9,C.BL); box(x+13,y+12-ao,3,9,C.BL); box(x+16,y+13-ao,2,7,C.WH); box(x+16,y+13-ao,2,2,C.YE); box(x+4,y+23,4,9,C.DG); box(x+9,y+23,4,9,C.DG); box(x+3,y+31,5,3,C.BK); box(x+9,y+31+(fr%2),5,3,C.BK); ctx.restore(); }
+function drawSchiller(x,y,fr,flip){ ctx.save(); if(flip){ctx.translate(x+16,0);ctx.scale(-1,1);x=0;} box(x+3,y-4,10,6,C.DG); box(x+2,y-2,2,4,C.DG); box(x+12,y-2,2,4,C.DG); box(x+4,y,8,8,C.YE); box(x+5,y+2,2,2,C.BK); box(x+9,y+2,2,2,C.BK); box(x+6,y+5,4,2,C.RE); box(x+5,y+8,6,3,C.WH); box(x+3,y+11,10,12,C.GR); box(x+6,y+8,4,15,C.WH); const ao=fr%2; box(x,y+11+ao,3,9,C.GR); box(x+13,y+12-ao,3,9,C.GR); box(x+16,y+13-ao,2,7,C.WH); box(x+16,y+13-ao,2,2,C.YE); box(x+4,y+23,4,9,C.BK); box(x+9,y+23,4,9,C.BK); box(x+3,y+31,5,3,C.BR); box(x+9,y+31+(fr%2),5,3,C.BR); ctx.restore(); }
+function drawTree(x,y){ box(x+6,y+18,5,10,C.BR); box(x+1,y+10,15,12,C.GR); box(x+3,y+4,11,10,C.GR); box(x,y+12,17,6,C.LN); box(x+4,y+6,9,8,C.LN); box(x+6,y+1,5,7,C.YE); }
+function drawBuilding(x,y,w,h,wallC,roofC){ box(x,y,w,h,wallC); for(let wx=x+5;wx<x+w-10;wx+=14){ box(wx,y+8,10,12,C.YE); box(wx+4,y+8,2,12,C.BR); box(wx,y+14,10,2,C.BR);} const dx=x+~~(w/2)-4; box(dx,y+h-16,8,16,C.BR); box(dx+3,y+h-10,2,3,C.YE); for(let i=0;i<~~(w/2)+4;i++) box(x+i,y-~~(i*0.55),w-i*2,3,roofC); }
+function drawChurch(x,y){ box(x,y+30,30,80,C.STN); box(x+2,y+15,26,20,C.STN2); box(x+6,y,18,20,C.STN); box(x+13,y-14,4,16,C.YE); box(x+9,y-8,12,4,C.YE); box(x+9,y+35,12,16,C.BK); box(x+14,y+35,2,16,C.DG); box(x+9,y+44,12,2,C.DG); }
+function drawRiver(t){ for(let x=0;x<W+4;x+=4){ const yo=~~(Math.sin(x*.055+t*.0016)*3); box(x,290+yo,4,10,C.RIV); box(x,290+yo+3,4,3,C.RIV2);} }
+function drawStars(t){ STARS.forEach(s=>{ const sx = s.x * W; if(Math.sin(t*.0012+s.ph)>0.2){ ctx.fillStyle=s.s>1?C.LC:C.WH; ctx.fillRect(~~sx,~~s.y,s.s,s.s); } }); }
+function drawMoon(){ const mx = W - 85; box(mx,18,26,26,C.YE); box(mx+6,21,10,22,C.BR); box(mx+2,28,4,7,'#554400'); box(mx+11,22,4,4,'#554400'); }
+function dialog(x,y,w,h,title){ box(x+4,y+4,w,h,C.BK); box(x,y,w,h,C.BL); ctx.strokeStyle=C.WH; ctx.lineWidth=2; ctx.strokeRect(x+1,y+1,w-2,h-2); box(x+2,y+2,w-4,16,C.LG); ctx.strokeStyle=C.DG; ctx.lineWidth=1; ctx.strokeRect(x+2,y+2,w-4,16); px(title,x+6,y+1,C.BK,1); box(x+w-15,y+3,12,12,C.LG); ctx.strokeStyle=C.BK; ctx.strokeRect(x+w-15,y+3,12,12); px('X',x+w-12,y+2,C.BK,1); }
+
+let mqX=W;
+// Newsticker: {tag, tagCol, text, year}
+const TICKER=[
+  {g:'GOETHE', gc:C.YE, t:'Goethe 1749 in Frankfurt geboren � Sohn eines kaiserlichen Rats.', y:'1749'},
+  {g:'SCHILLER', gc:C.LN, t:'Schiller 1759 in Marbach am Neckar geboren.', y:'1759'},
+  {g:'GOETHE', gc:C.YE, t:'Goethes Werther (1774) l�st europaweites Aufsehen aus.', y:'1774'},
+  {g:'SCHILLER', gc:C.LN, t:'Schiller flieht 1782 aus W�rttemberg � Herzog verbot ihm das Schreiben.', y:'1782'},
+  {g:'GOETHE', gc:C.YE, t:'Goethe wird 1782 geadelt: ab sofort "von Goethe".', y:'1782'},
+  {g:'WEIMAR', gc:C.LC, t:'Herzogin Anna Amalia macht Weimar zum kulturellen Zentrum Deutschlands.', y:'1772'},
+  {g:'GOETHE', gc:C.YE, t:'Goethe reist 1786 inkognito nach Italien � spricht von seiner Wiedergeburt.', y:'1786'},
+  {g:'KLASSIK', gc:C.LM, t:'Weimarer Klassik: nur 19 Jahre � ca. 1786 bis 1805.', y:'1786'},
+  {g:'KLASSIK', gc:C.LM, t:'Leitbegriffe: Humanit�t, Ma�, Harmonie � das Sch�ne als Weg zur Wahrheit.', y:'~1790'},
+  {g:'SCHILLER', gc:C.LN, t:'Schillers �sthetische Briefe (1795): Freiheit durch Sch�nheit.', y:'1795'},
+  {g:'GOETHE', gc:C.YE, t:'Goethe und Schiller � Freundschaft seit 1794, produktivste Partnerschaft der dt. Literatur.', y:'1794'},
+  {g:'KLASSIK', gc:C.LM, t:'Goethe & Schiller ver�ffentlichen 1797 gemeinsam die Xenien � �ber 400 Epigramme.', y:'1797'},
+  {g:'WEIMAR', gc:C.LC, t:'Weimar um 1800: nur ca. 7.000 Einwohner � und doch Weltniveau.', y:'1800'},
+  {g:'GOETHE', gc:C.YE, t:'Goethe leitet 26 Jahre das Weimarer Hoftheater.', y:'1791'},
+  {g:'SCHILLER', gc:C.LN, t:'Schiller litt sein Leben lang an Tuberkulose � schrieb trotzdem bis zuletzt.', y:'1805'},
+  {g:'GOETHE', gc:C.YE, t:'Goethe trifft Napoleon 1808 in Erfurt. Napoleon: Voil� un homme!', y:'1808'},
+  {g:'SCHILLER', gc:C.LN, t:'Schiller stirbt 1805 mit nur 45 Jahren in Weimar.', y:'1805'},
+  {g:'SCHILLER', gc:C.LN, t:'Schiller wird 1802 geadelt: Friedrich von Schiller.', y:'1802'},
+  {g:'WEIMAR', gc:C.LC, t:'Das Weimarer Hoftheater brennt 1825 nieder.', y:'1825'},
+  {g:'KLASSIK', gc:C.LM, t:'Goethe entwickelt die Idee der Weltliteratur � Literatur kennt keine Grenzen.', y:'1827'},
+  {g:'GOETHE', gc:C.YE, t:'Goethe arbeitet 60 Jahre an Faust � Teil II erscheint posthum 1832.', y:'1832'},
+  {g:'GOETHE', gc:C.YE, t:'Goethe stirbt am 22. M�rz 1832 in Weimar. Letzte Worte: Mehr Licht!', y:'1832'},
+  {g:'WEIMAR', gc:C.LC, t:'Goethe und Schiller sind beide in der Weimarer F�rstengruft beigesetzt.', y:'1832'},
+];
+
+// Build flat render segments: [{text, col}]
+function buildTickerSegments(){
+  const segs=[];
+  TICKER.forEach(item=>{
+    segs.push({text:'  ['+item.g+'] ', col:item.gc});
+    segs.push({text:item.t, col:C.WH});
+    segs.push({text:'  ['+item.y+']', col:C.DG});
+    segs.push({text:'   ?', col:C.CY});
+  });
+  return segs;
+}
+const TICKER_SEGS=buildTickerSegments();
+
+// Precompute total width
+function segWidth(seg){ return seg.text.length*7; }
+const TICKER_TOTAL=TICKER_SEGS.reduce((s,g)=>s+segWidth(g),0);
+
+function drawMarquee(){
+  box(0,382,W,18,C.BK);
+  ctx.strokeStyle=C.CY; ctx.lineWidth=1; ctx.strokeRect(0,382,W,18);
+  mqX-=0.50; if(mqX<-TICKER_TOTAL) mqX=W;
+  // Draw two loops
+  [0,1].forEach(loop=>{
+    let cx=~~mqX+loop*TICKER_TOTAL;
+    TICKER_SEGS.forEach(seg=>{
+      const w=segWidth(seg);
+      if(cx+w>0 && cx<W){
+        ctx.save(); ctx.font='8px monospace'; ctx.imageSmoothingEnabled=false;
+        ctx.fillStyle=seg.col; ctx.fillText(seg.text, cx, 383+8); ctx.restore();
+      }
+      cx+=w;
+    });
+  });
+}
+
+let T=0, FR=0, frTick=0, blink=false, blinkTick=0;
+let gx=80, sx=480, gDir=1, sDir=-1;
+let QP=null, qtTick=0; const QT_INTERVAL=22000; let qIdx=~~(Math.random()*QUOTES.length);
+let EGG=null, eggCD=0;
+let melTick=0, melPlayed=false;
+let DWI={y:-30,landed:false,txtA:0,timer:0};
+let BELL={timer:0,swing:0,swingDir:1,snd:false};
+let FARBE={timer:0,phase:0,barW:0,hue:0,snd:false};
+let HB={timer:0,chosen:-1,jingle:false};
+let MEPH={y:H+40,phase:0,timer:0,snd:false,alpha:0};
+
+function scene1(){
+  for(let y=0;y<185;y++){ const p=y/185; ctx.fillStyle=p<.3?'#000022':p<.55?'#000055':p<.78?'#0000AA':'#112244'; ctx.fillRect(0,y,W,1); }
+  drawStars(T); drawMoon(); box(0,185,W,215,C.GND);
+  for(let x=0;x<W+4;x+=4){ ctx.fillStyle=Math.sin(x*.06)>.3?C.GRS:C.GND; ctx.fillRect(x,185,4,6); }
+  drawBuilding(60+OX,135,65,65,'#886644','#553322'); px('GOETHES HAUS',62+OX,122,C.YE,1);
+  drawChurch(250+OX,96);
+  drawBuilding(410+OX,150,55,55,'#557744','#334422'); px('SCHILLERS HAUS',405+OX,137,C.LN,1);
+  [18,145,200,320,360,490,555,605].forEach(tx=>drawTree(tx+OX,238));
+  for(let x=185+OX;x<430+OX;x+=6) box(x,310,4,30,C.PTH);
+  drawRiver(T);
+  for(let x=0;x<W+4;x+=4){ ctx.fillStyle=Math.sin(x*.08+T*.001)>.4?C.LN:C.GRS; ctx.fillRect(x,300,4,3); }
+  box(0,303,W,79,C.GND);
+}
+function drawQP(){ if(!QP) return; const q=QP.q, a=Math.min(1,QP.timer/900); ctx.globalAlpha=a; const lines=q.t; const maxLen=Math.max(...lines.map(l=>l.length), q.s.length+2); const dw=Math.min(520,maxLen*7+24), dh=32+lines.length*16+18; const dx=~~((W-dw)/2), dy=~~((330-dh)/2); dialog(dx,dy,dw,dh,'  '+q.s+'  '); lines.forEach((l,i)=>px(l,dx+8,dy+20+i*16,C.WH,1)); if(blink) px('[Weiter]',dx+dw-65,dy+dh-16,C.YE,1); ctx.globalAlpha=1; }
+function eggDWI(){
+  const isSchiller = DWI.who==='schiller';
+  const tx = isSchiller ? ~~sx+8 : ~~gx+8;
+  const ty = 325;
+  if(!DWI.landed){ DWI.y+=2.8; if(DWI.y>=8){ DWI.landed=true; beep(isSchiller?180:320,.08); if(isSchiller) beep(140,.22,'sawtooth'); } }
+  else { DWI.txtA=Math.min(1,DWI.txtA+.04); DWI.timer++; }
+  const sy=Math.min(DWI.y,8);
+  if(isSchiller){
+    // Thermometer (red tube falling)
+    const tx2=tx-2, ty2=ty-36+sy;
+    box(tx2+8,ty2,6,22,'#DDDDDD');       // glass tube
+    box(tx2+10,ty2+2,2,18,C.LR);         // mercury column
+    box(tx2+6,ty2+18,10,8,C.LR);         // bulb
+    box(tx2+9,ty2,4,3,C.WH);             // tip
+    // Virus (pixel blob)
+    const vx=tx+14, vy=ty-28+sy;
+    box(vx+4,vy,8,8,C.LN);              // body
+    box(vx+2,vy+2,4,4,C.LN);
+    box(vx+10,vy+2,4,4,C.LN);
+    box(vx+2,vy+6,12,4,C.LN);
+    box(vx+6,vy-4,2,4,C.LN);            // spikes
+    box(vx+12,vy+4,4,2,C.LN);
+    box(vx,vy+8,4,2,C.LN);
+    box(vx+6,vy+10,2,4,C.LN);
+    box(vx+4,vy+2,2,2,C.BK);            // eyes
+    box(vx+10,vy+2,2,2,C.BK);
+    box(vx+5,vy+6,6,1,'#005500');       // grimace
+    if(DWI.txtA>0){
+      ctx.globalAlpha=DWI.txtA;
+      box(OX+60,130,520,90,C.BK);
+      ctx.strokeStyle=C.LN; ctx.lineWidth=2; ctx.strokeRect(OX+60,130,520,90);
+      pxc('SCHILLER HAT FIEBER!',W/2,136,C.LN,2);
+      pxc('Thermometer: 39,8�C',W/2,167,C.LR,1);
+      pxc('(Er schrieb trotzdem weiter.)',W/2,183,C.LG,1);
+      pxc('Wallenstein, 1799',W/2,199,C.DG,1);
+      ctx.globalAlpha=1;
+    }
+  } else {
+    // Goethe sunglasses
+    const gtx = tx;
+    box(gtx-6,ty-32+sy,28,4,C.BK);
+    box(gtx-7,ty-30+sy,12,9,'#222222');
+    box(gtx+5,ty-30+sy,12,9,'#222222');
+    box(gtx-6,ty-29+sy,3,2,'#555555');
+    box(gtx+6,ty-29+sy,3,2,'#555555');
+    box(gtx-9,ty-30+sy,2,6,C.BK);
+    box(gtx+18,ty-30+sy,2,6,C.BK);
+    if(DWI.txtA>0){
+      ctx.globalAlpha=DWI.txtA;
+      box(OX+120,140,400,70,C.BK);
+      ctx.strokeStyle=C.YE; ctx.lineWidth=2; ctx.strokeRect(OX+120,140,400,70);
+      pxc('DEAL WITH IT',W/2,148,C.YE,3);
+      pxc('(Faust, 1808)',W/2,194,C.LG,1);
+      ctx.globalAlpha=1;
+    }
+  }
+  if(DWI.timer>210){ EGG=null; DWI={y:-30,landed:false,txtA:0,timer:0,who:null}; }
+}
+function eggHB(){
+  if(!HB.jingle){ melody(HB_JGL); HB.jingle=true; }
+  HB.timer++;
+  // Pick Goethe's seat early (seat 0,1,2)
+  if(HB.timer===1) HB.chosen=~~(Math.random()*3);
+  box(0,0,W,H,C.RE); box(0,300,W,100,'#880000');
+  for(let i=0;i<W;i+=22){ const h2=~~(Math.abs(Math.sin(i*.28))*25+10); box(i,0,22,h2,'#880000'); box(i+2,0,18,h2-3,'#AA0000'); }
+  box(OX+160,8,320,30,C.BK); ctx.strokeStyle=C.YE; ctx.lineWidth=1; ctx.strokeRect(OX+160,8,320,30); pxc('?  HERZBLATT  ?',W/2,9,C.YE,2);
+  [[0,1,1,0,1,1,0],[1,1,1,1,1,1,1],[1,1,1,1,1,1,1],[0,1,1,1,1,1,0],[0,0,1,1,1,0,0],[0,0,0,1,0,0,0]].forEach((row,ri)=>row.forEach((p,ci)=>{ if(p) box(~~(W/2)-35+ci*10,50+ri*10,10,10,C.LR); }));
+  const seats=[110,280,450];
+  const fullNames=['Charlotte von Stein','Christiane Vulpius','Friederike Brion'];
+  const shortNames=['Charlotte','Christiane','Friederike'];
+  const revealed=HB.timer>150;
+  seats.forEach((sx2,i)=>{
+    const osx = sx2 + OX;
+    box(osx,205,54,85,'#773311'); box(osx,183,54,26,'#AA4422');
+    if(i===HB.chosen){
+      // Goethe sitzt hier
+      drawGoethe(osx+17,220,~~(T/18)%2,false);
+      const label=revealed?shortNames[i]:'GOETHE';
+      pxc(label,osx+27,185,C.YE,1);
+    } else {
+      // leerer Sessel mit Fragezeichen oder Namen
+      const label=revealed?shortNames[i]:'???';
+      pxc(label,osx+27,185,C.LM,1);
+      // Silhouette
+      box(osx+18,215,18,28,C.DG);
+      box(osx+20,208,14,10,C.DG);
+    }
+  });
+  if(HB.chosen>=0 && HB.timer>270){
+    const cn=fullNames[HB.chosen];
+    box(OX+90,320,460,36,C.BK); ctx.strokeStyle=C.YE; ctx.lineWidth=1; ctx.strokeRect(OX+90,320,460,36);
+    pxc('GOETHE SITZT BEI: '+cn,W/2,325,C.YE,1);
+    if(blink) pxc('?',W/2,340,C.LR,1);
+  }
+  if(HB.timer>480){ EGG=null; HB={timer:0,chosen:-1,jingle:false}; }
+}
+function eggMEPH(){ if(!MEPH.snd){ melody(MEPH_SND); MEPH.snd=true; } if(MEPH.phase===0){ MEPH.y-=1.4; MEPH.alpha=Math.min(1,MEPH.alpha+0.01); if(MEPH.y<=290) MEPH.phase=1; } else { MEPH.timer++; if(MEPH.timer>280) MEPH.phase=2; } if(MEPH.phase===2){ MEPH.y+=1.8; MEPH.alpha=Math.max(0,MEPH.alpha-0.01); if(MEPH.y>H+60){ EGG=null; MEPH={y:H+40,phase:0,timer:0,snd:false,alpha:0}; return; } }
+  const mx=~~(W/2)-15, my=~~MEPH.y-60; ctx.save(); ctx.globalAlpha=Math.max(0.35, MEPH.alpha);
+  box(mx-2,350,36,6,C.BK); for(let i=0;i<6;i++) box(mx+i*3,352,2,i+1,'#440000'); box(mx-4,my-4,44,72,'#440000');
+  box(mx+6,my+14,20,22,C.RE); box(mx+2,my+14,4,16,'#CC2200'); box(mx+30,my+14,4,16,'#CC2200');
+  for(let i=0;i<10;i++) box(mx+32+i,my+28+~~(Math.abs(i-5)*0.8),2,2,'#BB1100'); box(mx+42,my+32,5,5,C.LR);
+  box(mx+8,my,16,16,'#DD2200'); box(mx+6,my-10,4,12,'#BB1100'); box(mx+5,my-13,4,4,'#DD2200'); box(mx+22,my-10,4,12,'#BB1100'); box(mx+23,my-13,4,4,'#DD2200');
+  box(mx+9,my+4,4,4,C.YE); box(mx+19,my+4,4,4,C.YE); box(mx+10,my+11,12,2,C.YE); box(mx+10,my+10,2,3,C.YE); box(mx+20,my+10,2,3,C.YE);
+  const wo=(~~(T/14))%2; box(mx+32,my+8-wo*2,2,10,'#CC2200'); box(mx+34,my+4-wo*2,4,4,'#CC2200');
+  ctx.restore();
+  if(MEPH.phase>=1 && blink){ box(OX+40,40,560,50,C.BK); ctx.strokeStyle=C.LR; ctx.lineWidth=2; ctx.strokeRect(OX+40,40,560,50); pxc('ICH BIN DER GEIST, DER STETS VERNEINT!',W/2,44,C.LR,1); pxc('� Mephistopheles, Faust I �',W/2,60,C.RE,1); }
+}
+function playBellTone(){
+  try{
+    const a=ac();
+    [523,659,784,1047].forEach((f,i)=>{
+      const o=a.createOscillator(), g=a.createGain();
+      o.connect(g); g.connect(a.destination);
+      o.type='sine'; o.frequency.value=f;
+      const t0=a.currentTime+i*0.18;
+      g.gain.setValueAtTime(0,t0);
+      g.gain.linearRampToValueAtTime(0.18,t0+0.02);
+      g.gain.exponentialRampToValueAtTime(0.001,t0+1.4);
+      o.start(t0); o.stop(t0+1.5);
+    });
+  }catch(e){}
+}
+function eggBELL(){
+  if(!BELL.snd){ playBellTone(); BELL.snd=true; }
+  BELL.timer++;
+  // Swing animation
+  if(BELL.timer%3===0){ BELL.swing+=BELL.swingDir*1.3; if(Math.abs(BELL.swing)>22) BELL.swingDir*=-1; }
+  const bx=~~(W/2)-20, by=60;
+  ctx.save();
+  ctx.translate(bx+20, by);
+  ctx.rotate(BELL.swing * Math.PI/180);
+  // Rope
+  box(-1,-30,3,32,'#AA8833');
+  // Bell body
+  box(-18,0,38,30,'#DDAA00');
+  box(-20,24,42,10,'#DDAA00');
+  box(-14,2,30,26,'#FFCC00');
+  // Bell opening arch
+  box(-18,0,8,12,'#DDAA00');
+  box(12,0,8,12,'#DDAA00');
+  // Clapper
+  const clap=~~(BELL.swing*0.4);
+  box(-2+clap,18,5,14,'#886600');
+  box(-4+clap,30,8,6,'#AA8800');
+  // Shine
+  box(-10,4,6,8,'#FFEE88');
+  ctx.restore();
+  // Label with Schiller quote
+  const alpha=Math.min(1,(BELL.timer-20)/40);
+  if(alpha>0){
+    ctx.globalAlpha=alpha;
+    box(OX+80,110,480,58,C.BK);
+    ctx.strokeStyle=C.YE; ctx.lineWidth=2; ctx.strokeRect(OX+80,110,480,58);
+    pxc('Fest gemauert in der Erden',W/2,115,C.YE,1);
+    pxc('steht die Form, aus Lehm gebrannt.',W/2,131,C.YE,1);
+    pxc('Heute muss die Glocke werden!',W/2,147,C.WH,1);
+    pxc('Das Lied von der Glocke  �  Schiller, 1799',W/2,160,C.DG,1);
+    ctx.globalAlpha=1;
+  }
+  if(BELL.timer>320){ EGG=null; BELL={timer:0,swing:0,swingDir:1,snd:false}; }
+}
+function playFarbeSound(){
+  try{
+    const a=ac();
+    // slow ascending sine sweep � "prismatic"
+    const osc=a.createOscillator(), g=a.createGain();
+    osc.connect(g); g.connect(a.destination);
+    osc.type='sine';
+    osc.frequency.setValueAtTime(180, a.currentTime);
+    osc.frequency.linearRampToValueAtTime(720, a.currentTime+3.5);
+    g.gain.setValueAtTime(0,a.currentTime);
+    g.gain.linearRampToValueAtTime(0.10,a.currentTime+0.4);
+    g.gain.setValueAtTime(0.10,a.currentTime+3.0);
+    g.gain.linearRampToValueAtTime(0,a.currentTime+3.6);
+    osc.start(a.currentTime); osc.stop(a.currentTime+3.7);
+  }catch(e){}
+}
+function eggFARBE(){
+  if(!FARBE.snd){ playFarbeSound(); FARBE.snd=true; }
+  FARBE.timer++;
+  const t2=FARBE.timer;
+
+  // Phase 0: sky slowly shifts through spectrum (120 frames)
+  // Phase 1: DOS window slides in (frames 80-160)
+  // Phase 2: loading bar fills (frames 160-340)
+  // Phase 3: Newton text + punchline (frames 340-480)
+  // Phase 4: fade out (frames 480-520)
+
+  if(t2<20) FARBE.phase=0;
+  else if(t2<160) FARBE.phase=1;
+  else if(t2<360) FARBE.phase=2;
+  else if(t2<500) FARBE.phase=3;
+  else FARBE.phase=4;
+
+  // -- Spectral sky overlay --
+  const prog=Math.min(1, t2/480);
+  for(let y=0;y<185;y++){
+    const base=y/185;
+    // hue cycles 0..300 degrees across sky height, shifted by timer
+    const hue=(base*280 + t2*0.8) % 360;
+    const sat=Math.min(100, prog*100);
+    const light=Math.max(8, 18-base*10);
+    ctx.fillStyle=`hsl(${hue},${~~sat}%,${~~light}%)`;
+    ctx.fillRect(0,y,W,1);
+  }
+  // Stars still visible but tinted
+  STARS.forEach(s=>{
+    if(Math.sin(T*.0012+s.ph)>0.2){
+      const hue2=(s.x+T*.5)%360;
+      ctx.fillStyle=`hsl(${hue2},90%,75%)`;
+      ctx.fillRect(~~s.x,~~s.y,s.s,s.s);
+    }
+  });
+  drawMoon();
+
+  // -- Phase 1+: DOS window --
+  if(FARBE.phase>=1){
+    const winY=Math.max(30, 30 + Math.max(0,(80-t2)*3));
+    const dw=420, dh=130, dx=~~((W-dw)/2);
+    box(dx+4,winY+4,dw,dh,C.BK);
+    box(dx,winY,dw,dh,C.BL);
+    ctx.strokeStyle=C.WH; ctx.lineWidth=2; ctx.strokeRect(dx+1,winY+1,dw-2,dh-2);
+    box(dx+2,winY+2,dw-4,16,C.LG);
+    ctx.strokeStyle=C.DG; ctx.lineWidth=1; ctx.strokeRect(dx+2,winY+2,dw-4,16);
+    px('  FARBENLEHRE.EXE',dx+4,winY+1,C.BK,1);
+    box(dx+dw-15,winY+3,12,12,C.LG);
+    ctx.strokeStyle=C.BK; ctx.strokeRect(dx+dw-15,winY+3,12,12);
+    px('X',dx+dw-12,winY+2,C.BK,1);
+    px('C:\WEIMAR\GOETHE> FARBENLEHRE.EXE',dx+8,winY+22,C.WH,1);
+    px('Initialisiere Spektralanalyse...',dx+8,winY+38,C.LC,1);
+
+    // -- Phase 2: loading bar --
+    if(FARBE.phase>=2){
+      const barProg=Math.min(1,(t2-160)/200);
+      const barW=~~(barProg*320);
+      px('Lade Farbspektrum:',dx+8,winY+54,C.WH,1);
+      box(dx+8,winY+66,320,12,C.DG);
+      // Rainbow loading bar
+      for(let i=0;i<barW;i++){
+        const h=~~(i/320*300);
+        ctx.fillStyle=`hsl(${h},100%,55%)`;
+        ctx.fillRect(dx+8+i,winY+66,1,12);
+      }
+      ctx.strokeStyle=C.WH; ctx.lineWidth=1; ctx.strokeRect(dx+8,winY+66,320,12);
+      const pct=~~(barProg*100);
+      px(pct+'%',dx+334,winY+66,C.YE,1);
+      if(barProg>=1){
+        px('Spektrum vollst�ndig geladen. [OK]',dx+8,winY+82,C.LN,1);
+      }
+    }
+    // -- Phase 3: Newton verdict --
+    if(FARBE.phase>=3){
+      px('Ergebnis: Newton hatte UNRECHT.',dx+8,winY+98,C.LR,1);
+      if(blink) px('(laut Goethe, 1810)',dx+8,winY+114,C.YE,1);
+    }
+  }
+
+  // -- Phase 4: fade --
+  if(FARBE.phase===4){
+    ctx.globalAlpha=Math.max(0, 1-(t2-480)/40);
+  }
+  if(t2>520){
+    ctx.globalAlpha=1;
+    EGG=null;
+    FARBE={timer:0,phase:0,barW:0,hue:0,snd:false};
+  }
+}
+function tryEgg(){ if(EGG||eggCD>0||QP) return; if(Math.random()<.0010){ const eggs=['deal_with_it_goethe','deal_with_it_schiller','herzblatt','mephisto','bell','farbe'];
+    EGG=eggs[~~(Math.random()*eggs.length)]; eggCD=1600; qtTick=0; QP=null; } }
+
+let last=0;
+function loop(ts){ const dt=ts-last; last=ts; T++; melTick+=dt; if(melTick>6000&&!melPlayed){ melody(ODE); melPlayed=true; } if(melTick>58000){ melTick=0; melPlayed=false; }
+  blinkTick+=dt; if(blinkTick>520){ blink=!blink; blinkTick=0; }
+  frTick+=dt; if(frTick>340){ FR++; frTick=0; }
+  gx+=.28*gDir; if(gx>W-30) gDir=-1; if(gx<-30) gDir=1; sx+=.25*sDir; if(sx>W-30) sDir=-1; if(sx<-30) sDir=1;
+  qtTick+=dt; if(qtTick>QT_INTERVAL && !EGG){ qtTick=0; QP={q:QUOTES[qIdx%QUOTES.length],timer:7500}; qIdx++; }
+  if(QP){ QP.timer-=dt; if(QP.timer<=0) QP=null; }
+  if(eggCD>0) eggCD--; tryEgg();
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.save(); ctx.scale(S,S);
+  if(EGG==='herzblatt'){ eggHB(); }
+  else if(EGG==='farbe'){
+    scene1(); drawGoethe(~~gx,322,FR%2,gDir<0); drawSchiller(~~sx,322,(FR+1)%2,sDir>0);
+    eggFARBE(); drawMarquee();
+  } else {
+    scene1(); drawGoethe(~~gx,322,FR%2,gDir<0); drawSchiller(~~sx,322,(FR+1)%2,sDir>0);
+    if(EGG==='deal_with_it_goethe'||EGG==='deal_with_it_schiller'){
+      if(!DWI.who) DWI.who=(EGG==='deal_with_it_schiller'?'schiller':'goethe');
+      eggDWI();
+    }
+    if(EGG==='mephisto') eggMEPH();
+    if(EGG==='bell') eggBELL();
+    drawQP(); drawMarquee();
+  }
+  ctx.restore();
+  
+  // Scanlines overlay
+  ctx.fillStyle = 'rgba(0,0,0,0.07)';
+  for(let y=0; y<canvas.height; y+=~~(S*2)) ctx.fillRect(0, y, canvas.width, ~~(S*1.1));
+  
+  requestAnimationFrame(loop);
+}
+['click','keydown','touchstart'].forEach(ev=>document.addEventListener(ev,()=>{ try{ac().resume();}catch(e){} },{once:false}));
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

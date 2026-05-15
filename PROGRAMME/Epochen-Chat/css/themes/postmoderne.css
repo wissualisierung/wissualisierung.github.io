@@ -1,0 +1,29 @@
+/* ============================================
+   EpochenChat – Theme: Postmoderne / Gegenwart
+   Epoche: 1950–Heute
+   Modus: Dunkelmodus (Cyber)
+   ============================================ */
+
+[data-theme="postmoderne"] {
+    --color-primary: #00FFCC;
+    --color-primary-light: #33FFDD;
+    --color-accent: #FF00FF;
+    --color-accent-light: #FF55FF;
+    --color-bg: #0D0D0D;
+    --color-surface: #1A1A1A;
+    --color-surface-hover: #262626;
+    --color-bubble-persona: #202020;
+    --color-bubble-persona-text: #00FFCC;
+    --color-bubble-learner: #151515;
+    --color-bubble-learner-text: #FFFFFF;
+    --color-text: #E0E0E0;
+    --color-text-muted: #888888;
+    --color-text-inverse: #0D0D0D;
+    --color-border: #333333;
+    --color-shadow: rgba(0, 255, 204, 0.1);
+    --color-overlay: rgba(0, 0, 0, 0.8);
+
+    --texture-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='2' opacity='.1'%3E%3Crect width='100' height='1' fill='%2300FFCC'/%3E%3C/svg%3E");
+    
+    --font-serif: var(--font-sans);
+}

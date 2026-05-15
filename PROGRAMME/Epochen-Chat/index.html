@@ -1,0 +1,356 @@
+﻿<!DOCTYPE html>
+<!--
+  EpochenChat Editor
+  CC-BY-SA 4.0 Sebastian Wolf 2026
+  https://creativecommons.org/licenses/by-sa/4.0/
+-->
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="EpochenChat Editor � Erstellen Sie interaktive literarische Chats f�r den Deutschunterricht.">
+    <title>EpochenChat Editor v0.2</title>
+
+    <!-- Fonts & Themes -->
+    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/themes/romantik.css">
+    <link rel="stylesheet" href="css/themes/barock.css">
+    <link rel="stylesheet" href="css/themes/aufklaerung.css">
+    <link rel="stylesheet" href="css/themes/vormaerz.css">
+    <link rel="stylesheet" href="css/themes/expressionismus.css">
+    <link rel="stylesheet" href="css/themes/mittelalter.css">
+    <link rel="stylesheet" href="css/themes/renaissance.css">
+    <link rel="stylesheet" href="css/themes/klassik.css">
+    <link rel="stylesheet" href="css/themes/realismus.css">
+    <link rel="stylesheet" href="css/themes/moderne.css">
+    <link rel="stylesheet" href="css/themes/postmoderne.css">
+    <link rel="stylesheet" href="css/themes/barrierefrei.css">
+    <link rel="stylesheet" href="css/themes/modern_hell.css">
+
+    <!-- Core Styles -->
+    <link rel="stylesheet" href="css/player.css">
+    <link rel="stylesheet" href="css/editor.css">
+
+    <!-- Favicon (inline SVG) -->
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>??</text></svg>">
+</head>
+
+<body class="editor-body">
+
+    <div class="editor-app">
+
+        <!-- ===== Top Bar ===== -->
+        <header class="editor-topbar">
+            <div class="editor-topbar__brand">
+                <span class="editor-topbar__brand-icon">??</span>
+                <span>EpochenChat</span>
+                <span class="editor-topbar__version">v0.2 MVP</span>
+            </div>
+            <div class="editor-topbar__actions">
+                <button class="btn btn--secondary btn--sm" id="btnTemplates" title="Vorlagenbibliothek �ffnen">
+                    ?? Vorlagen
+                </button>
+                <button class="btn btn--secondary btn--sm" id="btnImportMd" title="Markdown-Datei importieren">
+                    ?? Import
+                </button>
+                <button class="btn btn--secondary btn--sm" id="btnLoad" title="Projekt laden (Ctrl+O)">
+                    ?? Laden
+                </button>
+                <button class="btn btn--secondary btn--sm" id="btnSave" title="Projekt speichern (Ctrl+Shift+S)">
+                    ?? Speichern
+                </button>
+                <button class="btn btn--export" id="btnExportHtml" title="Als HTML-Datei exportieren (Ctrl+S)">
+                    ? HTML exportieren
+                </button>
+                <button class="btn btn--secondary btn--sm" id="btnExportScorm" title="Als SCORM 1.2 ZIP exportieren">
+                    ?? SCORM
+                </button>
+            </div>
+        </header>
+
+        <!-- ===== Split Panels ===== -->
+        <div class="editor-panels">
+
+            <!-- Left Panel: Editor -->
+            <div class="editor-panel editor-panel--left">
+
+                <!-- Persona Config -->
+                <div class="persona-config">
+                    <div class="persona-config__avatar-wrap">
+                        <img class="persona-config__avatar" id="personaAvatarImg" src="assets/avatars/eichendorff.png"
+                            alt="Persona-Avatar" title="Klicken zum �ndern des Avatars" />
+                        <button class="persona-config__avatar-upload" id="avatarUploadBtn"
+                            title="Eigenes Bild hochladen" aria-label="Avatar-Bild hochladen">
+                            ?
+                        </button>
+                        <input type="file" id="avatarFileInput" class="sr-only"
+                            accept="image/jpeg,image/png,image/svg+xml" />
+                    </div>
+                    <div class="persona-config__fields">
+                        <div class="persona-config__field persona-config__field--name">
+                            <label class="persona-config__label" for="personaName">Persona</label>
+                            <input class="persona-config__input" type="text" id="personaName"
+                                value="Joseph von Eichendorff" placeholder="Name der Persona" />
+                        </div>
+                        <div class="persona-config__field persona-config__field--epoch">
+                            <label class="persona-config__label" for="personaTheme">Epoche / Theme</label>
+                            <select class="persona-config__select" id="personaTheme">
+                                <option value="modern_hell" selected>?? Modern-Hell (Standard)</option>
+                                <option value="mittelalter">?? Mittelalter</option>
+                                <option value="renaissance">?? Renaissance</option>
+                                <option value="barock">?? Barock</option>
+                                <option value="aufklaerung">?? Aufkl�rung</option>
+                                <option value="klassik">??? Klassik</option>
+                                <option value="romantik">?? Romantik</option>
+                                <option value="vormaerz">??? Vorm�rz</option>
+                                <option value="realismus">?? Realismus</option>
+                                <option value="expressionismus">?? Expressionismus</option>
+                                <option value="moderne">?? Moderne</option>
+                                <option value="postmoderne">?? Postmoderne</option>
+                                <option value="barrierefrei">? Barrierefrei</option>
+                            </select>
+                        </div>
+                        <div class="persona-config__field persona-config__field--source">
+                            <label class="persona-config__label" for="personaSource">Bildquelle</label>
+                            <input class="persona-config__input" type="text" id="personaSource" value=""
+                                placeholder="Quelle (z.B. Wikimedia)" />
+                        </div>
+                        <div class="persona-config__field persona-config__field--time">
+                            <label class="persona-config__label" for="estimatedTime">Zeit (Min.)</label>
+                            <input class="persona-config__input" type="number" id="estimatedTime" value="20" min="1"
+                                max="120" placeholder="Min." />
+                        </div>
+                        <div class="persona-config__field persona-config__field--creator">
+                            <label class="persona-config__label" for="creatorName">Autor/in des Chats</label>
+                            <input class="persona-config__input" type="text" id="creatorName" value=""
+                                placeholder="Ihr Name (optional)" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel Header -->
+                <div class="panel-header">
+                    <span class="panel-header__title">Markdown-Editor</span>
+                    <div class="panel-header__tabs">
+                        <button class="panel-tab panel-tab--active" id="btnSyntaxHelp"
+                            title="Syntax-Referenz anzeigen">? Chat-Syntax</button>
+                    </div>
+                </div>
+
+                <!-- Snippet Toolbar -->
+                <div class="toolbar-snippets" id="snippetToolbar" role="toolbar" aria-label="Module einf�gen"></div>
+
+                <!-- Textarea -->
+                <div class="editor-textarea-wrap">
+                    <textarea class="editor-textarea" id="editorTextarea" placeholder="Schreibe hier deinen Chat im Markdown-Format...
+
+Beispiel:
+[RAHMUNG]
+Hinweis zur didaktischen Konstruktion
+
+[PERSONA]
+Gr�� Gott! Ich bin...
+
+[LERNER]
+Was f�llt dir auf?
+
+[ZITAT]
+&quot;Zitierter Text&quot; � Quelle
+
+[QUIZ:single]
+Frage
+- [ ] falsch
+- [x] richtig
+
+[ABSCHLUSS]
+Abschlusstext
+- [Linktext](URL)
+>> Literaturangabe" spellcheck="false"></textarea>
+                </div>
+
+                <!-- Status Bar -->
+                <div class="editor-statusbar">
+                    <div class="editor-statusbar__item">
+                        <span class="editor-statusbar__dot" id="statusDot"></span>
+                        <span><span id="statusModules">0</span> Module</span>
+                    </div>
+                    <div class="editor-statusbar__item">
+                        <span><span id="statusLines">0</span> Zeilen</span>
+                    </div>
+                    <div class="editor-statusbar__item">
+                        EpochenChat Editor v0.2 � <kbd>Ctrl+S</kbd> Export � <kbd>Ctrl+Shift+S</kbd> Save
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Preview -->
+            <div class="editor-panel editor-panel--right" id="previewPanel" data-theme="modern_hell">
+                <div class="preview-container">
+                    <div class="chat-player" id="previewContainer" role="log"
+                        aria-label="Vorschau des literarischen Chats">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file inputs -->
+    <input type="file" id="loadFileInput" class="sr-only" accept=".json,application/json" />
+    <input type="file" id="importMdInput" class="sr-only" accept=".md,.txt,text/markdown,text/plain" />
+
+    <!-- ===== Template Modal ===== -->
+    <div class="modal-overlay" id="templateModal" hidden role="dialog" aria-label="Vorlagenbibliothek"
+        aria-modal="true">
+        <div class="modal">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+                <h2 class="modal__title">?? Vorlagenbibliothek</h2>
+                <button class="btn btn--secondary btn--sm" onclick="EpochenEditor.hideTemplateModal()">?
+                    Schlie�en</button>
+            </div>
+            <p style="color:#999;font-size:0.85rem;margin-bottom:1rem;">
+                W�hle eine Epochen-Persona als Ausgangspunkt. Du kannst alles anpassen.
+            </p>
+            <div class="template-grid" id="templateGrid"></div>
+        </div>
+    </div>
+
+    <!-- ===== Syntax-Referenz Modal ===== -->
+    <div class="modal-overlay" id="syntaxModal" hidden role="dialog" aria-label="Syntax-Referenz" aria-modal="true">
+        <div class="modal" style="max-width:620px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+                <h2 class="modal__title">? Chat-Syntax Referenz</h2>
+                <button class="btn btn--secondary btn--sm" id="btnCloseSyntax">? Schlie�en</button>
+            </div>
+            <p style="color:#999;font-size:0.85rem;margin-bottom:1rem;">
+                Jedes Modul wird mit einem <code
+                    style="background:#2a2a40;padding:2px 6px;border-radius:3px;color:#7B9EA8;">[TAG]</code> auf einer
+                eigenen Zeile eingeleitet. Der Inhalt folgt in den n�chsten Zeilen.
+            </p>
+            <div
+                style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;font-size:0.82rem;max-height:60vh;overflow-y:auto;padding-right:0.5rem;">
+                <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
+                    <strong style="color:#7B9EA8;">[RAHMUNG]</strong>
+                    <div style="color:#aaa;margin-top:0.3rem;">Didaktischer Rahmen<br><em>Hinweistext f�r Sch�ler</em>
+                    </div>
+                </div>
+                <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
+                    <strong style="color:#7B9EA8;">[PERSONA]</strong>
+                    <div style="color:#aaa;margin-top:0.3rem;">Persona-Nachricht<br><em>Chat-Bubble (links)</em></div>
+                </div>
+                <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
+                    <strong style="color:#7B9EA8;">[LERNER]</strong>
+                    <div style="color:#aaa;margin-top:0.3rem;">Lerner-Nachricht<br><em>Chat-Bubble (rechts)</em></div>
+                </div>
+                <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
+                    <strong style="color:#7B9EA8;">[ZITAT]</strong>
+                    <div style="color:#aaa;margin-top:0.3rem;">Zitatbox mit Quelle<br><em>"Text" � Quelle</em></div>
+                </div>
+                <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
+                    <strong style="color:#7B9EA8;">[KONTEXT]</strong>
+                    <div style="color:#aaa;margin-top:0.3rem;">Aufklappbare Info<br><em>Hintergrundwissen</em></div>
+                </div>
+                <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
+                    <strong style="color:#7B9EA8;">[BILD]</strong>
+                    <div style="color:#aaa;margin-top:0.3rem;">Bild-Karte<br><em>![Alt](URL) >> Quelle</em></div>
+                </div>
+                <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
+                    <strong style="color:#7B9EA8;">[AUDIO]</strong>
+                    <div style="color:#aaa;margin-top:0.3rem;">Audio-Player<br><em>[Label](URL) >> Quelle</em></div>
+                </div>
+                <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
+                    <strong style="color:#7B9EA8;">[ANNOTATION]</strong>
+                    <div style="color:#aaa;margin-top:0.3rem;">Textmarkierung<br><em>Text | Aufgabe</em><br><em
+                            style="color:#6ba368;">Optional: >> Wort :: Feedback</em></div>
+                </div>
+                <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
+                    <strong style="color:#7B9EA8;">[QUIZ:single]</strong>
+                    <div style="color:#aaa;margin-top:0.3rem;">Single-Choice Quiz<br><em>- [ ] / - [x]</em><br><em
+                            style="color:#6ba368;">Optional: >> Feedback</em></div>
+                </div>
+                <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
+                    <strong style="color:#7B9EA8;">[QUIZ:multi]</strong>
+                    <div style="color:#aaa;margin-top:0.3rem;">Multiple-Choice Quiz<br><em>Mehrere [x]</em><br><em
+                            style="color:#6ba368;">Optional: >> Feedback</em></div>
+                </div>
+                <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
+                    <strong style="color:#7B9EA8;">[FREITEXT]</strong>
+                    <div style="color:#aaa;margin-top:0.3rem;">Freitext-Antwort<br><em>Schreibimpuls</em></div>
+                </div>
+                <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
+                    <strong style="color:#7B9EA8;">[BAROMETER]</strong>
+                    <div style="color:#aaa;margin-top:0.3rem;">Stimmungsbarometer<br><em>Aussage | Min | Max</em></div>
+                </div>
+                <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
+                    <strong style="color:#7B9EA8;">[CHECKPOINT]</strong>
+                    <div style="color:#aaa;margin-top:0.3rem;">Verst�ndnis-Check<br><em>Reflexionsfrage</em></div>
+                </div>
+                <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
+                    <strong style="color:#7B9EA8;">[SELBST]</strong>
+                    <div style="color:#aaa;margin-top:0.3rem;">Selbsteinsch�tzung<br><em>Item1 | Item2 | �</em></div>
+                </div>
+                <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
+                    <strong style="color:#7B9EA8;">[ZEITSTRAHL]</strong>
+                    <div style="color:#aaa;margin-top:0.3rem;">Epochen-Timeline (klickbar)<br><em>*Name:Start-End >>
+                            Info</em><br><em style="color:#6ba368;">* = aktiv, >> = Info-Popup</em></div>
+                </div>
+                <div style="background:#1a1a28;padding:0.6rem;border-radius:8px;">
+                    <strong style="color:#7B9EA8;">[ABSCHLUSS]</strong>
+                    <div style="color:#aaa;margin-top:0.3rem;">Finale mit Links<br><em>Text<br>- [Label](URL)<br>>>
+                            Quelle</em></div>
+                </div>
+            </div>
+            <div
+                style="margin-top:1rem;padding:0.8rem;background:#1a1a28;border-radius:8px;font-size:0.8rem;color:#aaa;">
+                <strong style="color:#7B9EA8;">Inline-Formatierung:</strong>
+                <span style="margin-left:0.5rem;"><code
+                        style="background:#2a2a40;padding:1px 4px;border-radius:2px;">**fett**</code></span>
+                <span style="margin-left:0.5rem;"><code
+                        style="background:#2a2a40;padding:1px 4px;border-radius:2px;">*kursiv*</code></span>
+                <span style="margin-left:0.5rem;"><code
+                        style="background:#2a2a40;padding:1px 4px;border-radius:2px;">[Text](URL)</code></span>
+                <span style="margin-left:0.5rem;"><code
+                        style="background:#2a2a40;padding:1px 4px;border-radius:2px;">[Q: Quelle]</code></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Close modals on overlay click -->
+    <script>
+        document.getElementById('templateModal').addEventListener('click', function (e) {
+            if (e.target === this) EpochenEditor.hideTemplateModal();
+        });
+        document.getElementById('syntaxModal').addEventListener('click', function (e) {
+            if (e.target === this) this.hidden = true;
+        });
+        document.getElementById('btnCloseSyntax').addEventListener('click', function () {
+            document.getElementById('syntaxModal').hidden = true;
+        });
+        document.getElementById('btnSyntaxHelp').addEventListener('click', function () {
+            document.getElementById('syntaxModal').hidden = false;
+        });
+    </script>
+
+    <!-- ===== Scripts ===== -->
+    <script src="js/parser.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/css-bundle.js"></script>
+    <script src="js/exporter.js"></script>
+    <script src="js/vorlagen-bundle.js"></script>
+    <script src="js/editor.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            EpochenEditor.init();
+        });
+    </script>
+    <footer class="editor-license">
+        <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">
+            <span class="editor-license__cc">cc</span> CC-BY-SA 4.0
+        </a>
+        Sebastian Wolf 2026
+    </footer>
+</body>
+
+</html>

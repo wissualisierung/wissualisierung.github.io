@@ -1,0 +1,742 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Stilmittel im �berblick � Lernkartei Oberstufe</title>
+<!-- Komplett offline-f�hig: keine externen Ressourcen -->
+<style>
+
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#1c2333;
+  --acc:#f0a500;--acc-glow:rgba(240,165,0,.12);
+  --text:#e6edf3;--text2:#8b949e;--text3:#6e7681;
+  --border:#30363d;--ok:#3fb950;--r:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{
+  background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,Helvetica,Arial,sans-serif;
+  min-height:100vh;
+}
+/* HEADER */
+.hdr{background:linear-gradient(135deg,#0d1117 0%,#1a1d2e 60%,#0d1117 100%);
+  border-bottom:1px solid var(--border);padding:2.8rem 2rem 2rem;text-align:center;position:relative;overflow:hidden;}
+.hdr::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 50% 0%,rgba(240,165,0,.07),transparent);pointer-events:none;}
+.badge{display:inline-block;background:var(--acc-glow);border:1px solid rgba(240,165,0,.3);color:var(--acc);
+  font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:.25rem .85rem;border-radius:100px;margin-bottom:.8rem;}
+.hdr h1{font-family:Georgia,'Times New Roman',Cambria,serif;
+  font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-.01em;margin-bottom:.35rem;}
+.hdr-sub{color:var(--text2);font-size:.92rem;}
+/* CARD NAME */
+.cn{font-family:Georgia,'Times New Roman',Cambria,serif;
+  font-size:1.22rem;font-weight:700;line-height:1.2;}
+/* CONTROLS */
+.ctrl{position:sticky;top:0;z-index:100;background:rgba(13,17,23,.97);
+  backdrop-filter:blur(14px);border-bottom:1px solid var(--border);
+  padding:.75rem 1.5rem;display:flex;flex-direction:column;gap:.55rem;}
+.si-wrap{position:relative;max-width:460px;margin:0 auto;width:100%;}
+.si-icon{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;}
+#si{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;
+  padding:.52rem 1rem .52rem 2.2rem;color:var(--text);font-family:inherit;font-size:.87rem;outline:none;}
+#si:focus{border-color:var(--acc);box-shadow:0 0 0 3px var(--acc-glow);}
+#si::placeholder{color:var(--text3);}
+.fbrow{display:flex;gap:.35rem;flex-wrap:wrap;justify-content:center;}
+.fbrow-lbl{font-size:.68rem;color:var(--text3);font-weight:700;letter-spacing:.07em;text-transform:uppercase;align-self:center;}
+.fb{background:var(--bg2);border:1px solid var(--border);color:var(--text2);
+  font-family:inherit;font-size:.72rem;font-weight:500;padding:.24rem .68rem;
+  border-radius:100px;cursor:pointer;transition:all .16s;white-space:nowrap;}
+.fb:hover{border-color:var(--ec,var(--acc));color:var(--ec,var(--acc));}
+.fb.active{background:var(--ec,var(--acc));border-color:var(--ec,var(--acc));color:#000;font-weight:700;}
+/* STATS */
+.stats{max-width:1200px;margin:.7rem auto 0;padding:0 1.5rem;
+  display:flex;justify-content:space-between;align-items:center;}
+.stats-txt{font-size:.8rem;color:var(--text3);}
+.stats-txt strong{color:var(--acc);}
+.rst-btn{background:none;border:none;color:var(--text3);font-family:inherit;
+  font-size:.77rem;cursor:pointer;padding:.2rem .5rem;transition:color .18s;}
+.rst-btn:hover{color:var(--acc);}
+/* GRID */
+.grid{max-width:1200px;margin:0 auto;padding:1.2rem 1.5rem 5rem;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.1rem;}
+/* -- FLIP CARD ---------------------------------- */
+.fc{height:280px;perspective:1200px;cursor:pointer;}
+.fc.hidden{display:none;}
+.fci{position:relative;width:100%;height:100%;
+  transform-style:preserve-3d;
+  transition:transform .55s cubic-bezier(.4,0,.2,1);}
+.fc.flipped .fci{transform:rotateY(180deg);}
+.fcf,.fcb{
+  position:absolute;inset:0;border-radius:var(--r);
+  padding:1.1rem 1.3rem;border:1px solid var(--border);
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  overflow:hidden;}
+.fcf{background:linear-gradient(145deg,#1c2333 0%,#1e2a3d 100%);
+  display:flex;flex-direction:column;justify-content:space-between;
+  transition:box-shadow .2s,border-color .2s;}
+.fc:hover .fcf,.fc:hover .fcb{box-shadow:0 8px 36px rgba(0,0,0,.55);}
+.fc.learned .fcf{border-color:var(--ok);}
+.fcb{background:linear-gradient(145deg,#1a2540 0%,#1d2f4a 100%);
+  transform:rotateY(180deg);
+  display:flex;flex-direction:column;gap:.38rem;}
+/* Karteninhalte */
+.ch{display:flex;justify-content:space-between;align-items:flex-start;gap:.4rem;}
+.chint{font-size:.62rem;color:var(--text3);background:var(--bg2);padding:.14rem .38rem;
+  border-radius:4px;border:1px solid var(--border);flex-shrink:0;}
+.ce{font-size:.78rem;color:var(--text2);line-height:1.5;flex-grow:1;margin-top:.3rem;}
+.cff{display:flex;justify-content:space-between;align-items:center;}
+.lc{display:flex;align-items:center;gap:.3rem;font-size:.7rem;color:var(--text3);user-select:none;}
+.lc input{accent-color:var(--ok);width:13px;height:13px;cursor:pointer;}
+.cnr{font-size:.65rem;color:var(--text3);}
+.bs{display:flex;flex-direction:column;gap:.05rem;}
+.bl{font-size:.57rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--acc);}
+.bt{font-size:.75rem;color:var(--text2);line-height:1.45;}
+.bex{font-style:italic;color:var(--text);border-left:2px solid var(--acc);padding-left:.45rem;}
+.etags{display:flex;flex-wrap:wrap;gap:.2rem;margin-top:.08rem;}
+.etag{font-size:.6rem;font-weight:600;padding:.1rem .38rem;border-radius:100px;white-space:nowrap;}
+/* WIKI LINK */
+.wrow{margin-top:auto;padding-top:.25rem;display:flex;justify-content:flex-end;}
+.wiki-link{display:inline-flex;align-items:center;gap:.25rem;font-size:.67rem;font-weight:600;
+  color:var(--text3);background:var(--bg);border:1px solid var(--border);
+  border-radius:6px;padding:.18rem .5rem;text-decoration:none;transition:all .18s;}
+.wiki-link:hover{color:var(--acc);border-color:var(--acc);}
+/* FOOTER */
+.ftr{border-top:1px solid var(--border);background:var(--bg2);padding:1rem 2rem;text-align:center;}
+.lic{display:inline-block;background:var(--bg3);border:1px solid var(--border);
+  border-radius:7px;padding:.4rem .95rem;font-size:.75rem;color:var(--text2);}
+/* NO RESULTS */
+.nores{grid-column:1/-1;text-align:center;padding:4rem 1rem;color:var(--text3);display:none;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.fc{animation:fadeUp .3s ease both;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+@media(max-width:600px){
+  .grid{grid-template-columns:1fr;padding:1rem;}
+  .ctrl,.stats{padding-left:1rem;padding-right:1rem;}
+  .fc{height:300px;}
+}
+
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="badge">Deutsch &middot; Oberstufe</div>
+  <h1>Stilmittel im &Uuml;berblick</h1>
+  <p class="hdr-sub">Interaktive Lernkartei &mdash; 30 Stilmittel mit Erkl&auml;rung, Wirkung, Fachbegriffen, Epochen &amp; Wikipedia-Verweisen</p>
+</header>
+
+<div class="ctrl">
+  <div class="si-wrap">
+    <span class="si-icon">&#128269;</span>
+    <input type="search" id="si" placeholder="Stilmittel suchen &hellip;" autocomplete="off">
+  </div>
+  <div class="fbrow">
+    <span class="fbrow-lbl">Epoche:</span>
+<button class="fb active" data-ep="all">Alle</button>
+<button class="fb" data-ep="Antike" style="--ec:#fcd34d;--ebg:rgba(251,191,36,.18);--ebr:rgba(251,191,36,.4);">Antike</button>
+<button class="fb" data-ep="Mittelalter" style="--ec:#a1a1aa;--ebg:rgba(161,161,170,.18);--ebr:rgba(161,161,170,.4);">Mittelalter</button>
+<button class="fb" data-ep="Barock" style="--ec:#a78bfa;--ebg:rgba(139,92,246,.18);--ebr:rgba(139,92,246,.4);">Barock</button>
+<button class="fb" data-ep="Aufkl�rung" style="--ec:#34d399;--ebg:rgba(16,185,129,.18);--ebr:rgba(16,185,129,.4);">Aufkl�rung</button>
+<button class="fb" data-ep="Empfindsamkeit" style="--ec:#fac896;--ebg:rgba(250,200,150,.18);--ebr:rgba(250,200,150,.4);">Empfindsamkeit</button>
+<button class="fb" data-ep="Sturm und Drang" style="--ec:#fb923c;--ebg:rgba(234,88,12,.18);--ebr:rgba(234,88,12,.4);">Sturm und Drang</button>
+<button class="fb" data-ep="Weimarer Klassik" style="--ec:#60a5fa;--ebg:rgba(59,130,246,.18);--ebr:rgba(59,130,246,.4);">Weimarer Klassik</button>
+<button class="fb" data-ep="Romantik" style="--ec:#f472b6;--ebg:rgba(236,72,153,.18);--ebr:rgba(236,72,153,.4);">Romantik</button>
+<button class="fb" data-ep="Biedermeier" style="--ec:#c4b5dc;--ebg:rgba(180,150,200,.18);--ebr:rgba(180,150,200,.4);">Biedermeier</button>
+<button class="fb" data-ep="Vorm�rz" style="--ec:#f9a8d4;--ebg:rgba(244,114,182,.18);--ebr:rgba(244,114,182,.4);">Vorm�rz</button>
+<button class="fb" data-ep="Realismus" style="--ec:#2dd4bf;--ebg:rgba(20,184,166,.18);--ebr:rgba(20,184,166,.4);">Realismus</button>
+<button class="fb" data-ep="Naturalismus" style="--ec:#9ca3af;--ebg:rgba(75,85,99,.3);--ebr:rgba(75,85,99,.5);">Naturalismus</button>
+<button class="fb" data-ep="Symbolismus" style="--ec:#c4b5fd;--ebg:rgba(167,139,250,.18);--ebr:rgba(167,139,250,.4);">Symbolismus</button>
+<button class="fb" data-ep="Expressionismus" style="--ec:#f87171;--ebg:rgba(239,68,68,.18);--ebr:rgba(239,68,68,.4);">Expressionismus</button>
+<button class="fb" data-ep="Nachkriegsliteratur" style="--ec:#e5e7eb;--ebg:rgba(156,163,175,.18);--ebr:rgba(156,163,175,.4);">Nachkriegsliteratur</button>
+<button class="fb" data-ep="Moderne" style="--ec:#fbbf24;--ebg:rgba(245,158,11,.18);--ebr:rgba(245,158,11,.4);">Moderne</button>
+  </div>
+</div>
+
+<div class="stats">
+  <p class="stats-txt">
+    <strong id="cnt-visible">0</strong> von
+    <strong id="cnt-total">0</strong> Stilmitteln &nbsp;&middot;&nbsp;
+    <strong id="cnt-learned">0</strong> gelernt
+  </p>
+  <button class="rst-btn" onclick="resetAll()">&#8635; Zur&uuml;cksetzen</button>
+</div>
+
+<main class="grid" id="grid">
+<div class="fc" data-name="metapher" data-ep="Barock|Romantik|Expressionismus">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Metapher</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Implizite �bertragung eines Begriffs auf einen anderen Bereich ohne �wie� (Tertium comparationis = gemeinsames Merkmal bleibt unausgesprochen). Unterschieden werden Quellbereich (Vehikel) und Zielbereich (Tenor).</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#01</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Verdichtet Abstraktes auf ein sinnliches Bild und l�st beim Lesenden sofortige emotionale Resonanz aus, weil der Bedeutungssprung aktiv mitvollzogen werden muss. Je k�hner die Metapher (= weiterer semantischer Abstand), desto gr��er die �sthetische Intensit�t. Achtung: Tote Metaphern (,Tischbein�) werden nicht mehr als Bilder wahrgenommen. Analysefragen: Welcher Quellbereich wird auf welchen Zielbereich �bertragen? Was ist das Tertium comparationis?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�Das Leben ist ein Traum.�</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#a78bfa;background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.4);">Barock</span><span class="etag" style="color:#f472b6;background:rgba(236,72,153,.18);border:1px solid rgba(236,72,153,.4);">Romantik</span><span class="etag" style="color:#f87171;background:rgba(239,68,68,.18);border:1px solid rgba(239,68,68,.4);">Expressionismus</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Metapher" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="vergleich" data-ep="Antike|Mittelalter|Realismus">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Vergleich</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Explizite Gegen�berstellung zweier Bereiche durch �wie�. Das Tertium comparationis (= das gemeinsame Merkmal) ist offen ausgewiesen � anders als bei der Metapher, die es implizit l�sst.</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#02</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Veranschaulicht durch expliziten Bezug; die Vergleichsebene bleibt transparent. Didaktisch gut zug�nglich: Das Tertium comparationis (die �bereinstimmung) l�sst sich pr�zise benennen. Kann verst�rken, abschw�chen oder ironisieren. Komparandum (das Verglichene) und Komparans (der Vergleichsma�stab) sind klar getrennt.</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�Stark wie ein L�we.�</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#fcd34d;background:rgba(251,191,36,.18);border:1px solid rgba(251,191,36,.4);">Antike</span><span class="etag" style="color:#a1a1aa;background:rgba(161,161,170,.18);border:1px solid rgba(161,161,170,.4);">Mittelalter</span><span class="etag" style="color:#2dd4bf;background:rgba(20,184,166,.18);border:1px solid rgba(20,184,166,.4);">Realismus</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Gleichnis" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="personifikation" data-ep="Barock|Sturm und Drang|Romantik">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Personifikation</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Unbelebtes oder Abstraktes erh�lt menschliche Eigenschaften oder Handlungen (Fachbegriff auch: Prosopop�ie). Sonderform der Metapher.</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#03</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Emotionalisiert die Darstellung und erzeugt Empathie mit Natur, Dingen oder Abstrakta. In der Romantik zentrales Mittel der Naturbeseelung (Naturerfahrung als Spiegel innerer Zust�nde). Schafft enge affektive Verbindung zwischen Lesenden und dargestellter Welt. Analysefrage: Welche menschliche Eigenschaft wird anthropomorphisierend �bertragen � und warum gerade diese?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�Der Wind fl�stert sein Geheimnis.�</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#a78bfa;background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.4);">Barock</span><span class="etag" style="color:#fb923c;background:rgba(234,88,12,.18);border:1px solid rgba(234,88,12,.4);">Sturm und Drang</span><span class="etag" style="color:#f472b6;background:rgba(236,72,153,.18);border:1px solid rgba(236,72,153,.4);">Romantik</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Personifikation" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="allegorie" data-ep="Mittelalter|Barock|Aufkl�rung">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Allegorie</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Durchgehende Versinnbildlichung eines abstrakten Begriffs �ber einen l�ngeren Text. Anders als das punktuelle Symbol zieht sich die Allegorie als koh�rentes Bild durch den gesamten Text (sensus allegoricus).</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#04</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Erm�glicht das Verhandeln abstrakter oder politisch heikler Ideen in bildlicher Form � sch�tzte Autoren historisch vor Zensur. Verlangt kulturelles Vorwissen zur Dekodierung (ikonographisches Lesen). Erzeugt doppelte Lesbarkeit: w�rtliche Handlung + allegorische Bedeutungsebene. Merkformel: Symbol = punktuell, Allegorie = durchgehend.</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">Figur des Todes als Sensenmann (Allegorie des Sterbens).</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#a1a1aa;background:rgba(161,161,170,.18);border:1px solid rgba(161,161,170,.4);">Mittelalter</span><span class="etag" style="color:#a78bfa;background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.4);">Barock</span><span class="etag" style="color:#34d399;background:rgba(16,185,129,.18);border:1px solid rgba(16,185,129,.4);">Aufkl�rung</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Allegorie" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="symbol" data-ep="Romantik|Symbolismus|Expressionismus">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Symbol</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Ein konkretes Bild steht f�r eine �bergeordnete abstrakte Bedeutung. Unterschieden werden konventionelle Symbole (kulturell kodiert: Kreuz, Waage) und werkimmanente Symbole (erst im Werk entwickelt).</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#05</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Verdichtet Bedeutung und schafft Interpretationsoffenheit (Polysemie). L�dt zur aktiven Bedeutungskonstruktion ein; Denotation (W�rtliche Bedeutung) und Konnotation (Nebenbedeutung) greifen ineinander. Verlangt kontextbewusstes Lesen. Analysefrage: Ist das Symbol konventionell oder werkimmanent?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">Die Blaue Blume (Novalis) � werkimmanentes Symbol f�r Sehnsucht und Unendlichkeit.</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#f472b6;background:rgba(236,72,153,.18);border:1px solid rgba(236,72,153,.4);">Romantik</span><span class="etag" style="color:#c4b5fd;background:rgba(167,139,250,.18);border:1px solid rgba(167,139,250,.4);">Symbolismus</span><span class="etag" style="color:#f87171;background:rgba(239,68,68,.18);border:1px solid rgba(239,68,68,.4);">Expressionismus</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Symbol" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="ironie" data-ep="Aufkl�rung|Romantik|Moderne">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Ironie</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Das Gemeinte ist das Gegenteil des W�rtlichen (verbale Ironie). Zu unterscheiden: verbale Ironie, dramatische Ironie (Zuschauer wei� mehr als die Figur) und situative Ironie (Ereignis widerspricht Erwartung).</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#06</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Schafft Distanz zwischen Sprecher und Gegenstand; zwingt Lesende zur Interpretation jenseits des Wortlauts. Kann subtil angreifen, unterhalten oder kritisieren. Die romantische Ironie als �sthetisches Prinzip (Friedrich Schlegel) bricht die Illusion des Werkes bewusst auf (Parekbase). Analysefrage: Welche Art von Ironie liegt vor � und wer oder was wird exponiert?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�Das war wirklich eine brillante Idee.� (nach einem Fehler)</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#34d399;background:rgba(16,185,129,.18);border:1px solid rgba(16,185,129,.4);">Aufkl�rung</span><span class="etag" style="color:#f472b6;background:rgba(236,72,153,.18);border:1px solid rgba(236,72,153,.4);">Romantik</span><span class="etag" style="color:#fbbf24;background:rgba(245,158,11,.18);border:1px solid rgba(245,158,11,.4);">Moderne</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Ironie" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="sarkasmus" data-ep="Vorm�rz|Naturalismus|Expressionismus">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Sarkasmus</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Gesteigerte, verletzende Form der verbalen Ironie; zynisch, aggressiv, entlarvend. Etymologie: griech. sarkazein = Fleisch zerrei�en.</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#07</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Wirkt aggressiver als die Ironie � die Verachtung ist offen sp�rbar. Im politischen Drama charakterisiert Sarkasmus eine Figur als bitter oder desillusioniert. Als Mittel der Satire (Heine, B�chner) legt er Machtstrukturen blo�. Analysefrage: Welche emotionale Haltung steckt hinter dem Sarkasmus?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�Bravo! Du hast es wieder mal geschafft, alles zu ruinieren.�</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#f9a8d4;background:rgba(244,114,182,.18);border:1px solid rgba(244,114,182,.4);">Vorm�rz</span><span class="etag" style="color:#9ca3af;background:rgba(75,85,99,.3);border:1px solid rgba(75,85,99,.5);">Naturalismus</span><span class="etag" style="color:#f87171;background:rgba(239,68,68,.18);border:1px solid rgba(239,68,68,.4);">Expressionismus</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Sarkasmus" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="hyperbel" data-ep="Barock|Sturm und Drang|Expressionismus">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Hyperbel</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Ma�lose �bertreibung zum Zweck der Verst�rkung oder komischen Wirkung (Amplifikation / amplificatio). Gegenteil: Litotes.</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#08</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Betont durch extreme �bersteigerung � kann komisch oder pathetisch wirken. Im Expressionismus erzeugt sie Ersch�tterung und Entfremdung; im Barock prunkvolle amplificatio. Steuert die emotionale Intensit�t nach oben. Analysefrage: Ist die �bertreibung bewusst stilistisch eingesetzt oder unfreiwillig?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�Ich hab es dir tausendmal gesagt!�</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#a78bfa;background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.4);">Barock</span><span class="etag" style="color:#fb923c;background:rgba(234,88,12,.18);border:1px solid rgba(234,88,12,.4);">Sturm und Drang</span><span class="etag" style="color:#f87171;background:rgba(239,68,68,.18);border:1px solid rgba(239,68,68,.4);">Expressionismus</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Hyperbel_(Rhetorik)" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="litotes" data-ep="Aufkl�rung|Weimarer Klassik">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Litotes</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Untertreibung durch doppelte Verneinung oder absichtliche Verharmlosung (auch Meiosis). Gegenteil: Hyperbel.</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#09</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Erzeugt distanzierte, intellektuell kontrollierte Haltung � wirkt oft ironisch. Die doppelte Verneinung zwingt zur aktiven logischen Mitarbeit (Meiosis als Understatement). In der Klassik Ausdruck rhetorischer Beherrschung und zur�ckhaltung (gr. leiptein = weglassen).</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�Das ist nicht unklug.� (= sehr klug)</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#34d399;background:rgba(16,185,129,.18);border:1px solid rgba(16,185,129,.4);">Aufkl�rung</span><span class="etag" style="color:#60a5fa;background:rgba(59,130,246,.18);border:1px solid rgba(59,130,246,.4);">Weimarer Klassik</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Litotes" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="euphemismus" data-ep="Nachkriegsliteratur">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Euphemismus</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Besch�nigender Ausdruck f�r etwas Unangenehmes oder Negatives; Gegenteil: Dysphemismus. Wichtiges Thema der Sprachkritik (Lingua Tertii Imperii � Victor Klemperer).</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#10</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Mildert negative Inhalte sprachlich ab � kann schonend (Tod, Krankheit) oder manipulativ (Propaganda, Newspeak) wirken. Als Instrument der Meinungslenkung analysiert von Orwell (Doublespeak) und Klemperer. Analysefrage: Welches Interesse steckt hinter der Besch�nigung? Wessen Sprache ist das?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�Er ist von uns gegangen.� (= gestorben)</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#e5e7eb;background:rgba(156,163,175,.18);border:1px solid rgba(156,163,175,.4);">Nachkriegsliteratur</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Euphemismus" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="oxymoron" data-ep="Barock|Romantik|Expressionismus">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Oxymoron</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Verbindung zweier sich logisch widersprechender Begriffe zu einem Ausdruck (gr. oxy = scharf, moros = stumpf). Sonderform des Paradoxons auf Wortebene.</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#11</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Vereint Widerspr�chliches auf engstem Raum � verweist auf Ambivalenz menschlicher Erfahrung. Erzeugt semantische Spannung. H�ufig in Liebeslyrik (,liebende Feindschaft�) und Barocklyrik. Abgrenzung: Oxymoron = Wortebene, Paradoxon = Aussageebene.</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�beredtes Schweigen�, �bitterse�ߓ</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#a78bfa;background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.4);">Barock</span><span class="etag" style="color:#f472b6;background:rgba(236,72,153,.18);border:1px solid rgba(236,72,153,.4);">Romantik</span><span class="etag" style="color:#f87171;background:rgba(239,68,68,.18);border:1px solid rgba(239,68,68,.4);">Expressionismus</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Oxymoron" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="paradoxon" data-ep="Barock|Moderne">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Paradoxon</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Scheinbar widerspr�chliche Aussage, die bei n�herer Betrachtung eine tiefere Wahrheit enth�lt (gr. para = gegen, doxa = Meinung). Abgrenzung zum Oxymoron: Das Paradoxon ist eine Aussage, das Oxymoron eine Wortverbindung.</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#12</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Regt philosophisches Nachdenken an und destabilisiert scheinbar feste Gewissheiten. Im Barock Mittel zur Erfassung der Welt als unverf�gbares Ganzes (Contemptus mundi). Der Widerspruch ist Aufforderung zur Tiefenlekt�re. Analysefrage: Welche verborgene Wahrheit steckt hinter dem Widerspruch?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�Wer sein Leben retten will, wird es verlieren.�</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#a78bfa;background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.4);">Barock</span><span class="etag" style="color:#fbbf24;background:rgba(245,158,11,.18);border:1px solid rgba(245,158,11,.4);">Moderne</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Paradoxon" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="anapher" data-ep="Antike|Barock|Weimarer Klassik|Expressionismus">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Anapher</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Wiederholung eines Wortes oder einer Wortgruppe am Beginn aufeinanderfolgender S�tze oder Verse (gr. anaphora = R�ckbeziehung). Gegenteil: Epipher.</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#13</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Rhythmisiert den Text und erzeugt Eindringlichkeit. Steuert Aufmerksamkeit und hebt Schl�sselw�rter hervor. Erzeugt Sog- oder Hammerwirkung � klassisches Mittel der Persuasion in Rede und Lyrik (amplificatio per repetitionem). Unterschied zur Epipher: Nachdruck liegt am Satzanfang.</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�Ich fordere Gerechtigkeit. Ich fordere W�rde. Ich fordere Freiheit.�</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#fcd34d;background:rgba(251,191,36,.18);border:1px solid rgba(251,191,36,.4);">Antike</span><span class="etag" style="color:#a78bfa;background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.4);">Barock</span><span class="etag" style="color:#60a5fa;background:rgba(59,130,246,.18);border:1px solid rgba(59,130,246,.4);">Weimarer Klassik</span><span class="etag" style="color:#f87171;background:rgba(239,68,68,.18);border:1px solid rgba(239,68,68,.4);">Expressionismus</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Anapher_(Rhetorik)" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="epipher" data-ep="Antike|Sturm und Drang|Romantik">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Epipher</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Wiederholung eines Wortes oder einer Wortgruppe am Ende aufeinanderfolgender S�tze (gr. epiphora = Nachstellung). Gegenteil: Anapher.</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#14</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Der Nachhall am Satzende pr�gt sich besonders ein � das wiederholte Wort wird zum Schl�sselwort des Abschnitts. Verst�rkt das Gef�hl von Zwangsl�ufigkeit. Kombination von Anapher + Epipher = Symploke. Analysefrage: Welches Wort wird durch die Wiederholung zum Fokus?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�F�r dich. Nur f�r dich. Immer f�r dich.�</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#fcd34d;background:rgba(251,191,36,.18);border:1px solid rgba(251,191,36,.4);">Antike</span><span class="etag" style="color:#fb923c;background:rgba(234,88,12,.18);border:1px solid rgba(234,88,12,.4);">Sturm und Drang</span><span class="etag" style="color:#f472b6;background:rgba(236,72,153,.18);border:1px solid rgba(236,72,153,.4);">Romantik</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Epipher" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="klimax" data-ep="Antike|Barock|Weimarer Klassik">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Klimax</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Reihung in aufsteigender Wertigkeit oder Intensit�t (gr. klimax = Leiter; lat. Gradatio). Gegenteil: Antiklimax.</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#15</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Steigert Spannung und �berzeugungskraft durch aufsteigende Reihung (Gradatio). Lenkt Erwartungen und erzeugt emotionale Kurve bis zum H�hepunkt. Der letzte Begriff erh�lt das st�rkste Gewicht. Analysefrage: Ist die Steigerungslogik semantisch nachvollziehbar oder willk�rlich?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�Er kam, sah und siegte.�</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#fcd34d;background:rgba(251,191,36,.18);border:1px solid rgba(251,191,36,.4);">Antike</span><span class="etag" style="color:#a78bfa;background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.4);">Barock</span><span class="etag" style="color:#60a5fa;background:rgba(59,130,246,.18);border:1px solid rgba(59,130,246,.4);">Weimarer Klassik</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Klimax_(Rhetorik)" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="antiklimax" data-ep="Aufkl�rung|Biedermeier|Moderne">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Antiklimax</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Absteigende Reihung � die Erwartung einer Steigerung wird absichtlich entt�uscht. Umgekehrte Klimax (Gradatio descendens).</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#16</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Entt�uscht die erwartete Steigerung � wirkt komisch, ern�chernd oder satirisch (Bathos). Das Lachen entsteht durch den Aufprall auf das Banale nach gro�en Ank�ndigungen. H�ufig in Satire und absurdem Theater. Analysefrage: Was wird bewusst auf das Triviale herabgesetzt?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�Er liebte sein Land, seine Stadt, seinen Parkplatz.�</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#34d399;background:rgba(16,185,129,.18);border:1px solid rgba(16,185,129,.4);">Aufkl�rung</span><span class="etag" style="color:#c4b5dc;background:rgba(180,150,200,.18);border:1px solid rgba(180,150,200,.4);">Biedermeier</span><span class="etag" style="color:#fbbf24;background:rgba(245,158,11,.18);border:1px solid rgba(245,158,11,.4);">Moderne</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Antiklimax" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="antithese" data-ep="Barock|Aufkl�rung|Weimarer Klassik">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Antithese</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Pointierte Gegen�berstellung gegens�tzlicher Begriffe, Gedanken oder Aussagen (gr. anti = gegen, thesis = Setzung). H�ufig Grundlage dialektischen Denkens (These � Antithese � Synthese).</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#17</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Sch�rft Kontraste und zeigt Widerspr�che pointiert auf. Im Barock Strukturprinzip der Sonettform (Alexandriner: zwei Halbverse stehen sich gegen�ber). Ist H�ufig Ausgangspunkt dialektischen Argumentierens. Analysefrage: Welcher der beiden Pole wird vom Text bevorzugt?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�Der Geist ist willig, aber das Fleisch ist schwach.�</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#a78bfa;background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.4);">Barock</span><span class="etag" style="color:#34d399;background:rgba(16,185,129,.18);border:1px solid rgba(16,185,129,.4);">Aufkl�rung</span><span class="etag" style="color:#60a5fa;background:rgba(59,130,246,.18);border:1px solid rgba(59,130,246,.4);">Weimarer Klassik</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Antithese" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="chiasmus" data-ep="Antike|Barock|Weimarer Klassik">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Chiasmus</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Kreuzweise Anordnung zweier paralleler Satzglieder nach dem Schema A-B / B-A (gr. chi = X-f�rmige Kreuzung). Strukturformel: a1 b2 � b3 a4.</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#18</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Erzeugt durch �berkreuzstellung eine einpr�gsame, symmetrische Formulierung. Pointiert Aussagen durch strukturelle Eleganz und l�sst beide Richtungen der Aussage gleichwertig erscheinen. Verwandt mit dem Parallelismus (A-B / A-B). Analysefrage: Ver�ndert die Umkehrung die Bedeutung?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�Man lebt nicht, um zu essen � man isst, um zu leben.�</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#fcd34d;background:rgba(251,191,36,.18);border:1px solid rgba(251,191,36,.4);">Antike</span><span class="etag" style="color:#a78bfa;background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.4);">Barock</span><span class="etag" style="color:#60a5fa;background:rgba(59,130,246,.18);border:1px solid rgba(59,130,246,.4);">Weimarer Klassik</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Chiasmus" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="ellipse" data-ep="Sturm und Drang|Expressionismus">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Ellipse</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Auslassung grammatisch notwendiger, aber sinngem�� erg�nzbarer Satzteile (gr. elleipsis = Auslassung). Auch: Brachylogie.</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#19</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Verdichtet, beschleunigt Rhythmus und erzeugt Unmittelbarkeit oder dramatische K�rze (Brachylogie). Im Sturm und Drang Ausdruck emotionaler �berw�ltigung; im Expressionismus Mittel radikaler Verdichtung und Fragmentierung. Die Auslassung aktiviert die Vorstellungskraft der Lesenden.</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�Ende gut, alles gut.�</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#fb923c;background:rgba(234,88,12,.18);border:1px solid rgba(234,88,12,.4);">Sturm und Drang</span><span class="etag" style="color:#f87171;background:rgba(239,68,68,.18);border:1px solid rgba(239,68,68,.4);">Expressionismus</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Ellipse_(Linguistik)" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="aposiopese" data-ep="Sturm und Drang|Romantik|Moderne">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Aposiopese</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Abrupter, auff�lliger Abbruch eines begonnenen Satzes (gr. aposiopesis = Verstummen), oft durch Gedankenstriche markiert.</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#20</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Deutet das Unsagbare oder Bedrohliche an � die Leerstelle (implizierter Inhalt) erzeugt Spannung. Verweist auf emotionale �berw�ltigung oder strategisches Verschweigen. In der Moderne (Celan, Bachmann) Mittel des Verstummens angesichts des Traumas. Analysefrage: Was wird nicht gesagt � und warum?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�Wenn du das noch einmal tust, dann ��</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#fb923c;background:rgba(234,88,12,.18);border:1px solid rgba(234,88,12,.4);">Sturm und Drang</span><span class="etag" style="color:#f472b6;background:rgba(236,72,153,.18);border:1px solid rgba(236,72,153,.4);">Romantik</span><span class="etag" style="color:#fbbf24;background:rgba(245,158,11,.18);border:1px solid rgba(245,158,11,.4);">Moderne</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Aposiopese" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="rhetorische frage" data-ep="Antike|Aufkl�rung|Weimarer Klassik|Expressionismus">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Rhetorische Frage</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Frage, die keine echte Antwort erwartet; die Antwort ist offensichtlich oder wird suggeriert (Fachbegriff: Erotema oder Erotesis).</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#21</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Bindet Lesende ein und appelliert ans Gewissen. Erzeugt Scheindiskursivit�t: Die Antwort liegt bereits nahe (Erotema). Im Drama Mittel zur Figurencharakterisierung. Zu unterscheiden: Offene Erotema (suggeriert Antwort) vs. Quaesitum (echte Frage). Analysefrage: Welche Antwort wird suggeriert?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�Wer will schon in einer Welt ohne Mitgef�hl leben?�</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#fcd34d;background:rgba(251,191,36,.18);border:1px solid rgba(251,191,36,.4);">Antike</span><span class="etag" style="color:#34d399;background:rgba(16,185,129,.18);border:1px solid rgba(16,185,129,.4);">Aufkl�rung</span><span class="etag" style="color:#60a5fa;background:rgba(59,130,246,.18);border:1px solid rgba(59,130,246,.4);">Weimarer Klassik</span><span class="etag" style="color:#f87171;background:rgba(239,68,68,.18);border:1px solid rgba(239,68,68,.4);">Expressionismus</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Rhetorische_Frage" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="alliteration" data-ep="Mittelalter|Barock|Romantik">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Alliteration</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Gleicher Anlautkonsonant bei mehreren aufeinanderfolgenden W�rtern (Stabreim). In der germanisch-mittelalterlichen Dichtung strukturgebendes Prinzip (altnord. Edda, Nibelungenlied).</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#22</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Klanglich einpr�gsam � h�ufig in Werbung, Sprichw�rtern und Lyrik (Merkwirkung durch Phonosymbolik). Harte Konsonanten (k, t, p) erzeugen Sch�rfe; weiche (w, l, m) Sanftheit und Fluss. Analysefrage: Welche Klangwirkung erzeugen die verwendeten Laute (Phonosymbolik)?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�Milch macht m�de M�nner munter.�</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#a1a1aa;background:rgba(161,161,170,.18);border:1px solid rgba(161,161,170,.4);">Mittelalter</span><span class="etag" style="color:#a78bfa;background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.4);">Barock</span><span class="etag" style="color:#f472b6;background:rgba(236,72,153,.18);border:1px solid rgba(236,72,153,.4);">Romantik</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Alliteration" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="assonanz" data-ep="Empfindsamkeit|Romantik|Symbolismus">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Assonanz</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Gleichklang der Vokale im Wortinneren bei aufeinanderfolgenden W�rtern (Vokalreim, halber Reim). Schw�chere Form des Endreims.</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#23</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Erzeugt Musikalit�t und Stimmungsdichte ohne den harten Abschluss des Endreims. Subtiler als Alliteration � wirkt oft unbewusst (Klangf�rbung). In Romantik und Symbolismus zur Evokation emotionaler Atmosph�ren bevorzugt. Analysefrage: Welche Stimmung erzeugen die dominanten Vokale?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�Im Winde wimmern die Weiden.�</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#fac896;background:rgba(250,200,150,.18);border:1px solid rgba(250,200,150,.4);">Empfindsamkeit</span><span class="etag" style="color:#f472b6;background:rgba(236,72,153,.18);border:1px solid rgba(236,72,153,.4);">Romantik</span><span class="etag" style="color:#c4b5fd;background:rgba(167,139,250,.18);border:1px solid rgba(167,139,250,.4);">Symbolismus</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Assonanz" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="onomatop�ie" data-ep="Barock|Romantik|Expressionismus">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Onomatop�ie</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Lautmalerei: W�rter ahmen Ger�usche nach (Phonosymbolik). Prim�r onomatopoetische W�rter: ,zischen�, ,knistern�; sekund�r: ,Schlange�.</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#24</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Unmittelbare sinnliche Wirkung: das Wort klingt wie das Bezeichnete (ikonisches Zeichen). Versetzt Lesende akustisch in die Szene. Im Expressionismus als Mittel sinnlicher �berw�ltigung. Analysefrage: Ist es prim�re Onomatop�ie (das Wort klingt nach) oder sekund�re (assoziative Lautverbindung)?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�Das Feuer knistert und zischt.�</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#a78bfa;background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.4);">Barock</span><span class="etag" style="color:#f472b6;background:rgba(236,72,153,.18);border:1px solid rgba(236,72,153,.4);">Romantik</span><span class="etag" style="color:#f87171;background:rgba(239,68,68,.18);border:1px solid rgba(239,68,68,.4);">Expressionismus</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Lautmalerei" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="enjambement" data-ep="Antike|Sturm und Drang|Moderne">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Enjambement</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Zeilensprung: Syntaktischer Sinn l�uft �ber das Versende hinaus (franz. enjamber = �berschreiten). Auch: Hakenstil. Gegenteil: Zeilenstil (Satz endet mit dem Vers).</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#25</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Bricht metrische Erwartung und erzeugt Spannung oder �berraschung. Hebt das erste Wort der Folgezeile durch den Zeilenumbruch zus�tzlich hervor (Zeilenspannung). H�lderlin und Klopstock nutzten es als metrischen Regelbruch; in der Moderne (Rilke, Trakl) als Destabilisierung formaler Konventionen. Analysefrage: Was wird durch den Umbruch exponiert?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�Vor seiner H�tte ruhig im Schatten sitzt�/
+Der Pfl�ger� (H�lderlin: Abendphantasie, 1799) � das Subjekt �Der Pfl�ger� wird auf die Folgezeile verschoben (starkes Enjambement).</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#fcd34d;background:rgba(251,191,36,.18);border:1px solid rgba(251,191,36,.4);">Antike</span><span class="etag" style="color:#fb923c;background:rgba(234,88,12,.18);border:1px solid rgba(234,88,12,.4);">Sturm und Drang</span><span class="etag" style="color:#fbbf24;background:rgba(245,158,11,.18);border:1px solid rgba(245,158,11,.4);">Moderne</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Enjambement" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="inversion" data-ep="Barock|Weimarer Klassik|Romantik">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Inversion</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Abweichung von der normalen Satzgliedfolge (Subjekt � Pr�dikat � Objekt) zur Betonung eines Elements (Hyperbaton als �erbegriff).</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#26</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Hebt das vorangestellte Element besonders hervor; verleiht Feierlichkeit, Pathos oder Fremdheit. Im Deutschen durch flexible Wortstellung m�glich (Hyperbaton). Kann als Archaismus-Geste eingesetzt werden. Analysefrage: Was tritt durch die Verschiebung in den Vordergrund?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�Langsam senkt sich die Nacht.�</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#a78bfa;background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.4);">Barock</span><span class="etag" style="color:#60a5fa;background:rgba(59,130,246,.18);border:1px solid rgba(59,130,246,.4);">Weimarer Klassik</span><span class="etag" style="color:#f472b6;background:rgba(236,72,153,.18);border:1px solid rgba(236,72,153,.4);">Romantik</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Inversion_(Grammatik)" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="pleonasmus" data-ep="Barock|Moderne">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Pleonasmus</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">H�ufung bedeutungsgleicher oder -�hnlicher Ausdr�cke (lat. pleonasmus = �berf�lle). Sonderform: Tautologie (bedeutungsgleiche Wiederholung: ,null und nichtig�).</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#27</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Bewusst eingesetzt: verst�rkend (amplificatio, Barock); unbeabsichtigt: Sprachfehler. Tautologie kann juristisch oder literarisch stilbildend sein. Im Barock Zeichen rhetorischer F�lle (copia verborum). Analysefrage: Ist der Pleonasmus bewusst stilistisch oder ein Fehler?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�wei�er Schimmel�, �runder Kreis�</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#a78bfa;background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.4);">Barock</span><span class="etag" style="color:#fbbf24;background:rgba(245,158,11,.18);border:1px solid rgba(245,158,11,.4);">Moderne</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Pleonasmus" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="syn�sthesie" data-ep="Romantik|Symbolismus|Expressionismus">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Syn�sthesie</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">�bertragung eines Sinneseindrucks auf einen anderen Kanal (intersensorielle �bertragung, z.B. Seh� auf H�reindruck). Psychologisch: unwillk�rliche Sinnesverschmelzung.</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#28</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Erzeugt besondere sensorische Dichte durch Vermischung von Wahrnehmungskan�len (intersensorielle Metapher). Verweist auf ganzheitliche, entgrenzte Wahrnehmung jenseits rationaler Kategorien. In Romantik und Symbolismus �sthetisches Programm (Baudelaires Korrespondenzen, Rimbauds Vokal-Sonett). Analysefrage: Welche Sinne werden verkn�pft?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�ein lautes Rot�, �samtener Klang�</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#f472b6;background:rgba(236,72,153,.18);border:1px solid rgba(236,72,153,.4);">Romantik</span><span class="etag" style="color:#c4b5fd;background:rgba(167,139,250,.18);border:1px solid rgba(167,139,250,.4);">Symbolismus</span><span class="etag" style="color:#f87171;background:rgba(239,68,68,.18);border:1px solid rgba(239,68,68,.4);">Expressionismus</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Syn%C3%A4sthesie" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="apostrophe" data-ep="Antike|Barock|Weimarer Klassik">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Apostrophe</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Direkte Anrede an eine abwesende Person, ein abstraktes Konzept oder ein personifiziertes Ding (gr. apostrophe = Abwendung). Unterschied zur Personifikation: Apostrophe ist Anrede, Personifikation ist Eigenschafts�bertragung.</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#29</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Erzeugt durch direkte Anrede dramatische Unmittelbarkeit; schafft fiktive Kommunikationssituation (Praesens-Effekt). Kann pathetisch, beschw�rend oder religi�s wirken. Im Drama charakterisiert sie Figuren in extremen emotionalen Zust�nden. Analysefrage: Welche Wirkung hat die direkte Anrede auf Lesende?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�O Freiheit, wann kehrst du zur�ck?�</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#fcd34d;background:rgba(251,191,36,.18);border:1px solid rgba(251,191,36,.4);">Antike</span><span class="etag" style="color:#a78bfa;background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.4);">Barock</span><span class="etag" style="color:#60a5fa;background:rgba(59,130,246,.18);border:1px solid rgba(59,130,246,.4);">Weimarer Klassik</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Apostrophe_(Rhetorik)" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+<div class="fc" data-name="periphrasis" data-ep="Mittelalter|Barock|Weimarer Klassik">
+  <div class="fci">
+    <div class="fcf">
+      <div class="ch"><span class="cn">Periphrasis</span><span class="chint">umdrehen &#8629;</span></div>
+      <p class="ce">Ersatz eines einfachen Begriffs durch eine mehrteilige Umschreibung (gr. peri = um, phrazein = sprechen). In der Edda-Dichtung: Kenning (�Walfischstra�e� = Meer).</p>
+      <div class="cff"><label class="lc" onclick="event.stopPropagation()"><input type="checkbox" class="lcb"> Gelernt</label><span class="cnr">#30</span></div>
+    </div>
+    <div class="fcb">
+      <div class="bs"><span class="bl">Wirkung</span><p class="bt">Dient poetischer Ausschm�ckung, Verh�llung oder ehrerbietiger Umschreibung. Kenninge (Pl.) sind komprimierte zweigliedrige Periphrases des Mittelalters. Kann euphemistisch wirken oder poetische Tiefendimension hinzuf�gen. Analysefrage: Warum wird nicht der direkte Begriff verwendet?</p></div>
+      <div class="bs"><span class="bl">Beispiel</span><p class="bt bex">�der Gevatter Tod� statt �der Tod� (Periphrasis); �Walfischweg� = Meer (Kenning aus altnord. �hvalreki�)</p></div>
+      <div class="bs"><span class="bl">Typisch in der Epoche</span><div class="etags"><span class="etag" style="color:#a1a1aa;background:rgba(161,161,170,.18);border:1px solid rgba(161,161,170,.4);">Mittelalter</span><span class="etag" style="color:#a78bfa;background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.4);">Barock</span><span class="etag" style="color:#60a5fa;background:rgba(59,130,246,.18);border:1px solid rgba(59,130,246,.4);">Weimarer Klassik</span></div></div>
+      <div class="wrow"><a class="wiki-link" href="https://de.wikipedia.org/wiki/Periphrase" target="_blank" rel="noopener" onclick="event.stopPropagation()">&#128196;&nbsp;Wikipedia</a></div>
+    </div>
+  </div>
+</div>
+  <div class="nores" id="nores">&#128269; Keine Ergebnisse � Filter oder Suche anpassen.</div>
+</main>
+
+<footer class="ftr">
+  <span class="lic">&#169;&nbsp;CC-BY-SA&nbsp;4.0 &middot; Wolf&nbsp;Sebastian &middot; 2026</span>
+</footer>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+
+  // -- FLIP --------------------------------------------
+  document.querySelectorAll('.fc').forEach(function(card) {
+    card.addEventListener('click', function(e) {
+      if (e.target.type === 'checkbox') return;
+      this.classList.toggle('flipped');
+    });
+  });
+
+  // -- LEARNED -----------------------------------------
+  document.querySelectorAll('.lcb').forEach(function(cb) {
+    cb.addEventListener('change', function() {
+      var card = this.closest('.fc');
+      card.classList.toggle('learned', this.checked);
+      updateStats();
+      saveState();
+    });
+  });
+
+  // -- SUCHE --------------------------------------------
+  document.getElementById('si').addEventListener('input', function() {
+    applyFilters();
+  });
+
+  // -- EPOCHEN-FILTER ------------------------------------
+  document.querySelectorAll('.fb').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.fb').forEach(function(b) {
+        b.classList.remove('active');
+      });
+      this.classList.add('active');
+      applyFilters();
+    });
+  });
+
+  // -- INIT ---------------------------------------------
+  updateStats();
+  loadState();
+});
+
+// -- FILTER ANWENDEN --------------------------------------
+function applyFilters() {
+  var q   = document.getElementById('si').value.toLowerCase().trim();
+  var btn = document.querySelector('.fb.active');
+  var f   = btn ? btn.dataset.ep : 'all';
+  var visible = 0;
+
+  document.querySelectorAll('.fc').forEach(function(card) {
+    var nameOk  = card.dataset.name.indexOf(q) !== -1;
+    var epochOk = f === 'all' || card.dataset.ep.split('|').indexOf(f) !== -1;
+    var show    = nameOk && epochOk;
+    card.classList.toggle('hidden', !show);
+    if (show) visible++;
+  });
+
+  document.getElementById('nores').style.display = visible === 0 ? 'block' : 'none';
+  updateStats();
+}
+
+// -- Z�HLER ------------------------------------------------
+function updateStats() {
+  var total   = document.querySelectorAll('.fc').length;
+  var visible = document.querySelectorAll('.fc:not(.hidden)').length;
+  var learned = document.querySelectorAll('.lcb:checked').length;
+  document.getElementById('cnt-total').textContent   = total;
+  document.getElementById('cnt-visible').textContent = visible;
+  document.getElementById('cnt-learned').textContent = learned;
+}
+
+// -- RESET -------------------------------------------------
+function resetAll() {
+  document.querySelectorAll('.fc').forEach(function(c) {
+    c.classList.remove('flipped', 'hidden', 'learned');
+    var cb = c.querySelector('.lcb');
+    if (cb) cb.checked = false;
+  });
+  document.getElementById('si').value = '';
+  document.querySelectorAll('.fb').forEach(function(b) { b.classList.remove('active'); });
+  var allBtn = document.querySelector('.fb[data-ep="all"]');
+  if (allBtn) allBtn.classList.add('active');
+  document.getElementById('nores').style.display = 'none';
+  localStorage.removeItem('sm-state');
+  updateStats();
+}
+
+// -- SPEICHERN / LADEN -------------------------------------
+function saveState() {
+  var s = {};
+  document.querySelectorAll('.fc').forEach(function(c, i) {
+    var cb = c.querySelector('.lcb');
+    if (cb && cb.checked) s[i] = true;
+  });
+  localStorage.setItem('sm-state', JSON.stringify(s));
+}
+
+function loadState() {
+  try {
+    var raw = localStorage.getItem('sm-state');
+    if (!raw) return;
+    var s = JSON.parse(raw);
+    document.querySelectorAll('.fc').forEach(function(c, i) {
+      if (s[i]) {
+        var cb = c.querySelector('.lcb');
+        if (cb) { cb.checked = true; c.classList.add('learned'); }
+      }
+    });
+    updateStats();
+  } catch(e) {}
+}
+
+</script>
+</body>
+</html>

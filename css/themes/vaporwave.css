@@ -1,0 +1,225 @@
+/* ========================================
+   Theme: Vaporwave
+   Pastellfarben: Rosa, Türkis, Lila
+   Überschreibt die CSS Custom Properties aus os-core.css.
+   Aktivierbar über Terminal-Befehl „theme vaporwave"
+   oder das Einstellungen-Fenster.
+   CC-BY-SA 4.0 Wolf Sebastian (2026)
+   ======================================== */
+
+:root {
+  /* Farbpalette: Vaporwave-Pastell */
+  --color-primary: #FF71CE;
+  --color-secondary: #01CDFE;
+  --color-accent: #B967FF;
+  --color-bg: #1a1a2e;
+  --color-text: #EFEFEF;
+  --color-shadow: #0f0f1a;
+  --color-window-bg: #16213e;
+  --color-button-face: #252547;
+  --color-button-highlight: #3a3a6a;
+  --color-button-shadow: #101030;
+  --color-button-dark-shadow: #080818;
+  --color-titlebar-inactive: #353560;
+  --color-selection: rgba(255, 113, 206, 0.25);
+}
+
+/* ===== Desktop: Rastermuster in Dunkelblau ===== */
+#desktop {
+  background: var(--color-bg);
+  background-image:
+    linear-gradient(rgba(255,113,206,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,113,206,0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* ===== Taskleiste ===== */
+#taskbar {
+  background: linear-gradient(180deg, #252547, #1a1a3e);
+  border-top: 2px solid #3a3a6a;
+}
+
+/* ===== Bevel-Button: Neon-Stil ===== */
+.bevel-btn {
+  background: var(--color-button-face);
+  color: var(--color-text);
+  border-color: #3a3a6a #101030 #101030 #3a3a6a;
+}
+
+.bevel-btn:hover {
+  background: #353560;
+  color: #FF71CE;
+}
+
+.bevel-btn:active,
+.bevel-btn.active {
+  background: #1a1a3e;
+}
+
+/* ===== Fenster ===== */
+.os-window {
+  border-color: #3a3a6a;
+  box-shadow: 6px 6px 0 rgba(15, 15, 26, 0.7);
+}
+
+.os-window__titlebar {
+  background: linear-gradient(90deg, #FF71CE, #B967FF) !important;
+  color: #1a1a1a;
+  border-bottom-color: #3a3a6a;
+}
+
+.os-window__titlebar.inactive {
+  background: linear-gradient(90deg, #353560, #252547) !important;
+}
+
+.os-window__title {
+  color: #1a1a1a;
+}
+
+.os-window__content {
+  background: var(--color-window-bg);
+  color: var(--color-text);
+}
+
+.os-window__btn {
+  background: #252547;
+  border-color: #3a3a6a #101030 #101030 #3a3a6a;
+  color: var(--color-text);
+}
+
+.os-window__btn:hover {
+  background: #01CDFE;
+  color: #1a1a1a;
+}
+
+/* ===== Start-Menü ===== */
+#start-menu {
+  background: #252547;
+  border-color: #3a3a6a;
+  box-shadow: 6px 6px 0 rgba(15, 15, 26, 0.7);
+}
+
+.start-menu__header {
+  background: linear-gradient(180deg, #FF71CE, #B967FF) !important;
+}
+
+.start-menu__header h2 {
+  color: #1a1a1a;
+}
+
+.start-menu__folder-header {
+  color: var(--color-text);
+}
+
+.start-menu__folder-header:hover {
+  background: rgba(255, 113, 206, 0.2);
+}
+
+.start-menu__item {
+  color: var(--color-text);
+}
+
+.start-menu__item:hover {
+  background: #01CDFE;
+  color: #1a1a1a;
+}
+
+.start-menu__divider {
+  background: #3a3a6a;
+}
+
+.start-menu__system {
+  border-top-color: #3a3a6a;
+}
+
+/* ===== Desktop-Icons ===== */
+.desktop-icon__label {
+  color: var(--color-text);
+  text-shadow:
+    1px 1px 0 rgba(0,0,0,0.6),
+    0 0 8px rgba(255, 113, 206, 0.3);
+}
+
+.desktop-icon:hover {
+  border-color: #FF71CE;
+  background: rgba(255, 113, 206, 0.15);
+}
+
+.desktop-icon.selected {
+  border-color: #01CDFE;
+  background: rgba(1, 205, 254, 0.15);
+}
+
+/* ===== Tooltip ===== */
+.os-tooltip {
+  background: #252547;
+  border-color: #FF71CE;
+  color: var(--color-text);
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+}
+
+/* ===== Scrollbars ===== */
+::-webkit-scrollbar-track {
+  background: #1a1a2e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #353560;
+  border-color: #3a3a6a #101030 #101030 #3a3a6a;
+}
+
+::-webkit-scrollbar-button {
+  background: #252547;
+  border-color: #3a3a6a #101030 #101030 #3a3a6a;
+}
+
+/* ===== Taskleisten-Tray ===== */
+#taskbar-tray {
+  background: transparent;
+  border-color: #101030 #3a3a6a #3a3a6a #101030;
+  color: var(--color-text);
+}
+
+#taskbar-clock {
+  color: #01CDFE;
+}
+
+#taskbar-clock:hover {
+  color: #FF71CE;
+}
+
+/* ===== Loading-Bar ===== */
+.loading-bar {
+  background: #252547;
+  border-color: #3a3a6a;
+}
+
+.loading-bar__fill {
+  background: repeating-linear-gradient(
+    90deg,
+    #FF71CE 0px,
+    #FF71CE 10px,
+    transparent 10px,
+    transparent 12px
+  );
+}
+
+/* ===== Terminal ===== */
+.terminal-content {
+  background: #0a0a1a;
+  color: #01CDFE;
+}
+
+.terminal-prompt {
+  color: #FF71CE;
+}
+
+.terminal-input {
+  color: #01CDFE;
+  caret-color: #01CDFE;
+}
+
+/* ===== Focus ===== */
+:focus-visible {
+  outline-color: #FF71CE;
+}

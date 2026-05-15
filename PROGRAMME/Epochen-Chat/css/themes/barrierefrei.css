@@ -1,0 +1,32 @@
+/* ============================================
+   EpochenChat – Theme: Barrierefrei
+   Fokus: Maximale Lesbarkeit & Kontrast
+   ============================================ */
+
+[data-theme="barrierefrei"] {
+    --color-primary: #000000;
+    --color-primary-light: #1a1a1a;
+    --color-accent: #0056B3;
+    --color-accent-light: #007BFF;
+    --color-bg: #FDFCF0; /* Angenehmes Off-White gegen Augenermüdung */
+    --color-surface: #FFFFFF;
+    --color-surface-hover: #F0F0F0;
+    --color-bubble-persona: #E8E8E8;
+    --color-bubble-persona-text: #000000;
+    --color-bubble-learner: #FFFFFF;
+    --color-bubble-learner-text: #000000;
+    --color-text: #000000;
+    --color-text-muted: #333333;
+    --color-text-inverse: #FFFFFF;
+    --color-border: #000000;
+    --color-shadow: none;
+    --color-overlay: rgba(0, 0, 0, 0.7);
+
+    --texture-bg: none;
+    
+    /* Barrierefrei: Nur Sans-Serif nutzen */
+    --font-serif: var(--font-sans);
+    --font-size-persona: 1.1rem;
+    --font-size-ui: 1.1rem;
+    --line-height-body: 1.8;
+}

@@ -1,0 +1,30 @@
+/* ============================================
+   EpochenChat – Theme: Moderne / Bauhaus
+   Epoche: 1890–1933
+   Modus: Hellmodus (Puristisch)
+   ============================================ */
+
+[data-theme="moderne"] {
+    --color-primary: #000000;
+    --color-primary-light: #333333;
+    --color-accent: #E61D2B; /* Bauhaus Red */
+    --color-accent-light: #ff3d4b;
+    --color-bg: #FFFFFF;
+    --color-surface: #F2F2F2;
+    --color-surface-hover: #EBEBEB;
+    --color-bubble-persona: #E0E0E0;
+    --color-bubble-persona-text: #000000;
+    --color-bubble-learner: #FFFFFF;
+    --color-bubble-learner-text: #000000;
+    --color-text: #000000;
+    --color-text-muted: #555555;
+    --color-text-inverse: #FFFFFF;
+    --color-border: #000000;
+    --color-shadow: rgba(0, 0, 0, 0.15);
+    --color-overlay: rgba(0, 0, 0, 0.7);
+
+    --texture-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' opacity='.03'%3E%3Crect x='0' y='0' width='80' height='2' fill='%23000000'/%3E%3Crect x='0' y='0' width='2' height='80' fill='%23000000'/%3E%3C/svg%3E");
+    
+    /* Override font to be strictly sans-serif */
+    --font-serif: var(--font-sans);
+}

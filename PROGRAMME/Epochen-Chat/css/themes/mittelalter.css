@@ -1,0 +1,27 @@
+/* ============================================
+   EpochenChat – Theme: Mittelalter
+   Epoche: 750–1500
+   Modus: Hell/Pergament
+   ============================================ */
+
+[data-theme="mittelalter"] {
+    --color-primary: #5C1A1A;
+    --color-primary-light: #7a2a2a;
+    --color-accent: #A67C00;
+    --color-accent-light: #c89600;
+    --color-bg: #E8DCC4;
+    --color-surface: #DFD0B4;
+    --color-surface-hover: #D5C4A4;
+    --color-bubble-persona: #D8C8A8;
+    --color-bubble-persona-text: #1a1510;
+    --color-bubble-learner: #E0D5BD;
+    --color-bubble-learner-text: #1a1510;
+    --color-text: #1a1510;
+    --color-text-muted: #5a4a3a;
+    --color-text-inverse: #E8DCC4;
+    --color-border: #B8A888;
+    --color-shadow: rgba(92, 26, 26, 0.1);
+    --color-overlay: rgba(92, 26, 26, 0.5);
+
+    --texture-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' opacity='.05'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.05' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23f)'/%3E%3C/svg%3E");
+}

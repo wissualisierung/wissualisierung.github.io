@@ -1,0 +1,2018 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brettspiel-Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;600;700&family=Cinzel:wght@400;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   EDITOR CSS – Design System
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --ed-bg: #0f1117;
+  --ed-surface: #1a1d27;
+  --ed-surface2: #242836;
+  --ed-border: #2e3346;
+  --ed-text: #e2e4ed;
+  --ed-text2: #8b8fa3;
+  --ed-accent: #6c5ce7;
+  --ed-accent2: #a29bfe;
+  --ed-positive: #00b894;
+  --ed-negative: #e17055;
+  --ed-special: #a29bfe;
+  --ed-radius: 12px;
+  --ed-font: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: var(--ed-font);
+  background: var(--ed-bg);
+  color: var(--ed-text);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+/* ─── Header ─── */
+.editor-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--ed-surface), var(--ed-surface2));
+  border-bottom: 1px solid var(--ed-border);
+  flex-shrink: 0;
+}
+.editor-logo { display: flex; align-items: center; gap: 10px; }
+.editor-logo .icon { font-size: 28px; }
+.editor-logo h1 { font-size: 18px; font-weight: 600; background: linear-gradient(135deg, #a29bfe, #6c5ce7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+/* ─── Tab Navigation ─── */
+.tab-nav {
+  display: flex; gap: 4px;
+  padding: 8px 24px 0;
+  background: var(--ed-surface);
+  border-bottom: 1px solid var(--ed-border);
+  flex-shrink: 0;
+}
+.tab-btn {
+  padding: 10px 20px; border: none; background: transparent;
+  color: var(--ed-text2); font-family: var(--ed-font); font-size: 14px; font-weight: 500;
+  border-radius: 8px 8px 0 0; cursor: pointer; transition: all .2s;
+  position: relative;
+}
+.tab-btn:hover { color: var(--ed-text); background: var(--ed-surface2); }
+.tab-btn.active {
+  color: var(--ed-accent2); background: var(--ed-bg);
+}
+.tab-btn.active::after {
+  content: ''; position: absolute; bottom: -1px; left: 0; right: 0;
+  height: 2px; background: var(--ed-accent);
+}
+/* ─── Main Content ─── */
+.tab-content { display: none; flex: 1; overflow: hidden; }
+.tab-content.active { display: flex; }
+/* ─── Tab 1: Field Editor ─── */
+.field-editor { display: flex; flex: 1; overflow: hidden; }
+.field-sidebar {
+  width: 240px; flex-shrink: 0; overflow-y: auto;
+  background: var(--ed-surface); border-right: 1px solid var(--ed-border);
+  padding: 12px;
+}
+.field-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; border-radius: 8px; cursor: pointer;
+  transition: all .15s; margin-bottom: 4px; font-size: 13px;
+  border: 1px solid transparent;
+}
+.field-item:hover { background: var(--ed-surface2); }
+.field-item.active { background: var(--ed-accent); color: #fff; border-color: var(--ed-accent2); }
+.field-item .field-num {
+  width: 28px; height: 28px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 12px; flex-shrink: 0;
+  background: var(--ed-surface2); color: var(--ed-text2);
+}
+.field-item.active .field-num { background: rgba(255,255,255,.2); color: #fff; }
+.field-item .field-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.field-item .field-icon { margin-left: auto; font-size: 14px; }
+.field-form {
+  flex: 1; overflow-y: auto; padding: 24px 32px;
+}
+.form-group { margin-bottom: 20px; }
+.form-group label {
+  display: block; font-size: 12px; font-weight: 600;
+  color: var(--ed-text2); text-transform: uppercase; letter-spacing: .5px;
+  margin-bottom: 6px;
+}
+.form-group input, .form-group textarea, .form-group select {
+  width: 100%; padding: 10px 14px; border-radius: 8px;
+  border: 1px solid var(--ed-border); background: var(--ed-surface);
+  color: var(--ed-text); font-family: var(--ed-font); font-size: 14px;
+  transition: border-color .2s;
+}
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+  outline: none; border-color: var(--ed-accent);
+}
+.form-group textarea { resize: vertical; min-height: 80px; }
+.form-group select { cursor: pointer; }
+.form-row { display: flex; gap: 16px; }
+.form-row .form-group { flex: 1; }
+.field-preview-box {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 16px; border-radius: 10px;
+  font-size: 14px; font-weight: 600;
+  border: 2px solid var(--ed-border);
+  background: var(--ed-surface2);
+  margin-top: 4px;
+}
+.field-preview-box .fp-icon { font-size: 20px; }
+.form-disabled input, .form-disabled textarea, .form-disabled select {
+  opacity: .5; pointer-events: none;
+}
+/* ─── Tab 2: Markdown ─── */
+.markdown-editor { display: flex; flex: 1; overflow: hidden; }
+.md-left { flex: 1; display: flex; flex-direction: column; padding: 16px; gap: 12px; }
+.md-left textarea {
+  flex: 1; resize: none; padding: 16px; font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 13px; line-height: 1.6; border-radius: 10px;
+  border: 1px solid var(--ed-border); background: var(--ed-surface);
+  color: var(--ed-text);
+}
+.md-left textarea:focus { outline: none; border-color: var(--ed-accent); }
+.md-buttons { display: flex; gap: 8px; flex-shrink: 0; }
+.md-right {
+  width: 300px; flex-shrink: 0; overflow-y: auto;
+  padding: 16px; background: var(--ed-surface); border-left: 1px solid var(--ed-border);
+}
+.md-right h3 { font-size: 14px; color: var(--ed-accent2); margin-bottom: 12px; }
+.md-right pre {
+  font-family: 'Consolas', monospace; font-size: 12px; line-height: 1.7;
+  color: var(--ed-text2); white-space: pre-wrap;
+}
+.md-right code { color: var(--ed-accent2); }
+.md-right .syntax-note {
+  margin-top: 16px; padding: 12px; border-radius: 8px;
+  background: rgba(108,92,231,.1); border: 1px solid rgba(108,92,231,.2);
+  font-size: 12px; color: var(--ed-text2); line-height: 1.5;
+}
+/* ─── Tab 3: Design & Export ─── */
+.design-editor {
+  flex: 1; overflow-y: auto; padding: 24px 32px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  align-content: start;
+}
+.design-section {
+  background: var(--ed-surface); border-radius: var(--ed-radius);
+  padding: 20px; border: 1px solid var(--ed-border);
+}
+.design-section.full-width { grid-column: 1 / -1; }
+.design-section h3 {
+  font-size: 14px; color: var(--ed-accent2); margin-bottom: 16px;
+  text-transform: uppercase; letter-spacing: .5px;
+}
+.theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.theme-card {
+  padding: 12px; border-radius: 10px; cursor: pointer;
+  border: 2px solid var(--ed-border); transition: all .2s;
+  text-align: center; font-size: 13px; font-weight: 600;
+}
+.theme-card:hover { border-color: var(--ed-text2); }
+.theme-card.active { border-color: var(--ed-accent); box-shadow: 0 0 12px rgba(108,92,231,.3); }
+.theme-card .swatch {
+  height: 40px; border-radius: 6px; margin-bottom: 8px;
+}
+.layout-toggle {
+  display: flex; border-radius: 10px; overflow: hidden;
+  border: 1px solid var(--ed-border);
+}
+.layout-btn {
+  flex: 1; padding: 12px; border: none; background: var(--ed-surface2);
+  color: var(--ed-text2); font-family: var(--ed-font); font-size: 13px;
+  cursor: pointer; transition: all .2s; font-weight: 500;
+}
+.layout-btn.active { background: var(--ed-accent); color: #fff; }
+.mode-toggle { display: flex; border-radius: 10px; overflow: hidden; border: 1px solid var(--ed-border); }
+.mode-btn {
+  flex: 1; padding: 12px; border: none; background: var(--ed-surface2);
+  color: var(--ed-text2); font-family: var(--ed-font); font-size: 13px;
+  cursor: pointer; transition: all .2s; font-weight: 500;
+}
+.mode-btn.active { background: var(--ed-accent); color: #fff; }
+.stepper { display: flex; align-items: center; gap: 12px; }
+.stepper button {
+  width: 36px; height: 36px; border-radius: 8px;
+  border: 1px solid var(--ed-border); background: var(--ed-surface2);
+  color: var(--ed-text); font-size: 18px; cursor: pointer; transition: all .15s;
+}
+.stepper button:hover { background: var(--ed-accent); color: #fff; }
+.stepper .stepper-val { font-size: 20px; font-weight: 700; min-width: 30px; text-align: center; }
+/* ─── Buttons ─── */
+.btn {
+  padding: 10px 20px; border: none; border-radius: 8px;
+  font-family: var(--ed-font); font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all .2s; display: inline-flex;
+  align-items: center; gap: 6px;
+}
+.btn-primary { background: var(--ed-accent); color: #fff; }
+.btn-primary:hover { background: var(--ed-accent2); }
+.btn-secondary { background: var(--ed-surface2); color: var(--ed-text); border: 1px solid var(--ed-border); }
+.btn-secondary:hover { border-color: var(--ed-accent); }
+.btn-export {
+  background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+  color: #fff; font-size: 16px; padding: 14px 28px;
+}
+.btn-export:hover { box-shadow: 0 4px 20px rgba(108,92,231,.4); transform: translateY(-1px); }
+.export-area { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+/* ─── Toast ─── */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+  padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 500;
+  z-index: 999; transition: transform .3s ease; pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.success { background: var(--ed-positive); color: #fff; }
+.toast.error { background: var(--ed-negative); color: #fff; }
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--ed-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ed-text2); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     EDITOR HTML
+     ═══════════════════════════════════════════════════════════════ -->
+<header class="editor-header">
+  <div class="editor-logo">
+    <span class="icon">🎲</span>
+    <h1>Brettspiel-Editor</h1>
+  </div>
+  <div style="text-align: right; line-height: 1.4;">
+    <span style="color:var(--ed-text2);font-size:12px;font-weight:600;">v1.3</span><br>
+    <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" target="_blank" style="color:var(--ed-text2);font-size:11px;text-decoration:none;">"Spiele-Editor" CC-BY-SA 4.0 Wolf S. (2026)</a>
+  </div>
+</header>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('fields')">📋 Felder</button>
+  <button class="tab-btn" onclick="switchTab('markdown')">📝 Markdown</button>
+  <button class="tab-btn" onclick="switchTab('design')">🎨 Design & Export</button>
+  <label style="margin-left: auto; margin-right: 16px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ed-text); cursor: pointer;">
+    <input type="checkbox" id="chk-use-demo" checked onchange="toggleDemoPreset(this.checked)">
+    Demo einblenden
+  </label>
+</nav>
+
+<!-- ─── Tab 1: Field Editor ─── -->
+<div id="tab-fields" class="tab-content active">
+  <div class="field-editor">
+    <div class="field-sidebar" id="field-sidebar"></div>
+    <div class="field-form" id="field-form">
+      <p style="color:var(--ed-text2);margin-top:40px;text-align:center;">← Wähle ein Feld aus der Liste</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Tab 2: Markdown ─── -->
+<div id="tab-markdown" class="tab-content">
+  <div class="markdown-editor">
+    <div class="md-left">
+      <div class="md-buttons">
+        <button class="btn btn-primary" onclick="importMarkdown()">⬇ Importieren</button>
+        <button class="btn btn-secondary" onclick="exportMarkdown()">⬆ Als .md speichern</button>
+      </div>
+      <textarea id="md-textarea" spellcheck="false" oninput="updateFromMarkdown(true)"></textarea>
+    </div>
+    <div class="md-right">
+      <h3>📖 Syntax-Referenz</h3>
+      <pre><code># Spieltitel</code>
+<code>> Spielanleitung</code>
+
+<code>---</code>  ← Feldseparator
+
+<code>## Feldtitel</code>
+Beschreibungstext...
+
+Aktions-Tags (eine pro Feld):
+<code>[+3]</code>  → 3 Felder <b style="color:var(--ed-positive)">vorwärts</b>
+<code>[-2]</code>  → 2 Felder <b style="color:var(--ed-negative)">zurück</b>
+<code>[=5]</code>  → springe auf <b style="color:var(--ed-special)">Feld 5</b>
+<code>[!2]</code>  → <b style="color:var(--ed-negative)">aussetzen</b> 2 Runden
+<code>[++]</code>  → <b style="color:var(--ed-positive)">nochmal würfeln</b></pre>
+      <div class="syntax-note">
+        ⚠ Genau <b>18 Felder</b> erwartet (zwischen <code>---</code>-Trennern).<br>
+        Start & Ziel werden automatisch hinzugefügt.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Tab 3: Design & Export ─── -->
+<div id="tab-design" class="tab-content">
+  <div class="design-editor">
+    <div class="design-section">
+      <h3>📝 Spielinfos</h3>
+      <div class="form-group">
+        <label>Spieltitel</label>
+        <input type="text" id="cfg-title" value="Literarische Reise" oninput="updateGameInfo('title', this.value)">
+      </div>
+      <div class="form-group">
+        <label>Spielanleitung</label>
+        <textarea id="cfg-rules" rows="3" oninput="updateGameInfo('rules', this.value)">Würfelt reihum und erlebt die großen Momente der Literaturgeschichte! Wer als Erster das Ziel erreicht, gewinnt.</textarea>
+      </div>
+    </div>
+
+    <div class="design-section">
+      <h3>👥 Spielmodus</h3>
+      <div class="mode-toggle" style="margin-bottom:16px;">
+        <button class="mode-btn active" onclick="setMode('hotseat')">🪑 Hot Seat</button>
+        <button class="mode-btn" onclick="setMode('ai')">🤖 Einzelspieler vs. KI</button>
+      </div>
+      <div class="form-group">
+        <label id="player-label">Anzahl Spieler</label>
+        <div class="stepper">
+          <button onclick="changePlayerCount(-1)">−</button>
+          <span class="stepper-val" id="player-count">2</span>
+          <button onclick="changePlayerCount(1)">+</button>
+        </div>
+      </div>
+      <div class="form-group" style="margin-top: 16px;">
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ed-text); cursor: pointer; text-transform: none; letter-spacing: normal; font-weight: 500;">
+          <input type="checkbox" id="cfg-exact-finish" onchange="gameConfig.exactFinish=this.checked" style="width: auto;">
+          Zielfeld muss genau erreicht werden
+        </label>
+      </div>
+    </div>
+
+    <div class="design-section">
+      <h3>🗺 Brett-Layout</h3>
+      <div class="layout-toggle">
+        <button class="layout-btn" onclick="setLayout('snake')">🐍 Schlangenpfad</button>
+        <button class="layout-btn active" onclick="setLayout('classic')">🔲 Klassisch (Rechteck)</button>
+      </div>
+    </div>
+
+    <div class="design-section">
+      <h3>🏷 Feldinhalte</h3>
+      <div class="layout-toggle">
+        <button class="content-btn layout-btn" onclick="setShowContent(true)">✅ Anzeigen</button>
+        <button class="content-btn layout-btn active" onclick="setShowContent(false)">❌ Verbergen</button>
+      </div>
+    </div>
+
+    <div class="design-section">
+      <h3>🔤 Schriftart</h3>
+      <div class="form-group">
+        <select id="cfg-font" onchange="gameConfig.font=this.value">
+          <option value="Lora">Lora (elegant-klassisch)</option>
+          <option value="Cinzel">Cinzel (majestätisch)</option>
+          <option value="Playfair Display">Playfair Display (edel)</option>
+          <option value="Inter">Inter (modern-clean)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="design-section">
+      <h3>🎭 Spielfiguren</h3>
+      <div class="form-group">
+        <select id="cfg-tokens" onchange="gameConfig.tokenSet=this.value">
+          <option value="colors">Klassische Farbkreise</option>
+          <option value="animals">Tiere (🦊, 🐸, ...)</option>
+          <option value="fantasy">Fantasy (🧙, 🧚, ...)</option>
+          <option value="vehicles">Fahrzeuge (🚗, 🚀, ...)</option>
+          <option value="space">Weltraum (🪐, 👽, ...)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="design-section full-width">
+      <h3>🎨 Farbthema</h3>
+      <div class="theme-grid" id="theme-grid"></div>
+    </div>
+
+    <div class="design-section full-width">
+      <h3>📦 Export</h3>
+      <div class="export-area">
+        <button class="btn btn-export" onclick="downloadGame()">⬇ HTML5-Datei exportieren</button>
+        <button class="btn btn-export" style="background: linear-gradient(135deg, #00b894, #55efc4);" onclick="exportSCORM()">🎓 SCORM-Paket exportieren</button>
+        <button class="btn btn-secondary" onclick="printGame()">🖨 Drucken</button>
+        <button class="btn btn-secondary" onclick="previewGame()">👁 Vorschau im neuen Tab</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     GAME TEMPLATE – CSS (embedded as text, not executed)
+     ═══════════════════════════════════════════════════════════════ -->
+<script type="text/template" id="tpl-game-css">
+/*THEME_VARS*/
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; }
+body {
+  min-height: 100%; font-family: /*FONT_FAMILY*/;
+  background: var(--g-bg); color: var(--g-text);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+/* ─ Start Screen ─ */
+#start-screen {
+  text-align: center; padding: 40px;
+  animation: fadeIn .6s ease;
+}
+#start-screen h1 {
+  font-size: 42px; margin-bottom: 16px;
+  background: linear-gradient(135deg, var(--g-accent), var(--g-accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+#start-screen .rules {
+  max-width: 500px; margin: 0 auto 32px; font-size: 16px; line-height: 1.6;
+  color: var(--g-text2); padding: 16px; border-radius: 12px;
+  background: var(--g-card-bg); border: 1px solid var(--g-border);
+}
+.btn-start {
+  padding: 16px 40px; border: none; border-radius: 12px;
+  font-size: 20px; font-weight: 700; cursor: pointer;
+  background: linear-gradient(135deg, var(--g-accent), var(--g-accent2));
+  color: #fff; transition: all .3s;
+  font-family: inherit;
+}
+.btn-start:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,.4); }
+/* ─ Game Container ─ */
+#game-container {
+  display: none; width: 100%; max-width: 1100px;
+  padding: 20px; animation: fadeIn .4s;
+}
+.game-header {
+  text-align: center; margin-bottom: 16px;
+}
+.game-header h2 { font-size: 22px; color: var(--g-accent2); }
+.game-layout {
+  display: flex; gap: 20px; align-items: flex-start;
+}
+/* ─ Board: Snake ─ */
+.board-snake {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 6px; flex: 1;
+}
+.board-snake .cell {
+  aspect-ratio: 1.3; border-radius: 10px; padding: 6px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: 11px; text-align: center; position: relative;
+  border: 2px solid var(--g-border);
+  background: var(--g-field-bg);
+  transition: box-shadow .2s;
+  min-height: 80px;
+}
+.board-snake .cell:hover { box-shadow: 0 0 12px var(--g-accent); }
+.board-snake .cell .cell-num {
+  position: absolute; top: 4px; left: 6px; font-size: 10px;
+  font-weight: 700; color: var(--g-text2); opacity: .7;
+}
+.board-snake .cell .cell-title {
+  font-size: 11px; font-weight: 600; margin-top: 10px;
+  overflow: hidden; text-overflow: ellipsis; max-height: 2.4em;
+  line-height: 1.2;
+}
+.board-snake .cell .cell-icon { font-size: 16px; margin-top: 2px; }
+.cell.positive { border-color: var(--g-positive); background: linear-gradient(135deg, var(--g-field-bg), rgba(0,184,148,.1)); }
+.cell.negative { border-color: var(--g-negative); background: linear-gradient(135deg, var(--g-field-bg), rgba(225,112,85,.1)); }
+.cell.special { border-color: var(--g-special); background: linear-gradient(135deg, var(--g-field-bg), rgba(162,155,254,.1)); }
+.cell.start-cell, .cell.goal-cell {
+  border-color: var(--g-accent); background: linear-gradient(135deg, var(--g-accent), var(--g-accent2));
+  color: #fff;
+}
+.cell .tokens-container {
+  display: flex; gap: 3px; position: absolute; bottom: 4px;
+  flex-wrap: wrap; justify-content: center;
+}
+.token {
+  width: 18px; height: 18px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; color: #fff;
+  border: 2px solid rgba(255,255,255,.5);
+  transition: all .3s ease;
+  z-index: 2;
+}
+.token.active-token { box-shadow: 0 0 8px rgba(255,255,255,.7); transform: scale(1.15); }
+/* ─ Board: Classic (Rectangle) ─ */
+.board-classic {
+  position: relative; flex: 1;
+  min-height: 480px;
+}
+.board-classic .cell {
+  position: absolute; border-radius: 8px; padding: 4px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: 10px; text-align: center;
+  border: 2px solid var(--g-border); background: var(--g-field-bg);
+  transition: box-shadow .2s;
+}
+.board-classic .cell:hover { box-shadow: 0 0 10px var(--g-accent); }
+.board-classic .cell .cell-num {
+  position: absolute; top: 2px; left: 4px; font-size: 9px;
+  font-weight: 700; color: var(--g-text2); opacity: .7;
+}
+.board-classic .cell .cell-title { font-size: 10px; font-weight: 600; margin-top: 8px; overflow: hidden; max-height: 2em; line-height: 1.1; }
+.board-classic .cell .cell-icon { font-size: 14px; }
+.board-classic .cell .tokens-container { position: absolute; bottom: 2px; display: flex; gap: 2px; }
+.board-classic .center-area {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  text-align: center; color: var(--g-text2);
+}
+/* ─ Sidebar ─ */
+.game-sidebar {
+  width: 220px; flex-shrink: 0;
+  background: var(--g-card-bg); border-radius: 14px;
+  padding: 16px; border: 1px solid var(--g-border);
+  display: flex; flex-direction: column; gap: 16px;
+}
+.turn-indicator {
+  text-align: center; font-size: 14px; font-weight: 600;
+  padding: 10px; border-radius: 10px; background: var(--g-field-bg);
+}
+.turn-indicator .turn-token {
+  width: 28px; height: 28px; border-radius: 50%; display: inline-flex;
+  align-items: center; justify-content: center; font-weight: 700;
+  color: #fff; margin-right: 8px; vertical-align: middle;
+  border: 2px solid rgba(255,255,255,.5);
+}
+/* ─ Dice ─ */
+.dice-area { text-align: center; }
+.dice-scene {
+  width: 70px; height: 70px; margin: 0 auto 10px;
+  perspective: 300px;
+}
+.dice-cube {
+  width: 70px; height: 70px; position: relative;
+  transform-style: preserve-3d;
+  transition: transform .8s cubic-bezier(.2,.8,.3,1.2);
+}
+.dice-face {
+  position: absolute; width: 70px; height: 70px;
+  border-radius: 10px; display: grid;
+  grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);
+  padding: 10px; background: #fff; border: 2px solid #ddd;
+}
+.dice-face.f1 { transform: translateZ(35px); }
+.dice-face.f2 { transform: rotateX(90deg) translateZ(35px); }
+.dice-face.f3 { transform: rotateY(90deg) translateZ(35px); }
+.dice-face.f4 { transform: rotateY(-90deg) translateZ(35px); }
+.dice-face.f5 { transform: rotateX(-90deg) translateZ(35px); }
+.dice-face.f6 { transform: rotateY(180deg) translateZ(35px); }
+.dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #333; align-self: center; justify-self: center;
+}
+.btn-roll {
+  padding: 12px 24px; border: none; border-radius: 10px;
+  font-size: 16px; font-weight: 700; cursor: pointer;
+  background: linear-gradient(135deg, var(--g-accent), var(--g-accent2));
+  color: #fff; transition: all .2s; font-family: inherit; width: 100%;
+}
+.btn-roll:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(0,0,0,.3); }
+.btn-roll:disabled { opacity: .4; cursor: not-allowed; }
+/* ─ Player List ─ */
+.player-list { display: flex; flex-direction: column; gap: 6px; }
+.player-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px; border-radius: 8px; font-size: 13px;
+  background: var(--g-field-bg); transition: all .2s;
+}
+.player-row.current { border: 1px solid var(--g-accent); box-shadow: 0 0 8px rgba(108,92,231,.2); }
+.player-row .pr-token {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: #fff; flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,.4);
+}
+.player-row .pr-info { flex: 1; }
+.player-row .pr-pos { font-weight: 600; font-size: 12px; }
+.player-row .pr-badge {
+  font-size: 11px; padding: 2px 6px; border-radius: 4px;
+  background: var(--g-negative); color: #fff;
+}
+/* ─ Event Modal ─ */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.6);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100; opacity: 0; pointer-events: none;
+  transition: opacity .3s; backdrop-filter: blur(4px);
+}
+.modal-overlay.visible { opacity: 1; pointer-events: auto; }
+.modal-card {
+  background: var(--g-card-bg); border-radius: 16px;
+  padding: 32px; max-width: 420px; width: 90%;
+  border: 1px solid var(--g-border); text-align: center;
+  transform: translateY(30px) scale(.95); transition: transform .3s ease;
+  box-shadow: 0 20px 60px rgba(0,0,0,.5);
+}
+.modal-overlay.visible .modal-card { transform: translateY(0) scale(1); }
+.modal-icon { font-size: 48px; margin-bottom: 12px; }
+.modal-card h2 { font-size: 22px; margin-bottom: 12px; color: var(--g-accent2); }
+.modal-card .modal-text { font-size: 15px; line-height: 1.6; margin-bottom: 20px; color: var(--g-text2); }
+.modal-card .modal-effect {
+  padding: 12px; border-radius: 10px; margin-bottom: 20px;
+  font-weight: 700; font-size: 16px;
+}
+.modal-card .modal-effect.eff-pos { background: rgba(0,184,148,.15); color: var(--g-positive); border: 1px solid var(--g-positive); }
+.modal-card .modal-effect.eff-neg { background: rgba(225,112,85,.15); color: var(--g-negative); border: 1px solid var(--g-negative); }
+.modal-card .modal-effect.eff-spc { background: rgba(162,155,254,.15); color: var(--g-special); border: 1px solid var(--g-special); }
+.modal-accept {
+  padding: 12px 32px; border: none; border-radius: 10px;
+  font-size: 15px; font-weight: 700; cursor: pointer;
+  background: linear-gradient(135deg, var(--g-accent), var(--g-accent2));
+  color: #fff; font-family: inherit; transition: all .2s;
+}
+.modal-accept:hover { transform: translateY(-1px); }
+/* ─ Winner ─ */
+#winner-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  display: none; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.75); backdrop-filter: blur(8px);
+}
+#winner-overlay.visible { display: flex; }
+#winner-content {
+  text-align: center; z-index: 201;
+  animation: popIn .4s ease;
+}
+#winner-content h1 { font-size: 48px; margin-bottom: 8px; }
+#winner-content .winner-sub { font-size: 20px; color: var(--g-text2); margin-bottom: 24px; }
+#winner-content .btn-restart {
+  padding: 14px 36px; border: none; border-radius: 12px;
+  font-size: 18px; font-weight: 700; cursor: pointer;
+  background: linear-gradient(135deg, var(--g-accent), var(--g-accent2));
+  color: #fff; font-family: inherit;
+}
+#confetti-canvas {
+  position: fixed; inset: 0; z-index: 200; pointer-events: none;
+}
+/* ─ Anims ─ */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn { from { transform: scale(.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+/* ─ Responsive ─ */
+@media (max-width: 900px) {
+  .game-layout { flex-direction: column; }
+  .game-sidebar { width: 100%; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between; align-items: center; }
+  .dice-area { display: flex; gap: 20px; align-items: center; }
+  .dice-scene { margin: 0; }
+  .btn-roll { margin-top: 0; height: 50px; }
+  .player-list { flex-direction: row; flex-wrap: wrap; gap: 10px; width: 100%; margin-top: 10px; }
+  .player-row { flex: 1; min-width: 140px; }
+}
+#print-cards { display: none; }
+@media print {
+  body { background: #fff !important; color: #000 !important; display: block; }
+  #start-screen, .game-header, .game-sidebar, #winner-overlay, .modal-overlay, .center-area { display: none !important; }
+  #game-container { display: block !important; padding: 0 !important; margin: 0 !important; max-width: none !important; }
+  .game-layout { display: block !important; }
+  .board-snake, .board-classic { border: 2px solid #000; box-shadow: none !important; background: #fff !important; min-height: 90vh; break-after: page; page-break-after: always; }
+  .cell { border: 2px solid #333 !important; background: #fff !important; color: #000 !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .tokens-container { display: none !important; }
+  .cell-num { color: #333 !important; }
+  .cell.positive, .cell.negative, .cell.special, .cell.start-cell, .cell.goal-cell { background: #f9f9f9 !important; color: #000 !important; }
+  
+  #print-cards { display: block !important; padding-top: 20px; }
+  .print-cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+  .print-card { border: 2px solid #333; padding: 12px; border-radius: 8px; break-inside: avoid; page-break-inside: avoid; }
+  .pc-title { font-weight: bold; font-size: 14px; margin-bottom: 6px; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+  .pc-text { font-size: 11px; margin-bottom: 8px; }
+  .pc-effect { font-weight: bold; font-size: 12px; }
+}
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     GAME TEMPLATE – HTML
+     ═══════════════════════════════════════════════════════════════ -->
+<script type="text/template" id="tpl-game-html">
+<div id="start-screen">
+  <h1 id="g-title"></h1>
+  <div class="rules" id="g-rules"></div>
+  <button class="btn-start" onclick="startGame()">🎲 Spiel starten</button>
+</div>
+<div id="game-container">
+  <div class="game-header"><h2 id="g-header-title"></h2></div>
+  <div class="game-layout">
+    <div id="board"></div>
+    <div class="game-sidebar">
+      <div class="turn-indicator" id="turn-indicator"></div>
+      <div class="dice-area">
+        <div class="dice-scene">
+          <div class="dice-cube" id="dice-cube">
+            <div class="dice-face f1"></div>
+            <div class="dice-face f2"></div>
+            <div class="dice-face f3"></div>
+            <div class="dice-face f4"></div>
+            <div class="dice-face f5"></div>
+            <div class="dice-face f6"></div>
+          </div>
+        </div>
+        <button class="btn-roll" id="btn-roll" onclick="rollDice()">🎲 Würfeln</button>
+      </div>
+      <div class="player-list" id="player-list"></div>
+    </div>
+  </div>
+  <div id="print-cards">
+    <h2 style="text-align:center; font-size: 24px; margin-bottom: 20px;">Aktionskarten</h2>
+    <div class="print-cards-grid" id="print-cards-container"></div>
+  </div>
+</div>
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-card" id="modal-card">
+    <div class="modal-icon" id="modal-icon"></div>
+    <h2 id="modal-title"></h2>
+    <p class="modal-text" id="modal-text"></p>
+    <div class="modal-effect" id="modal-effect"></div>
+    <button class="modal-accept" id="modal-accept" onclick="acceptEffect()">Effekt annehmen</button>
+  </div>
+</div>
+<div id="winner-overlay">
+  <canvas id="confetti-canvas"></canvas>
+  <div id="winner-content">
+    <h1 id="winner-text"></h1>
+    <p class="winner-sub" id="winner-sub"></p>
+    <button class="btn-restart" onclick="location.reload()">🔄 Neues Spiel</button>
+  </div>
+</div>
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     GAME TEMPLATE – JS Engine
+     ═══════════════════════════════════════════════════════════════ -->
+<script type="text/template" id="tpl-game-js">
+/* ─── Game Engine ─── */
+var scormAPI = null;
+function initSCORM() {
+  var findAPI = function(win) {
+    var attempts = 0;
+    while ((win.API == null) && (win.parent != null) && (win.parent != win)) {
+      attempts++;
+      if (attempts > 7) return null;
+      win = win.parent;
+    }
+    return win.API;
+  };
+  scormAPI = findAPI(window);
+  if (scormAPI) {
+    scormAPI.LMSInitialize("");
+    scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+    scormAPI.LMSCommit("");
+  }
+}
+function completeSCORM() {
+  if (scormAPI) {
+    scormAPI.LMSSetValue("cmi.core.lesson_status", "completed");
+    scormAPI.LMSCommit("");
+    scormAPI.LMSFinish("");
+  }
+}
+
+var CFG = GAME_CONFIG;
+var players = [];
+var currentPlayer = 0;
+var rolling = false;
+var gameOver = false;
+var COLORS = ['#ff6b6b','#4ecdc4','#ffd93d','#6bcb77','#a855f7','#ff8c42'];
+var EFFECT_ICONS = {forward:'\u{1F53C}',backward:'\u{1F53D}',suspend:'\u{23F8}',jumpto:'\u{1F3AF}',rollagain:'\u{1F3B2}'};
+var TOKEN_SETS = {
+  colors: [],
+  animals: ['🦊', '🐸', '🐱', '🐼', '🐨', '🐷'],
+  fantasy: ['🧙', '🧚', '🧝', '🧛', '🧜', '🧞'],
+  vehicles: ['🚗', '🚀', '🚁', '🚤', '🚜', '🛵'],
+  space: ['🪐', '👽', '☄️', '🛰️', '👨‍🚀', '🛸']
+};
+
+function initDiceFaces() {
+  var dots = {
+    1: [5], 2: [1,9], 3: [1,5,9], 4: [1,3,7,9], 5: [1,3,5,7,9], 6: [1,3,4,6,7,9]
+  };
+  var faces = document.querySelectorAll('.dice-face');
+  for (var i = 0; i < 6; i++) {
+    var face = faces[i];
+    face.innerHTML = '';
+    var positions = dots[i + 1];
+    for (var p = 1; p <= 9; p++) {
+      var d = document.createElement('div');
+      if (positions.indexOf(p) !== -1) d.className = 'dot';
+      face.appendChild(d);
+    }
+  }
+}
+
+function buildBoard() {
+  var board = document.getElementById('board');
+  board.className = CFG.layout === 'classic' ? 'board-classic' : 'board-snake';
+  board.innerHTML = '';
+  var fields = CFG.fields;
+
+  if (CFG.layout === 'snake') {
+    /* Snake: 4 rows x 5 cols, alternating direction */
+    for (var row = 3; row >= 0; row--) {
+      for (var c = 0; c < 5; c++) {
+        var col = (row % 2 === 0) ? c : (4 - c);
+        var idx = row * 5 + col;
+        if (idx >= fields.length) continue;
+        var cell = createCell(fields[idx], idx);
+        /* Grid order: top row first visually */
+        cell.style.order = (3 - row) * 5 + c;
+        board.appendChild(cell);
+      }
+    }
+  } else {
+    /* Classic rectangle: percentage-based perimeter layout */
+    var positions = calcClassicPositions();
+    for (var i = 0; i < fields.length; i++) {
+      var cell = createCell(fields[i], i);
+      cell.style.left = positions[i].x + '%';
+      cell.style.top = positions[i].y + '%';
+      cell.style.width = positions[i].w + '%';
+      cell.style.height = positions[i].h + '%';
+      board.appendChild(cell);
+    }
+    var center = document.createElement('div');
+    center.className = 'center-area';
+    center.innerHTML = '<div style="font-size:24px;font-weight:700;color:var(--g-accent2)">' + escH(CFG.title) + '</div>';
+    board.appendChild(center);
+  }
+  buildPrintCards();
+}
+
+function buildPrintCards() {
+  var container = document.getElementById('print-cards-container');
+  if(!container) return;
+  var html = '';
+  for (var i = 1; i < CFG.fields.length - 1; i++) {
+    var f = CFG.fields[i];
+    var effText = '';
+    switch (f.effect) {
+      case 'forward':  effText = '\u{25B2} ' + f.value + ' vor'; break;
+      case 'backward': effText = '\u{25BC} ' + f.value + ' zurück'; break;
+      case 'suspend':  effText = '\u{23F8} ' + f.value + ' aussetzen'; break;
+      case 'jumpto':   effText = '\u{1F3AF} Gehe zu ' + f.value; break;
+      case 'rollagain': effText = '\u{1F3B2} Nochmal würfeln'; break;
+    }
+    html += '<div class="print-card">' +
+      '<div class="pc-title">' + i + '. ' + escH(f.title) + '</div>' +
+      '<div class="pc-text">' + escH(f.text) + '</div>' +
+      '<div class="pc-effect">' + effText + '</div>' +
+      '</div>';
+  }
+  container.innerHTML = html;
+}
+
+function calcClassicPositions() {
+  /* Cell sizes as percentage of board */
+  var cw = 13;  /* cell width % */
+  var ch = 14;  /* cell height % */
+  var gap = 1.5; /* gap % */
+  var pos = [];
+  /* Bottom row: fields 0-5, left to right */
+  var hStep = (100 - cw) / 5;
+  for (var i = 0; i < 6; i++) pos.push({x: i * hStep, y: 100 - ch, w: cw, h: ch});
+  /* Right column: fields 6-9, bottom to top (between corners) */
+  var rightX = 100 - cw;
+  var vStep = (100 - ch) / 5;
+  for (var i = 0; i < 4; i++) pos.push({x: rightX, y: 100 - ch - (i+1) * vStep, w: cw, h: ch});
+  /* Top row: fields 10-15, right to left */
+  for (var i = 0; i < 6; i++) pos.push({x: rightX - i * hStep, y: 0, w: cw, h: ch});
+  /* Left column: fields 16-19, top to bottom (between corners) */
+  for (var i = 0; i < 4; i++) pos.push({x: 0, y: (i+1) * vStep, w: cw, h: ch});
+  return pos;
+}
+
+function createCell(field, idx) {
+  var cell = document.createElement('div');
+  cell.className = 'cell';
+  cell.id = 'cell-' + idx;
+  if (idx === 0) cell.classList.add('start-cell');
+  else if (idx === 19) cell.classList.add('goal-cell');
+  else {
+    var cat = field.category || 'neutral';
+    cell.classList.add(cat);
+  }
+  var icon = '';
+  if (idx === 0) icon = '\u{1F3C1}';
+  else if (idx === 19) icon = '\u{1F3C6}';
+  else icon = EFFECT_ICONS[field.effect] || '';
+  
+  var contentHtml = '';
+  if (CFG.showFieldContent !== false || idx === 0 || idx === 19) {
+    contentHtml = '<span class="cell-icon">' + icon + '</span>' +
+      '<span class="cell-title">' + escH(field.title) + '</span>';
+  }
+  
+  cell.innerHTML = '<span class="cell-num">' + idx + '</span>' +
+    contentHtml +
+    '<div class="tokens-container" id="tc-' + idx + '"></div>';
+  return cell;
+}
+
+function initPlayers() {
+  players = [];
+  var count = CFG.mode === 'ai' ? (1 + CFG.playerCount) : CFG.playerCount;
+  var set = TOKEN_SETS[CFG.tokenSet] || [];
+  for (var i = 0; i < count; i++) {
+    players.push({
+      position: 0,
+      suspended: 0,
+      color: COLORS[i],
+      emoji: set[i] || '',
+      isAI: CFG.mode === 'ai' && i > 0,
+      label: 'Spieler ' + (i + 1)
+    });
+  }
+  currentPlayer = 0;
+}
+
+function renderTokens() {
+  /* Clear all token containers */
+  var containers = document.querySelectorAll('.tokens-container');
+  for (var i = 0; i < containers.length; i++) containers[i].innerHTML = '';
+  /* Place tokens */
+  for (var i = 0; i < players.length; i++) {
+    var p = players[i];
+    var tc = document.getElementById('tc-' + p.position);
+    if (!tc) continue;
+    var tk = document.createElement('div');
+    tk.className = 'token';
+    if (i === currentPlayer) tk.classList.add('active-token');
+    
+    if (p.emoji) {
+      tk.textContent = p.emoji;
+      tk.style.background = 'transparent';
+      tk.style.border = 'none';
+      tk.style.fontSize = '16px';
+      if (i === currentPlayer) tk.style.filter = 'drop-shadow(0 0 8px rgba(255,255,255,0.8))';
+    } else {
+      tk.style.background = p.color;
+      tk.textContent = (i + 1);
+    }
+    tc.appendChild(tk);
+  }
+}
+
+function renderPlayerList() {
+  var list = document.getElementById('player-list');
+  var html = '';
+  for (var i = 0; i < players.length; i++) {
+    var p = players[i];
+    var isCurrent = i === currentPlayer;
+    var tokenHtml = p.emoji
+      ? '<div class="pr-token" style="background:transparent;border:none;font-size:18px;">' + p.emoji + '</div>'
+      : '<div class="pr-token" style="background:' + p.color + '">' + (i+1) + '</div>';
+    
+    html += '<div class="player-row' + (isCurrent ? ' current' : '') + '">' +
+      tokenHtml +
+      '<div class="pr-info">' + escH(p.label) + (p.isAI ? ' \u{1F916}' : '') +
+      '<br><span class="pr-pos">Feld ' + p.position + '</span></div>' +
+      (p.suspended > 0 ? '<span class="pr-badge">\u{23F8} ' + p.suspended + '</span>' : '') +
+      '</div>';
+  }
+  list.innerHTML = html;
+}
+
+function updateTurnIndicator() {
+  var p = players[currentPlayer];
+  var tokenHtml = p.emoji
+    ? '<span class="turn-token" style="background:transparent;border:none;font-size:24px;">' + p.emoji + '</span>'
+    : '<span class="turn-token" style="background:' + p.color + '">' + (currentPlayer+1) + '</span>';
+    
+  document.getElementById('turn-indicator').innerHTML =
+    tokenHtml +
+    (p.isAI ? '\u{1F916} KI am Zug' : 'Du bist dran!');
+}
+
+function rollDice() {
+  if (rolling || gameOver) return;
+  rolling = true;
+  document.getElementById('btn-roll').disabled = true;
+  var result = Math.floor(Math.random() * 6) + 1;
+
+  /* Animate dice */
+  var cube = document.getElementById('dice-cube');
+  var spins = 2 + Math.floor(Math.random() * 3);
+  var rotations = {
+    1: 'rotateX(' + (360*spins) + 'deg) rotateY(0deg)',
+    2: 'rotateX(' + (360*spins - 90) + 'deg) rotateY(0deg)',
+    3: 'rotateX(' + (360*spins) + 'deg) rotateY(' + (-(90 + 360*spins)) + 'deg)',
+    4: 'rotateX(' + (360*spins) + 'deg) rotateY(' + (90 + 360*spins) + 'deg)',
+    5: 'rotateX(' + (360*spins + 90) + 'deg) rotateY(0deg)',
+    6: 'rotateX(' + (360*spins) + 'deg) rotateY(' + (180 + 360*spins) + 'deg)'
+  };
+  cube.style.transform = rotations[result];
+
+  setTimeout(function() { moveToken(currentPlayer, result); }, 900);
+}
+
+function moveToken(pIdx, steps) {
+  var p = players[pIdx];
+  var target = p.position + steps;
+  
+  if (CFG.exactFinish && target > 19) {
+    document.getElementById('modal-icon').textContent = '\u{26A0}\u{FE0F}';
+    document.getElementById('modal-title').textContent = 'Zu weit gewürfelt!';
+    document.getElementById('modal-text').textContent = 'Du hast eine ' + steps + ' gewürfelt, brauchst aber genau eine ' + (19 - p.position) + ' für das Ziel.';
+    var effEl = document.getElementById('modal-effect');
+    effEl.textContent = 'Aktion verfällt';
+    effEl.className = 'modal-effect eff-neg';
+    
+    window._pendingEffect = { pIdx: pIdx, field: { effect: 'none' } };
+    document.getElementById('modal-overlay').classList.add('visible');
+    
+    if (p.isAI) { setTimeout(function() { acceptEffect(); }, 1800); }
+    return;
+  }
+  
+  target = Math.min(target, 19);
+  animateSteps(pIdx, p.position, target, function() {
+    p.position = target;
+    renderTokens();
+    renderPlayerList();
+    if (target === 19) {
+      endGame(pIdx);
+      return;
+    }
+    /* Show event card for fields 1-18 */
+    if (target >= 1 && target <= 18) {
+      showEventCard(target, pIdx);
+    } else {
+      nextTurn();
+    }
+  });
+}
+
+function animateSteps(pIdx, from, to, cb) {
+  if (from >= to) { cb(); return; }
+  var next = from + 1;
+  players[pIdx].position = next;
+  renderTokens();
+  setTimeout(function() { animateSteps(pIdx, next, to, cb); }, 180);
+}
+
+function showEventCard(fieldIdx, pIdx) {
+  var field = CFG.fields[fieldIdx];
+  var p = players[pIdx];
+  document.getElementById('modal-icon').textContent = EFFECT_ICONS[field.effect] || '\u{2753}';
+  document.getElementById('modal-title').textContent = field.title;
+  document.getElementById('modal-text').textContent = field.text;
+
+  var effEl = document.getElementById('modal-effect');
+  var effText = '';
+  var effClass = 'eff-pos';
+  switch (field.effect) {
+    case 'forward':  effText = '\u{1F53C} ' + field.value + ' Felder vorwärts!'; effClass = 'eff-pos'; break;
+    case 'backward': effText = '\u{1F53D} ' + field.value + ' Felder zurück!'; effClass = 'eff-neg'; break;
+    case 'suspend':  effText = '\u{23F8} ' + field.value + ' Runde(n) aussetzen!'; effClass = 'eff-neg'; break;
+    case 'jumpto':   effText = '\u{1F3AF} Springe auf Feld ' + field.value + '!'; effClass = 'eff-spc'; break;
+    case 'rollagain': effText = '\u{1F3B2} Du darfst nochmal würfeln!'; effClass = 'eff-pos'; break;
+  }
+  effEl.textContent = effText;
+  effEl.className = 'modal-effect ' + effClass;
+
+  window._pendingEffect = { pIdx: pIdx, field: field };
+  document.getElementById('modal-overlay').classList.add('visible');
+
+  /* AI auto-accept after delay */
+  if (p.isAI) {
+    setTimeout(function() { acceptEffect(); }, 1800);
+  }
+}
+
+function acceptEffect() {
+  var eff = window._pendingEffect;
+  if (!eff) return;
+  window._pendingEffect = null;
+  document.getElementById('modal-overlay').classList.remove('visible');
+
+  var p = players[eff.pIdx];
+  var field = eff.field;
+
+  switch (field.effect) {
+    case 'forward':
+      var dest = Math.min(p.position + field.value, 19);
+      animateSteps(eff.pIdx, p.position, dest, function() {
+        p.position = dest;
+        renderTokens();
+        renderPlayerList();
+        if (dest === 19) { endGame(eff.pIdx); return; }
+        nextTurn();
+      });
+      return;
+    case 'backward':
+      var dest = Math.max(p.position - field.value, 1);
+      animateStepsBack(eff.pIdx, p.position, dest, function() {
+        p.position = dest;
+        renderTokens();
+        renderPlayerList();
+        nextTurn();
+      });
+      return;
+    case 'suspend':
+      p.suspended = field.value;
+      renderPlayerList();
+      nextTurn();
+      return;
+    case 'jumpto':
+      var dest = Math.max(1, Math.min(field.value, 19));
+      p.position = dest;
+      renderTokens();
+      renderPlayerList();
+      if (dest === 19) { endGame(eff.pIdx); return; }
+      nextTurn();
+      return;
+    case 'rollagain':
+      rolling = false;
+      document.getElementById('btn-roll').disabled = false;
+      renderTokens();
+      renderPlayerList();
+      updateTurnIndicator();
+      if (p.isAI && !gameOver) {
+        setTimeout(function() { rollDice(); }, 1000);
+      }
+      return;
+  }
+  nextTurn();
+}
+
+function animateStepsBack(pIdx, from, to, cb) {
+  if (from <= to) { cb(); return; }
+  var next = from - 1;
+  players[pIdx].position = next;
+  renderTokens();
+  setTimeout(function() { animateStepsBack(pIdx, next, to, cb); }, 180);
+}
+
+function nextTurn() {
+  rolling = false;
+  currentPlayer = (currentPlayer + 1) % players.length;
+
+  /* Skip suspended players */
+  var checks = 0;
+  while (players[currentPlayer].suspended > 0 && checks < players.length) {
+    players[currentPlayer].suspended--;
+    currentPlayer = (currentPlayer + 1) % players.length;
+    checks++;
+  }
+
+  renderPlayerList();
+  updateTurnIndicator();
+  document.getElementById('btn-roll').disabled = false;
+
+  /* AI auto-roll */
+  if (players[currentPlayer].isAI && !gameOver) {
+    document.getElementById('btn-roll').disabled = true;
+    setTimeout(function() { rollDice(); }, 800 + Math.random() * 600);
+  }
+}
+
+function endGame(pIdx) {
+  gameOver = true;
+  rolling = true;
+  document.getElementById('btn-roll').disabled = true;
+  var p = players[pIdx];
+  
+  completeSCORM();
+  
+  document.getElementById('winner-text').textContent = '\u{1F3C6} ' + p.label + ' gewinnt!';
+  document.getElementById('winner-sub').textContent = 'Herzlichen Glückwunsch!';
+  document.getElementById('winner-overlay').classList.add('visible');
+  startConfetti();
+}
+
+/* ─── Confetti ─── */
+function startConfetti() {
+  var canvas = document.getElementById('confetti-canvas');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  var ctx = canvas.getContext('2d');
+  var particles = [];
+  var colors = ['#ff6b6b','#ffd93d','#6bcb77','#4ecdc4','#a855f7','#ff8c42','#f0f','#0ff'];
+  for (var i = 0; i < 150; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      w: 4 + Math.random() * 6,
+      h: 8 + Math.random() * 8,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      vy: 2 + Math.random() * 4,
+      vx: (Math.random() - 0.5) * 3,
+      rot: Math.random() * 360,
+      vr: (Math.random() - 0.5) * 10
+    });
+  }
+  function frame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    var alive = false;
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+      p.vy += 0.05;
+      if (p.y < canvas.height + 20) alive = true;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot * Math.PI / 180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+    }
+    if (alive) requestAnimationFrame(frame);
+  }
+  frame();
+}
+
+function escH(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+function startGame() {
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('game-container').style.display = 'block';
+  
+  initSCORM();
+  initDiceFaces();
+  initPlayers();
+  /* Wait for layout to ensure board dimensions are available */
+  requestAnimationFrame(function() {
+    buildBoard();
+    renderTokens();
+    renderPlayerList();
+    updateTurnIndicator();
+    /* If first player is AI, auto-start */
+    if (players[currentPlayer].isAI) {
+      document.getElementById('btn-roll').disabled = true;
+      setTimeout(function() { rollDice(); }, 1000);
+    }
+  });
+}
+
+/* ─── Init ─── */
+document.getElementById('g-title').textContent = CFG.title;
+document.getElementById('g-header-title').textContent = CFG.title;
+var rulesEl = document.getElementById('g-rules');
+if (CFG.rules) { rulesEl.textContent = CFG.rules; } else { rulesEl.style.display = 'none'; }
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     EDITOR JAVASCRIPT
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   STATE & CONSTANTS
+   ═══════════════════════════════════════════════════════════════ */
+const THEMES = {
+  nachtseite: {
+    name: 'Nachtseite', icon: '🌑',
+    swatch: 'linear-gradient(135deg, #0D0D1A, #6B21A8)',
+    vars: `
+      --g-bg: linear-gradient(135deg, #0D0D1A, #1A1A3E);
+      --g-text: #F0ABFC; --g-text2: rgba(240,171,252,.7);
+      --g-accent: #6B21A8; --g-accent2: #C026D3;
+      --g-border: #1A1A3E; --g-field-bg: rgba(26,26,62,.8);
+      --g-card-bg: rgba(26,26,62,.95);
+      --g-positive: #10b981; --g-negative: #ef4444; --g-special: #E2E8F0;
+    `
+  },
+  feuer: {
+    name: 'Feuer', icon: '🔥',
+    swatch: 'linear-gradient(135deg, #1C0A00, #EA580C)',
+    vars: `
+      --g-bg: linear-gradient(135deg, #1C0A00, #7C2D12);
+      --g-text: #FEF3C7; --g-text2: rgba(254,243,199,.7);
+      --g-accent: #EA580C; --g-accent2: #FBBF24;
+      --g-border: #7C2D12; --g-field-bg: rgba(124,45,18,.8);
+      --g-card-bg: rgba(124,45,18,.95);
+      --g-positive: #4ade80; --g-negative: #f43f5e; --g-special: #FFFFFF;
+    `
+  },
+  vernunft: {
+    name: 'Vernunft', icon: '💠',
+    swatch: 'linear-gradient(135deg, #020617, #06B6D4)',
+    vars: `
+      --g-bg: linear-gradient(135deg, #020617, #0F172A);
+      --g-text: #F0F9FF; --g-text2: rgba(240,249,255,.7);
+      --g-accent: #06B6D4; --g-accent2: #22D3EE;
+      --g-border: #0F172A; --g-field-bg: rgba(15,23,42,.8);
+      --g-card-bg: rgba(15,23,42,.95);
+      --g-positive: #10b981; --g-negative: #ef4444; --g-special: #67E8F9;
+    `
+  },
+  gewoelbe: {
+    name: 'Gewölbe', icon: '🌿',
+    swatch: 'linear-gradient(135deg, #052E16, #16A34A)',
+    vars: `
+      --g-bg: linear-gradient(135deg, #052E16, #14532D);
+      --g-text: #D1FAE5; --g-text2: rgba(209,250,229,.7);
+      --g-accent: #16A34A; --g-accent2: #86EFAC;
+      --g-border: #14532D; --g-field-bg: rgba(20,83,45,.8);
+      --g-card-bg: rgba(20,83,45,.95);
+      --g-positive: #65a30d; --g-negative: #ef4444; --g-special: #FEFCE8;
+    `
+  }
+};
+
+const FONT_STACKS = {
+  'Lora': "'Lora', Georgia, 'Palatino Linotype', serif",
+  'Cinzel': "'Cinzel', 'Times New Roman', 'Book Antiqua', serif",
+  'Playfair Display': "'Playfair Display', Georgia, 'Hoefler Text', serif",
+  'Inter': "'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif"
+};
+
+const DEMO_MARKDOWN = `# Literarische Reise
+> Würfelt reihum und erlebt die großen Momente der Literaturgeschichte! Wer als Erster das Ziel erreicht, gewinnt.
+
+---
+## Die Muse erscheint
+Ein Hauch von Inspiration erfasst dich. Die Worte fließen wie von selbst aus deiner Feder.
+[+2]
+
+---
+## Schreibblockade
+Du starrst auf das leere Blatt. Kein Gedanke will sich formen, kein Wort will entstehen.
+[-2]
+
+---
+## Der Mäzen
+Ein wohlhabender Förderer erkennt dein Talent und lädt dich in seinen Salon ein.
+[+3]
+
+---
+## Zensur!
+Die Obrigkeit hat dein Werk beschlagnahmt. Du musst im Verborgenen weiterschreiben.
+[!1]
+
+---
+## Literarischer Salon
+Im Kreise Gleichgesinnter diskutierst du bis tief in die Nacht über Kunst und Philosophie.
+[+1]
+
+---
+## Das Manuskript brennt
+Ein Unglück! Dein wichtigstes Werk fällt den Flammen zum Opfer.
+[-3]
+
+---
+## Bestseller!
+Dein Roman wird zum Gespräch der ganzen Stadt. Die Druckerpresse kommt kaum nach.
+[+4]
+
+---
+## Der Kritiker
+Eine vernichtende Rezension erscheint in der Morgenzeitung. Dein Ruf ist beschädigt.
+[-2]
+
+---
+## Geheime Botschaft
+Du entdeckst eine verschlüsselte Nachricht in einem alten Buch. Sie führt dich weit voraus.
+[=15]
+
+---
+## Dichterfreundschaft
+Du triffst einen Seelenverwandten. Gemeinsam erschafft ihr ein epochales Werk.
+[+2]
+
+---
+## Verlorene Seiten
+Der Wind reißt dir die Blätter deines Manuskripts aus der Hand.
+[-1]
+
+---
+## Fiebertraum
+Im Fieber hast du die wildesten Visionen – sie werden zu deinem besten Kapitel.
+[+3]
+
+---
+## Plagiatsverdacht
+Ein Neider behauptet, du hättest abgeschrieben. Du musst dich verteidigen.
+[!2]
+
+---
+## Die Lesung
+Vor ausverkauftem Haus trägst du dein Werk vor. Standing Ovations!
+[+2]
+
+---
+## Druckfehler
+Das gesamte erste Kapitel ist voller Fehler. Zurück zur Druckerei!
+[=4]
+
+---
+## Reise nach Weimar
+Du pilgerst zu den Stätten der Klassiker. Die Atmosphäre beflügelt dich.
+[+3]
+
+---
+## Papiermangel
+Es gibt kein Papier mehr. Du musst warten, bis Nachschub kommt.
+[!1]
+
+---
+## Das Meisterwerk
+Dein Lebenswerk ist vollendet! Die literarische Welt liegt dir zu Füßen.
+[+5]`;
+
+/* ─── Game Config ─── */
+let gameConfig = {
+  title: 'Literarische Reise',
+  rules: 'Würfelt reihum und erlebt die großen Momente der Literaturgeschichte! Wer als Erster das Ziel erreicht, gewinnt.',
+  mode: 'hotseat',
+  playerCount: 2,
+  layout: 'classic',
+  theme: 'nachtseite',
+  font: 'Lora',
+  tokenSet: 'colors',
+  showFieldContent: false,
+  exactFinish: false,
+  fields: []
+};
+
+let selectedFieldIndex = -1;
+
+function initDefaultFields() {
+  gameConfig.title = 'Mein Brettspiel';
+  gameConfig.rules = 'Würfelt reihum und versucht, zuerst das Ziel zu erreichen!';
+  gameConfig.fields = [
+    { title: 'Start', text: 'Hier beginnt das Spiel!', effect: 'forward', value: 0, category: 'neutral' }
+  ];
+  for (let i = 1; i <= 18; i++) {
+    gameConfig.fields.push({ title: 'Feld ' + i, text: 'Dies ist ein Platzhalter-Text. Klicke auf dieses Feld im Editor, um hier ein spannendes Ereignis einzutragen.', effect: 'forward', value: 1, category: 'positive' });
+  }
+  gameConfig.fields.push({ title: 'Ziel', text: 'Geschafft! Du hast das Ziel erreicht!', effect: 'forward', value: 0, category: 'neutral' });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TABS
+   ═══════════════════════════════════════════════════════════════ */
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', ['fields','markdown','design'][i] === tab);
+  });
+  document.querySelectorAll('.tab-content').forEach((c, i) => {
+    c.classList.toggle('active', c.id === 'tab-' + tab);
+  });
+  if (tab === 'markdown') syncMarkdownTextarea();
+  if (tab === 'design') syncDesignTab();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TAB 1: FIELD EDITOR
+   ═══════════════════════════════════════════════════════════════ */
+function renderFieldSidebar() {
+  const sidebar = document.getElementById('field-sidebar');
+  let html = '';
+  for (let i = 0; i < gameConfig.fields.length; i++) {
+    const f = gameConfig.fields[i];
+    const isActive = i === selectedFieldIndex;
+    let icon = '';
+    if (i === 0) icon = '🏁';
+    else if (i === 19) icon = '🏆';
+    else {
+      switch(f.effect) {
+        case 'forward': icon = '🔼'; break;
+        case 'backward': icon = '🔽'; break;
+        case 'suspend': icon = '⏸'; break;
+        case 'jumpto': icon = '🎯'; break;
+        case 'rollagain': icon = '🎲'; break;
+      }
+    }
+    html += `<div class="field-item ${isActive ? 'active' : ''}" onclick="selectField(${i})">
+      <div class="field-num">${i}</div>
+      <span class="field-label">${escHTML(f.title)}</span>
+      <span class="field-icon">${icon}</span>
+    </div>`;
+  }
+  sidebar.innerHTML = html;
+}
+
+function selectField(idx) {
+  selectedFieldIndex = idx;
+  renderFieldSidebar();
+  renderFieldForm(idx);
+}
+
+function renderFieldForm(idx) {
+  const f = gameConfig.fields[idx];
+  const isFixed = idx === 0 || idx === 19;
+  const form = document.getElementById('field-form');
+
+  const effLabels = { forward: 'Felder vorwärts', backward: 'Felder zurück', suspend: 'Runden aussetzen', jumpto: 'Zielfeld-Nr.', rollagain: 'Effekt' };
+  const catLabels = { positive: '🔼 Positiv (grün)', negative: '🔽 Negativ (rot)', special: '🎯 Sonder (lila)' };
+
+  let effIcon = '';
+  switch(f.effect) {
+    case 'forward': effIcon = '🔼'; break;
+    case 'backward': effIcon = '🔽'; break;
+    case 'suspend': effIcon = '⏸'; break;
+    case 'jumpto': effIcon = '🎯'; break;
+    case 'rollagain': effIcon = '🎲'; break;
+  }
+
+  form.innerHTML = `
+    <h2 style="margin-bottom:20px;font-size:20px;">Feld ${idx}: ${escHTML(f.title)}</h2>
+    <div class="${isFixed ? 'form-disabled' : ''}">
+      <div class="form-group">
+        <label>Titel</label>
+        <input type="text" value="${escAttr(f.title)}" oninput="updateFieldProp(${idx},'title',this.value)" ${isFixed?'disabled':''}>
+      </div>
+      <div class="form-group">
+        <label>Beschreibungstext (Ereigniskarte) <span style="font-size:10px;color:var(--ed-text2);text-transform:none;margin-left:8px;">(Empfohlen: 150-250 Zeichen)</span></label>
+        <textarea oninput="updateFieldProp(${idx},'text',this.value)" ${isFixed?'disabled':''}>${escHTML(f.text)}</textarea>
+      </div>
+      ${isFixed ? '' : `
+      <div class="form-row">
+        <div class="form-group">
+          <label>Effekt-Typ</label>
+          <select onchange="updateFieldProp(${idx},'effect',this.value);renderFieldForm(${idx})">
+            <option value="forward" ${f.effect==='forward'?'selected':''}>↑ Vorwärts</option>
+            <option value="backward" ${f.effect==='backward'?'selected':''}>↓ Zurück</option>
+            <option value="suspend" ${f.effect==='suspend'?'selected':''}>⏸ Aussetzen</option>
+            <option value="jumpto" ${f.effect==='jumpto'?'selected':''}>🎯 Springe auf Feld</option>
+            <option value="rollagain" ${f.effect==='rollagain'?'selected':''}>🎲 Nochmal würfeln</option>
+          </select>
+        </div>
+        <div class="form-group" style="${f.effect==='rollagain'?'display:none':''}">
+          <label>${effLabels[f.effect] || 'Wert'}</label>
+          <input type="number" value="${f.value}" min="1" max="${f.effect==='jumpto'?18:6}" onchange="updateFieldProp(${idx},'value',parseInt(this.value));autoCategory(${idx})">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Effektkategorie (Feldfarbe)</label>
+        <select onchange="updateFieldProp(${idx},'category',this.value)">
+          <option value="positive" ${f.category==='positive'?'selected':''}>🔼 Positiv (grün)</option>
+          <option value="negative" ${f.category==='negative'?'selected':''}>🔽 Negativ (rot)</option>
+          <option value="special" ${f.category==='special'?'selected':''}>🎯 Sonder (lila)</option>
+        </select>
+      </div>
+      `}
+      <div class="form-group">
+        <label>Vorschau</label>
+        <div class="field-preview-box" style="border-color:${f.category==='positive'?'var(--ed-positive)':f.category==='negative'?'var(--ed-negative)':'var(--ed-special)'}">
+          <span class="fp-icon">${effIcon || '🏁'}</span>
+          <span>${escHTML(f.title)}</span>
+          ${!isFixed ? `<span style="font-size:12px;opacity:.7;">${effLabels[f.effect]}: ${f.value}</span>` : ''}
+        </div>
+      </div>
+    </div>`;
+}
+
+function updateGameInfo(prop, val) {
+  gameConfig[prop] = val;
+  // Update other tab components if needed
+  if (prop === 'title' || prop === 'rules') {
+    syncMarkdownTextarea();
+  }
+}
+
+function updateFromMarkdown(isLive) {
+  const md = document.getElementById('md-textarea').value;
+  const parsed = parseMarkdownToConfig(md);
+
+  // Silent update for title/rules
+  if (parsed.title && parsed.title !== gameConfig.title) {
+    gameConfig.title = parsed.title;
+    const titleEl = document.getElementById('cfg-title');
+    if (titleEl) titleEl.value = parsed.title;
+  }
+  if (parsed.rules && parsed.rules !== gameConfig.rules) {
+    gameConfig.rules = parsed.rules;
+    const rulesEl = document.getElementById('cfg-rules');
+    if (rulesEl) rulesEl.value = parsed.rules;
+  }
+
+  // Update fields only if we have exactly 18 blocks
+  if (parsed.fieldBlocks.length === 18) {
+    gameConfig.fields = [
+      { title: 'Start', text: 'Hier beginnt dein Abenteuer!', effect: 'forward', value: 0, category: 'neutral' },
+      ...parsed.fieldBlocks,
+      { title: 'Ziel', text: 'Geschafft! Du hast das Ziel erreicht!', effect: 'forward', value: 0, category: 'neutral' }
+    ];
+    renderFieldSidebar();
+    // If the currently selected field is valid, re-render it
+    if (selectedFieldIndex !== -1) {
+      renderFieldForm(selectedFieldIndex);
+    }
+    if (!isLive) showToast('18 Felder erfolgreich importiert!', 'success');
+  } else {
+    if (!isLive) showToast(`Fehler: ${parsed.fieldBlocks.length} Felder gefunden, 18 erwartet!`, 'error');
+  }
+}
+
+function importMarkdown() {
+  updateFromMarkdown(false);
+}
+
+function updateFieldProp(idx, prop, val) {
+  gameConfig.fields[idx][prop] = val;
+  renderFieldSidebar();
+  syncMarkdownTextarea();
+}
+
+function autoCategory(idx) {
+  const f = gameConfig.fields[idx];
+  if (f.effect === 'forward') f.category = 'positive';
+  else if (f.effect === 'backward' || f.effect === 'suspend') f.category = 'negative';
+  else if (f.effect === 'jumpto' || f.effect === 'rollagain') f.category = 'special';
+  renderFieldForm(idx);
+  renderFieldSidebar();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TAB 2: MARKDOWN
+   ═══════════════════════════════════════════════════════════════ */
+function syncMarkdownTextarea() {
+  document.getElementById('md-textarea').value = configToMarkdown();
+}
+
+function configToMarkdown() {
+  let md = `# ${gameConfig.title}\n`;
+  if (gameConfig.rules) md += `> ${gameConfig.rules}\n`;
+  for (let i = 1; i <= 18; i++) {
+    const f = gameConfig.fields[i];
+    md += `\n---\n## ${f.title}\n${f.text}\n`;
+    switch(f.effect) {
+      case 'forward': md += `[+${f.value}]\n`; break;
+      case 'backward': md += `[-${f.value}]\n`; break;
+      case 'suspend': md += `[!${f.value}]\n`; break;
+      case 'jumpto': md += `[=${f.value}]\n`; break;
+      case 'rollagain': md += `[++]\n`; break;
+    }
+  }
+  return md.trim();
+}
+
+function parseMarkdownToConfig(md) {
+  const lines = md.split('\n');
+  let title = '', rules = '';
+  let fieldBlocks = [];
+  let currentBlock = null;
+  let headerDone = false;
+
+  for (let line of lines) {
+    const trimmed = line.trim();
+
+    /* Title */
+    if (!headerDone && trimmed.startsWith('# ') && !trimmed.startsWith('## ')) {
+      title = trimmed.slice(2).trim();
+      continue;
+    }
+    /* Rules */
+    if (!headerDone && trimmed.startsWith('> ')) {
+      rules += (rules ? ' ' : '') + trimmed.slice(2).trim();
+      continue;
+    }
+    /* Separator */
+    if (trimmed === '---') {
+      headerDone = true;
+      if (currentBlock) fieldBlocks.push(currentBlock);
+      currentBlock = { title: '', text: '', effect: 'forward', value: 1, category: 'positive' };
+      continue;
+    }
+    if (!currentBlock) continue;
+
+    /* Field title */
+    if (trimmed.startsWith('## ')) {
+      currentBlock.title = trimmed.slice(3).trim();
+      continue;
+    }
+    /* Action tag */
+    if (trimmed === '[++]') {
+      currentBlock.effect = 'rollagain';
+      currentBlock.category = 'special';
+      currentBlock.value = 1;
+      continue;
+    }
+    const tagMatch = trimmed.match(/^\[([+\-!=])(\d+)\]$/);
+    if (tagMatch) {
+      const type = tagMatch[1];
+      const val = parseInt(tagMatch[2]) || 1;
+      currentBlock.value = val;
+      switch(type) {
+        case '+':
+          if (trimmed === '[++]') {
+            currentBlock.effect = 'rollagain';
+            currentBlock.category = 'special';
+          } else {
+            currentBlock.effect = 'forward';
+            currentBlock.category = 'positive';
+          }
+          break;
+        case '-': currentBlock.effect = 'backward'; currentBlock.category = 'negative'; break;
+        case '!': currentBlock.effect = 'suspend'; currentBlock.category = 'negative'; break;
+        case '=': currentBlock.effect = 'jumpto'; currentBlock.category = 'special'; break;
+      }
+      continue;
+    }
+    /* Text content */
+    if (trimmed) {
+      currentBlock.text += (currentBlock.text ? '\n' : '') + trimmed;
+    }
+  }
+  if (currentBlock) fieldBlocks.push(currentBlock);
+
+  return { title, rules, fieldBlocks };
+}
+
+function exportMarkdown() {
+  const md = configToMarkdown();
+  const blob = new Blob([md], { type: 'text/markdown' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = slugify(gameConfig.title) + '.md';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Markdown-Datei gespeichert!', 'success');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TAB 3: DESIGN
+   ═══════════════════════════════════════════════════════════════ */
+function syncDesignTab() {
+  document.getElementById('cfg-title').value = gameConfig.title;
+  document.getElementById('cfg-rules').value = gameConfig.rules;
+  document.getElementById('cfg-font').value = gameConfig.font;
+  document.getElementById('cfg-tokens').value = gameConfig.tokenSet || 'colors';
+  var efToggle = document.getElementById('cfg-exact-finish');
+  if (efToggle) efToggle.checked = !!gameConfig.exactFinish;
+}
+
+function renderThemeGrid() {
+  const grid = document.getElementById('theme-grid');
+  let html = '';
+  for (const [key, theme] of Object.entries(THEMES)) {
+    html += `<div class="theme-card ${gameConfig.theme===key?'active':''}" onclick="selectTheme('${key}')">
+      <div class="swatch" style="background:${theme.swatch}"></div>
+      ${theme.icon} ${theme.name}
+    </div>`;
+  }
+  grid.innerHTML = html;
+}
+
+function selectTheme(key) {
+  gameConfig.theme = key;
+  renderThemeGrid();
+}
+
+function setLayout(layout) {
+  gameConfig.layout = layout;
+  document.querySelectorAll('.layout-btn:not(.content-btn)').forEach(b => {
+    b.classList.toggle('active', b.textContent.toLowerCase().includes(layout === 'snake' ? 'schlangen' : 'klassisch'));
+  });
+}
+
+function setShowContent(show) {
+  gameConfig.showFieldContent = show;
+  document.querySelectorAll('.content-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.includes('Anzeigen') === show);
+  });
+}
+
+function setMode(mode) {
+  gameConfig.mode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.toLowerCase().includes(mode === 'hotseat' ? 'hot' : 'ki'));
+  });
+  const label = document.getElementById('player-label');
+  const count = document.getElementById('player-count');
+  if (mode === 'hotseat') {
+    label.textContent = 'Anzahl Spieler';
+    gameConfig.playerCount = Math.max(2, Math.min(6, gameConfig.playerCount));
+  } else {
+    label.textContent = 'Anzahl KI-Gegner';
+    gameConfig.playerCount = Math.max(1, Math.min(5, gameConfig.playerCount));
+  }
+  count.textContent = gameConfig.playerCount;
+}
+
+function changePlayerCount(delta) {
+  const min = gameConfig.mode === 'hotseat' ? 2 : 1;
+  const max = gameConfig.mode === 'hotseat' ? 6 : 5;
+  gameConfig.playerCount = Math.max(min, Math.min(max, gameConfig.playerCount + delta));
+  document.getElementById('player-count').textContent = gameConfig.playerCount;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   EXPORT
+   ═══════════════════════════════════════════════════════════════ */
+function generateGameHTML() {
+  const theme = THEMES[gameConfig.theme];
+  const fontStack = FONT_STACKS[gameConfig.font] || FONT_STACKS['Lora'];
+
+  let css = document.getElementById('tpl-game-css').textContent;
+  css = css.replace('/*THEME_VARS*/', ':root {\n' + theme.vars + '\n}');
+  css = css.replace('/*FONT_FAMILY*/', fontStack);
+
+  const html = document.getElementById('tpl-game-html').textContent;
+  const js = document.getElementById('tpl-game-js').textContent;
+
+  const configJSON = JSON.stringify(gameConfig);
+  const fontName = gameConfig.font;
+
+  return `<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escHTML(gameConfig.title)}</title>
+<link href="https://fonts.googleapis.com/css2?family=${encodeURIComponent(fontName)}:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+${css}
+</style>
+</head>
+<body>
+${html}
+<script>
+var GAME_CONFIG = ${configJSON};
+${js}
+<\/script>
+</body>
+</html>`;
+}
+
+function downloadGame() {
+  if (!validateFields()) return;
+  const html = generateGameHTML();
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = slugify(gameConfig.title) + '.html';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Spiel exportiert!', 'success');
+}
+
+function previewGame() {
+  if (!validateFields()) return;
+  const html = generateGameHTML();
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+  showToast('Vorschau geöffnet', 'success');
+}
+
+function printGame() {
+  if (!validateFields()) return;
+  let html = generateGameHTML();
+  let printInjector = `
+  <style>
+    body { background: #fff !important; color: #000 !important; }
+    #start-screen, .game-header, .game-sidebar, #winner-overlay, .modal-overlay, .center-area { display: none !important; }
+    #game-container, #print-cards { display: block !important; }
+    .board-snake, .board-classic { box-shadow: none !important; background: #fff !important; }
+  </style>
+  <script>
+    window.onload = function() {
+      startGame();
+      setTimeout(function() {
+        window.print();
+        setTimeout(function(){ window.close(); }, 100);
+      }, 600);
+    };
+  </` + `script>
+  `;
+  html = html.replace('</body>', printInjector + '</body>');
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+  showToast('Druckausgabe wird erstellt...', 'success');
+}
+
+function exportSCORM() {
+  if (!validateFields()) return;
+
+  if (typeof JSZip === 'undefined') {
+    showToast('Lade ZIP-Bibliothek (benötigt Internet)...', 'success');
+    const script = document.createElement('script');
+    script.src = '../../js/vendor/jszip.min.js';
+    script.onload = () => createSCORMPackage();
+    script.onerror = () => showToast('Fehler beim Laden der ZIP-Bibliothek.', 'error');
+    document.head.appendChild(script);
+  } else {
+    createSCORMPackage();
+  }
+}
+
+function createSCORMPackage() {
+  const htmlContent = generateGameHTML();
+  const zip = new JSZip();
+
+  zip.file("index.html", htmlContent);
+
+  const manifest = `<?xml version="1.0" standalone="no" ?>
+<manifest identifier="LiterarischesBrettspiel" version="1.0"
+          xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+          xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd
+                              http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd
+                              http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+  </metadata>
+  <organizations default="default_org">
+    <organization identifier="default_org">
+      <title>${escHTML(gameConfig.title)}</title>
+      <item identifier="item_1" identifierref="resource_1">
+        <title>${escHTML(gameConfig.title)}</title>
+      </item>
+    </organization>
+  </organizations>
+  <resources>
+    <resource identifier="resource_1" type="webcontent" adlcp:scormtype="sco" href="index.html">
+      <file href="index.html" />
+    </resource>
+  </resources>
+</manifest>`;
+
+  zip.file("imsmanifest.xml", manifest);
+
+  zip.generateAsync({type:"blob"}).then(function(content) {
+    const url = URL.createObjectURL(content);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = slugify(gameConfig.title) + '_SCORM.zip';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('SCORM-Paket exportiert!', 'success');
+  });
+}
+
+function validateFields() {
+  for (let i = 1; i <= 18; i++) {
+    const f = gameConfig.fields[i];
+    if (!f.title || !f.title.trim()) {
+      showToast(`Feld ${i}: Titel fehlt!`, 'error');
+      switchTab('fields');
+      selectField(i);
+      return false;
+    }
+  }
+  return true;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   UTILS
+   ═══════════════════════════════════════════════════════════════ */
+function escHTML(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+function escAttr(s) { return (s || '').replace(/"/g, '&quot;'); }
+function slugify(s) { return (s || 'spiel').toLowerCase().replace(/[äöüß]/g, m => ({ä:'ae',ö:'oe',ü:'ue',ß:'ss'}[m]||m)).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+
+function showToast(msg, type) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = 'toast ' + type + ' show';
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════════════════════ */
+function toggleDemoPreset(wantsDemo) {
+  if (wantsDemo) {
+    if(!confirm("Achtung: Dies lädt die Demo-Vorlage und überschreibt deine aktuellen Eingaben. Fortfahren?")) {
+      document.getElementById('chk-use-demo').checked = false;
+      return;
+    }
+  } else {
+    if(!confirm("Achtung: Dies leert das gesamte Brett und entfernt alle deine Eingaben. Fortfahren?")) {
+      document.getElementById('chk-use-demo').checked = true;
+      return;
+    }
+  }
+  init();
+  selectedFieldIndex = -1;
+  document.getElementById('field-form').innerHTML = '<p style="color:var(--ed-text2);margin-top:40px;text-align:center;">← Wähle ein Feld aus der Liste</p>';
+}
+
+function init() {
+  const wantsDemo = document.getElementById('chk-use-demo') ? document.getElementById('chk-use-demo').checked : true;
+  initDefaultFields();
+  
+  if (wantsDemo) {
+    const parsed = parseMarkdownToConfig(DEMO_MARKDOWN);
+    if (parsed.fieldBlocks.length === 18) {
+      gameConfig.title = parsed.title;
+      gameConfig.rules = parsed.rules;
+      gameConfig.fields = [
+        { title: 'Start', text: 'Hier beginnt dein Abenteuer!', effect: 'forward', value: 0, category: 'neutral' },
+        ...parsed.fieldBlocks,
+        { title: 'Ziel', text: 'Geschafft! Du hast das Ziel erreicht!', effect: 'forward', value: 0, category: 'neutral' }
+      ];
+    }
+    document.getElementById('md-textarea').value = DEMO_MARKDOWN;
+  } else {
+    document.getElementById('md-textarea').value = configToMarkdown();
+  }
+  
+  renderFieldSidebar();
+  renderThemeGrid();
+  syncDesignTab();
+}
+
+init();
+</script>
+</body>
+</html>
+
+

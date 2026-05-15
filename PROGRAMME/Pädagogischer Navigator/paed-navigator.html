@@ -1,0 +1,1070 @@
+﻿<!DOCTYPE html>
+<!-- 
+  P�dagogischer Navigator � WissualisierungOS Edition
+  Ein interaktives Tool f�r Referendare zur Visualisierung von Hattie-Effektst�rken.
+  Design: Neobrutalismus / OS-Theme
+-->
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>P�dagogischer Navigator</title>
+  <meta name="description"
+    content="Interaktiver P�dagogischer Navigator f�r Lehramtsreferendarinnen und -referendare. 50 evidenzbasierte Einflussfaktoren auf den Lernerfolg mit Effektst�rken, Erkl�rungen und Unterrichtsmethoden.">
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    /* -- DESIGN SYSTEM & VARIABLEN -- */
+    :root {
+      --os-primary: #7DFFC2;
+      --os-secondary: #FF6B9D;
+      --os-accent: #FFE66D;
+      --os-bg: #D8D0E8;
+      --os-text: #1A1A1A;
+      --os-window-bg: #FAFAF5;
+      --os-btn-face: #D4D0C8;
+      --os-border: 3px solid #1A1A1A;
+      --os-shadow: 4px 4px 0 #000;
+      --os-font: 'VT323', monospace;
+      --os-font-body: 'IBM Plex Mono', monospace;
+      --red: #ef4444;
+      --orange: #f97316;
+      --yellow: #eab308;
+      --light-green: #84cc16;
+      --green: #22c55e;
+      --dark-green: #15803d;
+      --transition: cubic-bezier(.4, 0, .2, 1);
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      font-family: var(--os-font-body);
+      background: var(--os-bg);
+      background-image: radial-gradient(circle, rgba(0, 0, 0, .06) 1px, transparent 1px);
+      background-size: 24px 24px;
+      color: var(--os-text);
+      line-height: 1.65;
+      min-height: 100vh
+    }
+
+    /* -- HEADER --------------------- */
+    .header {
+      background: var(--os-btn-face);
+      color: var(--os-text);
+      padding: 1.5rem 1.5rem 1.2rem;
+      text-align: center;
+      border-bottom: var(--os-border);
+      position: relative;
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto
+    }
+
+    .header h1 {
+      font-family: var(--os-font);
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 400;
+      margin-bottom: .2rem;
+      letter-spacing: .04em;
+      color: var(--os-text)
+    }
+
+    .header .subtitle {
+      font-size: .85rem;
+      color: #555;
+      margin-bottom: .8rem;
+      font-weight: 500;
+      font-family: var(--os-font-body)
+    }
+
+    .header .hint {
+      background: var(--os-window-bg);
+      display: inline-block;
+      padding: .6rem 1.2rem;
+      font-size: .82rem;
+      line-height: 1.6;
+      max-width: 700px;
+      border: var(--os-border);
+      box-shadow: var(--os-shadow);
+    }
+
+    .header .hint strong {
+      color: var(--os-secondary);
+      font-weight: 700
+    }
+
+    .header .count-badge {
+      display: inline-block;
+      margin-top: .8rem;
+      padding: .25rem .7rem;
+      font-size: .78rem;
+      font-weight: 700;
+      background: var(--os-primary);
+      border: 2px solid var(--os-text);
+      color: var(--os-text);
+      letter-spacing: .06em;
+      font-family: var(--os-font);
+    }
+
+    /* -- CONTROLS ------------------- */
+    .controls {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--os-btn-face);
+      border-bottom: var(--os-border);
+      padding: .8rem 1.5rem;
+    }
+
+    .controls-inner {
+      max-width: 960px;
+      margin: 0 auto
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      flex-wrap: wrap
+    }
+
+    .slider-wrap {
+      flex: 1;
+      min-width: 240px
+    }
+
+    .slider-label {
+      font-size: .78rem;
+      color: #555;
+      margin-bottom: .35rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--os-font-body)
+    }
+
+    .slider-val {
+      font-family: var(--os-font);
+      font-weight: 400;
+      font-size: 1.3rem;
+      color: var(--os-text);
+      min-width: 85px;
+      text-align: center;
+      font-variant-numeric: tabular-nums
+    }
+
+    .slider-category {
+      font-size: .72rem;
+      padding: .1rem .5rem;
+      font-weight: 700;
+      margin-left: .5rem;
+      color: #fff;
+      font-family: var(--os-font);
+      border: 2px solid var(--os-text)
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 10px;
+      outline: none;
+      cursor: pointer;
+      transition: background .2s;
+      border: 2px solid var(--os-text)
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      background: var(--os-accent);
+      border: 2px solid var(--os-text);
+      cursor: grab;
+      box-shadow: 2px 2px 0 #000
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover {
+      box-shadow: 3px 3px 0 #000
+    }
+
+    input[type=range]::-webkit-slider-thumb:active {
+      cursor: grabbing
+    }
+
+    input[type=range]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: var(--os-accent);
+      border: 2px solid var(--os-text);
+      cursor: grab;
+      box-shadow: 2px 2px 0 #000
+    }
+
+    .color-scale {
+      display: flex;
+      height: 6px;
+      overflow: hidden;
+      margin-top: 5px;
+      border: 1px solid var(--os-text)
+    }
+
+    .color-scale span {
+      flex: 1
+    }
+
+    .btn-random {
+      background: var(--os-primary);
+      color: var(--os-text);
+      border: var(--os-border);
+      padding: .5rem 1.1rem;
+      font-family: var(--os-font);
+      font-size: 1.1rem;
+      font-weight: 400;
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: var(--os-shadow);
+      transition: all .15s;
+    }
+
+    .btn-random:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 5px 5px 0 #000
+    }
+
+    .btn-random:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 #000
+    }
+
+    /* -- FILTER TABS ---------------- */
+    .filter-tabs {
+      display: flex;
+      gap: .3rem;
+      margin-top: .6rem;
+      flex-wrap: wrap
+    }
+
+    .filter-tab {
+      padding: .25rem .65rem;
+      border: 2px solid var(--os-text);
+      background: var(--os-window-bg);
+      font-family: var(--os-font);
+      font-size: .85rem;
+      font-weight: 400;
+      cursor: pointer;
+      transition: all .15s;
+      color: var(--os-text);
+    }
+
+    .filter-tab:hover {
+      background: var(--os-accent);
+      color: var(--os-text)
+    }
+
+    .filter-tab.active {
+      background: var(--os-text);
+      color: #fff
+    }
+
+    /* -- SUGGESTIONS ---------------- */
+    .suggestions {
+      max-width: 960px;
+      margin: .5rem auto 0;
+      display: flex;
+      gap: .4rem;
+      flex-wrap: wrap;
+      padding: 0 1.5rem;
+      align-items: center
+    }
+
+    .suggestion-label {
+      font-size: .72rem;
+      color: #555;
+      margin-right: .2rem;
+      white-space: nowrap;
+      font-family: var(--os-font-body)
+    }
+
+    .suggestion-chip {
+      font-size: .72rem;
+      padding: .2rem .6rem;
+      background: var(--os-window-bg);
+      color: var(--os-text);
+      cursor: pointer;
+      transition: all .15s;
+      border: 2px solid var(--os-text);
+      font-family: var(--os-font);
+    }
+
+    .suggestion-chip:hover {
+      background: var(--os-primary);
+      color: var(--os-text)
+    }
+
+    /* -- MAIN ----------------------- */
+    .main {
+      max-width: 960px;
+      margin: 1.5rem auto;
+      padding: 0 1.5rem
+    }
+
+    /* -- MAIN CARD ------------------ */
+    .main-card {
+      background: var(--os-window-bg);
+      border: var(--os-border);
+      box-shadow: var(--os-shadow);
+      padding: 1.8rem 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: opacity .3s var(--transition), transform .3s var(--transition);
+    }
+
+    .main-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--red), var(--orange), var(--yellow), var(--light-green), var(--green), var(--dark-green));
+    }
+
+    .main-card.fade-out {
+      opacity: 0;
+      transform: translateY(12px)
+    }
+
+    .main-card.fade-in {
+      opacity: 1;
+      transform: translateY(0)
+    }
+
+    .badge {
+      position: absolute;
+      top: 1.2rem;
+      right: 1.2rem;
+      padding: .35rem .9rem;
+      color: #fff;
+      font-family: var(--os-font);
+      font-weight: 400;
+      font-size: 1rem;
+      letter-spacing: .02em;
+      border: 2px solid var(--os-text);
+      box-shadow: 2px 2px 0 #000;
+    }
+
+    .card-deutsch {
+      font-family: var(--os-font);
+      font-size: clamp(1.3rem, 3vw, 1.7rem);
+      font-weight: 400;
+      color: var(--os-text);
+      margin-bottom: .15rem;
+      padding-right: 110px;
+      line-height: 1.3;
+      letter-spacing: .02em
+    }
+
+    .card-english {
+      font-size: .82rem;
+      color: #777;
+      font-style: italic;
+      margin-bottom: .8rem;
+      font-family: var(--os-font-body)
+    }
+
+    .card-divider {
+      height: 3px;
+      background: var(--os-text);
+      margin: .8rem 0 1.2rem;
+      opacity: .15
+    }
+
+    .card-section {
+      margin-bottom: 1.3rem
+    }
+
+    .card-section-title {
+      font-size: .78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: #555;
+      margin-bottom: .4rem;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      font-family: var(--os-font)
+    }
+
+    .card-section p {
+      font-size: .88rem;
+      line-height: 1.75;
+      color: #333;
+      font-family: var(--os-font-body)
+    }
+
+    .methode-box {
+      background: var(--os-window-bg);
+      border-left: 4px solid var(--os-primary);
+      border: var(--os-border);
+      border-left: 4px solid var(--os-primary);
+      padding: .9rem 1.2rem;
+      box-shadow: 2px 2px 0 rgba(0, 0, 0, .1);
+    }
+
+    /* -- MINI BAR ------------------- */
+    .mini-bar-wrap {
+      margin-top: 1.5rem;
+      padding-top: 1.2rem;
+      border-top: 2px solid rgba(0, 0, 0, .1)
+    }
+
+    .mini-bar-label {
+      font-size: .72rem;
+      color: #555;
+      margin-bottom: .5rem;
+      font-family: var(--os-font-body)
+    }
+
+    .mini-bar-container {
+      position: relative;
+      height: 26px;
+      background: var(--os-btn-face);
+      border: 2px solid var(--os-text);
+      overflow: visible
+    }
+
+    .mini-bar-fill {
+      height: 100%;
+      transition: width .5s var(--transition), background .3s
+    }
+
+    .mini-bar-marker {
+      position: absolute;
+      top: -2px;
+      width: 2px;
+      height: 30px;
+      background: var(--os-text);
+      opacity: .35
+    }
+
+    .mini-bar-value {
+      position: absolute;
+      top: 50%;
+      right: 8px;
+      transform: translateY(-50%);
+      font-size: .72rem;
+      font-weight: 400;
+      color: #fff;
+      font-family: var(--os-font)
+    }
+
+    .mini-bar-hinge-label {
+      position: absolute;
+      top: -16px;
+      font-size: .6rem;
+      color: #555;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      font-family: var(--os-font)
+    }
+
+    /* -- CHIPS ---------------------- */
+    .chips-section {
+      margin-top: 2.5rem
+    }
+
+    .chips-title {
+      font-family: var(--os-font);
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--os-text);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem
+    }
+
+    .chips-count {
+      font-size: .8rem;
+      font-weight: 400;
+      color: var(--os-text);
+      background: var(--os-primary);
+      padding: .1rem .5rem;
+      border: 2px solid var(--os-text);
+      font-family: var(--os-font)
+    }
+
+    .chips-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem
+    }
+
+    .chip {
+      padding: .3rem .75rem;
+      font-size: .74rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .15s;
+      border: 2px solid var(--os-text);
+      color: #fff;
+      position: relative;
+      font-family: var(--os-font);
+      box-shadow: 2px 2px 0 rgba(0, 0, 0, .15);
+    }
+
+    .chip:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0 rgba(0, 0, 0, .25)
+    }
+
+    .chip.active {
+      border-color: var(--os-accent);
+      box-shadow: 0 0 0 2px var(--os-accent), 3px 3px 0 rgba(0, 0, 0, .2);
+      transform: scale(1.03)
+    }
+
+    .chip .chip-d {
+      font-size: .62rem;
+      opacity: .8;
+      margin-left: .25rem
+    }
+
+    /* -- FOOTER --------------------- */
+    .footer {
+      background: var(--os-btn-face);
+      color: #555;
+      text-align: center;
+      padding: 1.5rem;
+      font-size: .76rem;
+      line-height: 1.9;
+      margin-top: 3rem;
+      border-top: var(--os-border);
+      font-family: var(--os-font-body);
+    }
+
+    .footer strong {
+      color: var(--os-text)
+    }
+
+    /* -- MODAL ----------------------- */
+    .btn-info {
+      background: none;
+      color: #777;
+      border: none;
+      padding: 0;
+      font-family: var(--os-font);
+      font-size: .9rem;
+      font-weight: 400;
+      cursor: pointer;
+      transition: color .2s;
+      text-decoration: none;
+      border-bottom: 1px dotted #999;
+      padding-bottom: 1px;
+      margin-left: .6rem
+    }
+
+    .btn-info:hover {
+      color: var(--os-secondary);
+      border-bottom-color: var(--os-secondary)
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 26, 26, .6);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem
+    }
+
+    .modal-overlay.active {
+      display: flex
+    }
+
+    .modal {
+      background: var(--os-window-bg);
+      border: var(--os-border);
+      box-shadow: 6px 6px 0 #000;
+      max-width: 680px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 2rem;
+      position: relative;
+      animation: modalIn .3s var(--transition)
+    }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: .8rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: #555;
+      transition: color .2s;
+      line-height: 1;
+      font-family: var(--os-font)
+    }
+
+    .modal-close:hover {
+      color: var(--os-secondary)
+    }
+
+    .modal h2 {
+      font-family: var(--os-font);
+      font-size: 1.5rem;
+      font-weight: 400;
+      color: var(--os-text);
+      margin-bottom: 1rem
+    }
+
+    .modal h3 {
+      font-family: var(--os-font);
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--os-text);
+      margin: 1.2rem 0 .5rem
+    }
+
+    .modal p {
+      font-size: .85rem;
+      line-height: 1.8;
+      color: #333;
+      margin-bottom: .8rem;
+      font-family: var(--os-font-body)
+    }
+
+    .modal ul {
+      font-size: .83rem;
+      line-height: 1.8;
+      color: #333;
+      padding-left: 1.2rem;
+      margin-bottom: .8rem;
+      font-family: var(--os-font-body)
+    }
+
+    .modal .highlight-box {
+      background: var(--os-window-bg);
+      border-left: 4px solid var(--os-accent);
+      border: var(--os-border);
+      border-left: 4px solid var(--os-accent);
+      padding: .8rem 1rem;
+      margin: 1rem 0;
+      font-size: .85rem;
+      font-family: var(--os-font-body);
+      box-shadow: 2px 2px 0 rgba(0, 0, 0, .1)
+    }
+
+    /* -- RESPONSIVE ----------------- */
+    @media(max-width:640px) {
+      .header {
+        padding: 1.2rem .8rem 1rem
+      }
+
+      .controls {
+        padding: .6rem .8rem
+      }
+
+      .slider-row {
+        flex-direction: column;
+        align-items: stretch
+      }
+
+      .main-card {
+        padding: 1rem .8rem
+      }
+
+      .badge {
+        position: relative;
+        top: 0;
+        right: 0;
+        display: inline-block;
+        margin-bottom: .8rem
+      }
+
+      .card-deutsch {
+        padding-right: 0
+      }
+
+      .chips-grid {
+        gap: .3rem
+      }
+
+      .chip {
+        font-size: .68rem;
+        padding: .25rem .6rem
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- -- SEITEN-HEADER -------------------------------- -->
+  <header class="header">
+    <div class="header-content">
+      <h1>P�dagogischer Navigator</h1>
+      <p class="subtitle">Evidenzbasierte Einflussfaktoren auf den Lernerfolg � Effektst�rken aus der
+        Metaanalysenforschung</p>
+      <p class="hint">Der Umschlagpunkt (<strong>Hinge-Point</strong>) liegt bei <strong>d&nbsp;=&nbsp;0,40</strong>.
+        Faktoren dar�ber beschleunigen Lernen deutlich st�rker als durchschnittlicher Unterricht.</p>
+      <span class="count-badge">53 EINFLUSSFAKTOREN � METAANALYSEN</span><button class="btn-info" id="btnInfo"
+        aria-label="Informationen zur App">Warum diese App?</button>
+    </div>
+  </header>
+
+  <!-- -- STEUERUNGSELEMENTE (Slider & Filter) ---------- -->
+  <div class="controls" role="region" aria-label="Steuerungsbereich">
+    <div class="controls-inner">
+      <div class="slider-row">
+        <div class="slider-wrap">
+          <div class="slider-label">
+            <span>Effektst�rke w�hlen</span>
+            <span><span class="slider-val" id="sliderVal">d = 0,00</span><span class="slider-category"
+                id="sliderCat"></span></span>
+          </div>
+          <input type="range" id="slider" min="-0.50" max="1.60" step="0.01" value="0"
+            aria-label="Effektst�rke (Cohen d)" aria-valuemin="-0.50" aria-valuemax="1.60">
+          <div class="color-scale">
+            <span style="background:var(--red);flex:.30"></span>
+            <span style="background:var(--orange);flex:.20"></span>
+            <span style="background:var(--yellow);flex:.20"></span>
+            <span style="background:var(--light-green);flex:.20"></span>
+            <span style="background:var(--green);flex:.40"></span>
+            <span style="background:var(--dark-green);flex:.60"></span>
+          </div>
+        </div>
+        <button class="btn-random" id="btnRandom" aria-label="Zuf�lligen Faktor ausw�hlen">?? Zuf�lliger Faktor</button>
+      </div>
+      <div class="filter-tabs" role="tablist" aria-label="Filter nach Effektst�rke">
+        <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true">Alle</button>
+        <button class="filter-tab" data-filter="very-high" role="tab">Sehr hoch (=1,00)</button>
+        <button class="filter-tab" data-filter="high" role="tab">Hoch (0,60�0,99)</button>
+        <button class="filter-tab" data-filter="medium" role="tab">Mittel (0,40�0,59)</button>
+        <button class="filter-tab" data-filter="low" role="tab">Gering (0,01�0,39)</button>
+        <button class="filter-tab" data-filter="negative" role="tab">Kritisch (=0,00)</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="suggestions" id="suggestions"></div>
+
+  <!-- -- HAUPTBEREICH (Anzeige & Auswahl) -------------- -->
+  <main class="main">
+    <div class="main-card" id="mainCard">
+      <span class="badge" id="badge"></span>
+      <div class="card-deutsch" id="cardDeutsch"></div>
+      <div class="card-english" id="cardEnglish"></div>
+      <div class="card-divider"></div>
+      <div class="card-section">
+        <div class="card-section-title">?? Kurzerkl�rung</div>
+        <p id="cardErklaerung"></p>
+      </div>
+      <div class="card-section">
+        <div class="card-section-title">?? Methode f�r den Unterricht</div>
+        <div class="methode-box">
+          <p id="cardMethode"></p>
+        </div>
+      </div>
+      <div class="card-section">
+        <div class="card-section-title">?? Studienlage (Metaanalysen)</div>
+        <p id="cardStudienlage"></p>
+      </div>
+      <div class="mini-bar-wrap">
+        <div class="mini-bar-label">Effektst�rke im Kontext aller 53 Faktoren (Hinge-Point bei d = 0,40)</div>
+        <div class="mini-bar-container" id="miniBarContainer">
+          <div class="mini-bar-fill" id="miniBarFill"></div>
+          <div class="mini-bar-value" id="miniBarValue"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chips-section">
+      <div class="chips-title">?? Alle Einflussfaktoren <span class="chips-count" id="chipsCount">53</span></div>
+      <div class="chips-grid" id="chipsGrid"></div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <strong>Quellenangabe:</strong> Effektst�rken nach: Hattie, J. (2009/2023). <em>Visible Learning.</em> Routledge.
+    Dt.: Zierer, K. &amp; Beywl, W. (2013). <em>Lernen sichtbar machen.</em> Schneider Verlag Hohengehren.<br>
+    Methodenvorschl�ge und Erl�uterungen basieren auf Hatties Forschungsergebnissen, erg�nzt durch Erfahrungswissen aus
+    der Unterrichtspraxis.
+  </footer>
+
+  <!-- -- MODAL-INFOFENSTER ----------------------------- -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" role="dialog" aria-labelledby="modalTitle">
+      <button class="modal-close" id="modalClose" aria-label="Schlie�en">&times;</button>
+      <h2 id="modalTitle">? Warum diese App?</h2>
+      <p>Als Referendarin oder Referendar, aber auch als fertige Lehrkraft stehen Sie vor einer anspruchsvollen Aufgabe:
+        Sie sollen Unterricht planen,
+        der <strong>nachweislich wirksam</strong> ist � oft ohne ausreichend Zeit, sich in die umfangreiche
+        Forschungslage einzulesen.</p>
+      <h3>?? Was sind Effektst�rken?</h3>
+      <p>Eine Effektst�rke (Cohen�s d) misst, wie stark ein bestimmter Faktor das Lernen beeinflusst. Der Wert
+        <strong>d�=�0,40</strong> gilt als Umschlagpunkt: Faktoren dar�ber bewirken mehr als gew�hnlicher Unterricht
+        ohne gezielte Intervention.
+      </p>
+      <div class="highlight-box">?? <strong>Beispiel:</strong> �Unterrichtsklarheit� (d�=�0,75) bedeutet, dass Lernende,
+        die klare Lernziele und Erfolgskriterien erhalten, im Durchschnitt erheblich mehr lernen als Vergleichsgruppen
+        ohne diese Klarheit.</div>
+      <h3>?? Woher stammen die Daten?</h3>
+      <p>Die hier dargestellten Effektst�rken basieren auf <strong>Meta-Analysen</strong> � also Zusammenfassungen von
+        hunderten Einzelstudien mit insgesamt Millionen von Lernenden weltweit. Diese Synthese der Bildungsforschung ist
+        die bisher umfassendste ihrer Art.</p>
+      <h3>?? Was bringt Ihnen diese App?</h3>
+      <ul>
+        <li><strong>Orientierung:</strong> Verstehen, welche Unterrichtsfaktoren den gr��ten Hebel haben</li>
+        <li><strong>Konkrete Methoden:</strong> Zu jedem Faktor finden Sie einen direkt umsetzbaren Unterrichtsvorschlag
+        </li>
+        <li><strong>Reflexion:</strong> Im Mentoring-Gespr�ch oder bei der Unterrichtsplanung fundiert argumentieren
+        </li>
+        <li><strong>�berraschungen erkennen:</strong> Manche popul�re Ma�nahmen (z.�B. Klassenverkleinerung) wirken
+          weniger als erwartet � andere untersch�tzte Faktoren umso mehr</li>
+      </ul>
+      <h3>?? Wichtig: Evidenz als Kompass, nicht als Rezept</h3>
+      <p>Effektst�rken sind <strong>statistische Durchschnittswerte</strong>. Sie ersetzen nicht Ihr professionelles
+        Urteil, sondern erg�nzen es. Jede Klasse, jede Sch�lerschaft und jeder Kontext ist anders. Nutzen Sie die Daten
+        als <strong>Reflexionsinstrument</strong>, nicht als starre Handlungsanweisung.</p>
+      <p style="color:var(--text-light);font-size:.82rem;margin-top:1.2rem">Ausgangspunkt dieser App ist die Forschung
+        von John Hattie (<em>Visible Learning</em>, 2009/2023). Die Methodenvorschl�ge und Erl�uterungen verbinden die
+        wissenschaftlichen Befunde mit Erfahrungswissen aus der Unterrichtspraxis.</p>
+    </div>
+  </div>
+
+  <script>
+    /* -- APPLIKATIONS-DATEN (Hattie-Faktoren) ---------- */
+    const data = [
+      { id: 1, deutsch: "Kollektive Lehrerwirksamkeit", english: "Collective Teacher Efficacy", d: 1.57, erklaerung: "Die gemeinsame �berzeugung eines Kollegiums, die Lernleistungen aller Sch�lerinnen und Sch�ler wirksam beeinflussen zu k�nnen. In der umfassendsten Synthese der Bildungsforschung der st�rkste schulische Einflussfaktor �berhaupt.", methode: "Aktive Mitarbeit in Fachschaft und Jahrgangsteam: regelm��ige Mini-Fallstudien aus dem eigenen Unterricht einbringen, strukturierte kollegiale Hospitationen mit Fokusfrage ('Was hat bei leistungsschw�cheren Lernenden funktioniert?') verabreden.", studienlage: "Auf Basis zahlreicher Meta-Analysen zu Kooperation und Schulklima zeigen Schulen mit hoher kollektiver Selbstwirksamkeit signifikant bessere Lernergebnisse als vergleichbare Schulen mit schw�cherem Teamglauben." },
+      { id: 2, deutsch: "Sch�ler-Selbstbeurteilung", english: "Self-reported Grades", d: 1.33, erklaerung: "Sch�lerinnen und Sch�ler sch�tzen vorab ein, welche Leistung sie erreichen werden, und vergleichen diese Prognose nach der R�ckgabe mit dem tats�chlichen Ergebnis. F�rdert Metakognition und realistische Selbstwahrnehmung.", methode: "Vor Lernstandskontrollen kurze Prognosekarten ausf�llen lassen ('Ich erwarte Note �, weil �'). Nach der R�ckgabe: Reflexionsgespr�ch im Tandem und Ableitung von Lernstrategien.", studienlage: "Die metaanalytische Evidenz zeigt, dass Selbstprognosen ein sehr starker Pr�diktor f�r tats�chliche Leistungen sind und gleichzeitig einen wirkungsvollen Hebel f�r Zielorientierung darstellen." },
+      { id: 3, deutsch: "Diagnostische Leistungseinsch�tzung durch die Lehrperson", english: "Teacher Estimates of Achievement", d: 1.29, erklaerung: "Wie pr�zise eine Lehrkraft den Lernstand ihrer Klasse einsch�tzen kann, bevor sie unterrichtet. Passgenaue Einsch�tzung ist Grundlage f�r adaptives Unterrichten.", methode: "Jedes neue Thema mit einem kurzen formativen Vortest beginnen (5�10 Aufgaben zum Vorwissen) und das Ergebnis systematisch f�r Differenzierung (Aufgabenvarianten, Hilfekarten, Gruppenbildung) nutzen.", studienlage: "Pr�zise Leistungseinsch�tzungen h�ngen eng mit h�heren Lernzuw�chsen zusammen, weil Unterricht dann gezielter auf Fehlkonzepte und L�cken reagieren kann." },
+      { id: 4, deutsch: "Kognitive Aufgabenanalyse", english: "Cognitive Task Analysis", d: 1.29, erklaerung: "Zerlegung komplexer Aufgaben in kognitive Teilschritte und explizite Modellierung dieser Schritte (z. B. beim Leseverstehen oder Textschreiben).", methode: "Lautes Denken ('Think Aloud'): Lehrperson modelliert am Beamer Schritt f�r Schritt ihren Denkprozess bei einer Aufgabe. Anschlie�end baut die Klasse den Prozess in eigenen Worten nach.", studienlage: "Lernende sind deutlich erfolgreicher, wenn sie nicht nur Aufgaben l�sen, sondern die zugrunde liegenden mentalen Strategien explizit kennenlernen und ein�ben." },
+      { id: 5, deutsch: "Piaget-orientierte Programme", english: "Piagetian Programs", d: 1.28, erklaerung: "Unterricht, der konsequent an kognitiven Entwicklungsstufen ausgerichtet ist (konkret ? formal) und geeignete Handlungs- und Anschauungssituationen nutzt.", methode: "In Unterrichtseinheiten bewusst vom Konkreten zum Abstrakten gehen (z. B. Grammatik zun�chst handelnd erfahren, erst dann Regeln abstrahieren). Aufgabenangebote in mindestens zwei Niveaustufen anlegen.", studienlage: "Entwicklungsorientierte Programme erzielen sehr hohe Effekte, besonders wenn ausreichend konkret-handelnde Phasen vor der Regelformulierung stehen." },
+      { id: 31, deutsch: "Gruppenpuzzle (Jigsaw-Methode)", english: "Jigsaw Method", d: 1.20, erklaerung: "Arbeitsteilige Lernform, bei der Sch�lerinnen und Sch�ler in Expertengruppen Teilinhalte erarbeiten und diese anschlie�end gegenseitig lehren. Verbindet individuelles Expertenwissen mit sozialer Verantwortung.", methode: "Klasse in Stammgruppen und Expertengruppen aufteilen: jede Expertengruppe erarbeitet ein Teilthema tiefgr�ndig, kehrt dann in die Stammgruppe zur�ck und lehrt die anderen. Klare Zeitstruktur, Leitfragen und Expertenplakate als St�tze bereitstellen.", studienlage: "Metaanalysen zeigen sehr hohe Effekte, wenn die Gruppenpuzzle-Struktur konsequent umgesetzt wird und alle Lernenden tats�chlich f�r ihren Teilbereich Expertenverantwortung �bernehmen." },
+      { id: 16, deutsch: "Unterrichtsqualit�t", english: "Instructional Quality", d: 1.00, erklaerung: "�bergreifende Qualit�t des Unterrichts als B�ndel von Merkmalen: Struktur, Klarheit, kognitive Aktivierung und konstruktive Unterst�tzung.", methode: "F�r jede Stunde einen 'Dreischritt' fest einplanen: klare Lernziele kommunizieren � kognitiv herausfordernde Sch�leraktivit�t � kurzes formatives Check-out (Exit-Karte), um Qualit�t von Struktur und Aktivierung routinem��ig zu sichern.", studienlage: "Metaanalysen zeigen, dass Klarheit, Struktur und kognitive Aktivierung in Kombination eine besonders starke Wirkung entfalten und sich gegenseitig verst�rken." },
+      { id: 32, deutsch: "Selbstwirksamkeitserwartung", english: "Self-Efficacy", d: 0.92, erklaerung: "Die �berzeugung einer Sch�lerin oder eines Sch�lers, eine bestimmte Aufgabe durch eigene Anstrengung bew�ltigen zu k�nnen. Beeinflusst Ausdauer, Lerntiefe und Leistungsbereitschaft erheblich.", methode: "Mastery-Erlebnisse gezielt inszenieren: Aufgaben so staffeln, dass ein fr�hzeitiger Erfolgserlebnis m�glich ist. R�ckmeldungen auf Anstrengung und Strategie statt auf Talent beziehen ('Du hast das durch deine gr�ndliche Vorbereitung geschafft').", studienlage: "Zahlreiche Meta-Analysen belegen, dass die Selbstwirksamkeitserwartung eine der st�rksten motivationalen Einflussgr��en auf schulische Leistung darstellt und sich gezielt durch Unterrichtsgestaltung st�rken l�sst." },
+      { id: 6, deutsch: "Formative Evaluation", english: "Formative Evaluation", d: 0.90, erklaerung: "Systematisches Sammeln von Informationen zum Lernstand w�hrend des Unterrichts, um diesen laufend anzupassen (z. B. Exit-Karten, Kurztests, Lernstandserhebungen).", methode: "Am Stundenende zwei Fragen auf eine Karte schreiben lassen: 'Was habe ich heute verstanden?' / 'Wo bin ich noch unsicher?' Karten clustern und die Folgestunde gezielt an den dokumentierten Schwierigkeiten ausrichten.", studienlage: "Formative Evaluation geh�rt zu den Top-Einflussfaktoren, weil sie Fehlsteuerungen fr�h sichtbar macht und differenzierte F�rderung erst erm�glicht." },
+      { id: 7, deutsch: "Glaubw�rdigkeit der Lehrperson", english: "Teacher Credibility", d: 0.90, erklaerung: "Wahrgenommene Kompetenz, Fairness und Verl�sslichkeit der Lehrkraft aus Sicht der Lernenden. Sch�lerinnen und Sch�ler lernen deutlich besser, wenn sie ihrer Lehrperson fachlich und menschlich vertrauen.", methode: "Transparente Leistungsbewertung (Kriterienraster offenlegen), eigene Fehler offen eingestehen ('Das habe ich unklar erkl�rt, ich versuche es anders') und Zusagen wie R�ckgabezeiten konsequent einhalten.", studienlage: "Metaanalysen zeigen, dass Glaubw�rdigkeit �hnlich stark wirkt wie hochwertige Feedback- und Klarheitsprozesse � Vertrauen ist keine Soft Skill, sondern eine Lernvoraussetzung." },
+      { id: 53, deutsch: "Direkte Instruktion", english: "Direct Instruction", d: 0.82, erklaerung: "Direkte Instruktion ist eine von der Lehrperson aktiv gesteuerte Unterrichtsmethode: Lernziele werden transparent kommuniziert, neue Inhalte in kleinen Schritten pr�sentiert, angeleitetes und selbstst�ndiges �ben folgen aufeinander, R�ckmeldung erfolgt unmittelbar. Das Gegenteil von Frontalunterricht � es geht um gezielte Aktivierung, nicht um passives Zuh�ren.", methode: "Stunden nach dem Vier-Phasen-Modell planen: (1) Lernziel transparent machen und Vorwissen aktivieren, (2) neuen Inhalt schrittweise modellieren ('Ich tue'), (3) gemeinsam �ben mit sofortiger R�ckmeldung ('Wir tun'), (4) selbstst�ndiges �ben mit Monitoring ('Du tust'). Am Ende kurze Ergebnissicherung.", studienlage: "Hattie belegt auf Basis von vier Metaanalysen und 304 Studien eine Effektst�rke von d = 0,82. Besonders Sch�lerinnen und Sch�ler mit Lernschwierigkeiten profitieren stark. Entscheidend ist die Kombination aus Struktur, Transparenz und unmittelbarer R�ckmeldung � nicht das Lehrermonopol am Wort." },
+      { id: 34, deutsch: "Unterrichtsgespr�ch / Klassendiskussion", english: "Classroom Discussion", d: 0.82, erklaerung: "Gelenkte, kognitiv anspruchsvolle Diskussion in der Lerngruppe, in der Sch�lerinnen und Sch�ler Argumente entwickeln, hinterfragen und miteinander verhandeln � nicht nur Fragen beantworten.", methode: "Philosophisches Gespr�ch oder Podiumsdiskussion strukturiert einsetzen: Thesen an die Tafel schreiben, Redezeit gleichm��ig vergeben, Denkpausen vor Wortmeldungen einfordern, Sch�ler�u�erungen durch die Klasse kommentieren lassen statt selbst zu evaluieren.", studienlage: "Metaanalysen belegen hohe Effekte, wenn das Unterrichtsgespr�ch echte Denkanl�sse bietet und die Lehrperson moderierende statt bewertende Gespr�chsf�hrung praktiziert." },
+      { id: 35, deutsch: "Scaffolding / Lernger�ste", english: "Scaffolding", d: 0.82, erklaerung: "Strukturierte, tempor�re Unterst�tzungsma�nahmen (Hilfekarten, Satzanf�nge, Strukturraster, Operatorhilfen), die Lernende in den Bereich ihrer n�chsten Entwicklungszone begleiten und schrittweise abgebaut werden.", methode: "F�r neue, komplexe Aufgaben Hilfekarten mit abgestuften Hilfen erstellen (von Satzanf�ngen bis zu vollst�ndigen Beispiell�sungen). Explizit ank�ndigen, dass die St�tzen sukzessive entfernt werden, sobald Kompetenz gesichert ist.", studienlage: "Scaffolding zeigt sehr hohe Effekte, wenn die Unterst�tzungsma�nahmen adaptiv an den tats�chlichen Lernstand angepasst und konsequent zur�ckgenommen werden (fading)." },
+      { id: 36, deutsch: "Zusammenfassen / Res�mieren", english: "Summarization", d: 0.79, erklaerung: "Aktive Verdichtung von Lerninhalten in eigenen Worten durch Sch�lerinnen und Sch�ler. F�rdert tiefes Textverstehen, Strukturierungskompetenz und langfristige Behaltensleistung.", methode: "Nach Lese- oder Arbeitsphasen kurze Pflicht-Res�mees einfordern: 3-Satz-Zusammenfassung, 'One Sentence Summary', Tweet-Format (140 Zeichen) oder Randnotizen im Text. Im Anschluss Peer-Vergleich der Res�mees.", studienlage: "Mehrere Metaanalysen zeigen, dass das eigenst�ndige Zusammenfassen den reinen Wiedergabe-Effekt deutlich �bersteigt, weil es elaborative Verarbeitungstiefe erzwingt." },
+      { id: 37, deutsch: "Mnemotechniken / Ged�chtnisstrategien", english: "Mnemonics", d: 0.76, erklaerung: "Systematische Erinnerungshilfen (Akronyme, Reime, Loci-Methode, Schl�sselwortmethode), die abstraktes Lernmaterial an leicht abrufbare Ged�chtnisanker kn�pfen.", methode: "Im Deutschunterricht z. B. Eselsbr�cken f�r Rechtschreibregeln oder Kommasetzung gemeinsam entwickeln lassen. Sch�lerinnen und Sch�ler eigene Mnemotechniken f�r schwierige Inhalte erfinden lassen � das Erfinden selbst verst�rkt den Lerneffekt.", studienlage: "Metaanalysen belegen, dass Mnemotechniken besonders bei Sch�lerinnen und Sch�lern mit Lernschwierigkeiten starke Effekte erzielen und auch in der Regelklasse die kurzfristige Behaltensleistung deutlich verbessern." },
+      { id: 9, deutsch: "Unterrichtsklarheit", english: "Teacher Clarity", d: 0.75, erklaerung: "Klar formulierte Lernziele, explizite Erfolgskriterien und transparente Aufgabenstellungen, sodass Lernende jederzeit wissen, was sie lernen, warum und woran Erfolg erkennbar ist.", methode: "Zu Beginn jeder Stunde Lernziele und Erfolgskriterien an Tafel oder Pr�sentation festhalten ('Heute kannst du am Ende �'). Am Stundenende gemeinsam �berpr�fen lassen (z. B. Daumenfeedback, Reflexionskarte).", studienlage: "Metaanalysen berichten, dass hohe Unterrichtsklarheit die Lernrate nahezu verdoppeln kann. Der Faktor liegt deutlich im Bereich der 'Zone erw�nschter Effekte'." },
+      { id: 38, deutsch: "Reziprokes Lehren", english: "Reciprocal Teaching", d: 0.74, erklaerung: "Strukturierte Methode des dialogischen Lernens, bei der Sch�lerinnen und Sch�ler abwechselnd vier Lesestrategien anwenden und einander anleiten: Vorhersagen, Fragen stellen, Kl�ren, Zusammenfassen.", methode: "Klasse in Vierergruppen aufteilen, Rollen vergeben (Fragesteller:in, Kl�rer:in, Zusammenfasser:in, Vorhersager:in) und beim Lesen eines Textes rollierend einsetzen. Methode zun�chst modellieren, dann schrittweise �bergeben.", studienlage: "Reziprokes Lehren geh�rt zu den am st�rksten belegten Lesestrategieinterventionen: die Kombination aus sozialer Interaktion und expliziter Strategieanwendung erzeugt robuste Lernzuw�chse." },
+      { id: 10, deutsch: "Feedback", english: "Feedback", d: 0.72, erklaerung: "R�ckmeldungen, die sich auf Aufgabe, Prozess und Selbstregulation beziehen ('Was war richtig? Was beim n�chsten Mal anders?') und Lernende zur Korrektur und Weiterarbeit anregen.", methode: "In schriftlichen Arbeiten kurze prozessbezogene Kommentare erg�nzen (z. B. 'Dein Argument ist schl�ssig, erg�nze ein Textzitat'). Zeit f�r die Nutzung des Feedbacks einplanen: Verbesserungsphase, Peer-Feedback nach klaren Kriterien.", studienlage: "�ber zahlreiche Meta-Analysen hinweg geh�rt Feedback zu den st�rksten Einflussfaktoren, wenn es zeitnah, konkret und auf den Lernfortschritt ausgerichtet ist." },
+      { id: 11, deutsch: "Akzeleration", english: "Acceleration", d: 0.72, erklaerung: "Fr�hzeitige oder schnellere Bearbeitung von Lerninhalten f�r leistungsstarke Sch�lerinnen und Sch�ler � ohne Wiederholung bereits sicher beherrschter Inhalte.", methode: "Anreicherungsaufgaben und offene Projekte f�r schnell lernende Sch�lerinnen und Sch�ler bereithalten (z. B. Vertiefungsaufgaben, Expertenrollen in Gruppen), statt wiederholte Standardaufgaben zuzuweisen.", studienlage: "Metaanalysen zeigen, dass angemessene Akzeleration insgesamt positive Effekte auf Leistung und Motivation hat, ohne nachweisbare Nachteile f�r die soziale Entwicklung." },
+      { id: 39, deutsch: "Probleml�sendes Unterrichten", english: "Problem-Solving Teaching", d: 0.68, erklaerung: "Unterrichtsansatz, der authentische, schlecht definierte Probleme als Ausgangspunkt nutzt und Sch�lerinnen und Sch�ler durch strukturierte Probleml�seprozesse f�hrt.", methode: "Stunden mit einer echten, zugespitzten Problemfrage er�ffnen ('Warum konnte Kleist sein St�ck nicht auf der B�hne erleben?'). L�sungswege in Gruppen entwickeln lassen, anschlie�end Ergebnisse und L�sungswege vergleichen und metakognitiv reflektieren.", studienlage: "Metaanalysen zeigen �berdurchschnittliche Effekte, wenn probleml�sendes Unterrichten ausreichend Vorstrukturierung bietet � reines 'Entdecken ohne Ger�ste' senkt die Wirksamkeit deutlich." },
+      { id: 40, deutsch: "Begriffsvernetzung / Concept Mapping", english: "Concept Mapping", d: 0.64, erklaerung: "Grafische Darstellung von Wissensstrukturen, bei der Sch�lerinnen und Sch�ler Begriffe verkn�pfen, Beziehungen benennen und ihr Verst�ndnis sichtbar machen.", methode: "Nach einer Einheit Concept Maps erstellen lassen: zentrale Begriffe auf Karten schreiben, Verbindungslinien mit Beschriftungen ziehen. Peer-Vergleich zweier Maps offenbart unterschiedliche Wissensstrukturen und regt Revision an.", studienlage: "Begriffsvernetzung zeigt hohe Effekte besonders bei der Festigung neuer Konzepte; entscheidend ist, dass Sch�lerinnen und Sch�ler die Maps selbst entwickeln und nicht vorgegebene Strukturen abzeichnen." },
+      { id: 13, deutsch: "Verhaltensorientierte F�rderprogramme", english: "Behavioural Intervention Programs", d: 0.62, erklaerung: "Systematisch geplante Verhaltensinterventionen (Regeltrainings, Verst�rkerpl�ne, klare Konsequenzen) zur Unterst�tzung von Arbeits- und Sozialverhalten.", methode: "Mit der Klasse zu Beginn wenige, klare Regeln gemeinsam erarbeiten, sichtbar aush�ngen und �ber positives Verst�rken (z. B. Klassenkonto, Lobkarten) konsistent ein�ben.", studienlage: "Solche Programme zeigen deutlich positive Effekte auf Verhalten und dadurch indirekt auf den Lernerfolg � am wirksamsten, wenn sie klassen�bergreifend konsistent angewandt werden." },
+      { id: 14, deutsch: "Mastery Learning", english: "Mastery Learning", d: 0.61, erklaerung: "Lernpfade, in denen Sch�lerinnen und Sch�ler einen Kompetenzschritt weitgehend sicher beherrschen, bevor sie weitergehen � unterst�tzt durch formative Tests und Korrekturphasen.", methode: "Stoff in klar abgegrenzte Lernbausteine gliedern, zu jedem Baustein einen kurzen Mastery-Check anbieten (Mini-Test) und eine Nacharbeitsphase mit gezielten �bungen vor dem n�chsten Schritt erm�glichen.", studienlage: "Mastery Learning weist in vielen Meta-Analysen �berdurchschnittliche Effekte auf, besonders wenn ausreichend Zeit f�r �bung und korrigierendes Feedback eingeplant ist." },
+      { id: 41, deutsch: "Metakognitive Strategien", english: "Metacognitive Strategies", d: 0.60, erklaerung: "F�higkeit und Gewohnheit, den eigenen Lernprozess zu beobachten, zu steuern und zu bewerten. Metakognition erm�glicht selbstreguliertes Lernen �ber den Unterricht hinaus.", methode: "Lerntageb�cher oder kurze Wochenreflexionen einf�hren ('Was habe ich diese Woche gelernt? Wie habe ich gelernt? Was war schwierig?'). Denklaut-Protokolle beim Aufgabenl�sen ein�ben lassen.", studienlage: "Zahlreiche Meta-Analysen zeigen: Lernende, die ihren eigenen Lernprozess aktiv steuern, zeigen nachhaltig h�here Leistungszuw�chse als passiv Lernende." },
+      { id: 42, deutsch: "Verteiltes �ben", english: "Spaced vs. Massed Practice", d: 0.60, erklaerung: "Lernstoff in mehreren zeitlich verteilten �bungseinheiten wiederholen statt in einer langen 'Marathon-Session'. Verteiltes �ben nutzt den Abstandseffekt (Spacing Effect) f�r langfristigen Wissenserwerb.", methode: "Stundeneinstiege regelm��ig mit Kurzwiederholungen aus Vorwochen best�cken ('3 Fragen zum letzten Kapitel'). Hausaufgaben �ber mehrere kurze Sitzungen verteilen statt einer langen Lernphase vor Pr�fungen.", studienlage: "Der Spacing Effect ist einer der am besten replizierten Befunde der Lernpsychologie; Metaanalysen belegen deutlich �berdurchschnittliche Effekte im Vergleich zu geballten �bungsphasen (Massed Practice)." },
+      { id: 12, deutsch: "Herausfordernde Lernziele", english: "Challenge of Goals", d: 0.59, erklaerung: "Ziele, die Lernende fordern, aber nicht �berfordern. Sie f�rdern Anstrengungsbereitschaft und Selbstwirksamkeitserleben.", methode: "Lernziele in drei Anspruchsniveaus formulieren ('Mindestziel � Regelfall � K�nnerziel') und mit den Lernenden besprechen, welches Niveau sie pers�nlich anstreben.", studienlage: "Herausfordernde Ziele wirken lernf�rderlicher als zu leichte oder unklare Vorgaben; entscheidend ist, dass Sch�lerinnen und Sch�ler die Ziele als erreichbar erleben." },
+      { id: 15, deutsch: "Klassenf�hrung", english: "Class Management", d: 0.56, erklaerung: "Strukturiertes Management von Zeit, Raum, �berg�ngen und St�rungen. Effektive Klassenf�hrung sch�tzt Lernzeit und schafft ein vorhersehbares Lernklima.", methode: "Routinen f�r Start- und Endphasen etablieren (Sitzplan, Startsignal, Einstiegsaufgabe). St�rungen mit festgelegter Eskalationslogik bearbeiten: nonverbal ? kurzer Hinweis ? Gespr�ch nach der Stunde.", studienlage: "Gute Klassenf�hrung korreliert stark mit Lernzeit und Leistungszuwachs, da produktive Lernzeit die entscheidende Ressource f�r Lernerfolg darstellt." },
+      { id: 17, deutsch: "Lehrer-Sch�ler-Beziehung", english: "Teacher�Student Relationship", d: 0.52, erklaerung: "W�rme, Respekt und echtes Interesse der Lehrperson an den Lernenden. Eine positive Beziehung ist keine Voraussetzung f�r Disziplin, sondern f�r Lernen.", methode: "Verl�ssliche Begr��ungsrituale, kurze pers�nliche Gespr�che vor oder nach der Stunde, sichere Namenskenntnis und gezielte positive R�ckmeldungen ('Mir ist aufgefallen, dass du heute �').", studienlage: "Positive Lehrer-Sch�ler-Beziehungen weisen deutlich �berdurchschnittliche Effektst�rken auf und verbessern sowohl Lernmotivation als auch Leistung nachweislich." },
+      { id: 18, deutsch: "Peer-Tutoring", english: "Peer Tutoring", d: 0.51, erklaerung: "Sch�lerinnen und Sch�ler bringen einander Inhalte bei. Besonders der oder die Erkl�rende profitiert kognitiv stark durch vertiefte Verarbeitung.", methode: "In �bungsphasen feste Tutoren-Tandems einsetzen, klare Rollen (Erkl�rer/Nachfrager) definieren und Hilfekarten mit Leitfragen zur Verf�gung stellen.", studienlage: "Metaanalysen zeigen robuste positive Effekte, wenn Peer-Tutoring strukturiert und mit klaren Rollen bzw. Materialien durchgef�hrt wird." },
+      { id: 43, deutsch: "Elterliche Beteiligung", english: "Parental Involvement", d: 0.50, erklaerung: "Einbindung der Eltern in schulische Prozesse � von Elterngespr�chen �ber Hausaufgabenbegleitung bis zu Erwartungsgespr�chen. Die Art der Beteiligung entscheidet �ber die Wirkrichtung.", methode: "Eltern gezielt auf lernf�rderliches Verhalten hinweisen: hohe Erwartungen formulieren ('Ihr Kind kann das schaffen'), Leseanreize schaffen und auf �berwachungs-Kommunikation ('Hast du Hausaufgaben?') zu Gespr�chs-Kommunikation ('Was hast du heute Interessantes gelernt?') umstellen.", studienlage: "Die Forschung differenziert deutlich: Elterliche Erwartungen und Aspirationen zeigen sehr hohe Effekte (d � 0,80), w�hrend reine Hausaufgaben-�berwachung teils negativ wirkt. Entscheidend ist die Qualit�t der Beteiligung." },
+      { id: 44, deutsch: "Notizentechniken", english: "Note Taking", d: 0.50, erklaerung: "Aktives Mitschreiben und strukturiertes Aufzeichnen von Unterrichtsinhalten. Wirkungsvoll, wenn Notizen verarbeitet und nicht nur transkribiert werden.", methode: "Cornell-Methode einf�hren: Blatt in drei Bereiche teilen (Stichworte links, ausformulierte Notizen rechts, Zusammenfassung unten). Nach dem Unterricht Zusammenfassungszeile aus dem Ged�chtnis erg�nzen lassen.", studienlage: "Metaanalysen zeigen, dass elaboratives Notizenmachen (Paraphrasieren, Strukturieren) deutlich h�here Lerneffekte erzielt als w�rtliches Mitschreiben � der Prozess des aktiven Ausw�hlens ist lernentscheidend." },
+      { id: 19, deutsch: "Fragetechniken", english: "Questioning", d: 0.48, erklaerung: "Qualit�t und Tiefe der Lehrerfragen (offen, kognitiv aktivierend, mit bewusster Wartezeit) beeinflussen das Denken der Lernenden erheblich.", methode: "'No-hands-up'-Phasen mit zuf�lliger Auswahl einsetzen, bewusst 3�5 Sekunden Denkzeit einplanen, Fragenk�rtchen mit Operatoren (begr�nden, vergleichen, bewerten) vorbereiten.", studienlage: "Fragetechniken mit l�ngerer Denkzeit und h�herer kognitiver Komplexit�t zeigen deutlich bessere Effekte als schnelle Reproduktionsfragen." },
+      { id: 45, deutsch: "Hausaufgaben im Sekundarbereich", english: "Homework (Secondary Level)", d: 0.48, erklaerung: "Im Gegensatz zur Grundschule (d � 0,10) zeigen Hausaufgaben in der Sekundarstufe deutlich h�here Effekte. Entscheidend sind Passung zum Unterricht, L�nge und R�ckmeldung.", methode: "Hausaufgaben in der Sekundarstufe bewusst als Vertiefungs- und Anwendungsaufgaben planen (max. 20 Min.), klar an Unterrichtsinhalte ankn�pfen und zu Beginn der n�chsten Stunde auswertend besprechen � nicht nur einsammeln und abhaken.", studienlage: "Metaanalysen zeigen, dass der Alterseffekt bei Hausaufgaben stark ausgepr�gt ist: W�hrend sie in der Grundschule kaum Wirkung zeigen, entfalten sie in der Sekundarstufe signifikante Lernzuw�chse, wenn sie qualitativ hochwertig und regelm��ig r�ckkoppelt werden." },
+      { id: 20, deutsch: "Wahrgenommener Aufgabenwert", english: "Perceived Task Value", d: 0.46, erklaerung: "Wahrgenommene Bedeutsamkeit einer Aufgabe f�r Lernende. Wenn Sch�lerinnen und Sch�ler den Sinn und Nutzen verstehen, steigen Motivation und Leistung.", methode: "Jede zentrale Aufgabe kurz kontextualisieren ('Wozu brauchen wir das?') und Bez�ge zu Pr�fungsanforderungen, Alltag oder pers�nlichen Interessen der Lernenden explizit herstellen.", studienlage: "Der wahrgenommene Aufgabenwert beeinflusst �ber Motivationskan�le sowohl die Lerntiefe als auch die Ausdauer bei der Aufgabenbearbeitung." },
+      { id: 21, deutsch: "Abruf�bung / Testbasiertes Lernen", english: "Practice Testing", d: 0.46, erklaerung: "Niedrigschwellige, h�ufige Tests (Quiz, Abfragekarten) st�rken das Behalten und Abrufen von Wissen weit mehr als reines Wiederlesen.", methode: "Am Stundenanfang 3�5 Kurzfragen zum Vorwissen ('Retrieval Practice') stellen, Lernkartenrunden oder digitale Quiz-Tools regelm��ig einbauen.", studienlage: "Der 'Testing Effect' ist metaanalytisch sehr gut belegt: wiederholtes Abrufen (statt blo�es Lesen) erzeugt substanzielle und langanhaltende Lernzuw�chse." },
+      { id: 46, deutsch: "Angstreduktion", english: "Reducing Anxiety", d: 0.42, erklaerung: "Ma�nahmen zur Senkung von Pr�fungs- und Leistungsangst. Angst bindet kognitive Ressourcen und senkt die verf�gbare Arbeitsged�chtniskapazit�t � mit direktem Effekt auf Leistung.", methode: "Fehlerkultur explizit thematisieren ('Fehler sind Lernhinweise, keine Urteile'), niedrigschwellige Probe-Formate vor Klassenarbeiten einsetzen, Pr�fungsaufgaben im Vorfeld besprechen und Bewertungskriterien offenlegen.", studienlage: "Meta-Analysen belegen, dass Angstreduktion durch unterrichtliche Ma�nahmen messbare positive Effekte auf Lernleistung hat � besonders bei Sch�lerinnen und Sch�lern mit hoher Pr�fungsangst." },
+      { id: 47, deutsch: "Lernmotivation", english: "Motivation", d: 0.42, erklaerung: "Allgemeine Lernmotivation als Bereitschaft, sich mit Lernanl�ssen auseinanderzusetzen. Intrinsische Motivation wirkt nachhaltiger als extrinsische Verst�rkung.", methode: "Autonomieunterst�tzende Unterrichtsgestaltung: begr�nden statt anordnen ('Wir machen das, weil�'), Wahlm�glichkeiten innerhalb klarer Strukturen bieten, Kompetenzerleben durch erreichbare Herausforderungen sichern.", studienlage: "Metaanalysen belegen moderate, aber stabile Effekte von Motivation auf Leistung; entscheidend ist, dass Unterricht intrinsisch motivierende Bedingungen schafft und nicht auf externe Belohnungen setzt." },
+      { id: 48, deutsch: "Kooperatives Lernen", english: "Cooperative Learning", d: 0.40, erklaerung: "Strukturiertes gemeinsames Lernen in Kleingruppen mit positiver wechselseitiger Abh�ngigkeit, individueller Verantwortlichkeit und direkter Interaktion.", methode: "F�r jede Gruppenphase drei Merkmale sichern: klare Einzelverantwortung (z. B. jede Person hat eine definierte Rolle), gemeinsames Ziel und anschlie�ende Pr�sentation des Gruppenergebnisses. Gruppen regelm��ig rotieren.", studienlage: "Kooperatives Lernen erreicht genau den Umschlagpunkt d = 0,40; die Wirkung h�ngt stark von der Qualit�t der Strukturierung ab � unstrukturierte Gruppenarbeit zeigt kaum Effekte." },
+      { id: 49, deutsch: "Forschendes Lernen", english: "Inquiry-Based Teaching", d: 0.40, erklaerung: "Unterrichtsform, bei der Sch�lerinnen und Sch�ler eigene Fragen entwickeln, Hypothesen aufstellen und Antworten durch eigenst�ndige Recherche oder Experimente erarbeiten.", methode: "Forschendes Lernen in Phasen aufbauen: Frage gemeinsam entwickeln ? Vorgehen planen ? Ergebnisse sichern ? pr�sentieren ? reflektieren. Klare Struktur und Zwischenchecks verhindern Verlauf ins Beliebige.", studienlage: "Forschendes Lernen liegt genau am Umschlagpunkt; Metaanalysen zeigen, dass Effekte stark steigen, wenn die offene Phase durch explizite Instruktionsphasen eingerahmt wird (guided inquiry)." },
+      { id: 22, deutsch: "Simulationen und Lernspiele", english: "Simulation & Games", d: 0.34, erklaerung: "Spiele und Simulationen als Lernform zeigen moderate Effekte � wirksam vor allem dann, wenn sie klar an Lernziele und anschlie�ende Reflexion gekn�pft werden.", methode: "Lernspiele mit klaren Arbeitsauftr�gen kombinieren (Beobachtungsbogen, Reflexionsfragen nach dem Spiel) und bewusst als �bungs- oder Anwendungsphase einsetzen, nicht als reine Unterhaltung.", studienlage: "Lernspiele ohne Reflexionsphase und Zielbindung zeigen kaum Mehrwert; mit didaktischer Einbindung sind moderate, aber reale Effekte nachweisbar." },
+      { id: 23, deutsch: "Hausaufgaben �ber alle Stufen verteilt", english: "Homework", d: 0.29, erklaerung: "Hausaufgaben haben nur einen relativ kleinen, aber vorhandenen Effekt � vor allem bei �lteren Lernenden und wenn sie gut an den Unterricht angebunden sind.", methode: "Kurze, gezielte Hausaufgaben (max. 10�15 Minuten), die klar an Unterrichtsinhalte anschlie�en und zu Beginn der n�chsten Stunde kurz ausgewertet werden (Peer-Vergleich, Sammeln typischer Fehler).", studienlage: "Die Wirkung von Hausaufgaben ist deutlich geringer als popul�r angenommen; sie steigt aber merklich mit dem Alter der Sch�ler, klarer Zielorientierung und R�ckmeldung durch die Lehrperson." },
+      { id: 24, deutsch: "Individualisierung", english: "Individualisation", d: 0.23, erklaerung: "Individuelle Lernwege und angepasste Aufgaben. Reine Individualisierung zeigt nur kleine Vorteile; wirksamer ist sie in Kombination mit klarer Struktur und Feedback.", methode: "Statt vollst�ndig individueller Pl�ne lieber Binnendifferenzierung mit zwei bis drei Aufgabenniveaus, Wahlaufgaben und Unterst�tzungsangeboten � eingebettet in eine gemeinsame Unterrichtsstruktur.", studienlage: "Individualisierung allein reicht nicht aus; Effekte entstehen erst in Verbindung mit hochwertiger Instruktion, aktivem Monitoring und zeitnahem Feedback." },
+      { id: 25, deutsch: "Audiovisuelle Methoden", english: "Audio-Visual Methods", d: 0.22, erklaerung: "Einsatz von Filmen, Pr�sentationen und Audios. Allein bringt Medieneinsatz kaum Mehrwert; entscheidend ist die aktive Verarbeitung durch die Lernenden.", methode: "Medien immer mit aktiver Verarbeitungsaufgabe koppeln (Beobachtungsauftrag, strukturierte Notizen, Stopps mit Partneraustausch) � niemals als reine Beschallung.", studienlage: "Der blo�e Einsatz digitaler Medien hat ohne aktivierende Aufgaben und Reflexionsphasen nur geringe Mehrwerte f�r den Lernerfolg." },
+      { id: 26, deutsch: "Ko-Teaching / Team-Teaching", english: "Co- or Team Teaching", d: 0.19, erklaerung: "Gemeinsamer Unterricht zweier Lehrpersonen. Die Effekte sind klein, wenn Ko-Teaching additiv genutzt wird; st�rker ist die Wirkung bei gezielt differenzierenden Settings.", methode: "Falls Ko-Teaching mit Mentorinnen oder Mentoren m�glich ist: Rollen klar verteilen (z. B. Inputgabe vs. Diagnostik in Kleingruppen) und im Anschluss systematisch �ber Beobachtungen reflektieren.", studienlage: "Ko-Teaching ist vor allem dann wirksam, wenn beide Lehrpersonen aktiv lehren und nicht in parallelen Rollen agieren; blo�e Anwesenheit einer zweiten Person bringt wenig." },
+      { id: 27, deutsch: "Klassenverkleinerung", english: "Reducing Class Size", d: 0.16, erklaerung: "Verringerung der Klassengr��e. Trotz h�ufiger politischer Forderungen zeigen Meta-Analysen nur geringe Effekte, solange sich die Unterrichtsqualit�t nicht fundamental �ndert.", methode: "Den Fokus weniger auf Klassengr��en richten, sondern auf qualitativ hochwertige Unterrichtsf�hrung in der gegebenen Lerngruppe (klare Struktur, kooperative Lernformen, klare Regeln).", studienlage: "Klassenverkleinerung wirkt nur dann, wenn Lehrpersonen ihre Methoden tats�chlich ver�ndern und die kleinere Gruppe f�r individualisiertere F�rderung nutzen." },
+      { id: 28, deutsch: "Leistungsdifferenzierung / F�higkeitsgruppierung", english: "Ability Grouping", d: 0.12, erklaerung: "Dauerhafte Einteilung in Leistungsgruppen. Metaanalysen berichten nur sehr geringe bis teils negative Effekte, insbesondere f�r leistungsschw�chere Gruppen.", methode: "Statt dauerhafter Leistungsgruppen lieber flexible, tempor�re Gruppen nach aktuellem Lernbedarf bilden und regelm��ig mischen; innerhalb heterogener Gruppen Aufgaben differenzieren.", studienlage: "Dauerhafte F�higkeitsgruppierung profitiert vor allem leistungsstarken Sch�lerinnen und Sch�lern und vergr��ert die Schere zwischen Leistungsgruppen messbar." },
+      { id: 33, deutsch: "Hausaufgaben im Primarbereich", english: "Homework (Primary Level)", d: 0.10, erklaerung: "In der Primarstufe zeigen Hausaufgaben nahezu keine messbare Lernwirkung. Der sehr geringe Effekt erkl�rt sich durch fehlende Selbstregulationsf�higkeiten j�ngerer Kinder, mangelnde h�usliche Unterst�tzung und eine oft unklare Anbindung an den Unterricht.", methode: "Im Primarbereich Hausaufgaben auf kurze Leseauftr�ge oder spielerische �bungen (z. B. Lernkarten, Kurzleseaufgaben) beschr�nken. Elterngespr�che nutzen, um den Unterschied zwischen 'gemeinsam �ben' und 'Erledigung �berwachen' zu kl�ren � letzteres senkt nachweislich die Lernmotivation.", studienlage: "Die Forschungslage weist f�r den Primarbereich eine Effektst�rke von nur d � 0,10 aus � deutlich unterhalb des Umschlagpunkts. Die Evidenz legt nahe, dass Hausaufgaben in der Grundschule vor allem Eltern-Kind-Konflikte erzeugen, ohne den Lernerfolg nennenswert zu steigern." },
+      { id: 29, deutsch: "Sch�lersteuerung beim Lernen", english: "Student Control over Learning", d: 0.02, erklaerung: "Vollst�ndige Selbststeuerung der Lernenden �ber Inhalte, Tempo und Methoden. Die Effektst�rke ist nahezu null � Lernende brauchen strukturierende F�hrung.", methode: "Gef�hrte Autonomie: Wahlm�glichkeiten in klar begrenzten Bereichen bieten (z. B. Textauswahl, Produktform), aber Lernziele, Struktur und Erfolgskriterien fest vorgeben.", studienlage: "Reine Selbststeuerung ohne Lernger�ste und R�ckmeldung zeigt kaum Wirkung; sie wird erst effektiv in Kombination mit expliziter Metakognitionsf�rderung." },
+      { id: 50, deutsch: "Medienkonsum der Eltern / Fernsehkonsum im Haushalt", english: "Television (Home Environment)", d: -0.18, erklaerung: "Starker Fernsehkonsum und unkontrollierter Medienkonsum im Elternhaus wirkt sich negativ auf schulische Leistungen aus � vermutlich �ber reduzierte Lese- und Gespr�chszeit sowie gest�rte Schlaf- und Hausaufgabenrituale.", methode: "Im Elterngespr�ch konkret auf Mediennutzungszeiten hinweisen und gemeinsam Medienrituale besprechen (z. B. medienfreie Hausaufgabenzeit, Vorlese- oder Gespr�chszeiten als positiver Ersatz). Sachliche, nicht wertende Kommunikation w�hlen.", studienlage: "Die Forschung ordnet Fernsehkonsum (d = -0,18) unter h�usliche Umgebungsfaktoren mit negativer Wirkung ein. Neuere Studien best�tigen negative Effekte von unkontrollierten Bildschirmzeiten im Haushalt (Screentime d = -0,29) auf Lernleistung und Bildungsaspirationen." },
+      { id: 30, deutsch: "Erfahrung von Ablehnung", english: "Student Feeling Disliked", d: -0.19, erklaerung: "Wahrgenommene Ablehnung durch Lehrkr�fte oder Mitsch�lerinnen und Mitsch�ler wirkt leistungshemmend. Negativer Faktor � aktiv zu vermeiden.", methode: "Bewusst auf sprachliche Signale achten (keine ironischen Abwertungen, keine 'Lieblingssch�ler'-Kommunikation). Positives Klima aktiv aufbauen; bei Konflikten l�sungsorientiert, nicht pers�nlich wertend reagieren.", studienlage: "Negative Beziehungserfahrungen und Ausgrenzung gehen mit signifikanten Leistungseinbu�en einher; der negative Effekt ist metaanalytisch gut belegt." },
+      { id: 54, deutsch: "Offener Unterricht / Selbstgesteuertes Lernen", english: "Open / Inquiry-Based Learning", d: 0.27, erklaerung: "Offener Unterricht r�umt Lernenden Mitbestimmung �ber Inhalte, Methoden, Sozialform und Tempo ein. Das Spektrum reicht von 'ge�ffnetem Unterricht' (Lehrkraft gibt Rahmen vor, Lernende gestalten innerhalb) bis zu vollst�ndig selbstgesteuertem Lernen. Je offener, desto st�rker sinkt die Effektst�rke � ohne st�tzende Strukturen.", methode: "Offenheit dosiert und mit klaren Lernger�sten einsetzen: Stationslernen, Werkstattunterricht oder Freiarbeit immer mit verbindlichen Lernzielen, Hilfekarten und Mindestaufgaben verbinden. Offene Phasen nach Instruktionsphasen anordnen � nicht statt ihnen. Der Grad der Offenheit sollte mit dem Grad der Kompetenz der Lernenden wachsen.", studienlage: "Rein offener Unterricht ohne Strukturierung zeigt bei Hattie moderate bis geringe Effekte (d � 0,27). Metaanalysen belegen: Selbststeuerung wirkt lernf�rderlich, sobald Lernende �ber ausreichende Strategien und Vorwissen verf�gen. F�r Einsteigerinnen und Einsteiger in ein Thema ist Direkte Instruktion deutlich wirksamer." },
+      { id: 55, deutsch: "Instruktion und Konstruktion verbinden", english: "Combining Instruction & Construction", d: 0.85, erklaerung: "Das wirksamste Unterrichten verbindet gezielte Instruktionsphasen mit aktiver Wissenskonstruktion der Lernenden. Neue Inhalte werden zun�chst explizit eingef�hrt (Transmission), dann durch eigenst�ndige Verarbeitung, Anwendung oder Probleml�sung vertieft (Konstruktion). Beide Pole erg�nzen sich � keiner ersetzt den anderen.", methode: "Unterrichtsstunden bewusst in zwei Logiken denken: 'Was erkl�re und modelliere ich als Lehrperson?' und 'Was konstruieren, verkn�pfen, anwenden die Lernenden selbst?' Eine klare Instruktionsphase (10�15 Min.) gefolgt von einer aktiven Verarbeitungsphase (Aufgabe, Diskussion, Produkt) kombiniert beide St�rken.", studienlage: "Kognitionspsychologisch spricht man von Transmission (Aufbau des Arbeitsged�chtnisses) und Konstruktion (Verarbeitung und Vernetzung). Hattie zeigt, dass weder rein lehrerzentrierter noch rein sch�lerzentrierter Unterricht das Maximum erreicht � die Kombination beider Prinzipien �bertrifft beide Einzelans�tze deutlich." },
+      { id: 56, deutsch: "Langeweile im Unterricht", english: "Boredom", d: -0.49, erklaerung: "Langeweile ist der st�rkste negative Einflussfaktor innerhalb des Unterrichts in Hatties gesamter Rangliste. Sie entsteht durch Unterforderung, mangelnde kognitive Aktivierung, fehlende Relevanz oder monotone Unterrichtsgestaltung � und hemmt Lernleistung messbar st�rker als fast alle anderen negativen Faktoren.", methode: "Kognitive Herausforderung als Grundprinzip: Aufgaben so w�hlen, dass sie weder zu leicht noch zu schwer sind ('Zone der n�chsten Entwicklung'). Methodenwechsel innerhalb einer Stunde einplanen, den wahrgenommenen Aufgabenwert explizit kommunizieren und Lernende durch echte Denkanl�sse aktivieren � nicht durch Besch�ftigung.", studienlage: "Hattie weist f�r Langeweile eine Effektst�rke von d = -0,49 aus � einen der st�rksten negativen Werte der gesamten Studie. Unterforderung schadet dem Lernerfolg demnach etwa ebenso stark, wie Feedback und Unterrichtsklarheit ihm n�tzen. Ein direkter Auftrag f�r die Unterrichtsplanung." }
+    ];
+    // Sortierung: H�chste Effektst�rke zuerst
+    data.sort((a, b) => b.d - a.d);
+
+    /* -- KONFIGURATION & HELFER ------------------------ */
+    const dMin = -0.50, dMax = 1.60, dRange = dMax - dMin;
+    function getColor(d) { if (d < 0) return '#ef4444'; if (d < 0.20) return '#f97316'; if (d < 0.40) return '#eab308'; if (d < 0.60) return '#84cc16'; if (d < 1.00) return '#22c55e'; return '#15803d'; }
+    function getLabel(d) { if (d < 0) return 'sch�dlich'; if (d < 0.20) return 'vernachl�ssigbar'; if (d < 0.40) return 'gering'; if (d < 0.60) return 'mittel'; if (d < 1.00) return 'hoch'; return 'sehr hoch'; }
+    function fmt(d) { return d.toFixed(2).replace('.', ',') }
+
+    const $ = id => document.getElementById(id);
+    const slider = $('slider'), sliderVal = $('sliderVal'), sliderCat = $('sliderCat'), btnRandom = $('btnRandom');
+    const mainCard = $('mainCard'), badge = $('badge'), cardDeutsch = $('cardDeutsch'), cardEnglish = $('cardEnglish');
+    const cardErklaerung = $('cardErklaerung'), cardMethode = $('cardMethode'), cardStudienlage = $('cardStudienlage');
+    const miniBarFill = $('miniBarFill'), miniBarValue = $('miniBarValue'), miniBarContainer = $('miniBarContainer');
+    const chipsGrid = $('chipsGrid'), suggestionsEl = $('suggestions'), chipsCount = $('chipsCount');
+    const filterTabs = document.querySelectorAll('.filter-tab');
+
+    /* -- UI-LOGIK & UPDATE-FUNKTIONEN ------------------ */
+    let currentId = null, currentFilter = 'all', animating = false;
+
+    function updateSliderBg(val) {
+      const pct = ((val - dMin) / dRange) * 100; const c = getColor(val);
+      slider.style.background = `linear-gradient(90deg,${c} 0%,${c} ${pct}%,#dde3ea ${pct}%,#dde3ea 100%)`;
+      sliderCat.textContent = getLabel(val); sliderCat.style.background = c;
+      sliderCat.style.color = (val >= 0.20 && val < 0.40) ? '#333' : '#fff';
+    }
+
+    function showEntry(entry, animate = true) {
+      if (currentId === entry.id && !animate) return;
+      currentId = entry.id;
+      const doUpdate = () => {
+        const c = getColor(entry.d);
+        badge.textContent = 'd = ' + fmt(entry.d); badge.style.background = c;
+        badge.style.color = (entry.d >= 0.20 && entry.d < 0.40) ? '#333' : '#fff';
+        cardDeutsch.textContent = entry.deutsch; cardEnglish.textContent = entry.english;
+        cardErklaerung.textContent = entry.erklaerung; cardMethode.textContent = entry.methode;
+        cardStudienlage.textContent = entry.studienlage;
+        const pct = Math.max(0, Math.min(100, ((entry.d - dMin) / dRange) * 100));
+        miniBarFill.style.width = pct + '%'; miniBarFill.style.background = `linear-gradient(90deg,${c},${c}dd)`;
+        miniBarValue.textContent = 'd = ' + fmt(entry.d);
+        miniBarValue.style.color = pct < 15 ? '#333' : '#fff';
+        if (pct < 15) { miniBarValue.style.right = 'auto'; miniBarValue.style.left = Math.max(pct, 2) + '%'; miniBarValue.style.paddingLeft = '6px'; }
+        else { miniBarValue.style.right = '8px'; miniBarValue.style.left = 'auto'; miniBarValue.style.paddingLeft = '0'; }
+        miniBarContainer.querySelectorAll('.mini-bar-marker,.mini-bar-hinge-label').forEach(m => m.remove());
+        const hinge = document.createElement('div'); hinge.className = 'mini-bar-marker';
+        const hingePct = ((0.40 - dMin) / dRange * 100); hinge.style.left = hingePct + '%';
+        hinge.title = 'Hinge-Point d = 0,40'; miniBarContainer.appendChild(hinge);
+        const hl = document.createElement('div'); hl.className = 'mini-bar-hinge-label'; hl.style.left = hingePct + '%'; hl.textContent = 'd=0,40'; miniBarContainer.appendChild(hl);
+        chipsGrid.querySelectorAll('.chip').forEach(ch => { ch.classList.toggle('active', parseInt(ch.dataset.id) === entry.id); });
+      };
+      if (animate) {
+        mainCard.classList.add('fade-out'); mainCard.classList.remove('fade-in');
+        setTimeout(() => { doUpdate(); mainCard.classList.remove('fade-out'); mainCard.classList.add('fade-in'); }, 180);
+      } else { doUpdate(); }
+    }
+
+    function findNearest(val, pool) { let best = pool[0], dist = Math.abs(pool[0].d - val); for (let i = 1; i < pool.length; i++) { const dd = Math.abs(pool[i].d - val); if (dd < dist) { dist = dd; best = pool[i]; } } return best; }
+
+    function getFiltered() {
+      if (currentFilter === 'all') return data;
+      return data.filter(e => {
+        if (currentFilter === 'very-high') return e.d >= 1.00; if (currentFilter === 'high') return e.d >= 0.60 && e.d < 1.00;
+        if (currentFilter === 'medium') return e.d >= 0.40 && e.d < 0.60; if (currentFilter === 'low') return e.d > 0 && e.d < 0.40;
+        if (currentFilter === 'negative') return e.d <= 0; return true;
+      });
+    }
+
+    function buildChips() {
+      chipsGrid.innerHTML = ''; const filtered = getFiltered();
+      chipsCount.textContent = filtered.length;
+      filtered.forEach(e => {
+        const ch = document.createElement('button'); ch.className = 'chip'; ch.dataset.id = e.id;
+        ch.style.background = getColor(e.d); ch.style.color = (e.d >= 0.20 && e.d < 0.40) ? '#333' : '#fff';
+        ch.innerHTML = e.deutsch + '<span class="chip-d">(' + fmt(e.d) + ')</span>';
+        ch.setAttribute('aria-label', e.deutsch + ', Effektst�rke ' + fmt(e.d));
+        ch.addEventListener('click', () => selectEntry(e, true));
+        if (currentId === e.id) ch.classList.add('active'); chipsGrid.appendChild(ch);
+      });
+    }
+
+    function updateSuggestions() {
+      const pool = getFiltered();
+      const idx = pool.findIndex(e => e.id === currentId);
+      const neighbors = [];
+      if (idx >= 0 && idx < pool.length - 1) neighbors.push(pool[idx + 1]);
+      if (idx > 0) neighbors.push(pool[idx - 1]);
+      suggestionsEl.innerHTML = '<span class="suggestion-label">N�chste Faktoren:</span>';
+      neighbors.forEach(e => {
+        const s = document.createElement('button'); s.className = 'suggestion-chip';
+        s.textContent = e.deutsch + ' (' + fmt(e.d) + ')'; s.addEventListener('click', () => selectEntry(e, true)); suggestionsEl.appendChild(s);
+      });
+    }
+
+    function selectEntry(entry, animateSlider = false) {
+      if (animateSlider) { animateSliderTo(entry.d, () => { showEntry(entry); updateSuggestions(); }); }
+      else { slider.value = entry.d; updateSliderBg(entry.d); sliderVal.textContent = 'd = ' + fmt(entry.d); showEntry(entry); updateSuggestions(); }
+    }
+
+    function animateSliderTo(target, cb) {
+      if (animating) return; animating = true; const start = parseFloat(slider.value); const diff = target - start; const dur = 450; const t0 = performance.now();
+      function step(ts) {
+        const p = Math.min(1, (ts - t0) / dur); const ease = 1 - Math.pow(1 - p, 3); const v = start + diff * ease;
+        slider.value = v; updateSliderBg(v); sliderVal.textContent = 'd = ' + fmt(v);
+        if (p < 1) { requestAnimationFrame(step); } else { slider.value = target; updateSliderBg(target); sliderVal.textContent = 'd = ' + fmt(target); animating = false; if (cb) cb(); }
+      }
+      requestAnimationFrame(step);
+    }
+
+    /* -- EVENT-LISTENER -------------------------------- */
+    slider.addEventListener('input', () => {
+      const v = parseFloat(slider.value); updateSliderBg(v); sliderVal.textContent = 'd = ' + fmt(v);
+      const filtered = getFiltered(); if (filtered.length) { showEntry(findNearest(v, filtered), false); } updateSuggestions();
+    });
+
+    btnRandom.addEventListener('click', () => {
+      const pool = getFiltered(); let entry = pool[Math.floor(Math.random() * pool.length)];
+      while (pool.length > 1 && entry.id === currentId) entry = pool[Math.floor(Math.random() * pool.length)]; selectEntry(entry, true);
+    });
+
+    filterTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        filterTabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+        tab.classList.add('active'); tab.setAttribute('aria-selected', 'true'); currentFilter = tab.dataset.filter; buildChips();
+        const filtered = getFiltered(); if (filtered.length) { const cur = data.find(e => e.id === currentId); if (!cur || !filtered.includes(cur)) { selectEntry(filtered[0], true); } }
+      });
+    });
+
+    /* -- INITIALISIERUNG ------------------------------- */
+    function init() {
+      buildChips(); const s = data[Math.floor(Math.random() * data.length)];
+      slider.value = s.d; updateSliderBg(s.d); sliderVal.textContent = 'd = ' + fmt(s.d); showEntry(s, false); updateSuggestions();
+    }
+    init();
+
+    const modalOverlay = $('modalOverlay'), btnInfo = $('btnInfo'), modalClose = $('modalClose');
+    btnInfo.addEventListener('click', () => { modalOverlay.classList.add('active'); });
+    modalClose.addEventListener('click', () => { modalOverlay.classList.remove('active'); });
+    modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) modalOverlay.classList.remove('active'); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') modalOverlay.classList.remove('active'); });
+  </script>
+</body>
+
+</html>

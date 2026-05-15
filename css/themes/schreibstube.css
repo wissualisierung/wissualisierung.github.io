@@ -1,0 +1,111 @@
+/**
+ * WissualisierungOS – Theme: Schreibstube
+ * Warme Sepia-/Pergament-Töne, inspiriert von alten Schreibtischen
+ * und Bibliotheksatmosphäre. Behagliches, akademisches Flair.
+ * CC-BY-SA 4.0 Wolf Sebastian (2026)
+ */
+
+:root {
+  /* === Hauptfarben === */
+  --color-bg:          #F5ECD7;   /* Pergament-Hintergrund */
+  --color-surface:     #EDE2C8;   /* Flächen: leicht dunkler */
+  --color-text:        #3E2B1A;   /* Dunkelbraun – Tinte */
+  --color-text-muted:  #8B7355;   /* Verblasste Tinte */
+  --color-primary:     #C47B3C;   /* Warmes Bernstein-Orange */
+  --color-primary-text:#FAFAF5;   /* Text auf Primary */
+  --color-accent:      #8B4513;   /* Sattelbraun – Akzente */
+
+  /* === UI-Elemente === */
+  --color-button-face:   #E8D9B8;  /* Heller Holzton */
+  --color-button-shadow: #B09670;  /* Holzschatten */
+  --color-button-light:  #F5ECD7;  /* Holzhighlight */
+  --color-border:        #8B7355;  /* Rand: mittleres Braun */
+
+  /* === Fenster === */
+  --color-titlebar:         #8B4513;   /* Dunkles Holz – Titelleiste */
+  --color-titlebar-text:    #F5ECD7;   /* Pergament auf Holz */
+  --color-titlebar-inactive:#B09670;   /* Inaktiv: helles Holz */
+  --color-window-bg:        #FAF4E4;   /* Fenster-Inhalt: helles Pergament */
+
+  /* === Taskbar === */
+  --color-taskbar:          #D2BA8E;   /* Helle Holzbank */
+  --color-taskbar-border:   #8B7355;   /* Rand */
+  --color-start-btn:        #C47B3C;   /* Bernstein-Start */
+  --color-start-btn-text:   #FAFAF5;
+
+  /* === Desktop === */
+  --color-desktop:          #C8B48A;   /* Schreibtisch-Unterlage */
+  --color-desktop-dot:      rgba(62,43,26,0.07);
+
+  /* === Menü === */
+  --color-menu-bg:          #F5ECD7;
+  --color-menu-hover:       #E8D4A8;
+  --color-menu-border:      #B09670;
+  --color-menu-separator:   #D2BA8E;
+
+  /* === Akzentfarben für Icons === */
+  --color-icon-green:    #7A9B57;   /* Gedämpftes Grün */
+  --color-icon-yellow:   #D4A94B;   /* Goldgelb */
+  --color-icon-pink:     #C47B3C;   /* Bernstein statt Pink */
+
+  /* === Schriften === */
+  --font-system: 'VT323', 'Courier New', monospace;
+  --font-display: 'VT323', monospace;
+}
+
+/* === Feinabstimmungen für Schreibstube === */
+
+/* Etwas wärmere Fenster-Ränder */
+.os-window {
+  border-color: var(--color-border);
+  box-shadow: 5px 5px 0 rgba(62,43,26,0.25);
+}
+
+/* Titelleiste mit feiner Holzmaserung */
+.os-window__titlebar {
+  background: linear-gradient(
+    90deg,
+    var(--color-titlebar) 0%,
+    #9B5523 50%,
+    var(--color-titlebar) 100%
+  );
+}
+
+/* Startmenü-Sidebar in dunklem Holz */
+.start-menu__sidebar {
+  background: var(--color-accent);
+  color: var(--color-primary-text);
+}
+
+/* Desktop-Icons mit warmem Textschatten */
+.desktop-icon__label {
+  text-shadow: 1px 1px 0 rgba(245,236,215,0.8);
+}
+
+/* Taskbar mit subtiler Holzmaserung */
+.taskbar {
+  background: linear-gradient(
+    180deg,
+    var(--color-button-light) 0%,
+    var(--color-taskbar) 30%,
+    var(--color-button-shadow) 100%
+  );
+}
+
+/* Schaltflächen mit Holz-Look */
+.bevel-btn,
+.start-btn {
+  border-color: var(--color-border);
+  box-shadow: inset 1px 1px 0 var(--color-button-light),
+              inset -1px -1px 0 var(--color-button-shadow);
+}
+
+/* Scrollbar im Pergament-Ton */
+.os-window__content::-webkit-scrollbar-thumb {
+  background: var(--color-button-shadow);
+  border: 1px solid var(--color-border);
+}
+
+.os-window__content::-webkit-scrollbar-track {
+  background: var(--color-surface);
+}

@@ -1,0 +1,554 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BE-Taschenrechner</title>
+  <style>
+    :root {
+      --black: #000;
+      --white: #fff;
+      --yellow: #FFD54A;
+      --lime: #AAFF00;
+      --cyan: #00FFEE;
+      --pink: #FF3FA4;
+      --orange: #FF6B00;
+      --purple: #7C3AED;
+      --red: #E3000F;
+      --paper: #FFFBEF;
+      --border: 4px solid #000;
+      --shadow: 7px 7px 0 #000;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Courier New", Courier, monospace;
+      background: #FFFBEF;
+      padding: 12px;
+      color: #000;
+    }
+    .wrap { max-width: 100%; margin: 0; }
+
+    /* -- TITLEBAR -- */
+    .titlebar {
+      background: #000;
+      color: var(--yellow);
+      border: var(--border);
+      box-shadow: none;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+
+    /* -- MAIN GRID -- */
+    .tool {
+      background: var(--paper);
+      border: var(--border);
+      box-shadow: none;
+      padding: 12px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 12px;
+    }
+
+    /* -- LEFT PANEL -- */
+    .panel {
+      background: #111;
+      border: var(--border);
+      box-shadow: none;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .screen {
+      background: #0b1a0b;
+      color: #AAFF00;
+      border: 4px solid #333;
+      padding: 14px;
+      min-height: 120px;
+      line-height: 1.6;
+      text-shadow: 0 0 8px #AAFF0088;
+    }
+    .screen-line { font-size: .9rem; opacity: .7; }
+    .result-main {
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: var(--yellow);
+      margin: 6px 0 4px;
+      letter-spacing: 1px;
+    }
+    .result-sub { font-size: .9rem; }
+    .ok  { color: #AAFF00; }
+    .warn{ color: var(--yellow); }
+    .bad { color: #FF6B6B; }
+
+    /* -- CONTROLS -- */
+    label {
+      display: block;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: .85rem;
+      letter-spacing: .5px;
+      margin-bottom: 5px;
+      color: var(--yellow);
+    }
+    select, input[type=number] {
+      width: 100%;
+      padding: 11px 12px;
+      border: var(--border);
+      background: var(--paper);
+      font: inherit;
+      font-size: 1rem;
+      box-shadow: 4px 4px 0 #000;
+      outline: none;
+      color: #000;
+    }
+    select:focus, input:focus { outline: 3px solid var(--cyan); }
+    select optgroup {
+      background: #000;
+      color: var(--yellow);
+      font-weight: bold;
+      font-style: normal;
+      letter-spacing: 1px;
+    }
+    select option {
+      background: var(--paper);
+      color: #000;
+      font-weight: normal;
+      padding-left: 8px;
+    }
+
+    .btnrow { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    button {
+      border: var(--border);
+      font: inherit;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 12px;
+      box-shadow: 4px 4px 0 #000;
+      transition: transform .06s, box-shadow .06s;
+      letter-spacing: .5px;
+    }
+    button:hover { transform: translate(3px,3px); box-shadow: 1px 1px 0 #000; }
+    #calcBtn  { background: var(--lime);   color: #000; }
+    #resetBtn { background: var(--pink);   color: #fff; }
+
+    .hint {
+      border: var(--border);
+      background: var(--yellow);
+      padding: 10px 12px;
+      box-shadow: 4px 4px 0 #000;
+      font-size: .88rem;
+      color: #000;
+      line-height: 1.5;
+    }
+
+    /* -- RIGHT PANEL -- */
+    .tablePanel {
+      background: var(--white);
+      border: var(--border);
+      box-shadow: none;
+      padding: 12px;
+      overflow: auto;
+    }
+    .schema-title {
+      display: inline-block;
+      background: var(--purple);
+      color: #fff;
+      border: var(--border);
+      box-shadow: 5px 5px 0 #000;
+      padding: 7px 14px;
+      text-transform: uppercase;
+      font-size: 1rem;
+      margin-bottom: 14px;
+      letter-spacing: 1px;
+    }
+
+    /* -- TABLES -- */
+    .table-scroll { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+    }
+    th, td {
+      border: 3px solid #000;
+      padding: 9px 8px;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 1rem;
+    }
+    /* Grade table header */
+    thead th {
+      background: #000;
+      color: var(--yellow);
+      font-weight: bold;
+      letter-spacing: .5px;
+    }
+    thead th:first-child { background: #111; }
+    /* Grade cells */
+    td.g1 { background: #1B5E20; color: #fff; font-weight: bold; }
+    td.g2 { background: #2E7D32; color: #fff; font-weight: bold; }
+    td.g3 { background: #E65C00; color: #fff; font-weight: bold; }
+    td.g4 { background: #BF360C; color: #fff; font-weight: bold; }
+    td.g5 { background: #B71C1C; color: #fff; font-weight: bold; }
+    td.g6 { background: #4A0000; color: #fff; font-weight: bold; }
+    /* Range row */
+    tr.range-row td { background: #FFFBEF; font-size: .92rem; }
+
+    /* NP table (vertical) */
+    table.np-table th { background: #000; color: var(--cyan); }
+    td.np15,td.np14,td.np13 { background: #1B5E20; color: #fff; font-weight: bold; }
+    td.np12,td.np11,td.np10 { background: #33691E; color: #fff; font-weight: bold; }
+    td.np9,td.np8,td.np7   { background: #E65C00; color: #fff; font-weight: bold; }
+    td.np6,td.np5,td.np4   { background: #BF360C; color: #fff; font-weight: bold; }
+    td.np3,td.np2,td.np1   { background: #B71C1C; color: #fff; font-weight: bold; }
+    td.np0                  { background: #4A0000; color: #fff; font-weight: bold; }
+    td.range-cell           { background: #FFFBEF; color: #000; }
+
+
+
+    @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="tool">
+    <div class="titlebar">
+      <span>�� BE-Taschenrechner.exe ��</span>
+    </div>
+
+    <div class="grid">
+      <!-- LEFT -->
+      <section class="panel">
+        <div class="screen">
+          <div class="screen-line">&gt; SYSTEM READY</div>
+          <div class="screen-line">&gt; SCHL�SSEL GELADEN ...</div>
+          <div class="result-main" id="resultMain">--</div>
+          <div class="result-sub" id="resultSub">Schema w�hlen &amp; Punkte eingeben.</div>
+        </div>
+
+        <div>
+          <label for="schemaSelect">Schl�ssel w�hlen</label>
+          <select id="schemaSelect"></select>
+        </div>
+        <div>
+          <label for="pointsInput">Erreichte Punkte (BE)</label>
+          <input id="pointsInput" type="number" min="0" step="0.5" placeholder="z. B. 21,5" />
+        </div>
+        <div class="btnrow">
+          <button id="calcBtn">? Berechnen</button>
+          <button id="resetBtn">? Reset</button>
+        </div>
+        <div class="hint" id="schemaMeta">Lade Schema...</div>
+      </section>
+
+      <!-- RIGHT -->
+      <section class="tablePanel">
+        <div class="schema-title" id="tableTitle">�bersicht</div>
+        <div id="tableWrap"></div>
+
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+const schemas = {
+  "16": {
+    label:"16-Punkte-Schl�ssel", mode:"grades", max:16, unit:"Note",
+    entries:[
+      {label:"1",min:14,max:16},{label:"2",min:12,max:13.5},
+      {label:"3",min:10,max:11.5},{label:"4",min:8,max:9.5},
+      {label:"5",min:4,max:7.5},{label:"6",min:0,max:3.5}
+    ]
+  },
+  "18A": {
+    label:"18-Punkte-Schl�ssel � Variante A", mode:"grades", max:18, unit:"Note",
+    entries:[
+      {label:"1",min:16,max:18},{label:"2",min:13.5,max:15.5},
+      {label:"3",min:11.5,max:13},{label:"4",min:9,max:11},
+      {label:"5",min:4.5,max:8.5},{label:"6",min:0,max:4}
+    ]
+  },
+  "18B": {
+    label:"18-Punkte-Schl�ssel � Variante B", mode:"grades", max:18, unit:"Note",
+    entries:[
+      {label:"1",min:16,max:18},{label:"2",min:13,max:15},
+      {label:"3",min:10,max:12},{label:"4",min:7,max:9},
+      {label:"5",min:4,max:6},{label:"6",min:0,max:3}
+    ]
+  },
+  "20": {
+    label:"20-Punkte-Schl�ssel", mode:"grades", max:20, unit:"Note",
+    entries:[
+      {label:"1",min:17.5,max:20},{label:"2",min:15,max:17},
+      {label:"3",min:12.5,max:14.5},{label:"4",min:10,max:12},
+      {label:"5",min:5,max:9.5},{label:"6",min:0,max:4.5}
+    ]
+  },
+  "20B": {
+    label:"20-Punkte-Schl�ssel � Variante B", mode:"grades", max:20, unit:"Note",
+    entries:[
+      {label:"1",min:18,max:20},{label:"2",min:15,max:17},
+      {label:"3",min:12,max:14},{label:"4",min:9,max:11},
+      {label:"5",min:6,max:8},{label:"6",min:0,max:5}
+    ]
+  },
+  "20C": {
+    label:"20-Punkte-Schl�ssel � Variante C", mode:"grades", max:20, unit:"Note",
+    entries:[
+      {label:"1",min:17.5,max:20},{label:"2",min:14.5,max:17},
+      {label:"3",min:11.5,max:14},{label:"4",min:8.5,max:11},
+      {label:"5",min:5.5,max:8},{label:"6",min:0,max:5}
+    ]
+  },
+  "24A": {
+    label:"24-Punkte-Schl�ssel � Variante A", mode:"grades", max:24, unit:"Note",
+    entries:[
+      {label:"1",min:21,max:24},{label:"2",min:18,max:20.5},
+      {label:"3",min:15,max:17.5},{label:"4",min:12,max:14.5},
+      {label:"5",min:6,max:11.5},{label:"6",min:0,max:5.5}
+    ]
+  },
+  "24B": {
+    label:"24-Punkte-Schl�ssel � Variante B", mode:"grades", max:24, unit:"Note",
+    entries:[
+      {label:"1",min:21,max:24},{label:"2",min:17,max:20},
+      {label:"3",min:13,max:16},{label:"4",min:9,max:12},
+      {label:"5",min:5,max:8},{label:"6",min:0,max:4}
+    ]
+  },
+  "24Q": {
+    label:"24-Punkte-Schl�ssel � Q-Phase", mode:"qphase", max:24, unit:"Notenpunkte",
+    entries:[
+      {label:"15",min:23,max:24},{label:"14",min:22,max:22},
+      {label:"13",min:21,max:21},{label:"12",min:20,max:20},
+      {label:"11",min:18,max:19},{label:"10",min:17,max:17},
+      {label:"9",min:16,max:16},{label:"8",min:15,max:15},
+      {label:"7",min:14,max:14},{label:"6",min:12,max:13},
+      {label:"5",min:11,max:11},{label:"4",min:10,max:10},
+      {label:"3",min:8,max:9},{label:"2",min:7,max:7},
+      {label:"1",min:5,max:6},{label:"0",min:0,max:4}
+    ]
+  },
+  "28": {
+    label:"28-Punkte-Schl�ssel", mode:"grades", max:28, unit:"Note",
+    entries:[
+      {label:"1",min:25,max:28},{label:"2",min:21.5,max:24.5},
+      {label:"3",min:18,max:21},{label:"4",min:14,max:17.5},
+      {label:"5",min:7,max:13.5},{label:"6",min:0,max:6.5}
+    ]
+  },
+  "30Q": {
+    label:"30-Punkte-Schl�ssel � Q-Phase", mode:"qphase", max:30, unit:"Notenpunkte",
+    entries:[
+      {label:"15",min:28.5,max:30},{label:"14",min:27.0,max:28.0},
+      {label:"13",min:25.5,max:26.5},{label:"12",min:24.0,max:25.0},
+      {label:"11",min:22.5,max:23.5},{label:"10",min:21.0,max:22.0},
+      {label:"9",min:19.5,max:20.5},{label:"8",min:18.0,max:19.0},
+      {label:"7",min:16.5,max:17.0},{label:"6",min:15.0,max:16.0},
+      {label:"5",min:13.5,max:14.5},{label:"4",min:12.0,max:13.0},
+      {label:"3",min:10.0,max:11.5},{label:"2",min:8.0,max:9.5},
+      {label:"1",min:6.0,max:7.5},{label:"0",min:0,max:5.5}
+    ]
+  },
+  "32": {
+    label:"32-Punkte-Schl�ssel", mode:"grades", max:32, unit:"Note",
+    entries:[
+      {label:"1",min:28,max:32},{label:"2",min:24,max:27.5},
+      {label:"3",min:20,max:23.5},{label:"4",min:16,max:19.5},
+      {label:"5",min:8,max:15.5},{label:"6",min:0,max:7.5}
+    ]
+  },
+  "36": {
+    label:"36-Punkte-Schl�ssel", mode:"grades", max:36, unit:"Note",
+    entries:[
+      {label:"1",min:31.5,max:36},{label:"2",min:27,max:31},
+      {label:"3",min:22.5,max:26.5},{label:"4",min:18,max:22},
+      {label:"5",min:9,max:17.5},{label:"6",min:0,max:8.5}
+    ]
+  },
+  "40Q": {
+    label:"40-Punkte-Schl�ssel � Q-Phase", mode:"qphase", max:40, unit:"Notenpunkte",
+    entries:[
+      {label:"15",min:38.0,max:40},{label:"14",min:36.0,max:37.5},
+      {label:"13",min:34.0,max:35.5},{label:"12",min:32.0,max:33.5},
+      {label:"11",min:30.0,max:31.5},{label:"10",min:28.0,max:29.5},
+      {label:"9",min:26.0,max:27.5},{label:"8",min:24.0,max:25.5},
+      {label:"7",min:22.0,max:23.5},{label:"6",min:20.0,max:21.5},
+      {label:"5",min:19.0,max:19.5},{label:"4",min:16.0,max:18.5},
+      {label:"3",min:13.0,max:15.5},{label:"2",min:10.0,max:12.5},
+      {label:"1",min:8.0,max:9.5},{label:"0",min:0,max:7.5}
+    ]
+  }
+};
+
+const schemaSelect = document.getElementById("schemaSelect");
+const pointsInput  = document.getElementById("pointsInput");
+const resultMain   = document.getElementById("resultMain");
+const resultSub    = document.getElementById("resultSub");
+const tableWrap    = document.getElementById("tableWrap");
+const tableTitle   = document.getElementById("tableTitle");
+const schemaMeta   = document.getElementById("schemaMeta");
+
+function fmt(v){ return Number.isInteger(v) ? String(v) : String(v).replace(".",","); }
+function rangeText(e){ return e.min===e.max ? fmt(e.max) : fmt(e.max)+" � "+fmt(e.min); }
+
+function npCls(np){
+  const n=parseInt(np);
+  if(n>=13) return "np15"; if(n>=10) return "np12";
+  if(n>=7)  return "np9";  if(n>=4)  return "np6";
+  if(n>=1)  return "np3";  return "np0";
+}
+function gradeCls(g){
+  return ["","g1","g2","g3","g4","g5","g6"][parseInt(g)]||"";
+}
+
+const ratings = {
+  "16":  {typ:"? streng",  schwelle:"50 %"},
+  "18A": {typ:"? streng",  schwelle:"50 %"},
+  "18B": {typ:"?? gn�dig",  schwelle:"39 %"},
+  "20":  {typ:"? streng",  schwelle:"50 %"},
+  "20B": {typ:"?? mittel",  schwelle:"45 %"},
+  "20C": {typ:"?? gn�dig",  schwelle:"43 %"},
+  "24A": {typ:"? streng",  schwelle:"50 %"},
+  "24B": {typ:"?? gn�dig",  schwelle:"38 %"},
+  "28":  {typ:"? streng",  schwelle:"50 %"},
+  "32":  {typ:"? streng",  schwelle:"50 %"},
+  "36":  {typ:"? streng",  schwelle:"50 %"},
+  "24Q": {typ:"?? mittel",  schwelle:"42 %"},
+  "30Q": {typ:"?? gn�dig",  schwelle:"40 %"},
+  "40Q": {typ:"?? gn�dig",  schwelle:"40 %"},
+};
+
+function renderTable(){
+  const key = schemaSelect.value;
+  const s = schemas[key];
+  if(!s) return;
+  tableTitle.textContent = s.label;
+
+  if(s.mode === "grades"){
+    let h = '<table><thead><tr><th>Punkte / BE</th>';
+    s.entries.forEach(e => { h += '<th>'+rangeText(e)+'</th>'; });
+    h += '</tr></thead><tbody><tr><th>Note</th>';
+    s.entries.forEach(e => { h += '<td class="'+gradeCls(e.label)+'"><strong>'+e.label+'</strong></td>'; });
+    h += '</tr></tbody></table>';
+    tableWrap.innerHTML = h;
+  } else {
+    let h = '<div class="table-scroll"><table class="np-table"><thead><tr><th>BE (Punkte)</th><th>Notenpunkte</th></tr></thead><tbody>';
+    s.entries.forEach(e => {
+      h += '<tr><td class="range-cell">'+rangeText(e)+'</td><td class="'+npCls(e.label)+'"><strong>'+e.label+'</strong></td></tr>';
+    });
+    h += '</tbody></table></div>';
+    tableWrap.innerHTML = h;
+  }
+
+  const r = ratings[key] || {typ:"�", schwelle:"�"};
+  const tip = s.mode==="qphase" ? "Q-Phase: Notenpunkte 0�15." : "Schritte: 0,5 BE.";
+  schemaMeta.innerHTML =
+    '<div style="display:flex;flex-direction:column;gap:6px;">' +
+      '<div style="font-weight:bold;font-size:1rem;">' + s.label + '</div>' +
+      '<div style="display:flex;gap:12px;flex-wrap:wrap;">' +
+        '<span>Max: <strong>' + s.max + ' BE</strong></span>' +
+        '<span>Ausgabe: <strong>' + s.unit + '</strong></span>' +
+        '<span>' + tip + '</span>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:10px;margin-top:2px;padding:6px 8px;background:#000;color:#ffd54a;border:2px solid #000;">' +
+        '<span style="font-size:1.1rem;font-weight:bold;">' + r.typ + '</span>' +
+        '<span style="color:#fff;font-size:.9rem;">Bestehensgrenze: <strong style=\'color:#ffd54a;\'>~' + r.schwelle + '</strong></span>' +
+      '</div>' +
+    '</div>';
+
+  pointsInput.max = s.max;
+  pointsInput.step = "0.5";
+  pointsInput.placeholder = "0 bis "+s.max;
+  resetOutput();
+}
+
+function findResult(points, s){ return s.entries.find(e => points >= e.min && points <= e.max); }
+
+function calculate(){
+  const s = schemas[schemaSelect.value];
+  const points = parseFloat(pointsInput.value.replace(",","."));
+  if(isNaN(points)){
+    resultMain.textContent="ERR";
+    resultSub.innerHTML='<span class="bad">Bitte g�ltige Punkte eingeben.</span>';
+    return;
+  }
+  if(points<0 || points>s.max){
+    resultMain.textContent="OUT";
+    resultSub.innerHTML='<span class="bad">Erlaubt: 0 � '+s.max+' BE.</span>';
+    return;
+  }
+  const hit = findResult(points, s);
+  if(!hit){
+    resultMain.textContent="???";
+    resultSub.innerHTML='<span class="bad">Kein Bereich gefunden.</span>';
+    return;
+  }
+  resultMain.textContent = s.mode==="qphase" ? hit.label+" NP" : "NOTE "+hit.label;
+  resultSub.innerHTML = '<span class="ok">'+fmt(points)+' BE</span> ? Bereich <span class="warn">'+rangeText(hit)+'</span>';
+}
+
+function resetOutput(){
+  resultMain.textContent="--";
+  resultSub.textContent="Schema w�hlen & Punkte eingeben.";
+  pointsInput.value="";
+}
+
+function populateSchemas(){
+  const gradeKeys = ["16","18A","18B","20","20B","20C","24A","24B","28","32","36"];
+  const qKeys     = ["24Q","30Q","40Q"];
+
+  const grp1 = document.createElement("optgroup");
+  grp1.label = "-- Normalschl�ssel (Note 1�6)";
+  gradeKeys.forEach(k => {
+    if(!schemas[k]) return;
+    const o = document.createElement("option");
+    o.value=k; o.textContent=schemas[k].label;
+    grp1.appendChild(o);
+  });
+
+  const grp2 = document.createElement("optgroup");
+  grp2.label = "-- Q-Phase (Notenpunkte 0�15)";
+  qKeys.forEach(k => {
+    if(!schemas[k]) return;
+    const o = document.createElement("option");
+    o.value=k; o.textContent=schemas[k].label;
+    grp2.appendChild(o);
+  });
+
+  schemaSelect.appendChild(grp1);
+  schemaSelect.appendChild(grp2);
+}
+
+schemaSelect.addEventListener("change", renderTable);
+document.getElementById("calcBtn").addEventListener("click", calculate);
+document.getElementById("resetBtn").addEventListener("click", resetOutput);
+pointsInput.addEventListener("keydown", e => { if(e.key==="Enter") calculate(); });
+
+document.addEventListener("DOMContentLoaded", function(){
+  populateSchemas();
+  // Select 24A as default
+  for(let i=0; i<schemaSelect.options.length; i++){
+    if(schemaSelect.options[i].value === "24A"){
+      schemaSelect.selectedIndex = i;
+      break;
+    }
+  }
+  renderTable();
+});
+
+</script>
+</body>
+</html>

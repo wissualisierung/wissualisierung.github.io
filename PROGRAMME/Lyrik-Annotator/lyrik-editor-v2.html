@@ -1,0 +1,2402 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lyrik Editor</title>
+    <style>
+:root {
+  --yellow: #FFD84D;
+  --orange: #FF8C42;
+  --pink: #FF6FB3;
+  --blue: #4DD7FF;
+  --green: #92E48A;
+  --purple: #9B72CF;
+  --red: #FF4757;
+  --bg: #FFFBF0;
+  --white: #FFFFFF;
+  --black: #000000;
+  --gray: #F0EBE0;
+  --text: #1A1A1A;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: 'Aptos', 'Segoe UI', Calibri, Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg);
+    color: var(--text);
+    overflow-x: hidden; /* Prevent scrollbar from absolute labels */
+}
+
+/* TOPBAR */
+.topbar {
+    background: var(--yellow);
+    border-bottom: 4px solid var(--black);
+    box-shadow: 0 4px 0 var(--black);
+    padding: 0.7rem 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-weight: 900;
+    font-size: 1.3rem;
+    color: var(--black);
+}
+
+.topbar-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+/* BUTTONS */
+button {
+    background: var(--yellow);
+    border: 3px solid var(--black);
+    border-radius: 0.6rem;
+    box-shadow: 4px 4px 0 var(--black);
+    font-weight: 700;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: box-shadow 0.1s, transform 0.1s;
+    font-size: 1rem;
+    color: var(--text);
+}
+
+button:hover {
+    box-shadow: 6px 6px 0 var(--black);
+    transform: translate(-1px, -1px);
+}
+
+button:active {
+    box-shadow: 1px 1px 0 var(--black);
+    transform: translate(3px, 3px);
+}
+
+.btn-primary { background: var(--yellow); }
+.btn-danger { background: var(--red); color: white; }
+.btn-success { background: var(--green); }
+.btn-ghost { background: var(--white); }
+.btn-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 1.2rem;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* INPUTS */
+input[type="text"], input[type="number"], select {
+    border: 2.5px solid var(--black);
+    border-radius: 0.5rem;
+    padding: 0.4rem 0.7rem;
+    font-size: 0.95rem;
+    background: var(--white);
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--orange);
+    box-shadow: 3px 3px 0 var(--orange);
+}
+
+/* PANELS */
+.panel {
+    background: var(--white);
+    border: 3px solid var(--black);
+    border-radius: 1rem;
+    box-shadow: 6px 6px 0 var(--black);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* LAYOUT */
+.main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: calc(100vh - 70px); /* fallback */
+    overflow: hidden;
+}
+
+@media (max-width: 1200px) {
+    .main-grid { grid-template-columns: 1fr; overflow: auto; height: auto; }
+    .editor-pane, .preview-pane { height: auto !important; overflow: visible !important; }
+}
+
+.editor-pane {
+    padding: 1.5rem;
+    overflow-y: auto;
+    border-right: 4px solid var(--black);
+    background: var(--bg);
+}
+
+.preview-pane {
+    padding: 1.5rem;
+    padding-right: 16rem; /* Reserve space for absolute arrow labels */
+    overflow-y: auto;
+    overflow-x: visible; /* Never clip labels horizontally */
+    background: var(--gray);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+@media (max-width: 900px) {
+    .preview-pane { padding-right: 11rem; }
+}
+@media (max-width: 600px) {
+    .preview-pane { padding-right: 7rem; }
+}
+
+/* MODE TOGGLE */
+.mode-toggle {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1.5rem;
+    border: 3px solid var(--black);
+    border-radius: 2rem;
+    overflow: hidden;
+    width: fit-content;
+    box-shadow: 4px 4px 0 var(--black);
+}
+
+.mode-btn {
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    background: var(--gray);
+    padding: 0.6rem 1.5rem;
+}
+.mode-btn:hover { box-shadow: none; transform: none; background: #e0dbce; }
+.mode-btn:active { box-shadow: none; transform: none; }
+.mode-btn.active {
+    background: var(--black);
+    color: var(--white);
+}
+
+/* ACCORDIONS (Poems) */
+.accordion { margin-bottom: 1rem; }
+.accordion-header {
+    background: var(--yellow);
+    border-radius: 0.8rem;
+    border: 3px solid var(--black);
+    padding: 0.8rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 800;
+}
+.accordion-header:hover { background: var(--orange); }
+.accordion.open .accordion-header {
+    box-shadow: 5px 5px 0 var(--black);
+    border-radius: 0.8rem 0.8rem 0 0;
+}
+.accordion-content {
+    display: none;
+    border: 3px solid var(--black);
+    border-top: none;
+    border-radius: 0 0 0.8rem 0.8rem;
+    background: var(--white);
+    padding: 1rem;
+}
+.accordion.open .accordion-content { display: block; }
+
+/* GRID FOR POEM METADATA */
+.poem-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.poem-meta-full { grid-column: 1 / -1; }
+.poem-meta-grid label { display: block; font-weight: 600; margin-bottom: 0.2rem; font-size: 0.85rem;}
+.poem-meta-grid input { width: 100%; }
+
+.divider {
+    border-top: 3px dashed var(--black);
+    margin: 1.5rem 0;
+}
+
+/* VERSES EDITOR */
+.verse-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.verse-item {
+    border: 2px solid transparent;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    transition: background 0.1s;
+}
+.verse-item:hover {
+    background: var(--gray);
+    border-left: 4px solid var(--orange);
+}
+.verse-item.active {
+    background: var(--yellow);
+    border-left: 4px solid var(--black);
+}
+
+.verse-row-main {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+.verse-nr-badge {
+    background: var(--black);
+    color: var(--yellow);
+    border-radius: 0.4rem;
+    font-weight: 800;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.8rem;
+    min-width: 32px;
+    text-align: center;
+}
+
+.verse-text-input { flex-grow: 1; }
+.verse-reim-input { width: 50px; text-align: center; }
+.verse-kadenz-select { width: 60px; }
+
+.verse-details {
+    margin-top: 0.5rem;
+    padding-left: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.token-container {
+    background: var(--white);
+    border: 2px solid var(--gray);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    line-height: 1.8;
+}
+
+.token {
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    padding: 0.05rem 0.2rem;
+    margin: 0 1px;
+    border: 1.5px solid transparent;
+    transition: background 0.2s, outline 0.2s;
+}
+@media (max-width: 600px) {
+    .token {
+        padding: 0.05rem 0.1rem;
+        margin: 0;
+    }
+}
+.token.clickable:hover {
+    background: var(--gray);
+    border-color: rgba(0,0,0,0.25);
+}
+.token.colored {
+    border-color: rgba(0,0,0,0.25);
+}
+
+/* GROUP TOKENS */
+.token.grouped {
+    border-bottom: 2.5px solid var(--group-color, var(--black));
+}
+.token.grouped.active {
+    outline: 3px solid var(--group-color, var(--black));
+    background-color: rgba(0,0,0,0.08); /* Fallback for color-mix (#25) */
+    background-color: color-mix(in srgb, var(--group-color, var(--black)) 15%, transparent);
+    animation: groupPulse 0.6s ease-out;
+}
+
+@keyframes groupPulse {
+    0%   { outline-offset: 0px; }
+    50%  { outline-offset: 5px; }
+    100% { outline-offset: 0px; }
+}
+
+/* COLOR PICKER TOOLTIP */
+.tooltip-dropdown {
+    position: absolute;
+    background: var(--white);
+    border: 3px solid var(--black);
+    border-radius: 1rem;
+    box-shadow: 6px 6px 0 var(--black);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    z-index: 1000;
+    min-width: 260px;
+}
+.tooltip-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+.tooltip-title {
+    font-size: 0.7rem;
+    font-weight: 900;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    border-bottom: 2px solid var(--gray);
+    padding-bottom: 0.3rem;
+}
+.group-selector-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+.group-selector-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: all 0.1s;
+    border: 2.5px solid transparent;
+}
+.group-selector-item:hover {
+    background: var(--gray);
+}
+.group-selector-item.active {
+    background: var(--yellow);
+    border-color: var(--black);
+    box-shadow: 2px 2px 0 var(--black);
+}
+.color-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.5rem;
+}
+.color-circle-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2.5px solid var(--black);
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+.color-circle-btn:hover {
+    transform: scale(1.15);
+    box-shadow: 2px 2px 0 var(--black);
+}
+
+/* LEGEND EDITOR */
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+.legend-color-input {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 2.5px solid var(--black);
+    border-radius: 50%;
+    cursor: pointer;
+    overflow: hidden;
+}
+.legend-color-input::-webkit-color-swatch-wrapper { padding: 0; }
+.legend-color-input::-webkit-color-swatch { border: none; border-radius: 50%; }
+
+/* ARROWS EDITOR */
+.arrow-card {
+    background: var(--white);
+    border: 3px solid var(--black);
+    border-radius: 0.8rem;
+    padding: 0.8rem;
+    margin-bottom: 0.8rem;
+    box-shadow: 4px 4px 0 var(--black);
+}
+.arrow-card-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.4rem;
+}
+
+/* GROUPS EDITOR */
+.group-card {
+    background: var(--white);
+    border: 3px solid var(--black);
+    border-radius: 0.8rem;
+    padding: 0.8rem;
+    margin-bottom: 0.8rem;
+    box-shadow: 4px 4px 0 var(--black);
+}
+.group-members { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+.group-chip {
+    background: var(--black);
+    color: var(--white);
+    border-radius: 1rem;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+.group-chip .del-chip { cursor: pointer; color: var(--red); font-weight: 900; }
+
+/* MODALS (#13: native dialog behavior) */
+.modal {
+    border: none;
+    background: transparent;
+    padding: 0;
+    margin: auto;
+    max-width: 100vw;
+    max-height: 100vh;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.modal::backdrop {
+    background: rgba(0,0,0,0.35);
+}
+.modal:not([open]) { display: none; }
+
+.modal-box {
+    border: 4px solid var(--black);
+    border-radius: 1.2rem;
+    box-shadow: 8px 8px 0 var(--black);
+    background: var(--bg);
+    max-width: 640px;
+    width: 90%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+.modal-header {
+    background: var(--yellow);
+    border-radius: 0.8rem 0.8rem 0 0;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 4px solid var(--black);
+}
+.modal-header h2 { margin: 0; font-weight: 900; }
+.modal-content { 
+    padding: 1.5rem; 
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+/* PREVIEW HEADER */
+.preview-header {
+    background: var(--blue);
+    border: 3px solid var(--black);
+    border-radius: 1rem 1rem 0 0;
+    box-shadow: 4px 4px 0 var(--black);
+    padding: 0.8rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 0;
+}
+.preview-content-wrapper {
+    background: var(--white);
+    border: 3px solid var(--black);
+    border-radius: 1rem;
+    box-shadow: 6px 6px 0 var(--black);
+    padding: 2rem;
+    padding-bottom: 3rem;
+    position: relative;
+    width: 100%;
+    max-width: 700px; /* Narrower so labels have room in the reserved pane padding */
+    box-sizing: border-box;
+    overflow: visible; /* Labels & SVG arrows extend beyond this box */
+}
+@media (max-width: 900px) {
+    .preview-content-wrapper {
+        padding: 1.5rem;
+    }
+}
+@media (max-width: 600px) {
+    .preview-content-wrapper {
+        padding: 1rem 6.5rem 1rem 0.5rem; /* Proportional right margin for arrows! */
+        box-shadow: 4px 4px 0 var(--black);
+        border-radius: 0.5rem;
+    }
+    .epoch-badge {
+        font-size: 0.75rem;
+        top: 0.2rem;
+        left: -0.2rem;
+    }
+}
+.epoch-badge {
+    position: absolute;
+    top: 1rem;
+    left: -1rem;
+    background: var(--yellow);
+    border: 3px solid var(--black);
+    padding: 0.3rem 1rem;
+    font-weight: 900;
+    transform: rotate(-5deg);
+    box-shadow: 3px 3px 0 var(--black);
+    z-index: 10;
+}
+
+/* PREVIEW POEM RENDER */
+.preview-poem { margin-top: 1.5rem; }
+.preview-title { font-size: 1.5rem; font-weight: 900; margin-bottom: 0.2rem; }
+.preview-author { font-size: 1.1rem; font-style: italic; margin-bottom: 1rem; color: #555; }
+.preview-strophe { margin-bottom: 1.5rem; position: relative; }
+.preview-randnotiz {
+    position: absolute;
+    left: -4rem;
+    top: 0;
+    background: var(--yellow);
+    border: 2px solid var(--black);
+    border-radius: 0.4rem;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    width: 80px;
+    box-shadow: 2px 2px 0 var(--black);
+    word-wrap: break-word;
+}
+@media (max-width: 900px) {
+    .preview-randnotiz {
+        position: relative;
+        left: 0;
+        top: 0;
+        margin-bottom: 0.8rem;
+        width: fit-content;
+        max-width: 100%;
+        display: inline-block;
+    }
+}
+.preview-verse {
+    display: grid;
+    grid-template-columns: 30px 1fr 50px;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.2rem 0;
+    position: relative;
+    border-left: 4px solid transparent;
+}
+@media (max-width: 600px) {
+    .preview-verse {
+        grid-template-columns: 20px 1fr 35px;
+        gap: 0.4rem;
+    }
+}
+.preview-verse.active-interactive {
+    background: #f8f6fb; /* Very subtle, light background instead of solid yellow */
+    border-left: 4px solid var(--purple);
+}
+.preview-verse-nr {
+    font-size: 0.7rem;
+    color: #666;
+    text-align: right;
+    user-select: none;
+    font-weight: bold;
+}
+@media (max-width: 600px) {
+    .preview-verse-nr {
+        font-size: 0.65rem;
+    }
+}
+.preview-verse-text {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    word-break: normal;
+    overflow-wrap: break-word;
+}
+@media (max-width: 600px) {
+    .preview-verse-text {
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+}
+.preview-reim {
+    text-align: left;
+    font-size: 0.8rem;
+    color: #888;
+    display: flex;
+    gap: 0.3rem;
+    white-space: nowrap;
+}
+@media (max-width: 600px) {
+    .preview-reim {
+        font-size: 0.7rem;
+    }
+}
+.preview-annotation {
+    grid-column: 2 / -1; /* Indent perfectly with the text */
+    margin: 0.2rem 0 0.6rem 0;
+    background: var(--white);
+    color: var(--black);
+    padding: 0.5rem 0.8rem;
+    border: 2px solid var(--purple);
+    border-radius: 0.4rem;
+    box-shadow: 2px 2px 0 var(--purple);
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.4;
+    word-wrap: break-word;
+    display: none;
+    z-index: 10;
+}
+.preview-verse.active-interactive .preview-annotation {
+    display: block;
+    animation: popIn 0.2s ease-out;
+}
+@keyframes popIn {
+    0% { opacity: 0; transform: translateY(-3px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+#previewContent {
+    position: relative;
+    z-index: 10;
+}
+
+/* SVG ARROWS */
+.arrow-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+    overflow: visible;
+}
+.interactive-arrow {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.interactive-arrow.active {
+    opacity: 1;
+}
+.arrow-path {
+    fill: none;
+    pointer-events: visibleStroke;
+}
+
+.section-header {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    display: inline-block;
+    background: var(--black);
+    color: var(--yellow);
+    padding: 0.3rem 0.8rem;
+    border-radius: 0.5rem;
+    font-weight: 800;
+}
+
+/* VIEW TOOLTIP (Interactive Export) */
+.view-tooltip {
+    position: fixed;
+    background: var(--black);
+    color: var(--yellow);
+    border: 2px solid var(--black);
+    box-shadow: 3px 3px 0 var(--yellow);
+    border-radius: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    font-weight: bold;
+    z-index: 3000;
+    pointer-events: none;
+    transform: translate(-50%, -100%);
+    margin-top: -10px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* ARROW LABELS (HTML based for wrapping) */
+.preview-arrow-label {
+    position: absolute;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 800;
+    width: 14rem;
+    max-width: 14rem;
+    line-height: 1.2;
+    pointer-events: none;
+    z-index: 15;
+    word-wrap: break-word;
+    hyphens: auto;
+    border-radius: 0.4rem;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(4px);
+    border: 2px solid transparent;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+@media (max-width: 900px) {
+    .preview-arrow-label { width: 10rem; font-size: 0.8rem; }
+}
+@media (max-width: 600px) {
+    .preview-arrow-label { 
+        width: 5.5rem; /* Fits perfectly in the 6.5rem margin! */
+        font-size: 0.65rem; 
+        padding: 0.3rem 0.4rem; 
+        line-height: 1.3; 
+        box-shadow: 2px 2px 0 var(--black);
+        border: 2px solid var(--black);
+        transform: translateY(-50%);
+    }
+}
+.preview-arrow-label.active {
+    opacity: 1;
+    background: var(--white);
+    border-color: currentColor;
+    box-shadow: 2px 2px 0 var(--black);
+    z-index: 25;
+}
+.view-tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    margin-left: -6px;
+    border-width: 6px 6px 0;
+    border-style: solid;
+    border-color: var(--black) transparent transparent transparent;
+}
+
+/* POEM TABS */
+.poem-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+.poem-tab {
+    background: var(--white);
+    border: 3px solid var(--black);
+    border-radius: 0.6rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.1s;
+    font-size: 0.9rem;
+}
+.poem-tab:hover {
+    background: var(--gray);
+    transform: translateY(-2px);
+    box-shadow: 3px 3px 0 var(--black);
+}
+.poem-tab.active {
+    background: var(--yellow);
+    box-shadow: 4px 4px 0 var(--black);
+    transform: translateY(-2px);
+}
+.btn-tab-del {
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    color: var(--red);
+    opacity: 0.5;
+}
+.btn-tab-del:hover {
+    opacity: 1;
+    transform: none;
+    box-shadow: none;
+}
+
+/* WORD GROUP HIGHLIGHT EFFECT */
+.group-highlight {
+    outline: 4px solid var(--group-color, var(--black));
+    outline-offset: 2px;
+    z-index: 50;
+    position: relative;
+    border-radius: 0.25rem;
+    background-color: var(--white);
+    box-shadow: 4px 4px 0 var(--black);
+    transform: scale(1.05);
+}
+
+/* DRAG FEEDBACK (#15) */
+.legend-item.dragging {
+    opacity: 0.4;
+    transform: scale(0.95);
+}
+.legend-item.drag-over {
+    border-top: 3px solid var(--orange);
+}
+
+/* MOBILE INTERACTION HINT (#14) */
+.mobile-hint {
+    display: none;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #888;
+    padding: 0.5rem;
+    animation: hintPulse 2s ease-in-out infinite;
+}
+@media (max-width: 900px) {
+    .mobile-hint { display: block; }
+}
+@keyframes hintPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+/* ARIA / KEYBOARD (#24) */
+.token:focus-visible,
+.poem-tab:focus-visible,
+.accordion-header:focus-visible,
+button:focus-visible {
+    outline: 3px solid var(--orange);
+    outline-offset: 2px;
+}
+
+</style>
+</head>
+<body>
+    <div id="app">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="logo">?? Lyrik-Editor</div>
+            <div class="topbar-actions">
+                <button id="btnAddPoem" class="btn-primary" aria-label="Neues Gedicht hinzuf�gen">+ Gedicht</button>
+                <button id="btnTemplates" class="btn-primary" aria-label="Vorlage laden">?? Vorlagen</button>
+                <button id="btnShowHelp" class="btn-primary" aria-label="Hilfe anzeigen">? Hilfe</button>
+                <button id="btnExportDialog" class="btn-primary" aria-label="Export-Dialog �ffnen">? Export</button>
+            </div>
+        </header>
+
+        <!-- Main Layout -->
+        <div class="main-grid">
+            <!-- Editor Pane -->
+            <div class="editor-pane" id="editorPane">
+                <div id="editorContent"></div>
+            </div>
+
+            <!-- Preview Pane -->
+            <div class="preview-pane" id="previewPane">
+                <div class="preview-header">
+                    <select id="previewPoemSelect" aria-label="Gedicht f�r Vorschau w�hlen"></select>
+                    <label><input type="checkbox" id="chkShowAnnotations" checked> Annotationen ?</label>
+                    <label><input type="checkbox" id="chkShowRhymes" checked> Reim ?</label>
+                    <label><input type="checkbox" id="chkShowArrows" checked> Alle Pfeile</label>
+                </div>
+                <div class="preview-content-wrapper" id="previewContentWrapper">
+                    <div class="epoch-badge" id="epochBadgePreview"></div>
+                    <div id="previewContent"></div>
+                    <svg id="arrowOverlay" class="arrow-overlay">
+                        <defs id="arrowDefs"></defs>
+                    </svg>
+                    <div class="mobile-hint" aria-hidden="true">?? Tippe auf einen Vers, um Annotationen und Pfeile zu sehen</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <dialog id="exportModal" class="modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>? Export</h2>
+                <button class="btn-icon close-modal" id="closeExportModal">&times;</button>
+            </div>
+            <div class="modal-content">
+                <label>Titel: <input type="text" id="exportTitle"></label><br><br>
+                <label>Epoche-Badge: <input type="text" id="exportEpoch"></label><br><br>
+                <div class="export-options">
+                    <label><input type="checkbox" id="expColors" checked> Farbmarkierungen</label>
+                    <label><input type="checkbox" id="expRhymes" checked> Reimschema</label>
+                    <label><input type="checkbox" id="expAnnotations" checked> Annotationen</label>
+                    <label><input type="checkbox" id="expArrows" checked> Verweispfeile</label>
+                    <label><input type="checkbox" id="expGroups" checked> Wortgruppen</label>
+                    <label><input type="checkbox" id="expLegend" checked> Legende</label>
+                    <label><input type="checkbox" id="expLearnMode"> Lernmodus (Annotationen ausgeblendet)</label>
+                </div>
+                <br>
+                <div class="export-actions">
+                    <button id="btnExportHtml" class="btn-primary" style="font-size:1.1rem; padding: 1rem 2rem;">? HTML5 herunterladen</button>
+                    <button id="btnExportJson" class="btn-ghost">?? JSON speichern</button>
+                    <button id="btnImportJson" class="btn-ghost" onclick="document.getElementById('fileImport').click()">?? JSON laden</button>
+                    <input type="file" id="fileImport" accept=".json" style="display:none">
+                </div>
+            </div>
+        </div>
+    </dialog>
+    
+    <!-- Help Modal -->
+    <dialog id="helpModal" class="modal">
+        <div class="modal-box" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2>? Anleitung: Gedicht-Annotation</h2>
+                <button class="btn-icon close-modal" onclick="document.getElementById('helpModal').close()">&times;</button>
+            </div>
+            <div class="modal-content help-content" style="line-height: 1.6; font-size: 1.05rem;">
+                <p>Willkommen im <strong>Lyrik-Editor</strong>. Mit diesem Werkzeug kannst du Gedichte analysieren und p�dagogisch aufbereiten.</p>
+                
+                <h3 style="color:var(--purple); border-bottom: 2px solid var(--black); padding-bottom: 0.3rem;">1. Gedicht anlegen</h3>
+                <p>Klicke oben auf <strong>+ Gedicht</strong>, um ein leeres Projekt zu starten. Du kannst Titel, Autor, Jahr und Metrum direkt in der Kopfzeile des Gedichts bearbeiten.</p>
+
+                <h3 style="color:var(--purple); border-bottom: 2px solid var(--black); padding-bottom: 0.3rem;">2. Text & Verse bearbeiten</h3>
+                <p>Jeder Vers kann einzeln editiert werden. Mit dem Button <strong>+ Vers</strong> f�gst du neue Zeilen hinzu. In den kleinen Feldern rechts kannst du das <strong>Reimschema</strong> (z.B. "a", "b") und die <strong>Kadenz</strong> (?/?) festlegen.</p>
+
+                <h3 style="color:var(--purple); border-bottom: 2px solid var(--black); padding-bottom: 0.3rem;">3. Farbmarkierungen setzen</h3>
+                <p>Klicke im Editor auf ein <strong>einzelnes Wort</strong>. Es �ffnet sich ein Men�, in dem du eine Farbe aus der Legende w�hlen kannst. Die Legende links l�sst sich frei benennen und farblich anpassen.</p>
+
+                <h3 style="color:var(--purple); border-bottom: 2px solid var(--black); padding-bottom: 0.3rem;">4. Wortgruppen & Verkn�pfungen</h3>
+                <p>Um thematische Zusammenh�nge zu zeigen (z.B. alle W�rter zur Natur), erstelle eine <strong>Wortgruppe</strong>. Klicke auf ein Wort und w�hle die gew�nschte Gruppe aus. Die W�rter werden dann mit einer farbigen Unterstreichung markiert.</p>
+
+                <h3 style="color:var(--purple); border-bottom: 2px solid var(--black); padding-bottom: 0.3rem;">5. Verweispfeile (Connections)</h3>
+                <p>Ganz unten in jedem Gedicht-Abschnitt findest du den Editor f�r <strong>Verweispfeile</strong>. Gib die Start- und Ziel-Versnummer an, um geschwungene Pfeile in der Vorschau zu erzeugen. Ideal f�r Enjambements oder inhaltliche R�ckbez�ge.</p>
+
+                <h3 style="color:var(--purple); border-bottom: 2px solid var(--black); padding-bottom: 0.3rem;">6. Export & Speichern</h3>
+                <p>Klicke auf <strong>Export</strong>, um deine Arbeit als interaktive <strong>HTML-Datei</strong> herunterzuladen. Diese Datei ist "self-contained" � sie enth�lt alles (Design, Daten, Logik) und kann ohne Internetverbindung in jedem Browser ge�ffnet werden.</p>
+                
+                <div style="background: var(--yellow); padding: 1rem; border: 2px solid var(--black); border-radius: 0.5rem; margin-top: 1rem;">
+                    <strong>Tipp:</strong> Die Daten werden automatisch in deinem Browser gespeichert. Du kannst sie aber auch als <strong>JSON-Datei</strong> sichern, um sie sp�ter an einem anderen Computer weiterzubearbeiten.
+                </div>
+                
+                <div style="margin-top: 2rem; text-align: center;">
+                    <button class="btn-primary" onclick="document.getElementById('helpModal').close()">Verstanden!</button>
+                </div>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Template Selection Dialog -->
+    <dialog id="templateModal" class="modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>?? Vorlage laden</h2>
+                <button class="btn-icon close-modal" onclick="document.getElementById('templateModal').close()">&times;</button>
+            </div>
+            <div class="modal-content">
+                <p style="margin-bottom:1.5rem; font-size:0.95rem; color:#666;">W�hle eine fertig annotierte Beispielanalyse als Ausgangspunkt:</p>
+                <div style="display:flex; flex-direction:column; gap:1rem;">
+                    <button class="btn-ghost" style="text-align:left; padding:1rem; display:flex; flex-direction:column; gap:0.3rem;" onclick="loadTemplate('mondnacht')">
+                        <strong style="font-size:1.1rem;">?? Mondnacht</strong>
+                        <span style="font-size:0.85rem; color:#666;">Joseph von Eichendorff (1835) + Brentano &mdash; 2 Gedichte, 5 Farbkategorien, 2 Wortgruppen, 3 Pfeile</span>
+                    </button>
+                    <button class="btn-ghost" style="text-align:left; padding:1rem; display:flex; flex-direction:column; gap:0.3rem;" onclick="loadTemplate('spinnerin')">
+                        <strong style="font-size:1.1rem;">?? Der Spinnerin Nachtlied</strong>
+                        <span style="font-size:0.85rem; color:#666;">Clemens Brentano (1818) + Eichendorff &mdash; 3 Gedichte, 5 Farbkategorien, 2 Wortgruppen, 4 Pfeile</span>
+                    </button>
+                </div>
+                <div style="margin-top:1.5rem; background:var(--yellow); padding:0.8rem; border:2px solid var(--black); border-radius:0.5rem; font-size:0.85rem;">
+                    <strong>?? Achtung:</strong> Das Laden einer Vorlage ersetzt alle aktuellen Daten. Sichere vorher �ber Export &gt; JSON.
+                </div>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Color Picker Tooltip -->
+    <div id="colorTooltip" class="tooltip-dropdown" style="display:none;"></div>
+    
+    <script>
+/**
+ * LYRIK EDITOR - Core Application Logic
+ * A serverless annotation tool for poetic analysis.
+ * 
+ * This file handles state management, rendering, and user interactions.
+ * Design Pattern: Simple State-to-DOM rendering with Undo/Redo history.
+ */
+
+// ----------------------------------------------------
+// 1. DATA STRUCTURES & DEFAULT STATE
+// ----------------------------------------------------
+
+/**
+ * The initial state for a new session.
+ * Includes a sample poem and default legend categories.
+ */
+const defaultState = {
+    meta: { 
+        title: "Lyrik Analyse Projekt", 
+        epoch: "Epoche unbekannt", 
+        version: "1.2" 
+    },
+    // The color legend used for word-level annotations
+    legend: [
+        { id: "leg-1", color: "#FFD84D", label: "Naturbildlichkeit" },
+        { id: "leg-2", color: "#4DD7FF", label: "Traumbildlichkeit" },
+        { id: "leg-3", color: "#FF6FB3", label: "Liebe / Sehnsucht" },
+        { id: "leg-4", color: "#92E48A", label: "Formales / Metrik" },
+        { id: "leg-5", color: "#5C6BFF", label: "Schl�sselbegriff" }
+    ],
+    // Thematic word groups for semantic connections
+    wordgroups: [
+        {
+            id: "wg-1", label: "Natur-Motivik", color: "#0080b0", members: []
+        }
+    ],
+    // List of poems being edited
+    poems: [
+        {
+            id: "poem-1", 
+            author: "Autor Name", 
+            title: "Titel des Gedichts", 
+            year: "Jahr", 
+            meter: "Metrum", 
+            theme: "Hauptthema",
+            strophen: [
+                {
+                    randnotiz: "",
+                    verses: [
+                        { nr: 1, text: "Erster Vers hier...", reim: "", kadenz: "", marks: [], annotation: "" }
+                    ]
+                }
+            ],
+            connections: [] // Arrows between verses
+        }
+    ]
+};
+
+// ----------------------------------------------------
+// 2. GLOBAL APPLICATION STATE
+// ----------------------------------------------------
+
+let state = null;            // Current active state object
+let historyStack = [];       // Stack of JSON-serialized states for Undo
+let historyIndex = -1;       // Current position in history stack
+
+// UI State (Ephemeral - not persisted in snapshots)
+let currentPoemId = null;    // The ID of the poem currently shown in the editor/preview
+let openPoemIds = new Set(); // IDs of poems that have their details expanded in the editor
+let activeVerseId = null;    // The ID (poemId-verseNr) of the verse currently being edited in detail
+let activePreviewVerse = null;// The verse number currently highlighted in the preview
+let activeGroupId = null;     // The ID of the word group currently highlighted (echo effect)
+
+// ----------------------------------------------------
+// 3. INITIALIZATION & STORAGE
+// ----------------------------------------------------
+
+/**
+ * Entry point: Loads state from localStorage and starts the app.
+ */
+function init() {
+    const saved = localStorage.getItem('lyrik-editor-v1');
+    if (saved) {
+        try { 
+            state = JSON.parse(saved); 
+        } catch (e) { 
+            console.error("Failed to load state, using defaults.");
+            state = JSON.parse(JSON.stringify(defaultState)); 
+        }
+    } else {
+        state = JSON.parse(JSON.stringify(defaultState));
+    }
+    
+    // Auto-select first poem if available
+    if (state.poems.length > 0) {
+        currentPoemId = state.poems[0].id;
+        openPoemIds.add(currentPoemId);
+    }
+    
+    saveSnapshot();           // Create first undo point
+    setupEventListeners();    // Bind UI buttons
+    renderAll();              // Initial draw
+}
+
+/**
+ * Generates a unique ID with a prefix.
+ */
+function genId(prefix) { 
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+        return prefix + '-' + crypto.randomUUID().slice(0, 9);
+    }
+    return prefix + '-' + Math.random().toString(36).slice(2, 11); 
+}
+
+/**
+ * Saves current state to history stack and localStorage.
+ * Call this before/after any meaningful state change.
+ */
+function saveSnapshot() {
+    // If we performed an Undo and then a new action, discard "future" history
+    if (historyIndex < historyStack.length - 1) {
+        historyStack = historyStack.slice(0, historyIndex + 1);
+    }
+    
+    historyStack.push(JSON.stringify(state));
+    
+    // Limit history size to prevent memory issues
+    if (historyStack.length > 30) historyStack.shift();
+    
+    historyIndex = historyStack.length - 1;
+    localStorage.setItem('lyrik-editor-v1', historyStack[historyIndex]);
+}
+
+/**
+ * Reverts to the previous state in history.
+ */
+function undo() {
+    if (historyIndex > 0) {
+        historyIndex--;
+        state = JSON.parse(historyStack[historyIndex]);
+        renderAll();
+        localStorage.setItem('lyrik-editor-v1', historyStack[historyIndex]);
+    }
+}
+
+/**
+ * Advances to the next state in history (if Undo was used).
+ */
+function redo() {
+    if (historyIndex < historyStack.length - 1) {
+        historyIndex++;
+        state = JSON.parse(historyStack[historyIndex]);
+        renderAll();
+        localStorage.setItem('lyrik-editor-v1', historyStack[historyIndex]);
+    }
+}
+
+// ----------------------------------------------------
+// 4. CORE UTILITIES
+// ----------------------------------------------------
+
+/**
+ * Splits text into tokens (words and punctuation).
+ */
+function tokenize(text) {
+    if (!text) return [];
+    return text.split(/(\s+|(?=[.,;:!?����"'])|(?<=[.,;:!?����"']))/).filter(Boolean);
+}
+
+/**
+ * Escapes HTML special characters to prevent XSS.
+ */
+function escapeHtml(unsafe) {
+    if(!unsafe) return "";
+    return unsafe.toString()
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+}
+
+/**
+ * Retrieves the color for a legend category ID.
+ */
+function getLegendColor(id) {
+    const leg = state.legend.find(l => l.id === id);
+    return leg ? leg.color : 'transparent';
+}
+
+/**
+ * Checks if a specific token belongs to any word group.
+ * @returns {string|null} The hex color of the group or null.
+ */
+function getGroupColor(poemId, verseNr, tokenIndex) {
+    for (let wg of state.wordgroups) {
+        if (wg.members.some(m => m.poemId === poemId && m.verseNr === verseNr && m.tokenIndex === tokenIndex)) {
+            return wg.color;
+        }
+    }
+    return null;
+}
+
+// ----------------------------------------------------
+// 5. RENDERING ENGINE (THROTTLED)
+// ----------------------------------------------------
+
+let renderTimeout;
+
+/**
+ * Triggers a render after a short delay (debouncing).
+ * Saves a snapshot for undo history (#8).
+ */
+function requestRender() {
+    clearTimeout(renderTimeout);
+    renderTimeout = setTimeout(() => {
+        saveSnapshot();
+        renderAll();
+    }, 100);
+}
+
+/**
+ * Render-only: no snapshot created. For UI-only state changes (#10).
+ */
+function renderOnly() {
+    clearTimeout(renderTimeout);
+    renderTimeout = setTimeout(() => {
+        renderAll();
+    }, 50);
+}
+
+/**
+ * 6. CENTRAL RENDERING PIPELINE
+ * Orchestrates the drawing of all UI components.
+ */
+
+function renderAll() {
+    try {
+        if (!state) return;
+        
+        // Ensure we have an active poem selected
+        if (!currentPoemId && state.poems.length > 0) {
+            currentPoemId = state.poems[0].id;
+        }
+        
+        // Save focus state before re-render (#7)
+        const focusId = document.activeElement?.id;
+        const focusSelStart = document.activeElement?.selectionStart;
+        const focusSelEnd = document.activeElement?.selectionEnd;
+        
+        // Render each main UI area
+        renderEditor();         // Left pane (Management)
+        renderPreviewOptions(); // Preview header (Selection/Toggles)
+        renderPreview();        // Right pane (Visual analysis)
+        renderArrows();         // SVG Overlay
+        
+        // Restore focus after re-render (#7)
+        if (focusId) {
+            const el = document.getElementById(focusId);
+            if (el) {
+                el.focus();
+                if (typeof focusSelStart === 'number' && el.setSelectionRange) {
+                    try { el.setSelectionRange(focusSelStart, focusSelEnd); } catch(e) {}
+                }
+            }
+        }
+    } catch (err) {
+        console.error("Critical Render Error:", err);
+    }
+}
+
+/**
+ * 7. EDITOR RENDERING
+ * Builds the left-side management interface.
+ */
+function renderEditor() {
+    const container = document.getElementById('editorContent');
+    if (!container) return;
+    let html = '';
+    
+    // --- LEGEND SECTION ---
+    html += `<div class="section-header">?? Farblegende</div><div class="panel">`;
+    state.legend.forEach((leg, i) => {
+        html += `<div class="legend-item" draggable="true" ondragstart="dragLegend(event, ${i})" ondrop="dropLegend(event, ${i})" ondragover="dragOverLegend(event, ${i})" ondragend="document.querySelectorAll('.legend-item').forEach(el=>el.classList.remove('dragging','drag-over'))">
+            <span style="cursor:grab">?</span>
+            <input type="color" class="legend-color-input" value="${leg.color}" onchange="updateLegendColor('${leg.id}', this.value)">
+            <input type="text" value="${escapeHtml(leg.label)}" onchange="updateLegendLabel('${leg.id}', this.value)" style="flex-grow:1">
+            <button class="btn-icon btn-ghost" onclick="deleteLegend('${leg.id}')" style="color:var(--red); border-color:transparent; box-shadow:none;">&times;</button>
+        </div>`;
+    });
+    html += `<button class="btn-ghost" onclick="addLegend()">+ Farbe hinzuf�gen</button></div>`;
+
+    // --- POEMS SECTION ---
+    html += `<div class="section-header">?? Gedichte verwalten</div>`;
+    
+    // TAB NAVIGATION for multiple poems
+    html += `<div class="poem-tabs">`;
+    state.poems.forEach((p) => {
+        const isActive = p.id === currentPoemId;
+        html += `<div class="poem-tab ${isActive ? 'active' : ''}" onclick="switchPoem('${p.id}')">
+            <span>${escapeHtml(p.title || 'Unbenannt')}</span>
+            <button class="btn-icon btn-tab-del" onclick="event.stopPropagation(); deletePoem('${p.id}')">&times;</button>
+        </div>`;
+    });
+    html += `</div>`;
+
+    // MAIN POEM EDITOR (Visible if a poem is selected)
+    const poem = state.poems.find(p => p.id === currentPoemId) || state.poems[0];
+    if (poem) {
+        if (!currentPoemId) currentPoemId = poem.id;
+        const pIdx = state.poems.findIndex(p => p.id === poem.id);
+        
+        html += `<div class="editor-main-poem">
+            <div class="panel">
+                <!-- Metadata Header -->
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                    <h2 style="margin:0;">?? ${escapeHtml(poem.title || 'Gedicht bearbeiten')}</h2>
+                    <div style="display:flex; gap:0.5rem;">
+                        <button class="btn-icon btn-ghost" onclick="movePoem(${pIdx}, -1)" ${pIdx===0?'disabled':''}>?</button>
+                        <button class="btn-icon btn-ghost" onclick="movePoem(${pIdx}, 1)" ${pIdx===state.poems.length-1?'disabled':''}>?</button>
+                    </div>
+                </div>
+                
+                <!-- Metadata Grid -->
+                <div class="poem-meta-grid">
+                    <label>Titel <input type="text" value="${escapeHtml(poem.title)}" onchange="updatePoem('${poem.id}', 'title', this.value)"></label>
+                    <label>Autor <input type="text" value="${escapeHtml(poem.author)}" onchange="updatePoem('${poem.id}', 'author', this.value)"></label>
+                    <label>Jahr <input type="text" value="${escapeHtml(poem.year)}" onchange="updatePoem('${poem.id}', 'year', this.value)"></label>
+                    <label>Metrum <input type="text" value="${escapeHtml(poem.meter)}" onchange="updatePoem('${poem.id}', 'meter', this.value)"></label>
+                    <label class="poem-meta-full">Thema <input type="text" value="${escapeHtml(poem.theme)}" onchange="updatePoem('${poem.id}', 'theme', this.value)"></label>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <!-- Strophes & Verses -->
+                <div class="verse-list">`;
+        
+        poem.strophen.forEach((strophe, sIdx) => {
+            html += `<div style="display:flex; margin-top:1rem;">
+                <div style="width:100px; flex-shrink:0;">
+                    <textarea placeholder="Notiz" onchange="updateStropheRandnotiz('${poem.id}', ${sIdx}, this.value)" 
+                    style="width:90px; height:60px; background:var(--yellow); border:2px solid var(--black); border-radius:0.4rem; padding:0.3rem; font-size:0.8rem; resize:none;">${escapeHtml(strophe.randnotiz)}</textarea>
+                </div>
+                <div style="flex-grow:1" class="verse-list">`;
+                
+            strophe.verses.forEach((verse, vIdx) => {
+                const isVerseActive = activeVerseId === `${poem.id}-${verse.nr}`;
+                html += `<div class="verse-item ${isVerseActive ? 'active' : ''}">
+                    <!-- Main Verse Row -->
+                    <div class="verse-row-main" onclick="setActiveVerse('${poem.id}-${verse.nr}')">
+                        <span class="verse-nr-badge">${verse.nr}</span>
+                        <input type="text" class="verse-text-input" value="${escapeHtml(verse.text)}" onchange="updateVerseText('${poem.id}', ${sIdx}, ${vIdx}, this.value)" onclick="event.stopPropagation()">
+                        <input type="text" class="verse-reim-input" value="${escapeHtml(verse.reim)}" placeholder="Reim" onchange="updateVerseProp('${poem.id}', ${sIdx}, ${vIdx}, 'reim', this.value)" onclick="event.stopPropagation()">
+                        <select class="verse-kadenz-select" onchange="updateVerseProp('${poem.id}', ${sIdx}, ${vIdx}, 'kadenz', this.value)" onclick="event.stopPropagation()">
+                            <option value="" ${verse.kadenz===''?'selected':''}>-</option>
+                            <option value="?" ${verse.kadenz==='?'?'selected':''}>?</option>
+                            <option value="?" ${verse.kadenz==='?'?'selected':''}>?</option>
+                        </select>
+                        <button class="btn-icon btn-ghost" onclick="event.stopPropagation(); toggleVerseDetails('${poem.id}-${verse.nr}')">??</button>
+                    </div>`;
+                
+                // Detailed Annotation View (if active)
+                if (isVerseActive) {
+                    html += `<div class="verse-details">`;
+                    
+                    // Tokenized word-level view
+                    const tokens = tokenize(verse.text);
+                    html += `<div class="token-container">`;
+                    tokens.forEach((tok, tIdx) => {
+                        const isWhitespace = /^\s+$/.test(tok);
+                        if (isWhitespace) {
+                            html += `<span>${escapeHtml(tok)}</span>`;
+                        } else {
+                            const mark = verse.marks.find(m => m.tokenIndex === tIdx);
+                            const legColor = mark ? getLegendColor(mark.legendId) : 'transparent';
+                            const groupColor = getGroupColor(poem.id, verse.nr, tIdx);
+                            const borderBottom = groupColor ? `border-bottom: 3px solid ${groupColor};` : '';
+                            
+                            html += `<span class="token clickable" style="background-color: ${legColor}; ${borderBottom}" 
+                                data-action="tokenClick" data-poem="${poem.id}" data-verse="${verse.nr}" data-token="${tIdx}">${escapeHtml(tok)}</span>`;
+                        }
+                    });
+                    html += `</div>`;
+                    
+                    // Group Chips
+                    const verseGroups = state.wordgroups.filter(wg => wg.members.some(m => m.poemId === poem.id && m.verseNr === verse.nr));
+                    if (verseGroups.length > 0) {
+                        html += `<div style="display:flex; flex-wrap:wrap; gap:0.4rem; margin-top:0.8rem;">`;
+                        verseGroups.forEach(vg => {
+                            html += `<span class="group-chip" style="border:2px solid ${vg.color}; background:var(--white); padding:0.15rem 0.4rem; border-radius:0.4rem; font-size:0.75rem; font-weight:bold; display:flex; align-items:center; gap:0.3rem;">
+                                <span style="width:8px; height:8px; border-radius:50%; background:${vg.color}"></span>
+                                ${escapeHtml(vg.label)}
+                            </span>`;
+                        });
+                        html += `</div>`;
+                    }
+                    
+                    // Annotation Input & Tools
+                    const isSplitStart = (vIdx === 0 && sIdx > 0);
+                    const showSplitToggle = !(sIdx === 0 && vIdx === 0);
+                    html += `<div style="display:flex; gap:0.5rem; align-items:flex-start; margin-top:1rem;">
+                        <textarea class="verse-anno-input" placeholder="Interpretation / Annotation..." onchange="updateVerseProp('${poem.id}', ${sIdx}, ${vIdx}, 'annotation', this.value)" 
+                            style="flex-grow:1; height:80px; font-family:inherit; font-size:0.9rem; border:2.5px solid var(--black); border-radius:0.5rem; padding:0.5rem; resize:vertical;">${escapeHtml(verse.annotation)}</textarea>
+                        <div style="display:flex; flex-direction:column; gap:0.5rem;">
+                            ${showSplitToggle ? `<label style="font-size:0.75rem; display:flex; align-items:center; gap:0.3rem; white-space:nowrap; font-weight:700;"><input type="checkbox" ${isSplitStart ? 'checked' : ''} onchange="toggleStropheSplit('${poem.id}', ${sIdx}, ${vIdx})"> Strophe trennen</label>` : ''}
+                            <button class="btn-icon btn-danger" onclick="deleteVerse('${poem.id}', ${sIdx}, ${vIdx})">&times;</button>
+                        </div>
+                    </div></div>`;
+                }
+                html += `</div>`;
+            });
+            html += `</div></div>`;
+        });
+        
+        html += `<div style="margin-top: 1rem; display:flex; gap:1rem;">
+            <button class="btn-ghost" onclick="addVerse('${poem.id}')">+ Vers</button>
+        </div>
+        
+        <div class="divider"></div>
+        
+        <!-- --- CONNECTIONS EDITOR --- -->
+        <div class="section-header">Verweispfeile</div>
+        <div class="panel">
+            ${(() => { const validNrs = new Set(); poem.strophen.forEach(s => s.verses.forEach(v => validNrs.add(v.nr))); return poem.connections.map((conn, cIdx) => {
+                const fromValid = validNrs.has(conn.from);
+                const toValid = validNrs.has(conn.to);
+                return `
+                <div class="arrow-card">
+                    <div class="arrow-card-row" style="align-items:flex-start;">
+                        Von V<input type="number" value="${conn.from}" onchange="updateConn('${poem.id}', ${cIdx}, 'from', parseInt(this.value))" style="width:50px; ${!fromValid ? 'border-color:var(--red); box-shadow:2px 2px 0 var(--red);' : ''}" title="${!fromValid ? 'Vers ' + conn.from + ' existiert nicht!' : ''}">
+                        ? Bis V<input type="number" value="${conn.to}" onchange="updateConn('${poem.id}', ${cIdx}, 'to', parseInt(this.value))" style="width:50px; ${!toValid ? 'border-color:var(--red); box-shadow:2px 2px 0 var(--red);' : ''}" title="${!toValid ? 'Vers ' + conn.to + ' existiert nicht!' : ''}">
+                        <textarea placeholder="Text / Interpretation" onchange="updateConn('${poem.id}', ${cIdx}, 'label', this.value)" style="flex-grow:1; height:44px; font-family:inherit; font-size:0.85rem; border:2.5px solid var(--black); border-radius:0.5rem; padding:0.3rem; resize:vertical;">${escapeHtml(conn.label)}</textarea>
+                        <button class="btn-icon btn-ghost" onclick="deleteConn('${poem.id}', ${cIdx})" style="color:var(--red)">&times;</button>
+                    </div>
+                    <div class="arrow-card-row" style="font-size:0.8rem; gap:1rem;">
+                        Farbe <input type="color" value="${conn.lineColor}" onchange="updateConn('${poem.id}', ${cIdx}, 'lineColor', this.value)" class="legend-color-input">
+                        Stil <select onchange="updateConn('${poem.id}', ${cIdx}, 'lineStyle', this.value)">
+                            <option value="solid" ${conn.lineStyle==='solid'?'selected':''}>Durchgezogen</option>
+                            <option value="dashed" ${conn.lineStyle==='dashed'?'selected':''}>Gestrichelt</option>
+                        </select>
+                        Kurve <select onchange="updateConn('${poem.id}', ${cIdx}, 'curve', this.value)">
+                            <option value="bezier" ${conn.curve==='bezier'?'selected':''}>Kurve</option>
+                            <option value="straight" ${conn.curve==='straight'?'selected':''}>Gerade</option>
+                        </select>
+                    </div>
+                </div>
+            `;}).join('');})()}
+            <button class="btn-ghost" onclick="addConn('${poem.id}')">+ Pfeil hinzuf�gen</button>
+        </div>
+        </div>`;
+    }
+    
+    // --- WORD GROUPS SECTION ---
+    html += `<div class="section-header">?? Wortgruppen (Global)</div><div>`;
+    state.wordgroups.forEach((wg) => {
+        html += `<div class="group-card">
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+                <input type="color" class="legend-color-input" value="${wg.color}" onchange="updateGroupColor('${wg.id}', this.value)">
+                <input type="text" value="${escapeHtml(wg.label)}" onchange="updateGroupLabel('${wg.id}', this.value)" style="flex-grow:1; font-weight:bold;">
+                <button class="btn-icon btn-ghost" onclick="deleteGroup('${wg.id}')" style="color:var(--red)">&times;</button>
+            </div>
+            <div class="group-members">`;
+        wg.members.forEach((m, mIdx) => {
+            html += `<div class="group-chip">
+                ${escapeHtml(m.tokenText)} (V${m.verseNr})
+                <span class="del-chip" onclick="removeGroupMember('${wg.id}', ${mIdx})">&times;</span>
+            </div>`;
+        });
+        html += `</div></div>`;
+    });
+    html += `<button class="btn-ghost" onclick="addGroup()">+ Neue Gruppe</button></div>`;
+
+    container.innerHTML = html;
+}
+
+/**
+ * 8. PREVIEW UI CONTROLS
+ * Updates the header of the preview pane.
+ */
+function renderPreviewOptions() {
+    const sel = document.getElementById('previewPoemSelect');
+    if (sel) {
+        sel.innerHTML = state.poems.map(p => `<option value="${p.id}" ${p.id === currentPoemId ? 'selected' : ''}>${escapeHtml(p.title)}</option>`).join('');
+    }
+    const badge = document.getElementById('epochBadgePreview');
+    if (badge) badge.innerText = state.meta.epoch;
+}
+
+/**
+ * 9. PREVIEW RENDERING
+ * Builds the high-fidelity visual analysis pane.
+ */
+function renderPreview() {
+    const container = document.getElementById('previewContent');
+    if (!container || !state || !state.poems) return;
+    
+    const poem = state.poems.find(p => p.id === currentPoemId) || state.poems[0];
+    if (!poem) { 
+        container.innerHTML = '<div class="panel">Lege ein neues Gedicht an, um zu beginnen.</div>'; 
+        return; 
+    }
+    
+    // Toggles from the UI
+    const showAnno = document.getElementById('chkShowAnnotations')?.checked !== false;
+    const showRhymes = document.getElementById('chkShowRhymes')?.checked !== false;
+
+    let html = `<div class="preview-poem">
+        <div class="preview-title">${escapeHtml(poem.title)}</div>
+        <div class="preview-author">${escapeHtml(poem.author)} (${escapeHtml(poem.year)})</div>
+        <div style="margin-bottom: 1.5rem; font-size: 0.9rem; color: #666;">
+            Metrum: ${escapeHtml(poem.meter)} | Thema: ${escapeHtml(poem.theme)}
+        </div>`;
+    
+    poem.strophen.forEach(strophe => {
+        html += `<div class="preview-strophe">`;
+        if (strophe.randnotiz) {
+            html += `<div class="preview-randnotiz">${escapeHtml(strophe.randnotiz).replace(/\n/g, '<br>')}</div>`;
+        }
+        
+        strophe.verses.forEach(verse => {
+            const isVerseActive = activePreviewVerse === verse.nr;
+            html += `<div class="preview-verse ${isVerseActive ? 'active-interactive' : ''}" id="prev-v-${verse.nr}" onclick="togglePreviewVerse(${verse.nr})" style="cursor: pointer;">
+                <div class="preview-verse-nr">${verse.nr}</div>
+                <div class="preview-verse-text">`;
+            
+            // Render individual tokens with their annotations
+            const tokens = tokenize(verse.text);
+            tokens.forEach((tok, tIdx) => {
+                if (/^\s+$/.test(tok)) {
+                    html += `<span>${escapeHtml(tok)}</span>`;
+                } else {
+                    const mark = verse.marks.find(m => m.tokenIndex === tIdx);
+                    const legColor = mark ? getLegendColor(mark.legendId) : 'transparent';
+                    
+                    // Collect all labels for this token (from legend & groups)
+                    let viewLabels = [];
+                    if (mark) {
+                        const leg = state.legend.find(l => l.id === mark.legendId);
+                        if (leg) viewLabels.push(leg.label);
+                    }
+                    
+                    let foundGroupId = null;
+                    let groupColor = null;
+                    state.wordgroups.forEach(wg => {
+                        if (wg.members.some(m => m.poemId === poem.id && m.verseNr === verse.nr && m.tokenIndex === tIdx)) {
+                            viewLabels.push(wg.label);
+                            foundGroupId = wg.id;
+                            groupColor = wg.color;
+                        }
+                    });
+                    
+                    // Visual state for word group echoing
+                    const isGroupActive = foundGroupId && foundGroupId === activeGroupId;
+                    const groupHighlightClass = isGroupActive ? 'group-highlight active-group' : '';
+                    const groupClass = foundGroupId ? 'grouped' : '';
+                    const borderBottom = groupColor ? `border-bottom: 3px solid ${groupColor};` : '';
+                    const groupVar = groupColor ? `--group-color: ${groupColor};` : '';
+                    
+                    // Tooltip data
+                    const tooltipData = viewLabels.length > 0 ? `data-viewlabel="${escapeHtml(viewLabels.join(' | '))}" data-action="viewTooltip"` : '';
+                    
+                    html += `<span class="token ${groupClass} ${groupHighlightClass}" style="background-color: ${legColor}; ${borderBottom} ${groupVar}" ${tooltipData} data-groupid="${foundGroupId || ''}">${escapeHtml(tok)}</span>`;
+                }
+            });
+            
+            html += `</div>`; // End text
+            
+            // Rhyme schema
+            html += `<div class="preview-reim">`;
+            if (showRhymes && verse.reim) {
+                html += `<span>${escapeHtml(verse.reim)}</span><span>${escapeHtml(verse.kadenz)}</span>`;
+            }
+            html += `</div>`;
+            
+            // Verse-level annotation
+            if (showAnno && verse.annotation) {
+                html += `<div class="preview-annotation">${escapeHtml(verse.annotation)}</div>`;
+            }
+            
+            html += `</div>`; // End verse
+        });
+        html += `</div>`; // End strophe
+    });
+    
+    html += `</div>`;
+    
+    // Inject Tooltip element if missing
+    if (!document.getElementById('viewTooltip')) {
+        const vt = document.createElement('div');
+        vt.id = 'viewTooltip';
+        vt.className = 'view-tooltip';
+        vt.style.display = 'none';
+        document.body.appendChild(vt);
+    }
+    
+    container.innerHTML = html;
+}
+
+/**
+ * 10. SVG ARROW RENDERING
+ * Draws organic, curved connections between verses in the preview pane.
+ */
+function renderArrows() {
+    const showArrows = document.getElementById('chkShowArrows')?.checked ?? true;
+    const overlay = document.getElementById('arrowOverlay');
+    const defs = document.getElementById('arrowDefs');
+    if (!overlay || !defs) return;
+
+    const poem = state.poems.find(p => p.id === currentPoemId);
+    
+    // Clear previous SVG contents except definitions
+    const toRemove = [];
+    for(let child of overlay.children) {
+        if(child.tagName !== 'defs') toRemove.push(child);
+    }
+    toRemove.forEach(c => overlay.removeChild(c));
+    defs.innerHTML = '';
+
+    const wrapper = document.getElementById('previewContentWrapper');
+    if (wrapper) {
+        // Clear old HTML arrow labels
+        wrapper.querySelectorAll('.preview-arrow-label').forEach(el => el.remove());
+    }
+    
+    if (!showArrows || !poem || !wrapper) return;
+    
+    const wrapRect = wrapper.getBoundingClientRect();
+    
+    // Create markers for the colors used in this poem
+    const usedColors = new Set();
+    poem.connections.forEach(c => usedColors.add(c.lineColor));
+    
+    usedColors.forEach(color => {
+        const hex = color.replace('#', '');
+        defs.innerHTML += `
+            <marker id="mk-arrow-${hex}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="${color}" />
+            </marker>
+            <marker id="mk-circle-${hex}" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5">
+                <circle cx="5" cy="5" r="4" fill="${color}" />
+            </marker>
+            <marker id="mk-diamond-${hex}" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6">
+                <path d="M 5 0 L 10 5 L 5 10 L 0 5 z" fill="${color}" />
+            </marker>
+        `;
+    });
+
+    // Draw paths for each defined connection
+    poem.connections.forEach(conn => {
+        const fromEl = document.getElementById(`prev-v-${conn.from}`);
+        const toEl = document.getElementById(`prev-v-${conn.to}`);
+        if(!fromEl || !toEl) return;
+        
+        const fRect = fromEl.getBoundingClientRect();
+        const tRect = toEl.getBoundingClientRect();
+        
+        // Relative coordinates within the preview wrapper (with scroll support)
+        const xStart = fRect.right - wrapRect.left + 10;
+        const xEnd = tRect.right - wrapRect.left + 10;
+        const yStart = fRect.top + fRect.height/2 - wrapRect.top + wrapper.scrollTop;
+        const yEnd = tRect.top + tRect.height/2 - wrapRect.top + wrapper.scrollTop;
+        
+        let pathD = '';
+        if (conn.curve === 'bezier') {
+            const dy = Math.abs(yEnd - yStart);
+            // Cap bulge on mobile to fit perfectly in the 6.5rem margin
+            const maxBulge = window.innerWidth <= 600 ? 20 : 100;
+            const bulge = Math.min(dy * 0.5, maxBulge); 
+            pathD = `M ${xStart} ${yStart} C ${xStart + bulge} ${yStart}, ${xEnd + bulge} ${yEnd}, ${xEnd} ${yEnd}`;
+        } else {
+            pathD = `M ${xStart} ${yStart} L ${xEnd} ${yEnd}`;
+        }
+        
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        const isActiveArrow = conn.from === activePreviewVerse || conn.to === activePreviewVerse;
+        const arrowClass = isActiveArrow ? 'interactive-arrow active' : 'interactive-arrow';
+        
+        path.setAttribute("class", `arrow-path ${arrowClass}`);
+        path.setAttribute("d", pathD);
+        path.setAttribute("stroke", conn.lineColor);
+        path.setAttribute("stroke-width", conn.lineWidth || 2);
+        path.setAttribute("fill", "none");
+        
+        if (conn.lineStyle === 'dashed') path.setAttribute("stroke-dasharray", "6,6");
+        
+        const hex = conn.lineColor.replace('#','');
+        if (conn.markerStart !== 'none') path.setAttribute("marker-start", `url(#mk-${conn.markerStart}-${hex})`);
+        if (conn.markerEnd !== 'none') path.setAttribute("marker-end", `url(#mk-${conn.markerEnd}-${hex})`);
+        
+        // Label rendering (HTML-based for wrapping)
+        if (conn.label) {
+            const labelDiv = document.createElement("div");
+            const midY = (yStart + yEnd) / 2;
+            
+            // On mobile, peak is much shallower, center the label directly on the peak
+            const maxBulge = window.innerWidth <= 600 ? 20 : 100;
+            const peakX = Math.max(xStart, xEnd) + (conn.curve === 'bezier' ? Math.min(Math.abs(yEnd - yStart)*0.25, maxBulge) : 0);
+            
+            const midX = peakX + (window.innerWidth <= 600 ? 0 : 20); 
+            
+            labelDiv.className = `preview-arrow-label ${isActiveArrow ? 'active' : ''}`;
+            labelDiv.style.left = `${midX}px`;
+            labelDiv.style.top = `${midY}px`;
+            labelDiv.style.color = conn.lineColor;
+            
+            if (window.innerWidth <= 600) {
+                labelDiv.style.transform = "translate(-50%, -50%)"; // Center exactly over the curve peak
+            } else {
+                labelDiv.style.transform = "translateY(-50%)"; // Standard vertical centering
+            }
+            
+            labelDiv.textContent = conn.label;
+            
+            // Append to the wrapper instead of the SVG overlay
+            wrapper.appendChild(labelDiv);
+        }
+        
+        overlay.appendChild(path);
+    });
+}
+
+// ----------------------------------------------------
+// 11. USER INTERACTION HANDLERS
+// ----------------------------------------------------
+
+function setupEventListeners() {
+    const sel = document.getElementById('previewPoemSelect');
+    if (sel) {
+        sel.onchange = (e) => {
+            currentPoemId = e.target.value;
+            renderPreview();
+            renderArrows();
+        };
+    }
+    
+    ['chkShowAnnotations', 'chkShowRhymes'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.onchange = () => { renderPreview(); renderArrows(); };
+    });
+    const chkArrows = document.getElementById('chkShowArrows');
+    if (chkArrows) chkArrows.onchange = renderArrows;
+
+    const btnAdd = document.getElementById('btnAddPoem');
+    if (btnAdd) btnAdd.onclick = addNewPoem;
+    
+    const btnHelp = document.getElementById('btnShowHelp');
+    if (btnHelp) btnHelp.onclick = showHelp;
+    
+    const btnTpl = document.getElementById('btnTemplates');
+    if (btnTpl) btnTpl.onclick = () => document.getElementById('templateModal').showModal();
+    
+    const btnExp = document.getElementById('btnExportDialog');
+    if (btnExp) {
+        btnExp.onclick = () => {
+            document.getElementById('exportTitle').value = state.meta.title;
+            document.getElementById('exportEpoch').value = state.meta.epoch;
+            document.getElementById('exportModal').showModal();
+        };
+    }
+    
+    const btnCloseExp = document.getElementById('closeExportModal');
+    if (btnCloseExp) btnCloseExp.onclick = () => document.getElementById('exportModal').close();
+    
+    document.getElementById('btnExportJson').onclick = exportJson;
+    document.getElementById('fileImport').onchange = importJson;
+    document.getElementById('btnExportHtml').onclick = exportHtml;
+
+    // Shortcuts: Undo (Ctrl+Z), Redo (Ctrl+Y)
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === 'z') { e.preventDefault(); undo(); }
+        if (e.ctrlKey && e.key === 'y') { e.preventDefault(); redo(); }
+    });
+
+    // EVENT DELEGATION: Editor token clicks (Fix #1 - XSS safe)
+    document.getElementById('editorContent').addEventListener('click', (e) => {
+        const tokenEl = e.target.closest('[data-action="tokenClick"]');
+        if (tokenEl) {
+            e.stopPropagation();
+            handleTokenClick(e, tokenEl.dataset.poem, parseInt(tokenEl.dataset.verse), parseInt(tokenEl.dataset.token));
+            return;
+        }
+    });
+
+    // EVENT DELEGATION: Preview token tooltips (Fix #1 - XSS safe)
+    document.getElementById('previewPane').addEventListener('click', (e) => {
+        const tooltipEl = e.target.closest('[data-action="viewTooltip"]');
+        if (tooltipEl) {
+            showViewTooltip(e, tooltipEl);
+            return;
+        }
+    });
+}
+
+function showHelp() {
+    const modal = document.getElementById('helpModal');
+    if (modal) modal.showModal();
+}
+
+/**
+ * 11b. TEMPLATE SYSTEM
+ * Pre-built example analyses that can be loaded as starting points.
+ */
+const TEMPLATES = {
+    mondnacht: {"meta":{"title":"Lyrik Projekt","epoch":"Romantik","version":"1.0"},"legend":[{"id":"l1","color":"#FFD84D","label":"Motive und Wortwahl"},{"id":"l2","color":"#4DD7FF","label":"Person"},{"id":"l4","color":"#92E48A","label":"Raumstruktur"},{"id":"l3","color":"#FF6FB3","label":"Moduswahl"},{"id":"l5","color":"#5C6BFF","label":"Nacht"}],"wordgroups":[{"id":"wg1","label":"Traumwelt","color":"#4DD7FF","members":[{"poemId":"brentano-1","verseNr":4,"tokenIndex":7,"tokenText":"Tr\u00e4umen"},{"poemId":"brentano-1","verseNr":5,"tokenIndex":7,"tokenText":"Wolken"},{"poemId":"brentano-1","verseNr":6,"tokenIndex":8,"tokenText":"Schlaflied"},{"poemId":"brentano-1","verseNr":5,"tokenIndex":9,"tokenText":"wiegen"},{"poemId":"poem-50tz2ij33","verseNr":4,"tokenIndex":6,"tokenText":"tr\u00e4umen"},{"poemId":"poem-50tz2ij33","verseNr":8,"tokenIndex":8,"tokenText":"Nacht"},{"poemId":"poem-50tz2ij33","verseNr":11,"tokenIndex":6,"tokenText":"stillen"}]},{"id":"wg-kr5k9n8m5","label":"Naturerfahrung","color":"#00ff00","members":[{"poemId":"poem-50tz2ij33","verseNr":3,"tokenIndex":6,"tokenText":"Bl\u00fctenschimmer"},{"poemId":"poem-50tz2ij33","verseNr":5,"tokenIndex":10,"tokenText":"Felder"},{"poemId":"poem-50tz2ij33","verseNr":6,"tokenIndex":2,"tokenText":"\u00c4hren"},{"poemId":"poem-50tz2ij33","verseNr":7,"tokenIndex":8,"tokenText":"W\u00e4lder"},{"poemId":"poem-50tz2ij33","verseNr":8,"tokenIndex":2,"tokenText":"sternklar"}]}],"poems":[{"id":"poem-50tz2ij33","author":"Joseph von Eichendorff","title":"Mondnacht","year":"1835","meter":"Dreihebiger Jambus","theme":"Transzendenz durch Naturerfahrung","strophen":[{"randnotiz":"","verses":[{"nr":1,"text":"Es w\u00e1r, als h\u00e4tt' der H\u00edmmel","reim":"(a)","kadenz":"\u2640","marks":[{"tokenIndex":7,"legendId":"l3"},{"tokenIndex":11,"legendId":"l4"},{"tokenIndex":2,"legendId":"l3"}],"annotation":"Unm\u00f6gliche Darstellung: Ann\u00e4herung \u00fcber Vergleich im Konjunktiv; Himmel und Erde: Anklang an Urmythos von Uranos und Gaia"},{"nr":2,"text":"Die \u00c9rde st\u00edll gek\u00fc\u00dft,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":6,"legendId":"l1"}],"annotation":"Kuss als Ausdruck inniger Liebe = Bild f\u00fcr Harmonie"},{"nr":3,"text":"Da\u00df s\u00ede im Bl\u00fctenschimmer","reim":"(a)","kadenz":"\u2640","marks":[{"tokenIndex":6,"legendId":"l1"}],"annotation":"Bl\u00fctenschimmer: Neologismus"},{"nr":4,"text":"Von \u00edhm nun tr\u00e4umen m\u00fc\u00dft'.","reim":"b","kadenz":"\u2642","marks":[],"annotation":""},{"nr":5,"text":"Die Luft ging durch die Felder,","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":4,"legendId":"l3"}],"annotation":"Wechsel in Indikativ"},{"nr":6,"text":"Die \u00c4hren wogten sacht,","reim":"d","kadenz":"\u2642","marks":[{"tokenIndex":4,"legendId":"l3"}],"annotation":"Verinnerlichte Naturerfahrung"},{"nr":7,"text":"Es rauschten leis' die W\u00e4lder,","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"}],"annotation":""},{"nr":8,"text":"So sternklar war die Nacht.","reim":"d","kadenz":"\u2642","marks":[{"tokenIndex":4,"legendId":"l3"},{"tokenIndex":8,"legendId":"l5"}],"annotation":"Erinnerungsraum Nacht"},{"nr":9,"text":"Und meine Seele spannte","reim":"(e)","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l2"}],"annotation":"Erstmals explizit \"meine\""},{"nr":10,"text":"Weit ihre Fl\u00fcgel aus,","reim":"f","kadenz":"\u2642","marks":[{"tokenIndex":4,"legendId":"l1"}],"annotation":"Metapher vom Seelenflug"},{"nr":11,"text":"Flog durch die stillen Lande,","reim":"(e)","kadenz":"\u2640","marks":[{"tokenIndex":6,"legendId":"l1"}],"annotation":"Ruhe"},{"nr":12,"text":"Als fl\u00f6ge sie nach Haus","reim":"f","kadenz":"\u2642","marks":[{"tokenIndex":8,"legendId":"l4"}],"annotation":"M\u00f6glichkeit, Gott zu finden"}]}],"connections":[{"id":"conn-1","from":9,"to":12,"label":"Seele kehrt \"nach Hause\" zu Gott","lineStyle":"solid","lineColor":"#008000","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"},{"id":"conn-2","from":5,"to":9,"label":"Syn\u00e4sthetische Wahrnehmung f\u00fchrt zu Transzendenz","lineStyle":"solid","lineColor":"#0000ff","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"straight"},{"id":"conn-3","from":1,"to":8,"label":"Erinnerungsraum aufgespannt \u00fcber \"war\"","lineStyle":"dashed","lineColor":"#ff8000","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"}]},{"id":"brentano-1","author":"Clemens Brentano","title":"H\u00f6rst du, wie die Brunnen rauschen","year":"1801","meter":"Troch\u00e4us","theme":"Natur und Traumwelt der Romantik","strophen":[{"randnotiz":"Strophe 1","verses":[{"nr":1,"text":"H\u00f6rst du, wie die Brunnen rauschen,","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":6,"legendId":"l1"}],"annotation":"Brunnen als Transzendenzzeichen"},{"nr":2,"text":"H\u00f6rst du, wie die Grille zirpt?","reim":"b","kadenz":"\u2642","marks":[],"annotation":""},{"nr":3,"text":"Stille, stille, la\u00df uns lauschen,","reim":"a","kadenz":"\u2640","marks":[],"annotation":""},{"nr":4,"text":"Selig, wer in Tr\u00e4umen stirbt.","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":5,"legendId":"l2"}],"annotation":""}]},{"randnotiz":"Mittelteil","verses":[{"nr":5,"text":"Selig, wen die Wolken wiegen,","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":4,"legendId":"l1"}],"annotation":""},{"nr":6,"text":"Wem der Mond ein Schlaflied singt,","reim":"d","kadenz":"\u2642","marks":[{"tokenIndex":2,"legendId":"l2"}],"annotation":""},{"nr":7,"text":"O, wie selig kann der fliegen,","reim":"c","kadenz":"\u2640","marks":[],"annotation":""},{"nr":8,"text":"Dem der Traum den Fl\u00fcgel schwingt,","reim":"d","kadenz":"\u2642","marks":[{"tokenIndex":2,"legendId":"l2"}],"annotation":"Enjambement"}]},{"randnotiz":"Schluss","verses":[{"nr":9,"text":"Da\u00df an blauer Himmelsdecke","reim":"e","kadenz":"\u2640","marks":[],"annotation":""},{"nr":10,"text":"Sterne er wie Blumen pfl\u00fcckt,","reim":"f","kadenz":"\u2642","marks":[],"annotation":""},{"nr":11,"text":"Bis ihn seine Liebe wecke","reim":"e","kadenz":"\u2640","marks":[{"tokenIndex":3,"legendId":"l3"}],"annotation":"Klammer zum Anfang"},{"nr":12,"text":"Und an seinen Busen dr\u00fcckt.","reim":"f","kadenz":"\u2642","marks":[],"annotation":""}]}],"connections":[{"id":"c1","from":11,"to":1,"label":"Klammer zum Anfang","lineStyle":"dashed","lineColor":"#9B72CF","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"}]}]},
+    spinnerin: {"meta":{"title":"Lyrik Projekt","epoch":"Romantik","version":"1.0"},"legend":[{"id":"l1","color":"#FFD84D","label":"Motive und Wortwahl"},{"id":"l2","color":"#fe7a23","label":"M\u00e4rchenton"},{"id":"l4","color":"#92E48A","label":"Symbole"},{"id":"l3","color":"#FF6FB3","label":"Moduswahl"},{"id":"l5","color":"#5C6BFF","label":"Nacht"}],"wordgroups":[{"id":"wg1","label":"Liebeserfahrung","color":"#ff0080","members":[{"poemId":"poem-amnb0xr1h","verseNr":24,"tokenIndex":6,"tokenText":"m\u00f6chte"},{"poemId":"poem-amnb0xr1h","verseNr":24,"tokenIndex":8,"tokenText":"weinen"},{"poemId":"poem-amnb0xr1h","verseNr":20,"tokenIndex":4,"tokenText":"zusammen"},{"poemId":"poem-amnb0xr1h","verseNr":20,"tokenIndex":6,"tokenText":"waren"},{"poemId":"poem-amnb0xr1h","verseNr":9,"tokenIndex":4,"tokenText":"zusammen"},{"poemId":"poem-amnb0xr1h","verseNr":9,"tokenIndex":6,"tokenText":"waren"},{"poemId":"poem-amnb0xr1h","verseNr":5,"tokenIndex":6,"tokenText":"k\u00e1nn"},{"poemId":"poem-amnb0xr1h","verseNr":5,"tokenIndex":8,"tokenText":"nicht"},{"poemId":"poem-amnb0xr1h","verseNr":5,"tokenIndex":10,"tokenText":"w\u00e9inen"},{"poemId":"poem-amnb0xr1h","verseNr":4,"tokenIndex":4,"tokenText":"zus\u00e1mmen"},{"poemId":"poem-amnb0xr1h","verseNr":4,"tokenIndex":6,"tokenText":"w\u00e1ren"}]},{"id":"wg-kr5k9n8m5","label":"Naturerfahrung","color":"#00ff00","members":[{"poemId":"poem-amnb0xr1h","verseNr":2,"tokenIndex":6,"tokenText":"N\u00e1chtig\u00e1ll"},{"poemId":"poem-amnb0xr1h","verseNr":8,"tokenIndex":6,"tokenText":"M\u00f3nd"},{"poemId":"poem-amnb0xr1h","verseNr":10,"tokenIndex":6,"tokenText":"Nachtigall"},{"poemId":"poem-amnb0xr1h","verseNr":13,"tokenIndex":6,"tokenText":"Mond"},{"poemId":"poem-amnb0xr1h","verseNr":18,"tokenIndex":6,"tokenText":"Nachtigall"},{"poemId":"poem-amnb0xr1h","verseNr":23,"tokenIndex":2,"tokenText":"Mond"}]}],"poems":[{"id":"poem-amnb0xr1h","author":"Clemens Brentano","title":"Der Spinnerin Nachtlied","year":"1818","meter":"dreihebiger Jambus","theme":"Harmonie und Transzendenz durch Liebe","strophen":[{"randnotiz":"","verses":[{"nr":1,"text":"Es s\u00e1ng vor l\u00e1ngen J\u00e1hren","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l2"},{"tokenIndex":0,"legendId":"l2"}],"annotation":"M\u00e4rchenton"},{"nr":2,"text":"Wohl \u00e1uch die N\u00e1chtig\u00e1ll,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":6,"legendId":"l4"}],"annotation":"Nachtigall: Symbol der Liebe"},{"nr":3,"text":"Das w\u00e1r wohl s\u00fc\u00dfer Sch\u00e1ll,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":6,"legendId":"l4"},{"tokenIndex":8,"legendId":"l4"}],"annotation":""},{"nr":4,"text":"Da w\u00edr zus\u00e1mmen w\u00e1ren.","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"}],"annotation":""}]},{"randnotiz":"","verses":[{"nr":5,"text":"Ich s\u00edng' und k\u00e1nn nicht w\u00e9inen,","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":0,"legendId":"l3"},{"tokenIndex":2,"legendId":"l4"}],"annotation":"Tempuswechsel; Apokope"},{"nr":6,"text":"Und sp\u00ednne s\u00f3 all\u00e9in","reim":"d","kadenz":"\u2642","marks":[],"annotation":""},{"nr":7,"text":"Den F\u00e1den kl\u00e1r und r\u00e9in,","reim":"d","kadenz":"\u2642","marks":[],"annotation":"Faden: Spinnen + Schicksalsfaden"},{"nr":8,"text":"So l\u00e1ng der M\u00f3nd wird sch\u00e9inen.","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":6,"legendId":"l5"}],"annotation":"Mond als Sehnsuchtsmotiv"}]},{"randnotiz":"","verses":[{"nr":9,"text":"Da wir zusammen waren,","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"}],"annotation":"Variierte Wiederholung"},{"nr":10,"text":"Da sang die Nachtigall,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":6,"legendId":"l4"},{"tokenIndex":2,"legendId":"l4"}],"annotation":""},{"nr":11,"text":"Nun mahnet mich ihr Schall,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":4,"legendId":"l3"},{"tokenIndex":8,"legendId":"l4"}],"annotation":"Antithese: ich/wir"},{"nr":12,"text":"Da\u00df du von mir gefahren","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"}],"annotation":"Erste Anrede des lyr. Du"}]},{"randnotiz":"","verses":[{"nr":13,"text":"So oft der Mond mag scheinen,","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":6,"legendId":"l5"}],"annotation":""},{"nr":14,"text":"Gedenk' ich dein allein,","reim":"d","kadenz":"\u2642","marks":[],"annotation":"Apokope"},{"nr":15,"text":"Mein Herz ist klar und rein,","reim":"d","kadenz":"\u2642","marks":[],"annotation":"Schl\u00fcsselwort \u201eHerz\u201c"},{"nr":16,"text":"Gott wolle uns vereinen.","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":0,"legendId":"l1"}],"annotation":"Sakralisierung, Konjunktiv"}]},{"randnotiz":"","verses":[{"nr":17,"text":"Seit du von mir gefahren,","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"},{"tokenIndex":6,"legendId":"l3"}],"annotation":""},{"nr":18,"text":"Singt stets die Nachtigall,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":6,"legendId":"l4"},{"tokenIndex":0,"legendId":"l4"}],"annotation":"Vergegenw�rtigungsreflex"},{"nr":19,"text":"Ich denk bei ihrem Schall,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":8,"legendId":"l4"}],"annotation":""},{"nr":20,"text":"Wie wir zusammen waren","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"}],"annotation":"Anklang Liebesvereinigung"}]},{"randnotiz":"","verses":[{"nr":21,"text":"Gott wolle uns vereinen,","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":4,"legendId":"l3"},{"tokenIndex":0,"legendId":"l1"}],"annotation":"Bitte um jenseitige Vereinigung"},{"nr":22,"text":"Hier spinn ich so allein,","reim":"d","kadenz":"\u2642","marks":[],"annotation":""},{"nr":23,"text":"Der Mond scheint klar und rein,","reim":"d","kadenz":"\u2642","marks":[{"tokenIndex":2,"legendId":"l5"}],"annotation":""},{"nr":24,"text":"Ich sing und m\u00f6chte weinen!","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l4"}],"annotation":""}]}],"connections":[{"id":"conn-1","from":16,"to":21,"label":"Anrufung Gottes: Transzendenz","lineStyle":"dashed","lineColor":"#ff8000","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"},{"id":"conn-2","from":13,"to":23,"label":"Nacht: erweiterte Wahrnehmung","lineStyle":"dashed","lineColor":"#0000ff","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"},{"id":"conn-3","from":2,"to":10,"label":"Liebesvogel: Harmonie","lineStyle":"dashed","lineColor":"#00db00","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"},{"id":"conn-4","from":10,"to":18,"label":"Liebesvogel: Harmonie","lineStyle":"dashed","lineColor":"#00db00","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"}]}]}
+};
+
+function loadTemplate(name) {
+    const tpl = TEMPLATES[name];
+    if (!tpl) return;
+    if (!confirm('Vorlage "' + (tpl.meta?.title || name) + '" laden?\nAlle aktuellen Daten werden ersetzt!')) return;
+    state = JSON.parse(JSON.stringify(tpl));
+    currentPoemId = state.poems[0]?.id || null;
+    openPoemIds = new Set(state.poems.map(p => p.id));
+    saveSnapshot();
+    renderAll();
+    document.getElementById('templateModal').close();
+}
+
+function switchPoem(id) {
+    currentPoemId = id;
+    openPoemIds.add(id);
+    renderAll();
+}
+
+function setActiveVerse(id) {
+    activeVerseId = (activeVerseId === id) ? null : id;
+    renderEditor();
+}
+
+function togglePreviewVerse(nr) {
+    activePreviewVerse = (activePreviewVerse === nr) ? null : nr;
+    // UI-only action: render without creating undo snapshot (#10)
+    renderAll();
+}
+
+/**
+ * Word click handler in the editor. Now receives params from data-* attributes (XSS-safe).
+ */
+function handleTokenClick(event, poemId, verseNr, tokenIndex) {
+    const tooltip = document.getElementById('colorTooltip');
+    const rect = event.target.getBoundingClientRect();
+    // Clamp tooltip position to viewport (#16)
+    const left = Math.min(rect.left, window.innerWidth - 280);
+    const top = Math.min(rect.bottom + 5, window.innerHeight - 300);
+    tooltip.style.left = Math.max(0, left) + 'px';
+    tooltip.style.top = top + 'px';
+    
+    const poem = state.poems.find(p => p.id === poemId);
+    if (!poem) return;
+    let verse = null;
+    poem.strophen.forEach(s => { const v = s.verses.find(vv => vv.nr === verseNr); if(v) verse = v; });
+    if (!verse) return;
+    const currentMark = verse.marks.find(m => m.tokenIndex === tokenIndex);
+    
+    // Derive token text from state (safe, no attribute injection)
+    const tokens = tokenize(verse.text);
+    const tokenText = tokens[tokenIndex] || '';
+    
+    let html = `<div class="tooltip-section">
+        <div class="tooltip-title">Farblegende</div>
+        <div class="color-grid">
+            <button class="color-circle-btn ${!currentMark ? 'active' : ''}" style="background:#fff; color:#999; font-weight:bold; font-size:12px;" data-action="markToken" data-legend="" data-poem="${poemId}" data-verse="${verseNr}" data-token="${tokenIndex}">X</button>`;
+    
+    state.legend.forEach(leg => {
+        const isActive = currentMark && currentMark.legendId === leg.id;
+        html += `<button class="color-circle-btn" style="background:${leg.color}; ${isActive ? 'border-color:var(--orange); border-width:4px;' : ''}" data-action="markToken" data-legend="${leg.id}" data-poem="${poemId}" data-verse="${verseNr}" data-token="${tokenIndex}"></button>`;
+    });
+    html += `</div></div>`;
+    
+    html += `<div class="tooltip-section">
+        <div class="tooltip-title">Wortgruppe</div>
+        <div class="group-selector-list">`;
+    
+    state.wordgroups.forEach(wg => {
+        const isInGroup = wg.members.some(m => m.poemId === poemId && m.verseNr === verseNr && m.tokenIndex === tokenIndex);
+        html += `<div class="group-selector-item ${isInGroup ? 'active' : ''}" data-action="addToGroup" data-group="${wg.id}" data-poem="${poemId}" data-verse="${verseNr}" data-token="${tokenIndex}">
+            <span style="display:inline-block; width:14px; height:14px; background:${wg.color}; border:2px solid var(--black); border-radius:50%;"></span>
+            <span style="flex-grow:1">${escapeHtml(wg.label)}</span>
+            ${isInGroup ? '<span>?</span>' : ''}
+        </div>`;
+    });
+    
+    html += `<button class="btn-ghost" style="width:100%; font-size:0.75rem; padding:0.4rem; margin-top:0.3rem; border:2.5px dashed var(--black);" onclick="addGroup()">+ Neue Gruppe</button>
+    </div>`;
+    
+    tooltip.innerHTML = html;
+    tooltip.style.display = 'block';
+    
+    // Delegated handlers for tooltip buttons
+    tooltip.onclick = (te) => {
+        te.stopPropagation();
+        const markBtn = te.target.closest('[data-action="markToken"]');
+        if (markBtn) {
+            markToken(markBtn.dataset.legend || null, markBtn.dataset.poem, parseInt(markBtn.dataset.verse), parseInt(markBtn.dataset.token));
+            tooltip.style.display = 'none';
+            return;
+        }
+        const groupBtn = te.target.closest('[data-action="addToGroup"]');
+        if (groupBtn) {
+            const p = state.poems.find(pp => pp.id === groupBtn.dataset.poem);
+            let v = null;
+            if (p) p.strophen.forEach(s => { const vv = s.verses.find(x => x.nr === parseInt(groupBtn.dataset.verse)); if(vv) v = vv; });
+            const toks = v ? tokenize(v.text) : [];
+            const txt = toks[parseInt(groupBtn.dataset.token)] || '';
+            addToGroup(groupBtn.dataset.group, groupBtn.dataset.poem, parseInt(groupBtn.dataset.verse), parseInt(groupBtn.dataset.token), txt);
+            tooltip.style.display = 'none';
+            return;
+        }
+    };
+    
+    event.stopPropagation();
+    document.addEventListener('click', () => { tooltip.style.display = 'none'; }, {once: true});
+}
+
+// ----------------------------------------------------
+// 12. STATE MUTATORS (DATA UPDATES)
+// ----------------------------------------------------
+
+function updatePoem(poemId, prop, value) {
+    const poem = state.poems.find(p => p.id === poemId);
+    if (poem) poem[prop] = value;
+    requestRender();
+}
+
+function updateStropheRandnotiz(poemId, sIdx, value) {
+    const poem = state.poems.find(p => p.id === poemId);
+    if (poem) poem.strophen[sIdx].randnotiz = value;
+    requestRender();
+}
+
+function updateVerseText(poemId, sIdx, vIdx, text) {
+    const poem = state.poems.find(p => p.id === poemId);
+    if (!poem?.strophen?.[sIdx]?.verses?.[vIdx]) return;
+    poem.strophen[sIdx].verses[vIdx].text = text;
+    requestRender();
+}
+
+function updateVerseProp(poemId, sIdx, vIdx, prop, val) {
+    const poem = state.poems.find(p => p.id === poemId);
+    if (!poem?.strophen?.[sIdx]?.verses?.[vIdx]) return;
+    poem.strophen[sIdx].verses[vIdx][prop] = val;
+    requestRender();
+}
+
+function addVerse(poemId) {
+    const poem = state.poems.find(p => p.id === poemId);
+    if (!poem) return;
+    let lastStrophe = poem.strophen[poem.strophen.length-1];
+    if (!lastStrophe) { lastStrophe = { randnotiz:"", verses:[] }; poem.strophen.push(lastStrophe); }
+    let maxNr = 0;
+    poem.strophen.forEach(s => s.verses.forEach(v => { if(v.nr > maxNr) maxNr = v.nr; }));
+    lastStrophe.verses.push({ nr: maxNr + 1, text: "Neuer Vers", reim: "", kadenz: "", marks: [], annotation: "" });
+    requestRender();
+}
+
+function deleteVerse(poemId, sIdx, vIdx) {
+    if (confirm("Vers wirklich l�schen?")) {
+        const poem = state.poems.find(p => p.id === poemId);
+        if (!poem?.strophen?.[sIdx]?.verses?.[vIdx]) return;
+        poem.strophen[sIdx].verses.splice(vIdx, 1);
+        if (poem.strophen[sIdx].verses.length === 0) poem.strophen.splice(sIdx, 1);
+        renumberVerses(poem);
+        requestRender();
+    }
+}
+
+/**
+ * Renumbers all verses sequentially and updates references in connections and wordgroups (#5).
+ */
+function renumberVerses(poem) {
+    const oldToNew = {};
+    let nr = 1;
+    poem.strophen.forEach(s => s.verses.forEach(v => {
+        oldToNew[v.nr] = nr;
+        v.nr = nr++;
+    }));
+    // Update connections
+    poem.connections.forEach(c => {
+        if (oldToNew[c.from] !== undefined) c.from = oldToNew[c.from];
+        if (oldToNew[c.to] !== undefined) c.to = oldToNew[c.to];
+    });
+    // Update wordgroup members
+    state.wordgroups.forEach(wg => {
+        wg.members.forEach(m => {
+            if (m.poemId === poem.id && oldToNew[m.verseNr] !== undefined) {
+                m.verseNr = oldToNew[m.verseNr];
+            }
+        });
+    });
+}
+
+function toggleStropheSplit(poemId, sIdx, vIdx) {
+    const poem = state.poems.find(p => p.id === poemId);
+    if (!poem) return;
+
+    const isSplitStart = (vIdx === 0 && sIdx > 0);
+
+    if (isSplitStart) {
+        // MERGE: Move all verses from current strophe into the previous one
+        const prevStrophe = poem.strophen[sIdx - 1];
+        const currentStrophe = poem.strophen[sIdx];
+        prevStrophe.verses = prevStrophe.verses.concat(currentStrophe.verses);
+        poem.strophen.splice(sIdx, 1);
+    } else {
+        // SPLIT: Move verses from vIdx onward into a new strophe
+        const versesToMove = poem.strophen[sIdx].verses.splice(vIdx);
+        poem.strophen.splice(sIdx + 1, 0, { randnotiz: "", verses: versesToMove });
+    }
+    requestRender();
+}
+
+function updateLegendColor(id, color) {
+    const leg = state.legend.find(l => l.id === id);
+    if (leg) leg.color = color;
+    requestRender();
+}
+
+function updateLegendLabel(id, label) {
+    const leg = state.legend.find(l => l.id === id);
+    if (leg) leg.label = label;
+    requestRender();
+}
+
+function addLegend() {
+    state.legend.push({ id: genId('leg'), color: "#CCCCCC", label: "Kategorie" });
+    requestRender();
+}
+
+function deleteLegend(id) {
+    if (confirm("Kategorie wirklich l�schen?")) {
+        state.legend = state.legend.filter(l => l.id !== id);
+        state.poems.forEach(p => p.strophen.forEach(s => s.verses.forEach(v => {
+            v.marks = v.marks.filter(m => m.legendId !== id);
+        })));
+        requestRender();
+    }
+}
+
+function toggleVerseDetails(id) {
+    setActiveVerse(id);
+}
+
+let draggedLegendIdx = null;
+function dragLegend(e, idx) {
+    draggedLegendIdx = idx;
+    e.target.closest('.legend-item')?.classList.add('dragging');
+}
+function dropLegend(e, targetIdx) {
+    e.preventDefault();
+    // Remove visual feedback (#15)
+    document.querySelectorAll('.legend-item').forEach(el => {
+        el.classList.remove('dragging', 'drag-over');
+    });
+    if (draggedLegendIdx !== null && draggedLegendIdx !== targetIdx) {
+        const item = state.legend.splice(draggedLegendIdx, 1)[0];
+        state.legend.splice(targetIdx, 0, item);
+        requestRender();
+    }
+    draggedLegendIdx = null;
+}
+function dragOverLegend(e, idx) {
+    e.preventDefault();
+    // Highlight drop zone (#15)
+    document.querySelectorAll('.legend-item').forEach((el, i) => {
+        el.classList.toggle('drag-over', i === idx && idx !== draggedLegendIdx);
+    });
+}
+
+function updateGroupColor(id, color) {
+    const wg = state.wordgroups.find(g => g.id === id);
+    if (wg) wg.color = color;
+    requestRender();
+}
+
+function updateGroupLabel(id, label) {
+    const wg = state.wordgroups.find(g => g.id === id);
+    if (wg) wg.label = label;
+    requestRender();
+}
+
+function addGroup() {
+    state.wordgroups.push({ id: genId('wg'), label: "Neue Gruppe", color: "#FF8C42", members: [] });
+    requestRender();
+}
+
+function deleteGroup(id) {
+    if (confirm("Gruppe l�schen?")) {
+        state.wordgroups = state.wordgroups.filter(g => g.id !== id);
+        requestRender();
+    }
+}
+
+function removeGroupMember(groupId, mIdx) {
+    const wg = state.wordgroups.find(g => g.id === groupId);
+    if (wg) wg.members.splice(mIdx, 1);
+    requestRender();
+}
+
+function markToken(legendId, poemId, verseNr, tokenIndex) {
+    const poem = state.poems.find(p => p.id === poemId);
+    if (!poem) return;
+    let targetVerse = null;
+    poem.strophen.forEach(s => {
+        const v = s.verses.find(vv => vv.nr === verseNr);
+        if (v) targetVerse = v;
+    });
+    if (!targetVerse) return;
+    targetVerse.marks = targetVerse.marks.filter(m => m.tokenIndex !== tokenIndex);
+    if (legendId) targetVerse.marks.push({ tokenIndex, legendId });
+    saveSnapshot();
+    renderAll();
+}
+
+function addToGroup(groupId, poemId, verseNr, tokenIndex, tokenText) {
+    const wg = state.wordgroups.find(g => g.id === groupId);
+    if (!wg) return;
+    const exists = wg.members.findIndex(m => m.poemId === poemId && m.verseNr === verseNr && m.tokenIndex === tokenIndex);
+    if (exists > -1) wg.members.splice(exists, 1);
+    else wg.members.push({ poemId, verseNr, tokenIndex, tokenText });
+    saveSnapshot();
+    renderAll();
+}
+
+function updateConn(poemId, cIdx, prop, val) {
+    const poem = state.poems.find(p => p.id === poemId);
+    if (!poem || !poem.connections[cIdx]) return;
+    poem.connections[cIdx][prop] = val;
+    // Validate verse numbers (#6)
+    if (prop === 'from' || prop === 'to') {
+        const validNrs = getValidVerseNumbers(poem);
+        if (!validNrs.has(val)) {
+            console.warn(`Vers ${val} existiert nicht. G�ltig: ${[...validNrs].join(', ')}`);
+        }
+    }
+    requestRender();
+}
+
+/**
+ * Returns a Set of all valid verse numbers for a poem (#6).
+ */
+function getValidVerseNumbers(poem) {
+    const nrs = new Set();
+    poem.strophen.forEach(s => s.verses.forEach(v => nrs.add(v.nr)));
+    return nrs;
+}
+
+function addConn(poemId) {
+    const poem = state.poems.find(p => p.id === poemId);
+    if (poem) {
+        poem.connections.push({ id: genId('conn'), from: 1, to: 2, label: "Pfeil", lineStyle: "solid", lineColor: "#000000", lineWidth: 2, markerStart: "none", markerEnd: "arrow", curve: "bezier" });
+        requestRender();
+    }
+}
+
+function deleteConn(poemId, cIdx) {
+    const poem = state.poems.find(p => p.id === poemId);
+    if (poem) poem.connections.splice(cIdx, 1);
+    requestRender();
+}
+
+function deletePoem(id) {
+    if (confirm("Gedicht l�schen?")) {
+        state.poems = state.poems.filter(p => p.id !== id);
+        if (currentPoemId === id) currentPoemId = state.poems[0]?.id || null;
+        requestRender();
+    }
+}
+
+function addNewPoem() {
+    const newId = genId('poem');
+    state.poems.unshift({ id: newId, author: "", title: "", year: "", meter: "", theme: "", strophen: [ { randnotiz: "", verses: [{ nr: 1, text: "", reim: "", kadenz: "", marks: [], annotation: "" }] } ], connections: [] });
+    currentPoemId = newId;
+    requestRender();
+}
+
+function movePoem(idx, dir) {
+    const newIdx = idx + dir;
+    if (newIdx < 0 || newIdx >= state.poems.length) return;
+    const item = state.poems.splice(idx, 1)[0];
+    state.poems.splice(newIdx, 0, item);
+    requestRender();
+}
+
+/**
+ * Handles the "echo effect" highlight and tooltip in the preview.
+ */
+function showViewTooltip(event, element) {
+    const vt = document.getElementById('viewTooltip');
+    const label = element.getAttribute('data-viewlabel');
+    const gid = element.getAttribute('data-groupid');
+    
+    if (gid) {
+        activeGroupId = gid;
+        renderOnly(); // UI-only, no snapshot (#10)
+        const dismiss = (e) => {
+            if (!e.target.closest('.token.grouped')) {
+                activeGroupId = null;
+                renderOnly();
+                document.removeEventListener('click', dismiss);
+            }
+        };
+        setTimeout(() => document.addEventListener('click', dismiss), 10);
+    }
+
+    if (!label) return;
+    vt.innerHTML = label;
+    vt.style.display = 'block';
+    const rect = element.getBoundingClientRect();
+    // Clamp tooltip to viewport (#16)
+    vt.style.left = Math.min(rect.left + rect.width / 2, window.innerWidth - 100) + 'px';
+    vt.style.top = Math.max(rect.top - 5, 10) + 'px';
+    document.addEventListener('click', () => { vt.style.display = 'none'; }, {once: true});
+}
+
+// ----------------------------------------------------
+// 13. DATA EXPORT & STANDALONE HTML GENERATION
+// ----------------------------------------------------
+
+function exportJson() {
+    state.meta.title = document.getElementById('exportTitle').value;
+    state.meta.epoch = document.getElementById('exportEpoch').value;
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${state.meta.title.replace(/\s+/g, '_')}_daten.json`;
+    a.click();
+}
+
+function importJson(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+        try {
+            state = JSON.parse(ev.target.result);
+            saveSnapshot();
+            renderAll();
+            document.getElementById('exportModal').close();
+        } catch(err) {
+            alert("Fehler beim Laden.");
+        }
+    };
+    reader.readAsText(file);
+}
+
+/**
+ * Generates a single self-contained HTML file for distribution.
+ * Respects all export checkboxes (#3).
+ */
+function exportHtml() {
+    state.meta.title = document.getElementById('exportTitle').value;
+    state.meta.epoch = document.getElementById('exportEpoch').value;
+    
+    // Read export options (#3)
+    const opts = {
+        colors: document.getElementById('expColors').checked,
+        rhymes: document.getElementById('expRhymes').checked,
+        annotations: document.getElementById('expAnnotations').checked,
+        arrows: document.getElementById('expArrows').checked,
+        groups: document.getElementById('expGroups').checked,
+        legend: document.getElementById('expLegend').checked,
+        learnMode: document.getElementById('expLearnMode').checked
+    };
+    
+    // Build a filtered copy of the state for export
+    const exportState = JSON.parse(JSON.stringify(state));
+    exportState.poems.forEach(p => {
+        p.strophen.forEach(s => s.verses.forEach(v => {
+            if (!opts.colors) v.marks = [];
+            if (!opts.annotations) v.annotation = '';
+        }));
+        if (!opts.arrows) p.connections = [];
+    });
+    if (!opts.groups) exportState.wordgroups.forEach(wg => { wg.members = []; });
+    
+    // Inline CSS rules from the current document
+    const css = Array.from(document.styleSheets)
+        .map(s => { try { return Array.from(s.cssRules).map(r => r.cssText).join(''); } catch(e){return '';} })
+        .join('');
+    
+    // Learn mode: annotations hidden initially, toggle button shown
+    const learnModeCSS = opts.learnMode ? `
+        .preview-annotation { display: none !important; }
+        .preview-verse.active-interactive .preview-annotation { display: none !important; }
+        .learn-mode-revealed .preview-annotation { display: block !important; }
+        .learn-mode-revealed .preview-verse.active-interactive .preview-annotation { display: block !important; }
+        .learn-toggle { position:fixed; bottom:1rem; right:1rem; z-index:999; }
+    ` : '';
+    const learnModeBtn = opts.learnMode ? `<button class="btn-primary learn-toggle" onclick="document.getElementById('previewContentWrapper').classList.toggle('learn-mode-revealed')">?? Annotationen ein/aus</button>` : '';
+    
+    // Legend section for export
+    let legendHtml = '';
+    if (opts.legend && exportState.legend.length > 0) {
+        legendHtml = '<div style="margin-top:2rem; padding:1rem; border:3px solid var(--black,#000); border-radius:0.8rem; background:var(--white,#fff);">';
+        legendHtml += '<div style="font-weight:900; margin-bottom:0.5rem;">Legende</div>';
+        exportState.legend.forEach(leg => {
+            legendHtml += `<div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.3rem;"><span style="width:20px; height:20px; border-radius:50%; background:${leg.color}; border:2px solid var(--black,#000); display:inline-block;"></span><span style="font-weight:600; font-size:0.9rem;">${escapeHtml(leg.label)}</span></div>`;
+        });
+        if (opts.groups) {
+            exportState.wordgroups.forEach(wg => {
+                legendHtml += `<div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.3rem;"><span style="width:20px; height:4px; background:${wg.color}; border:1px solid var(--black,#000); display:inline-block;"></span><span style="font-weight:600; font-size:0.9rem;">${escapeHtml(wg.label)}</span></div>`;
+            });
+        }
+        legendHtml += '</div>';
+    }
+        
+    const readOnlyHtml = `
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${escapeHtml(exportState.meta.title)}</title>
+    <style>${css}</style>
+    <style>
+        body { background: var(--bg); margin: 0; padding: 2rem 0; overflow-x: hidden; }
+        .preview-pane { display: flex; justify-content: center; width: 100%; box-sizing: border-box; padding: 0 1rem; padding-right: ${opts.arrows ? '16rem' : '1rem'}; overflow: visible; }
+        .preview-content-wrapper-export { width: 100%; max-width: 700px; position: relative; box-sizing: border-box; padding: 2rem; padding-bottom: 3rem; background: var(--white, #fff); border: 3px solid var(--black, #000); border-radius: 1rem; box-shadow: 6px 6px 0 var(--black, #000); overflow: visible; }
+        #previewContent { position: relative; z-index: 10; }
+        @media (max-width: 900px) { .preview-pane { padding-right: ${opts.arrows ? '11rem' : '1rem'}; } .preview-arrow-label { width: 10rem; font-size: 0.8rem; } }
+        @media (max-width: 600px) { body { padding: 0.5rem 0; } .preview-pane { padding: 0 0.3rem; padding-right: ${opts.arrows ? '7rem' : '0.3rem'}; } .preview-content-wrapper-export { padding: 1rem 0.5rem; padding-bottom: 2rem; border-radius: 0.5rem; box-shadow: 4px 4px 0 var(--black, #000); } .preview-verse { grid-template-columns: 20px 1fr 35px; gap: 0.4rem; } .preview-verse-nr { font-size: 0.65rem; } .preview-verse-text { font-size: 0.95rem; line-height: 1.5; } .preview-reim { font-size: 0.7rem; } .preview-title { font-size: 1.2rem; } .preview-author { font-size: 0.95rem; } .epoch-badge { font-size: 0.75rem; top: 0.2rem; left: -0.2rem; position: relative; display: inline-block; margin-bottom: 0.5rem; } .preview-arrow-label { width: 5.5rem; font-size: 0.65rem; padding: 0.3rem 0.4rem; line-height: 1.3; box-shadow: 2px 2px 0 var(--black, #000); border: 2px solid var(--black, #000); } .preview-annotation { font-size: 0.8rem; padding: 0.4rem 0.6rem; } .token { padding: 0.05rem 0.1rem; margin: 0; } }
+        ${learnModeCSS}
+    </style>
+</head>
+<body>
+    ${learnModeBtn}
+    <div class="preview-pane">
+        <div class="preview-content-wrapper preview-content-wrapper-export" id="previewContentWrapper">
+            <div class="epoch-badge">${escapeHtml(exportState.meta.epoch)}</div>
+            <div id="previewContent"></div>
+            ${legendHtml}
+            <svg id="arrowOverlay" class="arrow-overlay"><defs id="arrowDefs"></defs></svg>
+        </div>
+    </div>
+    <script>
+        const state = ${JSON.stringify(exportState)};
+        const exportOpts = ${JSON.stringify(opts)};
+        let currentPoemId = "${currentPoemId}";
+        let activePreviewVerse = null;
+        let activeGroupId = null;
+        let renderTimeout = null;
+        
+        ${escapeHtml.toString()}
+        ${tokenize.toString()}
+        ${getLegendColor.toString()}
+        ${getGroupColor.toString()}
+        
+        function requestRender() { 
+            clearTimeout(renderTimeout); 
+            renderTimeout = setTimeout(() => { renderPreview(); if(exportOpts.arrows) renderArrows(); }, 50); 
+        }
+        
+        ${togglePreviewVerse.toString()}
+        ${renderPreview.toString()}
+        ${renderArrows.toString()}
+        ${showViewTooltip.toString()}
+        
+        // Aliases needed by toString()-serialized functions (R1+R2)
+        function renderAll() { renderPreview(); if(exportOpts.arrows) renderArrows(); }
+        function renderOnly() { renderAll(); }
+        
+        window.onload = () => { 
+            renderPreview(); 
+            if(exportOpts.arrows) renderArrows();
+            // Event delegation for data-action=viewTooltip (R3)
+            document.getElementById('previewContentWrapper').addEventListener('click', (e) => {
+                const el = e.target.closest('[data-action="viewTooltip"]');
+                if (el) showViewTooltip(e, el);
+            });
+        };
+        let resizeTimer;
+        window.onresize = () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { if(exportOpts.arrows) renderArrows(); }, 100); };
+    <\/script>
+</body>
+</html>`.replace(/<\\\/script>/g, '</' + 'script>');
+    const blob = new Blob([readOnlyHtml], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${state.meta.title.replace(/\s+/g, '_')}_lyrik.html`;
+    a.click();
+}
+
+window.onload = init;
+
+</script>
+</body>
+</html>
+
+

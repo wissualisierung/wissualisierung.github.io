@@ -1,0 +1,28 @@
+/* ============================================
+   EpochenChat – Theme: Modern-Hell (Standard)
+   Fokus: Zeitgemäßes App-Interface
+   ============================================ */
+
+[data-theme="modern_hell"] {
+    --color-primary: #007AFF; /* iOS Blue */
+    --color-primary-light: #3395FF;
+    --color-accent: #5856D6; /* iOS Purple */
+    --color-accent-light: #7E7CF0;
+    --color-bg: #F2F2F7;
+    --color-surface: #FFFFFF;
+    --color-surface-hover: #F8F9FA;
+    --color-bubble-persona: #E9E9EB;
+    --color-bubble-persona-text: #000000;
+    --color-bubble-learner: #007AFF;
+    --color-bubble-learner-text: #FFFFFF;
+    --color-text: #1C1C1E;
+    --color-text-muted: #8E8E93;
+    --color-text-inverse: #FFFFFF;
+    --color-border: #D1D1D6;
+    --color-shadow: rgba(0, 0, 0, 0.05);
+    --color-overlay: rgba(0, 0, 0, 0.4);
+
+    --texture-bg: none;
+    
+    --font-serif: var(--font-sans);
+}

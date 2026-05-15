@@ -1,0 +1,44 @@
+[
+  {
+    "filename": "epochenchat_joseph_von_eichendorff.json",
+    "name": "Joseph von Eichendorff",
+    "epoch": "Romantik (1795–1835)",
+    "theme": "romantik",
+    "avatar": "assets/avatars/eichendorff.png"
+  },
+  {
+    "filename": "epochenchat_die_droste.json",
+    "name": "Annette von Droste-Hülshoff",
+    "epoch": "Biedermeier / Realismus",
+    "theme": "realismus",
+    "avatar": "assets/avatars/droste.png"
+  },
+  {
+    "filename": "epochenchat_harry_heine.json",
+    "name": "Heinrich Heine",
+    "epoch": "Vormärz (1815–1848)",
+    "theme": "vormaerz",
+    "avatar": "assets/avatars/heine.png"
+  },
+  {
+    "filename": "epochenchat_georg_trakl.json",
+    "name": "Georg Trakl",
+    "epoch": "Expressionismus (1905–1925)",
+    "theme": "expressionismus",
+    "avatar": "assets/avatars/trakl.png"
+  },
+  {
+    "filename": "epochenchat_else_lasker_schueler.json",
+    "name": "Else Lasker-Schüler",
+    "epoch": "Expressionismus (1905–1925)",
+    "theme": "expressionismus",
+    "avatar": "assets/avatars/lasker_schueler.png"
+  },
+  {
+    "filename": "epochenchat_mascha_kaleko.json",
+    "name": "Mascha Kaléko",
+    "epoch": "Neue Sachlichkeit / Exil",
+    "theme": "moderne",
+    "avatar": "assets/avatars/kaleko.png"
+  }
+]

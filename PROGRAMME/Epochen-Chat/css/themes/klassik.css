@@ -1,0 +1,27 @@
+/* ============================================
+   EpochenChat – Theme: Klassik
+   Epoche: 1786–1805
+   Modus: Hellmodus
+   ============================================ */
+
+[data-theme="klassik"] {
+    --color-primary: #1A1A1A;
+    --color-primary-light: #333333;
+    --color-accent: #D4AF37;
+    --color-accent-light: #e5c050;
+    --color-bg: #FFFFFF;
+    --color-surface: #F5F5F5;
+    --color-surface-hover: #EEEEEE;
+    --color-bubble-persona: #F0F0F0;
+    --color-bubble-persona-text: #1a1a1a;
+    --color-bubble-learner: #FDFDFD;
+    --color-bubble-learner-text: #1a1a1a;
+    --color-text: #1a1a1a;
+    --color-text-muted: #666666;
+    --color-text-inverse: #FFFFFF;
+    --color-border: #DDDDDD;
+    --color-shadow: rgba(0, 0, 0, 0.08);
+    --color-overlay: rgba(0, 0, 0, 0.5);
+
+    --texture-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='20' opacity='.04'%3E%3Cpath d='M0 10 L20 10 L20 5 L40 5 L40 15 L60 15 L60 5 L80 5 L80 15 L100 15' fill='none' stroke='%231A1A1A' stroke-width='1'/%3E%3C/svg%3E");
+}

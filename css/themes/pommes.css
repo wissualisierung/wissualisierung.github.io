@@ -1,0 +1,127 @@
+/* ========================================
+   Theme: Pommes (Hotdog Stand Tribute)
+   Loud Red / Bright Yellow / Black / White
+   Inspired by the infamous Windows 3.1 theme
+   CC-BY-SA 4.0 Wolf Sebastian (2026)
+   ======================================== */
+
+:root {
+  --color-primary: #FF0000;      /* Kräftiges Rot */
+  --color-secondary: #FFFF00;    /* Knallgelb */
+  --color-accent: #FFFFFF;       /* Weiß */
+  --color-bg: #FF0000;           /* Roter Desktop */
+  --color-text: #000000;         /* Schwarzer Text */
+  --color-shadow: #000000;
+  --color-window-bg: #FFFF00;    /* Gelbe Fensterhintergründe */
+  --color-button-face: #FF0000;  /* Rote Buttons */
+  --color-button-highlight: #FFFFFF;
+  --color-button-shadow: #000000;
+  --color-button-dark-shadow: #000000;
+  --color-titlebar-inactive: #000000;
+  --color-selection: rgba(255, 255, 255, 0.6);
+  
+  --border-color: #000000;
+}
+
+/* Desktop-Anpassung */
+#desktop {
+  background: #FF0000;
+  background-image: none; /* Keine Textur, nur pure Farbe */
+}
+
+/* Fenster-Anpassung */
+.os-window {
+  background: #FFFF00;
+  border: 4px solid #000000;
+  box-shadow: 8px 8px 0 #000000;
+}
+
+.os-window__titlebar {
+  background: #000000 !important;
+  color: #FFFFFF !important;
+  border-bottom: 3px solid #000000;
+}
+
+.os-window__title {
+  color: #FFFFFF !important;
+  font-weight: bold;
+}
+
+.os-window__btn {
+  background: #FF0000;
+  color: #FFFFFF;
+  border: 2px solid #FFFFFF;
+}
+
+.os-window__btn:hover {
+  background: #FFFFFF;
+  color: #FF0000;
+}
+
+/* Taskleiste */
+#taskbar {
+  background: #FF0000;
+  border-top: 4px solid #000000;
+}
+
+#start-button {
+  background: #FFFF00;
+  color: #000000;
+  border: 3px solid #000000;
+  font-weight: bold;
+}
+
+#start-button:hover {
+  background: #FFFFFF;
+}
+
+#start-button.active {
+  background: #000000;
+  color: #FFFF00;
+}
+
+/* Startmenü */
+.start-menu {
+  background: #FFFF00;
+  border: 4px solid #000000;
+}
+
+.start-menu__header {
+  background: #FF0000;
+  color: #FFFF00;
+  border-bottom: 3px solid #000000;
+}
+
+.start-menu__item {
+  color: #000000;
+}
+
+.start-menu__item:hover {
+  background: #000000;
+  color: #FFFF00;
+}
+
+/* Desktop Icons */
+.desktop-icon__label {
+  background: #000000;
+  color: #FFFF00;
+  padding: 2px 6px;
+  border: 1px solid #FFFF00;
+  text-shadow: none;
+}
+
+.desktop-icon.selected .desktop-icon__label {
+  background: #FFFFFF;
+  color: #FF0000;
+}
+
+/* Bevel Buttons */
+.bevel-btn {
+  background: #FFFF00;
+  color: #000000;
+  border: 3px solid #000000;
+}
+
+.bevel-btn:hover {
+  background: #FFFFFF;
+}

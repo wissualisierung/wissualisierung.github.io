@@ -1,0 +1,27 @@
+/* ============================================
+   EpochenChat – Theme: Renaissance
+   Epoche: 1400–1600
+   Modus: Hellmodus
+   ============================================ */
+
+[data-theme="renaissance"] {
+    --color-primary: #5D3A1A;
+    --color-primary-light: #7a4d2a;
+    --color-accent: #8B4513;
+    --color-accent-light: #a65a2a;
+    --color-bg: #F2EBE1;
+    --color-surface: #E8DFD2;
+    --color-surface-hover: #DDD2C3;
+    --color-bubble-persona: #DCCFB8;
+    --color-bubble-persona-text: #2a1a0a;
+    --color-bubble-learner: #EDE3D5;
+    --color-bubble-learner-text: #2a1a0a;
+    --color-text: #2a1a0a;
+    --color-text-muted: #6a5a4a;
+    --color-text-inverse: #F2EBE1;
+    --color-border: #C8B8A0;
+    --color-shadow: rgba(93, 58, 26, 0.12);
+    --color-overlay: rgba(93, 58, 26, 0.6);
+
+    --texture-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' opacity='.03'%3E%3Cpath d='M30 0 L60 30 L30 60 L0 30 Z' fill='%235D3A1A'/%3E%3C/svg%3E");
+}

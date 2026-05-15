@@ -1,0 +1,1434 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strophen-Editor – Daten-Manager für den Navigator</title>
+    <link
+        href="../../../css/fonts-strophen.css"
+        rel="stylesheet">
+    <!-- SheetJS for XLSX reading -->
+    <script src="../../../js/vendor/xlsx.full.min.js"></script>
+    <!-- JSZip for SCORM packaging -->
+    <script src="../../../js/vendor/jszip.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0c1017;
+            --bg-secondary: #131a24;
+            --bg-card: rgba(19, 26, 36, 0.85);
+            --bg-glass: rgba(255, 255, 255, 0.04);
+            --bg-glass-hover: rgba(255, 255, 255, 0.07);
+            --bg-input: rgba(0, 0, 0, 0.3);
+            --accent-primary: #60a5fa;
+            --accent-secondary: #818cf8;
+            --accent-emerald: #34d399;
+            --accent-amber: #fbbf24;
+            --accent-rose: #fb7185;
+            --accent-violet: #a78bfa;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-tertiary: #64748b;
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-medium: rgba(255, 255, 255, 0.12);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --font-ui: 'Inter', system-ui, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --transition: 0.2s ease;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-ui);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .ambient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .ambient-bg .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.12;
+        }
+
+        .ambient-bg .orb:nth-child(1) {
+            width: 500px;
+            height: 500px;
+            background: #60a5fa;
+            top: -150px;
+            left: -100px;
+        }
+
+        .ambient-bg .orb:nth-child(2) {
+            width: 400px;
+            height: 400px;
+            background: #a78bfa;
+            bottom: -100px;
+            right: -100px;
+        }
+
+        .app {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 24px 60px;
+        }
+
+        /* Header */
+        .editor-header {
+            text-align: center;
+            padding: 40px 0 32px;
+        }
+
+        .editor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 14px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-subtle);
+            border-radius: 100px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .editor-badge .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-emerald);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(0.8);
+            }
+        }
+
+        .editor-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #60a5fa, #818cf8, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .editor-header .subtitle {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
+        /* Section panels */
+        .panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            padding: 28px 32px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(12px);
+        }
+
+        .panel-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--accent-primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-title svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .panel-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-subtle);
+        }
+
+        /* File inputs */
+        .file-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 700px) {
+            .file-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .file-drop {
+            border: 2px dashed var(--border-medium);
+            border-radius: var(--radius-lg);
+            padding: 28px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .file-drop:hover,
+        .file-drop.dragover {
+            border-color: var(--accent-primary);
+            background: rgba(96, 165, 250, 0.04);
+        }
+
+        .file-drop.loaded {
+            border-color: var(--accent-emerald);
+            border-style: solid;
+        }
+
+        .file-drop input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-drop .icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .file-drop .label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .file-drop .hint {
+            font-size: 0.72rem;
+            color: var(--text-tertiary);
+        }
+
+        .file-drop .status {
+            font-size: 0.75rem;
+            color: var(--accent-emerald);
+            font-weight: 600;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .file-drop.loaded .status {
+            display: block;
+        }
+
+        /* Stats bar */
+        .stats-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .stat-chip {
+            padding: 6px 14px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-subtle);
+            border-radius: 100px;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-chip strong {
+            color: var(--accent-primary);
+            font-weight: 700;
+        }
+
+        /* Data overview */
+        .data-table-wrap {
+            overflow-x: auto;
+            margin-top: 8px;
+            max-height: 500px;
+            overflow-y: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+
+        .data-table th {
+            position: sticky;
+            top: 0;
+            background: var(--bg-secondary);
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--accent-primary);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            border-bottom: 1px solid var(--border-medium);
+            z-index: 2;
+            white-space: nowrap;
+        }
+
+        .data-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            vertical-align: top;
+            max-width: 280px;
+        }
+
+        .data-table tr:hover td {
+            background: var(--bg-glass-hover);
+        }
+
+        .data-table .id-cell {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-tertiary);
+            white-space: nowrap;
+        }
+
+        .data-table .name-cell {
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+
+        .data-table .truncate {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .link-ok {
+            color: var(--accent-emerald);
+        }
+
+        .link-missing {
+            color: var(--accent-rose);
+        }
+
+        .link-icon {
+            font-size: 0.85rem;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            border-radius: 100px;
+            font-family: var(--font-ui);
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #60a5fa, #818cf8);
+            color: white;
+            border-color: transparent;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(96, 165, 250, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            border-color: var(--border-medium);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-glass-hover);
+            border-color: var(--accent-primary);
+        }
+
+        .btn-secondary:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #34d399, #10b981);
+            color: #022c22;
+            border-color: transparent;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(52, 211, 153, 0.3);
+        }
+
+        .btn-success:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-scorm {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #451a03;
+            border-color: transparent;
+        }
+
+        .btn-scorm:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(251, 191, 36, 0.3);
+        }
+
+        .btn-scorm:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        /* License */
+        .license-section {
+            margin-top: 8px;
+        }
+
+        .license-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            user-select: none;
+            margin-bottom: 12px;
+        }
+
+        .license-toggle input {
+            display: none;
+        }
+
+        .toggle-track {
+            width: 40px;
+            height: 22px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-medium);
+            border-radius: 11px;
+            position: relative;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .toggle-track::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--text-tertiary);
+            top: 2px;
+            left: 2px;
+            transition: var(--transition);
+        }
+
+        .license-toggle input:checked~.toggle-track {
+            background: rgba(52, 211, 153, 0.2);
+            border-color: var(--accent-emerald);
+        }
+
+        .license-toggle input:checked~.toggle-track::after {
+            transform: translateX(18px);
+            background: var(--accent-emerald);
+        }
+
+        .license-toggle .toggle-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .license-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-family: var(--font-ui);
+            font-size: 0.85rem;
+            resize: vertical;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .license-textarea:focus {
+            border-color: var(--accent-primary);
+        }
+
+        .license-textarea:disabled {
+            opacity: 0.4;
+        }
+
+        /* Links panel */
+        .links-summary {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .link-stat {
+            padding: 8px 16px;
+            background: var(--bg-glass);
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .link-stat strong {
+            font-weight: 700;
+        }
+
+        .link-stat.ok strong {
+            color: var(--accent-emerald);
+        }
+
+        .link-stat.missing strong {
+            color: var(--accent-rose);
+        }
+
+        /* Log / Progress */
+        .log-area {
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 12px;
+            white-space: pre-wrap;
+            line-height: 1.8;
+        }
+
+        .log-area .log-ok {
+            color: var(--accent-emerald);
+        }
+
+        .log-area .log-warn {
+            color: var(--accent-amber);
+        }
+
+        .log-area .log-err {
+            color: var(--accent-rose);
+        }
+
+        .log-area .log-info {
+            color: var(--accent-primary);
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Tabs */
+        .tab-bar {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-glass);
+            border-radius: var(--radius-sm);
+            padding: 3px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: 7px 16px;
+            background: none;
+            border: none;
+            border-radius: 6px;
+            color: var(--text-tertiary);
+            font-family: var(--font-ui);
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: var(--bg-glass-hover);
+            color: var(--text-primary);
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: var(--text-secondary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app {
+                padding: 12px 14px 40px;
+            }
+
+            .panel {
+                padding: 20px;
+            }
+
+            .editor-header h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="ambient-bg">
+        <div class="orb"></div>
+        <div class="orb"></div>
+    </div>
+
+    <div class="app">
+        <!-- Header -->
+        <header class="editor-header">
+            <div class="editor-badge"><span class="dot"></span> Daten-Manager</div>
+            <h1>Strophen-Editor</h1>
+            <p class="subtitle">Datenbank laden · Inhalte prüfen · HTML &amp; SCORM exportieren</p>
+        </header>
+
+        <!-- Step 1: Load files -->
+        <div class="panel" id="panel-load">
+            <div class="panel-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+                Schritt 1 – Dateien laden
+            </div>
+            <div class="file-grid">
+                <div class="file-drop" id="drop-db">
+                    <input type="file" id="input-db" accept=".xlsx,.xls">
+                    <div class="icon">📊</div>
+                    <div class="label">Excel-Datenbank (.xlsx)</div>
+                    <div class="hint">strophen_navigator_datenbank.xlsx</div>
+                    <div class="status" id="status-db">—</div>
+                </div>
+                <div class="file-drop" id="drop-tpl">
+                    <input type="file" id="input-tpl" accept=".html,.htm">
+                    <div class="icon">📄</div>
+                    <div class="label">index_roh.html (Template)</div>
+                    <div class="hint">Roh-Indexdatei des Strophen-Navigators</div>
+                    <div class="status" id="status-tpl">—</div>
+                </div>
+            </div>
+            <div class="stats-row hidden" id="stats-row">
+                <span class="stat-chip"><strong id="stat-forms">0</strong> Strophenformen</span>
+                <span class="stat-chip"><strong id="stat-werke">0</strong> Vergleichswerke</span>
+                <span class="stat-chip"><strong id="stat-hints">0</strong> Interpretationshinweise</span>
+                <span class="stat-chip"><strong id="stat-links">0</strong> Links vorhanden</span>
+            </div>
+        </div>
+
+        <!-- Step 2: Data overview -->
+        <div class="panel hidden" id="panel-data">
+            <div class="panel-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <line x1="3" y1="9" x2="21" y2="9" />
+                    <line x1="9" y1="21" x2="9" y2="9" />
+                </svg>
+                Schritt 2 – Datenübersicht
+            </div>
+            <div class="tab-bar">
+                <button class="tab-btn active" onclick="showTab('tab-forms', this)">Strophenformen</button>
+                <button class="tab-btn" onclick="showTab('tab-werke', this)">Vergleichswerke</button>
+                <button class="tab-btn" onclick="showTab('tab-hinweise', this)">Interpretationshinweise</button>
+            </div>
+            <div class="tab-content active" id="tab-forms">
+                <div class="data-table-wrap" id="table-forms"></div>
+            </div>
+            <div class="tab-content" id="tab-werke">
+                <div class="data-table-wrap" id="table-werke"></div>
+            </div>
+            <div class="tab-content" id="tab-hinweise">
+                <div class="data-table-wrap" id="table-hinweise"></div>
+            </div>
+        </div>
+
+        <!-- Step 3: Links & License -->
+        <div class="panel hidden" id="panel-options">
+            <div class="panel-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3" />
+                    <path
+                        d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
+                </svg>
+                Schritt 3 – Optionen
+            </div>
+
+            <!-- Links -->
+            <div style="margin-bottom: 24px;">
+                <h3 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 10px;">🔗 Link-Einbettung</h3>
+                <div class="links-summary" id="links-summary"></div>
+                <label class="license-toggle">
+                    <input type="checkbox" id="chk-links" checked>
+                    <span class="toggle-track"></span>
+                    <span class="toggle-label">Alle Wikisource-/Volltextlinks in der HTML-Datei einbetten</span>
+                </label>
+            </div>
+
+            <!-- License -->
+            <div class="license-section">
+                <h3 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 10px;">📜 Lizenzhinweis (optional)</h3>
+                <label class="license-toggle">
+                    <input type="checkbox" id="chk-license"
+                        onchange="document.getElementById('license-text').disabled = !this.checked;">
+                    <span class="toggle-track"></span>
+                    <span class="toggle-label">Lizenzhinweis in der HTML-Datei anzeigen</span>
+                </label>
+                <textarea class="license-textarea" id="license-text" disabled
+                    placeholder="z. B. &quot;Erstellt für den Unterricht an … · Lizenz: CC BY-SA 4.0 · Autor: …&quot;"></textarea>
+            </div>
+        </div>
+
+        <!-- Step 4: Export -->
+        <div class="panel hidden" id="panel-export">
+            <div class="panel-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Schritt 4 – Exportieren
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-success" id="btn-export-html" onclick="exportHTML()" disabled>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z" />
+                        <polyline points="13 2 13 9 20 9" />
+                    </svg>
+                    HTML exportieren
+                </button>
+                <button class="btn btn-scorm" id="btn-export-scorm" onclick="exportSCORM()" disabled>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
+                    </svg>
+                    SCORM-Paket exportieren
+                </button>
+            </div>
+            <div class="log-area" id="log-area"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // ============================
+        // State
+        // ============================
+        let dbData = { forms: [], werke: [], hinweise: [] };
+        let templateHTML = '';
+        let templateLoaded = false;
+        let dbLoaded = false;
+
+        // ============================
+        // File Loading
+        // ============================
+        document.getElementById('input-db').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (ev) {
+                try {
+                    const data = new Uint8Array(ev.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    parseWorkbook(workbook);
+                    const drop = document.getElementById('drop-db');
+                    drop.classList.add('loaded');
+                    document.getElementById('status-db').textContent = '✓ ' + file.name + ' geladen';
+                    dbLoaded = true;
+                    checkReady();
+                } catch (err) {
+                    alert('Fehler beim Lesen der Excel-Datei: ' + err.message);
+                    console.error(err);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        document.getElementById('input-tpl').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (ev) {
+                templateHTML = ev.target.result;
+                const drop = document.getElementById('drop-tpl');
+                drop.classList.add('loaded');
+                document.getElementById('status-tpl').textContent = '✓ ' + file.name + ' geladen';
+                templateLoaded = true;
+                checkReady();
+            };
+            reader.readAsText(file, 'utf-8');
+        });
+
+        // ============================
+        // Parse Excel Workbook
+        // ============================
+        function parseWorkbook(wb) {
+            const sheetNames = wb.SheetNames;
+            log('info', 'Arbeitsblätter gefunden: ' + sheetNames.join(', '));
+
+            // Sheet: Strophenformen
+            const formsSheetName = findSheetName(wb, ['Strophenformen', 'strophen_navigator_datenbank']);
+            if (formsSheetName) {
+                const sheet = wb.Sheets[formsSheetName];
+                const parsed = smartParseSheet(sheet);
+                log('info', 'Sheet "' + formsSheetName + '": ' + parsed.headers.join(' | '));
+                dbData.forms = parseForms(parsed);
+                log('ok', dbData.forms.length + ' Strophenformen eingelesen');
+            } else {
+                log('warn', 'Tabellenblatt "Strophenformen" nicht gefunden');
+            }
+
+            // Sheet: Vergleichswerke
+            const werkeSheetName = findSheetName(wb, ['Vergleichswerke']);
+            if (werkeSheetName) {
+                const sheet = wb.Sheets[werkeSheetName];
+                const parsed = smartParseSheet(sheet);
+                log('info', 'Sheet "' + werkeSheetName + '": ' + parsed.headers.join(' | '));
+                dbData.werke = parseWerke(parsed, sheet);
+                log('ok', dbData.werke.length + ' Vergleichswerke eingelesen');
+            } else {
+                log('warn', 'Tabellenblatt "Vergleichswerke" nicht gefunden');
+            }
+
+            // Sheet: Interpretationshinweise
+            const hinweiseSheetName = findSheetName(wb, ['Interpretationshinweise']);
+            if (hinweiseSheetName) {
+                const sheet = wb.Sheets[hinweiseSheetName];
+                const parsed = smartParseSheet(sheet);
+                log('info', 'Sheet "' + hinweiseSheetName + '": ' + parsed.headers.join(' | '));
+                dbData.hinweise = parseHinweise(parsed);
+                log('ok', dbData.hinweise.length + ' Interpretationshinweise eingelesen');
+            } else {
+                log('warn', 'Tabellenblatt "Interpretationshinweise" nicht gefunden');
+            }
+
+            updateStats();
+            renderTables();
+        }
+
+        function findSheetName(wb, candidates) {
+            for (const name of candidates) {
+                const idx = wb.SheetNames.findIndex(n => n.toLowerCase().includes(name.toLowerCase()));
+                if (idx >= 0) return wb.SheetNames[idx];
+            }
+            return null;
+        }
+
+        /**
+         * Smart-Parse: Liest ein Sheet als Array-of-Arrays,
+         * findet die Header-Zeile (enthält "ID" oder "Name"),
+         * und gibt { headers: [...], rows: [{col:val, ...}, ...], headerRowIndex } zurück.
+         */
+        function smartParseSheet(sheet) {
+            // Read as array of arrays (header: 1 = raw arrays)
+            const aoa = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+
+            // Find header row: the row that contains "ID" in the first populated cell
+            // and has multiple non-empty cells (not a title row)
+            let headerIdx = -1;
+            for (let i = 0; i < Math.min(aoa.length, 10); i++) {
+                const row = aoa[i];
+                if (!row || row.length < 3) continue;
+                const nonEmpty = row.filter(c => String(c).trim() !== '').length;
+                const cellTexts = row.map(c => String(c).trim().toLowerCase());
+                // Check if this row looks like a header (contains "id" and at least one more known header)
+                const hasId = cellTexts.some(t => t === 'id');
+                const hasName = cellTexts.some(t => t === 'name' || t.includes('strophenform'));
+                const hasMultiple = nonEmpty >= 3;
+                if (hasId && hasMultiple) {
+                    headerIdx = i;
+                    break;
+                }
+                // Fallback: if it has "Name" and multiple headers
+                if (hasName && hasMultiple && nonEmpty >= 4) {
+                    headerIdx = i;
+                    break;
+                }
+            }
+
+            // Fallback: if no header with "ID" found, look for first row with 4+ non-empty cells
+            if (headerIdx < 0) {
+                for (let i = 0; i < Math.min(aoa.length, 10); i++) {
+                    const row = aoa[i];
+                    if (!row) continue;
+                    const nonEmpty = row.filter(c => String(c).trim() !== '').length;
+                    if (nonEmpty >= 4) {
+                        headerIdx = i;
+                        break;
+                    }
+                }
+            }
+            if (headerIdx < 0) headerIdx = 0;
+
+            const headers = (aoa[headerIdx] || []).map(h => String(h).trim());
+            const rows = [];
+
+            for (let i = headerIdx + 1; i < aoa.length; i++) {
+                const raw = aoa[i];
+                if (!raw) continue;
+                // Skip empty rows
+                const nonEmpty = raw.filter(c => String(c).trim() !== '').length;
+                if (nonEmpty < 2) continue;
+                const obj = {};
+                for (let j = 0; j < headers.length; j++) {
+                    obj[headers[j]] = (j < raw.length) ? raw[j] : '';
+                }
+                rows.push(obj);
+            }
+
+            return { headers, rows, headerRowIndex: headerIdx };
+        }
+
+        /**
+         * Finds a column in the header by checking multiple candidate names.
+         */
+        function findCol(headers, candidates) {
+            for (const h of headers) {
+                const hl = h.toLowerCase().replace(/[^a-zäöüß0-9]/g, '');
+                for (const c of candidates) {
+                    const cl = c.toLowerCase().replace(/[^a-zäöüß0-9]/g, '');
+                    if (hl.includes(cl) || cl.includes(hl)) return h;
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Extract hyperlinks from a sheet for a given column
+         */
+        function extractHyperlinks(sheet, colIndex, headerRowIndex) {
+            const links = {};
+            const range = XLSX.utils.decode_range(sheet['!ref'] || 'A1');
+            for (let r = headerRowIndex + 1; r <= range.e.r; r++) {
+                const cellAddr = XLSX.utils.encode_cell({ r: r, c: colIndex });
+                const cell = sheet[cellAddr];
+                if (cell && cell.l && cell.l.Target) {
+                    links[r] = cell.l.Target;
+                }
+            }
+            return links;
+        }
+
+        function parseForms(parsed) {
+            const { headers, rows } = parsed;
+            if (rows.length === 0) return [];
+
+            const colId = findCol(headers, ['ID']) || headers[0];
+            const colName = findCol(headers, ['Name']) || headers[1];
+            const colAlt = findCol(headers, ['Alternativnamen', 'Alternativ']);
+            const colVers = findCol(headers, ['Versanzahl', 'Verse']);
+            const colMetrum = findCol(headers, ['Metrum']);
+            const colHeb = findCol(headers, ['Hebungen']);
+            const colReim = findCol(headers, ['Reimschema', 'Reim']);
+            const colKad = findCol(headers, ['Kadenz']);
+            const colWirk = findCol(headers, ['Wirkung', 'Klang']);
+            const colEpoche = findCol(headers, ['Epoche', 'Kontext']);
+            const colHinweise = findCol(headers, ['Interpretationshinweise', 'Kurzform']);
+            const colWiki = findCol(headers, ['Wikipedia', 'Wiki']);
+
+            log('info', 'Spalten-Mapping: ID=' + colId + ', Name=' + colName + ', Vers=' + colVers + ', Metrum=' + colMetrum);
+
+            return rows.map(r => {
+                const id = String(r[colId] || '').trim();
+                if (!id) return null;
+                const versanzahlRaw = String(r[colVers] || '').trim();
+                let versanzahl = parseInt(versanzahlRaw);
+                if (isNaN(versanzahl)) versanzahl = versanzahlRaw || 'variabel';
+
+                const metrumRaw = String(r[colMetrum] || '');
+                const metrum = metrumRaw.split(/[\/,;]/).map(s => s.trim()).filter(Boolean);
+
+                const reimRaw = String(r[colReim] || '');
+                const reimschema = reimRaw.split(/[\/,;]/).map(s => s.trim()).filter(Boolean);
+
+                const altRaw = String(r[colAlt] || '');
+                const alternativnamen = altRaw.split(/[\/,;]/).map(s => s.trim()).filter(Boolean);
+
+                // Parse inline Interpretationshinweise (pipe-separated from Kurzform column)
+                const hinweiseRaw = String(r[colHinweise] || '');
+                const hinweiseInline = hinweiseRaw.split('|').map(s => s.replace(/^[\s•–—·]+/, '').trim()).filter(Boolean);
+
+                const wikiRaw = String(r[colWiki] || '').trim();
+                // Clean up wikipedia link (remove display text artifacts)
+                let wikiLink = wikiRaw;
+                if (wikiRaw.startsWith('http')) {
+                    wikiLink = wikiRaw.split(/\s/)[0]; // Take only URL part
+                }
+
+                return {
+                    id: id,
+                    name: String(r[colName] || '').trim(),
+                    alternativnamen: alternativnamen,
+                    kriterien: {
+                        versanzahl: versanzahl,
+                        metrum: metrum,
+                        hebungen: String(r[colHeb] || '').trim() || null,
+                        reimschema: reimschema,
+                        kadenz: String(r[colKad] || '').trim() || null
+                    },
+                    interpretation: {
+                        wirkung: String(r[colWirk] || '').trim(),
+                        epoche_kontext: String(r[colEpoche] || '').trim(),
+                        interpretationshinweise: hinweiseInline
+                    },
+                    vergleichswerke: [],
+                    wikipedia_link: (wikiLink && wikiLink.startsWith('http')) ? wikiLink : null
+                };
+            }).filter(Boolean);
+        }
+
+        function parseWerke(parsed, sheet) {
+            const { headers, rows, headerRowIndex } = parsed;
+            if (rows.length === 0) return [];
+
+            const colId = findCol(headers, ['ID']) || headers[0];
+            const colAutor = findCol(headers, ['Autor']);
+            const colTitel = findCol(headers, ['Titel']);
+            const colHinweis = findCol(headers, ['Hinweis']);
+            const colLink = findCol(headers, ['Link']);
+
+            // Also try to extract hyperlinks directly from cells
+            let linkColIdx = -1;
+            if (colLink) linkColIdx = headers.indexOf(colLink);
+            const cellLinks = (linkColIdx >= 0 && sheet) ? extractHyperlinks(sheet, linkColIdx, headerRowIndex) : {};
+
+            return rows.map((r, i) => {
+                const id = String(r[colId] || '').trim();
+                if (!id) return null;
+
+                // Get link: prefer cell hyperlink, then cell text value
+                let link = null;
+                const dataRowIndex = headerRowIndex + 1 + i;
+                if (cellLinks[dataRowIndex]) {
+                    link = cellLinks[dataRowIndex];
+                } else {
+                    const rawLink = String(r[colLink] || '').trim();
+                    if (rawLink && rawLink.startsWith('http')) {
+                        link = rawLink.split(/\s/)[0];
+                    }
+                }
+
+                return {
+                    formId: id,
+                    autor: String(r[colAutor] || '').trim(),
+                    titel: String(r[colTitel] || '').trim(),
+                    hinweis: String(r[colHinweis] || '').trim(),
+                    link: link
+                };
+            }).filter(Boolean);
+        }
+
+        function parseHinweise(parsed) {
+            const { headers, rows } = parsed;
+            if (rows.length === 0) return [];
+
+            const colId = findCol(headers, ['ID']) || headers[0];
+            const colNr = findCol(headers, ['Nr']);
+            const colHinweis = findCol(headers, ['Interpretationshinweis', 'Hinweis']);
+
+            return rows.map(r => {
+                const id = String(r[colId] || '').trim();
+                if (!id) return null;
+                return {
+                    formId: id,
+                    nr: parseInt(r[colNr]) || 0,
+                    hinweis: String(r[colHinweis] || '').trim()
+                };
+            }).filter(Boolean);
+        }
+
+        // ============================
+        // Merge & Build STROPHENFORMEN
+        // ============================
+        function buildStrophenformen() {
+            const forms = JSON.parse(JSON.stringify(dbData.forms));
+            const embedLinks = document.getElementById('chk-links').checked;
+
+            // Merge Vergleichswerke
+            const werkeMap = {};
+            for (const w of dbData.werke) {
+                if (!werkeMap[w.formId]) werkeMap[w.formId] = [];
+                const entry = { autor: w.autor, titel: w.titel, hinweis: w.hinweis };
+                if (embedLinks && w.link) entry.link = w.link;
+                werkeMap[w.formId].push(entry);
+            }
+
+            // Merge Interpretationshinweise (from dedicated sheet, replaces inline if present)
+            const hinweiseMap = {};
+            for (const h of dbData.hinweise) {
+                if (!hinweiseMap[h.formId]) hinweiseMap[h.formId] = [];
+                hinweiseMap[h.formId].push(h);
+            }
+
+            for (const form of forms) {
+                // Vergleichswerke
+                if (werkeMap[form.id]) {
+                    form.vergleichswerke = werkeMap[form.id];
+                }
+                // Interpretationshinweise from dedicated sheet override inline
+                if (hinweiseMap[form.id]) {
+                    const sorted = hinweiseMap[form.id].sort((a, b) => a.nr - b.nr);
+                    form.interpretation.interpretationshinweise = sorted.map(h => h.hinweis);
+                }
+            }
+
+            return forms;
+        }
+
+        // ============================
+        // Generate HTML
+        // ============================
+        function generateFilledHTML() {
+            if (!templateHTML) return null;
+
+            const strophenformen = buildStrophenformen();
+            let html = templateHTML;
+
+            // Replace empty STROPHENFORMEN array with filled data
+            const jsonStr = JSON.stringify(strophenformen, null, 2);
+            html = html.replace(
+                /const\s+STROPHENFORMEN\s*=\s*\[\s*\]\s*;/,
+                'const STROPHENFORMEN = ' + jsonStr + ';'
+            );
+
+            // Handle link embedding: remove the delete w.link block if links are enabled
+            const embedLinks = document.getElementById('chk-links').checked;
+            if (embedLinks) {
+                // 1) Remove the exact block that deletes links (lines 1293-1296 in index_roh.html)
+                html = html.replace(
+                    /[ \t]*\/\/\s*Links aus Vergleichswerken entfernen\s*\n\s*STROPHENFORMEN\.forEach\(function\(form\)\s*\{\s*\n\s*if\s*\(form\.vergleichswerke\)\s*form\.vergleichswerke\.forEach\(function\(w\)\s*\{\s*delete\s+w\.link;\s*\}\);\s*\n\s*\}\);/g,
+                    '  // Links beibehalten (vom Editor aktiviert)'
+                );
+
+                // 2) Patch the enrichData() detail-view to render links
+                // Replace the "Vergleichswerke (ohne Links)" comment and its link-less renderer
+                // with a version that includes links
+                const oldWerkeBlock = "// Vergleichswerke (ohne Links)\n" +
+                    "    if (form.vergleichswerke && form.vergleichswerke.length > 0) {\n" +
+                    "        bodyHtml += '<div class=\"detail-section\"><div class=\"detail-section-label\">Vergleichswerke</div><div class=\"werk-list\">' + form.vergleichswerke.map(function(w) {\n" +
+                    "            return '<div class=\"werk-item\"><div class=\"werk-author-title\"><span class=\"werk-author\">' + w.autor + ':</span> ' + w.titel + '</div><div class=\"werk-hinweis\">' + w.hinweis + '</div></div>';\n" +
+                    "        }).join('') + '</div></div>';\n" +
+                    "    }";
+                const newWerkeBlock = "// Vergleichswerke (mit Links)\n" +
+                    "    if (form.vergleichswerke && form.vergleichswerke.length > 0) {\n" +
+                    "        bodyHtml += '<div class=\"detail-section\"><div class=\"detail-section-label\">Vergleichswerke</div><div class=\"werk-list\">' + form.vergleichswerke.map(function(w) {\n" +
+                    "            var linkHtml = '';\n" +
+                    "            if (w.link) { linkHtml = '<div class=\"werk-link\"><a href=\"' + w.link + '\" target=\"_blank\" rel=\"noopener\">↗ Volltext im Netz</a></div>'; }\n" +
+                    "            return '<div class=\"werk-item\"><div class=\"werk-author-title\"><span class=\"werk-author\">' + w.autor + ':</span> ' + w.titel + '</div><div class=\"werk-hinweis\">' + w.hinweis + '</div>' + linkHtml + '</div>';\n" +
+                    "        }).join('') + '</div></div>';\n" +
+                    "    }";
+                html = html.replace(oldWerkeBlock, newWerkeBlock);
+            }
+
+            // Add license notice if enabled
+            const showLicense = document.getElementById('chk-license').checked;
+            const licenseText = document.getElementById('license-text').value.trim();
+            if (showLicense && licenseText) {
+                const licenseHtml = '<div style="text-align:center;padding:8px 0 0;font-size:0.68rem;color:var(--text-tertiary);font-style:italic;border-top:1px solid var(--border-subtle);margin-top:8px;">' +
+                    escapeHtml(licenseText) + '</div>';
+                // Insert before closing </footer>
+                html = html.replace('</footer>', licenseHtml + '\n    </footer>');
+            }
+
+            return html;
+        }
+
+        // ============================
+        // Export Functions
+        // ============================
+        function exportHTML() {
+            log('info', 'Generiere HTML-Datei...');
+            const html = generateFilledHTML();
+            if (!html) {
+                log('err', 'Template nicht geladen!');
+                return;
+            }
+            const strophenformen = buildStrophenformen();
+            log('ok', strophenformen.length + ' Strophenformen eingebettet');
+            const totalLinks = strophenformen.reduce((acc, f) => acc + (f.vergleichswerke || []).filter(w => w.link).length, 0);
+            if (document.getElementById('chk-links').checked) {
+                log('ok', totalLinks + ' Links eingebettet');
+            } else {
+                log('info', 'Links nicht eingebettet (deaktiviert)');
+            }
+            if (document.getElementById('chk-license').checked) {
+                log('ok', 'Lizenzhinweis eingefügt');
+            }
+            downloadFile(html, 'index.html', 'text/html');
+            log('ok', '✓ index.html heruntergeladen!');
+        }
+
+        function exportSCORM() {
+            log('info', 'Erstelle SCORM-1.2-Paket...');
+            const html = generateFilledHTML();
+            if (!html) {
+                log('err', 'Template nicht geladen!');
+                return;
+            }
+
+            const manifest = generateManifest();
+            const zip = new JSZip();
+            zip.file('index.html', html);
+            zip.file('imsmanifest.xml', manifest);
+            log('ok', 'imsmanifest.xml erstellt');
+
+            zip.generateAsync({ type: 'blob' }).then(function (blob) {
+                downloadFile(blob, 'strophen_navigator_scorm.zip', 'application/zip');
+                log('ok', '✓ SCORM-Paket heruntergeladen!');
+            }).catch(function (err) {
+                log('err', 'Fehler beim ZIP-Erstellen: ' + err.message);
+            });
+        }
+
+        function generateManifest() {
+            return '<?xml version="1.0" encoding="UTF-8"?>\n' +
+                '<manifest identifier="strophen_navigator_scorm" version="1.0"\n' +
+                '  xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"\n' +
+                '  xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"\n' +
+                '  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n' +
+                '  xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd\n' +
+                '    http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">\n' +
+                '  <metadata>\n' +
+                '    <schema>ADL SCORM</schema>\n' +
+                '    <schemaversion>1.2</schemaversion>\n' +
+                '  </metadata>\n' +
+                '  <organizations default="strophen_org">\n' +
+                '    <organization identifier="strophen_org">\n' +
+                '      <title>Strophen-Navigator – Formanalyse für die Oberstufe</title>\n' +
+                '      <item identifier="strophen_item" identifierref="strophen_res">\n' +
+                '        <title>Strophen-Navigator</title>\n' +
+                '      </item>\n' +
+                '    </organization>\n' +
+                '  </organizations>\n' +
+                '  <resources>\n' +
+                '    <resource identifier="strophen_res" type="webcontent" adlcp:scormtype="sco" href="index.html">\n' +
+                '      <file href="index.html"/>\n' +
+                '    </resource>\n' +
+                '  </resources>\n' +
+                '</manifest>';
+        }
+
+        // ============================
+        // UI Helpers
+        // ============================
+        function checkReady() {
+            if (dbLoaded) {
+                document.getElementById('panel-data').classList.remove('hidden');
+                document.getElementById('panel-options').classList.remove('hidden');
+                document.getElementById('panel-export').classList.remove('hidden');
+                document.getElementById('stats-row').classList.remove('hidden');
+            }
+            const canExport = dbLoaded && templateLoaded;
+            document.getElementById('btn-export-html').disabled = !canExport;
+            document.getElementById('btn-export-scorm').disabled = !canExport;
+        }
+
+        function updateStats() {
+            document.getElementById('stat-forms').textContent = dbData.forms.length;
+            document.getElementById('stat-werke').textContent = dbData.werke.length;
+            document.getElementById('stat-hints').textContent = dbData.hinweise.length;
+            const linkCount = dbData.werke.filter(w => w.link).length;
+            document.getElementById('stat-links').textContent = linkCount;
+
+            // Links summary
+            const missing = dbData.werke.filter(w => !w.link).length;
+            document.getElementById('links-summary').innerHTML =
+                '<div class="link-stat ok"><strong>' + linkCount + '</strong> mit Link</div>' +
+                '<div class="link-stat missing"><strong>' + missing + '</strong> ohne Link</div>';
+        }
+
+        function renderTables() {
+            // Forms table
+            let fhtml = '<table class="data-table"><thead><tr><th>ID</th><th>Name</th><th>Verse</th><th>Metrum</th><th>Reim</th><th>Wirkung</th><th>Wiki</th></tr></thead><tbody>';
+            for (const f of dbData.forms) {
+                const wikiIcon = f.wikipedia_link ? '<span class="link-ok link-icon">🔗</span>' : '<span class="link-missing link-icon">—</span>';
+                fhtml += '<tr>' +
+                    '<td class="id-cell">' + esc(f.id) + '</td>' +
+                    '<td class="name-cell">' + esc(f.name) + '</td>' +
+                    '<td>' + esc(String(f.kriterien.versanzahl)) + '</td>' +
+                    '<td>' + esc(f.kriterien.metrum.join(', ')) + '</td>' +
+                    '<td>' + esc(f.kriterien.reimschema.join(', ')) + '</td>' +
+                    '<td class="truncate">' + esc(f.interpretation.wirkung.substring(0, 120)) + '…</td>' +
+                    '<td>' + wikiIcon + '</td>' +
+                    '</tr>';
+            }
+            fhtml += '</tbody></table>';
+            document.getElementById('table-forms').innerHTML = fhtml;
+
+            // Werke table
+            let whtml = '<table class="data-table"><thead><tr><th>Form-ID</th><th>Autor</th><th>Titel</th><th>Hinweis</th><th>Link</th></tr></thead><tbody>';
+            for (const w of dbData.werke) {
+                const linkIcon = w.link ? '<a href="' + esc(w.link) + '" target="_blank" class="link-ok link-icon" title="' + esc(w.link) + '">🔗</a>' : '<span class="link-missing link-icon">❌</span>';
+                whtml += '<tr>' +
+                    '<td class="id-cell">' + esc(w.formId) + '</td>' +
+                    '<td>' + esc(w.autor) + '</td>' +
+                    '<td>' + esc(w.titel) + '</td>' +
+                    '<td class="truncate">' + esc(w.hinweis) + '</td>' +
+                    '<td>' + linkIcon + '</td>' +
+                    '</tr>';
+            }
+            whtml += '</tbody></table>';
+            document.getElementById('table-werke').innerHTML = whtml;
+
+            // Hinweise table
+            let hhtml = '<table class="data-table"><thead><tr><th>Form-ID</th><th>Nr.</th><th>Hinweis</th></tr></thead><tbody>';
+            for (const h of dbData.hinweise) {
+                hhtml += '<tr>' +
+                    '<td class="id-cell">' + esc(h.formId) + '</td>' +
+                    '<td>' + h.nr + '</td>' +
+                    '<td>' + esc(h.hinweis) + '</td>' +
+                    '</tr>';
+            }
+            hhtml += '</tbody></table>';
+            document.getElementById('table-hinweise').innerHTML = hhtml;
+        }
+
+        function showTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function log(type, msg) {
+            const area = document.getElementById('log-area');
+            const span = '<span class="log-' + type + '">' + esc(msg) + '</span>\n';
+            area.innerHTML += span;
+            area.scrollTop = area.scrollHeight;
+        }
+
+        function esc(s) {
+            const d = document.createElement('div');
+            d.textContent = s;
+            return d.innerHTML;
+        }
+
+        function escapeHtml(s) {
+            return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function downloadFile(content, filename, mimeType) {
+            let blob;
+            if (content instanceof Blob) {
+                blob = content;
+            } else {
+                blob = new Blob([content], { type: mimeType + ';charset=utf-8' });
+            }
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 100);
+        }
+
+        // Drag-over visual feedback
+        document.querySelectorAll('.file-drop').forEach(drop => {
+            drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('dragover'); });
+            drop.addEventListener('dragleave', () => drop.classList.remove('dragover'));
+            drop.addEventListener('drop', () => drop.classList.remove('dragover'));
+        });
+    </script>
+</body>
+
+</html>
+

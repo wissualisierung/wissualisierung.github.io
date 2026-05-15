@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="WissualisierungOS – Dein digitales Klassenzimmer. Retro-Betriebssystem für interaktive Deutschunterrichts-Projekte.">
+  <meta name="author" content="Wolf Sebastian">
+  <meta name="license" content="CC-BY-SA 4.0">
+  <title>WissualisierungOS</title>
+
+  <!-- Google Fonts -->
+  <link href="css/fonts.css" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/os-core.css">
+  <link rel="stylesheet" href="css/boot.css">
+  <link rel="stylesheet" id="theme-stylesheet" href="css/themes/retro-classic.css">
+</head>
+<body>
+
+  <!-- ===== Boot-Screen (wird vor dem Desktop angezeigt) ===== -->
+  <div id="boot-screen" hidden>
+    <div class="boot-output"></div>
+    <div class="boot-progress-wrap">
+      <div class="boot-progress-label">System wird geladen …</div>
+      <div class="boot-progress-track">
+        <div class="boot-progress-fill"></div>
+      </div>
+    </div>
+    <button class="boot-skip" aria-label="Boot überspringen">Überspringen >></button>
+  </div>
+
+  <!-- ===== Desktop ===== -->
+  <main id="desktop" role="main" aria-label="Desktop">
+    <div id="icon-container" role="list" aria-label="Desktop-Programme"></div>
+  </main>
+
+  <!-- ===== Tooltip ===== -->
+  <div id="tooltip" class="os-tooltip" role="tooltip" aria-hidden="true"></div>
+
+  <!-- ===== Loading Bar ===== -->
+  <div id="loading-bar" class="loading-bar" aria-hidden="true">
+    <div class="loading-bar__label">Wird geöffnet …</div>
+    <div class="loading-bar__track">
+      <div class="loading-bar__fill"></div>
+    </div>
+  </div>
+
+  <!-- ===== Start Menu ===== -->
+  <nav id="start-menu" role="navigation" aria-label="Startmenü">
+    <div class="start-menu__header">
+      <img class="menu-icon" src="" alt="" id="start-menu-icon">
+      <h2>WissualisierungOS</h2>
+    </div>
+    <div class="start-menu__body" id="start-menu-body">
+      <!-- Generated from config.json -->
+    </div>
+    <div class="start-menu__system" id="start-menu-system">
+      <!-- System entries generated from config.json -->
+    </div>
+  </nav>
+
+  <!-- ===== Taskbar ===== -->
+  <footer id="taskbar" role="toolbar" aria-label="Taskleiste">
+    <button id="start-button" class="bevel-btn" aria-haspopup="true" aria-expanded="false" aria-controls="start-menu">
+      <span aria-hidden="true">⚡</span> Start
+    </button>
+    <div id="taskbar-divider" class="taskbar-divider"></div>
+    <div id="taskbar-programs" aria-label="Geöffnete Programme"></div>
+    <div id="taskbar-tray" aria-label="System-Tray">
+      <span id="cookie-icon" role="button" aria-label="Datenschutz" tabindex="0">🍪</span>
+      <span id="volume-icon" role="button" aria-label="Lautstärke" tabindex="0">🔇</span>
+      <span id="taskbar-clock" role="timer" aria-label="Uhrzeit">--:--</span>
+    </div>
+  </footer>
+
+  <!-- ===== Window Container ===== -->
+  <div id="window-container" aria-live="polite"></div>
+
+  <!-- ===== JavaScript (Classic Scripts – no module, works on file://) ===== -->
+  <script src="js/config-data.js"></script>
+  <script src="js/os-core.js"></script>
+  <script src="js/boot-sequence.js"></script>
+  <script src="js/window-manager.js"></script>
+  <script src="js/desktop-icons.js"></script>
+  <script src="js/taskbar.js"></script>
+  <script src="js/start-menu.js"></script>
+  <script src="js/screensaver.js"></script>
+  <script src="js/eastereggs.js"></script>
+</body>
+</html>
+

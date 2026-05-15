@@ -1,0 +1,50 @@
+/* ========================================
+   Theme: Retro Classic
+   Standard-Farbpalette: Mint/Pink/Gelb/Lavendel
+   ======================================== */
+
+/* This theme uses the default :root values from os-core.css.
+   It serves as the base theme and overrides nothing by default.
+   Future themes (vaporwave, dark) will override these properties. */
+
+/* Bevel-Effekte für interaktive Elemente */
+.bevel-btn {
+  transition: none; /* Retro = kein Smooth-Transition auf Buttons */
+}
+
+/* Aktive Fenster-Titelleiste: kräftiges Mint-Grün */
+.os-window__titlebar {
+  background: linear-gradient(90deg, var(--color-primary), #56d4a0);
+}
+
+/* Start-Button bekommt einen leichten Grün-Akzent */
+#start-button {
+  background: var(--color-button-face);
+}
+
+#start-button:hover {
+  background: #e8e4dc;
+}
+
+/* Desktop-Icon Label: leichter Warmweiß-Schatten für Lesbarkeit */
+.desktop-icon__label {
+  text-shadow:
+    1px 1px 0 rgba(255,255,255,0.8),
+    -1px -1px 0 rgba(255,255,255,0.4);
+}
+
+/* Startmenü-Header: kräftiger Gradient */
+.start-menu__header {
+  background: linear-gradient(180deg, var(--color-primary) 0%, #3cb88a 100%);
+}
+
+/* Startmenü Hover: Pink-Highlight */
+.start-menu__item:hover {
+  background: var(--color-secondary);
+  color: #fff;
+}
+
+/* Taskbar-Tray: eingelassener Rahmen */
+#taskbar-tray {
+  background: var(--color-button-face);
+}
