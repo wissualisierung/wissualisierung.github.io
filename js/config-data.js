@@ -210,8 +210,8 @@ window.WissOS._configData = {
     "systemEntries": [
       { "name": "Pädagogische Hilfe", "icon": "help", "action": "paed-helper" },
       { "name": "Screensaver", "icon": "gear", "action": "screensaver" },
-      { "name": "Über WissualisierungOS", "icon": "help", "action": "about" },
-      { "name": "Datenschutz & Impressum", "icon": "cookie", "action": "datenschutz" }
+      { "name": "Impressum", "icon": "help", "action": "about" },
+      { "name": "Datenschutz", "icon": "cookie", "action": "datenschutz" }
     ]
   },
   "tips": [

@@ -281,12 +281,12 @@
         "action": "screensaver"
       },
       {
-        "name": "Über WissualisierungOS",
+        "name": "Impressum",
         "icon": "help",
         "action": "about"
       },
       {
-        "name": "Datenschutz & Impressum",
+        "name": "Datenschutz",
         "icon": "cookie",
         "action": "datenschutz"
       }

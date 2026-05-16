@@ -384,27 +384,54 @@
 
   function showAbout() {
     var c = _config.os;
+    var contentEl = document.createElement('div');
+    contentEl.style.cssText = 'padding:24px; font-family:var(--font-body); font-size:13px; line-height:1.6; overflow-y:auto; height:100%;';
+
+    var headerDiv = document.createElement('div');
+    headerDiv.style.cssText = 'text-align:center; margin-bottom:20px;';
+    headerDiv.innerHTML =
+      '<div style="font-size:40px;margin-bottom:12px;">⚡</div>' +
+      '<h3 style="font-family:var(--font-system);margin-bottom:8px;font-size:22px;">' + c.name + '</h3>' +
+      '<p style="font-family:var(--font-body);font-size:13px;">Version ' + c.version + '</p>' +
+      '<hr style="margin:16px auto;border:1px solid var(--color-button-shadow);width:60%;">' +
+      '<p style="font-style:italic;font-family:var(--font-body);font-size:14px;margin-bottom:8px;">' + c.tagline + '</p>' +
+      '<p style="font-size:11px;color:#808080;font-family:var(--font-body);margin-bottom:0;">' + c.license + '</p>';
+
+    var impressumDiv = document.createElement('div');
+    impressumDiv.innerHTML = `
+      <h3 style="font-family:var(--font-system); font-size:18px; margin-bottom:8px; border-bottom:1px solid var(--color-button-shadow); padding-bottom:4px;">Impressum</h3>
+      <p style="margin-bottom:12px;">Angaben gem&auml;&szlig; &sect; 5 DDG</p>
+      <p style="margin-bottom:12px;">
+        Name: Sebastian Wolf<br>
+        Anschrift: Graf-Leopold-Ring 2, 94099 Ruhstorf a.d.Rott, Bayern, Deutschland<br>
+        E-Mail: s.w.oer@outlook.de
+      </p>
+      <p style="margin-bottom:12px;">
+        Verantwortlich f&uuml;r den Inhalt nach &sect; 18 Abs. 2 MStV:<br>
+        Sebastian Wolf, [Anschrift wie oben]
+      </p>
+      <p style="margin-bottom:12px;">
+        Haftungsausschluss:<br>
+        Trotz sorgf&auml;ltiger inhaltlicher Kontrolle &uuml;bernehme ich keine Haftung f&uuml;r die Inhalte externer Links. F&uuml;r den Inhalt der verlinkten Seiten sind ausschlie&szlig;lich deren Betreiber verantwortlich.
+      </p>
+    `;
+
+    contentEl.appendChild(headerDiv);
+    contentEl.appendChild(impressumDiv);
+
     createWindow({
-      title: 'Über ' + c.name,
+      title: 'Impressum',
       icon: 'brain',
-      content:
-        '<div style="text-align:center;padding:24px;">' +
-        '<div style="font-size:40px;margin-bottom:12px;">⚡</div>' +
-        '<h3 style="font-family:var(--font-system);margin-bottom:8px;font-size:22px;">' + c.name + '</h3>' +
-        '<p style="font-family:var(--font-body);font-size:13px;">Version ' + c.version + '</p>' +
-        '<hr style="margin:16px auto;border:1px solid var(--color-button-shadow);width:60%;">' +
-        '<p style="font-style:italic;font-family:var(--font-body);font-size:14px;margin-bottom:12px;">' + c.tagline + '</p>' +
-        '<p style="font-size:11px;color:#808080;font-family:var(--font-body);">' + c.license + '</p>' +
-        '</div>',
-      width: 340,
-      height: 300
+      content: contentEl,
+      width: 420,
+      height: 500
     });
   }
 
   function showDatenschutz() {
     var contentEl = document.createElement('div');
     contentEl.style.cssText = 'padding:24px; font-family:var(--font-body); font-size:13px; line-height:1.6; overflow-y:auto; height:100%;';
-    
+
     var icon = document.createElement('div');
     icon.style.cssText = 'font-size:36px; text-align:center; margin-bottom:12px;';
     icon.textContent = '🍪';
@@ -412,37 +439,21 @@
     var textContent = document.createElement('div');
     textContent.innerHTML = `
       <h3 style="font-family:var(--font-system); font-size:18px; margin-bottom:8px; border-bottom:1px solid var(--color-button-shadow); padding-bottom:4px;">Hinweis zum Datenschutz</h3>
-      <p style="margin-bottom:12px;">Diese Anwendung speichert ausschließlich technisch notwendige Daten lokal in Ihrem Browser (sog. Local Storage). Diese Daten dienen allein dazu, Ihren Lernfortschritt oder Ihre Einstellungen innerhalb dieser Anwendung zu sichern.</p>
-      <p style="margin-bottom:12px;">Es werden keinerlei personenbezogene Daten erhoben, verarbeitet oder an Dritte übermittelt. Es kommen keine Tracking-Cookies, keine Analyse-Tools und keine externen Skripte zum Einsatz.</p>
-      <p style="margin-bottom:12px;">Die lokal gespeicherten Daten verlassen Ihr Gerät nicht und sind ausschließlich für Sie in Ihrem Browser sichtbar. Sie können die gespeicherten Daten jederzeit löschen, indem Sie den Browser-Cache bzw. die Website-Daten in Ihren Browsereinstellungen leeren.</p>
-      <p style="margin-bottom:24px;">Rechtsgrundlage: § 25 Abs. 2 Nr. 2 TDDDG (technisch notwendige Speicherung); Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Funktionsfähigkeit der Anwendung).</p>
-
-      <h3 style="font-family:var(--font-system); font-size:18px; margin-bottom:8px; border-bottom:1px solid var(--color-button-shadow); padding-bottom:4px;">Impressum</h3>
-      <p style="margin-bottom:12px;">Angaben gemäß § 5 DDG</p>
-      <p style="margin-bottom:12px;">
-        Name: Sebastian Wolf<br>
-        Anschrift: Graf-Leopold-Ring 2, 94099 Ruhstorf a.d.Rott, Bayern, Deutschland<br>
-        E-Mail: s.w.oer@outlook.de
-      </p>
-      <p style="margin-bottom:12px;">
-        Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV:<br>
-        Sebastian Wolf, [Anschrift wie oben]
-      </p>
-      <p style="margin-bottom:12px;">
-        Haftungsausschluss:<br>
-        Trotz sorgfältiger inhaltlicher Kontrolle übernehme ich keine Haftung für die Inhalte externer Links. Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich.
-      </p>
+      <p style="margin-bottom:12px;">Diese Anwendung speichert ausschlie&szlig;lich technisch notwendige Daten lokal in Ihrem Browser (sog. Local Storage). Diese Daten dienen allein dazu, Ihren Lernfortschritt oder Ihre Einstellungen innerhalb dieser Anwendung zu sichern.</p>
+      <p style="margin-bottom:12px;">Es werden keinerlei personenbezogene Daten erhoben, verarbeitet oder an Dritte &uuml;bermittelt. Es kommen keine Tracking-Cookies, keine Analyse-Tools und keine externen Skripte zum Einsatz.</p>
+      <p style="margin-bottom:12px;">Die lokal gespeicherten Daten verlassen Ihr Ger&auml;t nicht und sind ausschlie&szlig;lich f&uuml;r Sie in Ihrem Browser sichtbar. Sie k&ouml;nnen die gespeicherten Daten jederzeit l&ouml;schen, indem Sie den Browser-Cache bzw. die Website-Daten in Ihren Browsereinstellungen leeren.</p>
+      <p style="margin-bottom:0;">Rechtsgrundlage: &sect; 25 Abs. 2 Nr. 2 TDDDG (technisch notwendige Speicherung); Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Funktionsf&auml;higkeit der Anwendung).</p>
     `;
 
     contentEl.appendChild(icon);
     contentEl.appendChild(textContent);
 
     createWindow({
-      title: 'Datenschutz & Impressum',
+      title: 'Datenschutz',
       icon: 'cookie',
       content: contentEl,
       width: 460,
-      height: 520
+      height: 380
     });
   }
 
