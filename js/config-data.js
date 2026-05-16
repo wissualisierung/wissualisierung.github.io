@@ -106,6 +106,17 @@ window.WissOS._configData = {
       "desktopPosition": { "col": 0, "row": 3 }
     },
     {
+      "id": "blockkaskade",
+      "name": "Blockkaskade",
+      "osName": "Blockkaskade",
+      "description": "Quadrapop-Blockspiel",
+      "icon": "joystick",
+      "category": "Spiele",
+      "url": "PROGRAMME/Blockkaskade/Blockkaskade.html",
+      "openInWindow": true,
+      "showOnDesktop": false
+    },
+    {
       "id": "paed-navigator",
       "name": "Pädagogischer Navigator",
       "osName": "Pädagogische Hilfe",
@@ -205,7 +216,7 @@ window.WissOS._configData = {
       },
       { "name": "Kommunikation", "icon": "speech-bubble", "programIds": ["bds-kompakt", "epochen-chat"] },
       { "name": "Kreativ", "icon": "paintbrush", "programIds": ["maerchen-explorer", "lapbook-architekt"] },
-      { "name": "Spiele", "icon": "joystick", "programIds": ["brettspiel-editor"] }
+      { "name": "Spiele", "icon": "joystick", "programIds": ["brettspiel-editor", "blockkaskade"] }
     ],
     "systemEntries": [
       { "name": "Pädagogische Hilfe", "icon": "help", "action": "paed-helper" },
