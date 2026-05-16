@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
@@ -28,7 +28,7 @@
     }
     .wrap { max-width: 100%; margin: 0; }
 
-    /* -- TITLEBAR -- */
+    /* ── TITLEBAR ── */
     .titlebar {
       background: #000;
       color: var(--yellow);
@@ -45,7 +45,7 @@
     }
 
 
-    /* -- MAIN GRID -- */
+    /* ── MAIN GRID ── */
     .tool {
       background: var(--paper);
       border: var(--border);
@@ -58,7 +58,7 @@
       gap: 12px;
     }
 
-    /* -- LEFT PANEL -- */
+    /* ── LEFT PANEL ── */
     .panel {
       background: #111;
       border: var(--border);
@@ -90,7 +90,7 @@
     .warn{ color: var(--yellow); }
     .bad { color: #FF6B6B; }
 
-    /* -- CONTROLS -- */
+    /* ── CONTROLS ── */
     label {
       display: block;
       font-weight: bold;
@@ -152,7 +152,7 @@
       line-height: 1.5;
     }
 
-    /* -- RIGHT PANEL -- */
+    /* ── RIGHT PANEL ── */
     .tablePanel {
       background: var(--white);
       border: var(--border);
@@ -173,7 +173,7 @@
       letter-spacing: 1px;
     }
 
-    /* -- TABLES -- */
+    /* ── TABLES ── */
     .table-scroll { overflow-x: auto; }
     table {
       width: 100%;
@@ -224,7 +224,7 @@
 <div class="wrap">
   <div class="tool">
     <div class="titlebar">
-      <span>🔢 BE-Taschenrechner.exe 🔢</span>
+      <span>▓▓ BE-Taschenrechner.exe ▓▓</span>
     </div>
 
     <div class="grid">
@@ -246,8 +246,8 @@
           <input id="pointsInput" type="number" min="0" step="0.5" placeholder="z. B. 21,5" />
         </div>
         <div class="btnrow">
-          <button id="calcBtn">? Berechnen</button>
-          <button id="resetBtn">? Reset</button>
+          <button id="calcBtn">▶ Berechnen</button>
+          <button id="resetBtn">✕ Reset</button>
         </div>
         <div class="hint" id="schemaMeta">Lade Schema...</div>
       </section>
@@ -415,20 +415,20 @@ function gradeCls(g){
 }
 
 const ratings = {
-  "16":  {typ:"? streng",  schwelle:"50 %"},
-  "18A": {typ:"? streng",  schwelle:"50 %"},
-  "18B": {typ:"?? gnädig",  schwelle:"39 %"},
-  "20":  {typ:"? streng",  schwelle:"50 %"},
-  "20B": {typ:"?? mittel",  schwelle:"45 %"},
-  "20C": {typ:"?? gnädig",  schwelle:"43 %"},
-  "24A": {typ:"? streng",  schwelle:"50 %"},
-  "24B": {typ:"?? gnädig",  schwelle:"38 %"},
-  "28":  {typ:"? streng",  schwelle:"50 %"},
-  "32":  {typ:"? streng",  schwelle:"50 %"},
-  "36":  {typ:"? streng",  schwelle:"50 %"},
-  "24Q": {typ:"?? mittel",  schwelle:"42 %"},
-  "30Q": {typ:"?? gnädig",  schwelle:"40 %"},
-  "40Q": {typ:"?? gnädig",  schwelle:"40 %"},
+  "16":  {typ:"⬛ streng",  schwelle:"50 %"},
+  "18A": {typ:"⬛ streng",  schwelle:"50 %"},
+  "18B": {typ:"🟩 gnädig",  schwelle:"39 %"},
+  "20":  {typ:"⬛ streng",  schwelle:"50 %"},
+  "20B": {typ:"🟨 mittel",  schwelle:"45 %"},
+  "20C": {typ:"🟩 gnädig",  schwelle:"43 %"},
+  "24A": {typ:"⬛ streng",  schwelle:"50 %"},
+  "24B": {typ:"🟩 gnädig",  schwelle:"38 %"},
+  "28":  {typ:"⬛ streng",  schwelle:"50 %"},
+  "32":  {typ:"⬛ streng",  schwelle:"50 %"},
+  "36":  {typ:"⬛ streng",  schwelle:"50 %"},
+  "24Q": {typ:"🟨 mittel",  schwelle:"42 %"},
+  "30Q": {typ:"🟩 gnädig",  schwelle:"40 %"},
+  "40Q": {typ:"🟩 gnädig",  schwelle:"40 %"},
 };
 
 function renderTable(){
@@ -453,7 +453,7 @@ function renderTable(){
     tableWrap.innerHTML = h;
   }
 
-  const r = ratings[key] || {typ:"?", schwelle:"?"};
+  const r = ratings[key] || {typ:"—", schwelle:"—"};
   const tip = s.mode==="qphase" ? "Q-Phase: Notenpunkte 0–15." : "Schritte: 0,5 BE.";
   schemaMeta.innerHTML =
     '<div style="display:flex;flex-direction:column;gap:6px;">' +
@@ -497,7 +497,7 @@ function calculate(){
     return;
   }
   resultMain.textContent = s.mode==="qphase" ? hit.label+" NP" : "NOTE "+hit.label;
-  resultSub.innerHTML = '<span class="ok">'+fmt(points)+' BE</span> ? Bereich <span class="warn">'+rangeText(hit)+'</span>';
+  resultSub.innerHTML = '<span class="ok">'+fmt(points)+' BE</span> → Bereich <span class="warn">'+rangeText(hit)+'</span>';
 }
 
 function resetOutput(){
@@ -511,7 +511,7 @@ function populateSchemas(){
   const qKeys     = ["24Q","30Q","40Q"];
 
   const grp1 = document.createElement("optgroup");
-  grp1.label = "-- Normalschlüssel (Note 1–6)";
+  grp1.label = "── Normalschlüssel (Note 1–6)";
   gradeKeys.forEach(k => {
     if(!schemas[k]) return;
     const o = document.createElement("option");
@@ -520,7 +520,7 @@ function populateSchemas(){
   });
 
   const grp2 = document.createElement("optgroup");
-  grp2.label = "-- Q-Phase (Notenpunkte 0–15)";
+  grp2.label = "── Q-Phase (Notenpunkte 0–15)";
   qKeys.forEach(k => {
     if(!schemas[k]) return;
     const o = document.createElement("option");
