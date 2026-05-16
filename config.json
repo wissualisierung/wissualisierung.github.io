@@ -127,6 +127,17 @@
       }
     },
     {
+      "id": "blockkaskade",
+      "name": "Blockkaskade",
+      "osName": "Blockkaskade",
+      "description": "Quadrapop-Blockspiel",
+      "icon": "joystick",
+      "category": "Spiele",
+      "url": "PROGRAMME/Blockkaskade/Blockkaskade.html",
+      "openInWindow": true,
+      "showOnDesktop": false
+    },
+    {
       "id": "paed-navigator",
       "name": "Pädagogischer Navigator",
       "osName": "Pädagogische Hilfe",
@@ -265,7 +276,8 @@
         "name": "Spiele",
         "icon": "joystick",
         "programIds": [
-          "brettspiel-editor"
+          "brettspiel-editor",
+          "blockkaskade"
         ]
       }
     ],

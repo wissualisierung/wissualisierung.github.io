@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -873,12 +873,11 @@ button:focus-visible {
     <div id="app">
         <!-- Topbar -->
         <header class="topbar">
-            <div class="logo">?? Lyrik-Editor</div>
+            <div class="logo">✏️ Lyrik-Editor</div>
             <div class="topbar-actions">
                 <button id="btnAddPoem" class="btn-primary" aria-label="Neues Gedicht hinzufügen">+ Gedicht</button>
-                <button id="btnTemplates" class="btn-primary" aria-label="Vorlage laden">?? Vorlagen</button>
-                <button id="btnShowHelp" class="btn-primary" aria-label="Hilfe anzeigen">? Hilfe</button>
-                <button id="btnExportDialog" class="btn-primary" aria-label="Export-Dialog öffnen">? Export</button>
+                <button id="btnShowHelp" class="btn-primary" aria-label="Hilfe anzeigen">❓ Hilfe</button>
+                <button id="btnExportDialog" class="btn-primary" aria-label="Export-Dialog öffnen">⬇ Export</button>
             </div>
         </header>
 
@@ -893,8 +892,8 @@ button:focus-visible {
             <div class="preview-pane" id="previewPane">
                 <div class="preview-header">
                     <select id="previewPoemSelect" aria-label="Gedicht für Vorschau wählen"></select>
-                    <label><input type="checkbox" id="chkShowAnnotations" checked> Annotationen ?</label>
-                    <label><input type="checkbox" id="chkShowRhymes" checked> Reim ?</label>
+                    <label><input type="checkbox" id="chkShowAnnotations" checked> Annotationen ✓</label>
+                    <label><input type="checkbox" id="chkShowRhymes" checked> Reim ✓</label>
                     <label><input type="checkbox" id="chkShowArrows" checked> Alle Pfeile</label>
                 </div>
                 <div class="preview-content-wrapper" id="previewContentWrapper">
@@ -903,7 +902,7 @@ button:focus-visible {
                     <svg id="arrowOverlay" class="arrow-overlay">
                         <defs id="arrowDefs"></defs>
                     </svg>
-                    <div class="mobile-hint" aria-hidden="true">?? Tippe auf einen Vers, um Annotationen und Pfeile zu sehen</div>
+                    <div class="mobile-hint" aria-hidden="true">👆 Tippe auf einen Vers, um Annotationen und Pfeile zu sehen</div>
                 </div>
             </div>
         </div>
@@ -913,7 +912,7 @@ button:focus-visible {
     <dialog id="exportModal" class="modal">
         <div class="modal-box">
             <div class="modal-header">
-                <h2>? Export</h2>
+                <h2>⬇ Export</h2>
                 <button class="btn-icon close-modal" id="closeExportModal">&times;</button>
             </div>
             <div class="modal-content">
@@ -930,9 +929,9 @@ button:focus-visible {
                 </div>
                 <br>
                 <div class="export-actions">
-                    <button id="btnExportHtml" class="btn-primary" style="font-size:1.1rem; padding: 1rem 2rem;">? HTML5 herunterladen</button>
-                    <button id="btnExportJson" class="btn-ghost">?? JSON speichern</button>
-                    <button id="btnImportJson" class="btn-ghost" onclick="document.getElementById('fileImport').click()">?? JSON laden</button>
+                    <button id="btnExportHtml" class="btn-primary" style="font-size:1.1rem; padding: 1rem 2rem;">⬇ HTML5 herunterladen</button>
+                    <button id="btnExportJson" class="btn-ghost">💾 JSON speichern</button>
+                    <button id="btnImportJson" class="btn-ghost" onclick="document.getElementById('fileImport').click()">📂 JSON laden</button>
                     <input type="file" id="fileImport" accept=".json" style="display:none">
                 </div>
             </div>
@@ -943,7 +942,7 @@ button:focus-visible {
     <dialog id="helpModal" class="modal">
         <div class="modal-box" style="max-width: 800px;">
             <div class="modal-header">
-                <h2>? Anleitung: Gedicht-Annotation</h2>
+                <h2>❓ Anleitung: Gedicht-Annotation</h2>
                 <button class="btn-icon close-modal" onclick="document.getElementById('helpModal').close()">&times;</button>
             </div>
             <div class="modal-content help-content" style="line-height: 1.6; font-size: 1.05rem;">
@@ -953,7 +952,7 @@ button:focus-visible {
                 <p>Klicke oben auf <strong>+ Gedicht</strong>, um ein leeres Projekt zu starten. Du kannst Titel, Autor, Jahr und Metrum direkt in der Kopfzeile des Gedichts bearbeiten.</p>
 
                 <h3 style="color:var(--purple); border-bottom: 2px solid var(--black); padding-bottom: 0.3rem;">2. Text & Verse bearbeiten</h3>
-                <p>Jeder Vers kann einzeln editiert werden. Mit dem Button <strong>+ Vers</strong> fügst du neue Zeilen hinzu. In den kleinen Feldern rechts kannst du das <strong>Reimschema</strong> (z.B. "a", "b") und die <strong>Kadenz</strong> (?/?) festlegen.</p>
+                <p>Jeder Vers kann einzeln editiert werden. Mit dem Button <strong>+ Vers</strong> fügst du neue Zeilen hinzu. In den kleinen Feldern rechts kannst du das <strong>Reimschema</strong> (z.B. "a", "b") und die <strong>Kadenz</strong> (♀/♂) festlegen.</p>
 
                 <h3 style="color:var(--purple); border-bottom: 2px solid var(--black); padding-bottom: 0.3rem;">3. Farbmarkierungen setzen</h3>
                 <p>Klicke im Editor auf ein <strong>einzelnes Wort</strong>. Es öffnet sich ein Menü, in dem du eine Farbe aus der Legende wählen kannst. Die Legende links lässt sich frei benennen und farblich anpassen.</p>
@@ -973,32 +972,6 @@ button:focus-visible {
                 
                 <div style="margin-top: 2rem; text-align: center;">
                     <button class="btn-primary" onclick="document.getElementById('helpModal').close()">Verstanden!</button>
-                </div>
-            </div>
-        </div>
-    </dialog>
-
-    <!-- Template Selection Dialog -->
-    <dialog id="templateModal" class="modal">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h2>?? Vorlage laden</h2>
-                <button class="btn-icon close-modal" onclick="document.getElementById('templateModal').close()">&times;</button>
-            </div>
-            <div class="modal-content">
-                <p style="margin-bottom:1.5rem; font-size:0.95rem; color:#666;">Wähle eine fertig annotierte Beispielanalyse als Ausgangspunkt:</p>
-                <div style="display:flex; flex-direction:column; gap:1rem;">
-                    <button class="btn-ghost" style="text-align:left; padding:1rem; display:flex; flex-direction:column; gap:0.3rem;" onclick="loadTemplate('mondnacht')">
-                        <strong style="font-size:1.1rem;">?? Mondnacht</strong>
-                        <span style="font-size:0.85rem; color:#666;">Joseph von Eichendorff (1835) + Brentano &mdash; 2 Gedichte, 5 Farbkategorien, 2 Wortgruppen, 3 Pfeile</span>
-                    </button>
-                    <button class="btn-ghost" style="text-align:left; padding:1rem; display:flex; flex-direction:column; gap:0.3rem;" onclick="loadTemplate('spinnerin')">
-                        <strong style="font-size:1.1rem;">?? Der Spinnerin Nachtlied</strong>
-                        <span style="font-size:0.85rem; color:#666;">Clemens Brentano (1818) + Eichendorff &mdash; 3 Gedichte, 5 Farbkategorien, 2 Wortgruppen, 4 Pfeile</span>
-                    </button>
-                </div>
-                <div style="margin-top:1.5rem; background:var(--yellow); padding:0.8rem; border:2px solid var(--black); border-radius:0.5rem; font-size:0.85rem;">
-                    <strong>?? Achtung:</strong> Das Laden einer Vorlage ersetzt alle aktuellen Daten. Sichere vorher über Export &gt; JSON.
                 </div>
             </div>
         </div>
@@ -1174,7 +1147,7 @@ function redo() {
  */
 function tokenize(text) {
     if (!text) return [];
-    return text.split(/(\s+|(?=[.,;:!?????"'])|(?<=[.,;:!?????"']))/).filter(Boolean);
+    return text.split(/(\s+|(?=[.,;:!?–—»«"'])|(?<=[.,;:!?–—»«"']))/).filter(Boolean);
 }
 
 /**
@@ -1289,10 +1262,10 @@ function renderEditor() {
     let html = '';
     
     // --- LEGEND SECTION ---
-    html += `<div class="section-header">?? Farblegende</div><div class="panel">`;
+    html += `<div class="section-header">🎨 Farblegende</div><div class="panel">`;
     state.legend.forEach((leg, i) => {
         html += `<div class="legend-item" draggable="true" ondragstart="dragLegend(event, ${i})" ondrop="dropLegend(event, ${i})" ondragover="dragOverLegend(event, ${i})" ondragend="document.querySelectorAll('.legend-item').forEach(el=>el.classList.remove('dragging','drag-over'))">
-            <span style="cursor:grab">?</span>
+            <span style="cursor:grab">⠇</span>
             <input type="color" class="legend-color-input" value="${leg.color}" onchange="updateLegendColor('${leg.id}', this.value)">
             <input type="text" value="${escapeHtml(leg.label)}" onchange="updateLegendLabel('${leg.id}', this.value)" style="flex-grow:1">
             <button class="btn-icon btn-ghost" onclick="deleteLegend('${leg.id}')" style="color:var(--red); border-color:transparent; box-shadow:none;">&times;</button>
@@ -1301,7 +1274,7 @@ function renderEditor() {
     html += `<button class="btn-ghost" onclick="addLegend()">+ Farbe hinzufügen</button></div>`;
 
     // --- POEMS SECTION ---
-    html += `<div class="section-header">?? Gedichte verwalten</div>`;
+    html += `<div class="section-header">🎵 Gedichte verwalten</div>`;
     
     // TAB NAVIGATION for multiple poems
     html += `<div class="poem-tabs">`;
@@ -1324,10 +1297,10 @@ function renderEditor() {
             <div class="panel">
                 <!-- Metadata Header -->
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-                    <h2 style="margin:0;">?? ${escapeHtml(poem.title || 'Gedicht bearbeiten')}</h2>
+                    <h2 style="margin:0;">📝 ${escapeHtml(poem.title || 'Gedicht bearbeiten')}</h2>
                     <div style="display:flex; gap:0.5rem;">
-                        <button class="btn-icon btn-ghost" onclick="movePoem(${pIdx}, -1)" ${pIdx===0?'disabled':''}>?</button>
-                        <button class="btn-icon btn-ghost" onclick="movePoem(${pIdx}, 1)" ${pIdx===state.poems.length-1?'disabled':''}>?</button>
+                        <button class="btn-icon btn-ghost" onclick="movePoem(${pIdx}, -1)" ${pIdx===0?'disabled':''}>▲</button>
+                        <button class="btn-icon btn-ghost" onclick="movePoem(${pIdx}, 1)" ${pIdx===state.poems.length-1?'disabled':''}>▼</button>
                     </div>
                 </div>
                 
@@ -1363,10 +1336,10 @@ function renderEditor() {
                         <input type="text" class="verse-reim-input" value="${escapeHtml(verse.reim)}" placeholder="Reim" onchange="updateVerseProp('${poem.id}', ${sIdx}, ${vIdx}, 'reim', this.value)" onclick="event.stopPropagation()">
                         <select class="verse-kadenz-select" onchange="updateVerseProp('${poem.id}', ${sIdx}, ${vIdx}, 'kadenz', this.value)" onclick="event.stopPropagation()">
                             <option value="" ${verse.kadenz===''?'selected':''}>-</option>
-                            <option value="?" ${verse.kadenz==='?'?'selected':''}>?</option>
-                            <option value="?" ${verse.kadenz==='?'?'selected':''}>?</option>
+                            <option value="♀" ${verse.kadenz==='♀'?'selected':''}>♀</option>
+                            <option value="♂" ${verse.kadenz==='♂'?'selected':''}>♂</option>
                         </select>
-                        <button class="btn-icon btn-ghost" onclick="event.stopPropagation(); toggleVerseDetails('${poem.id}-${verse.nr}')">??</button>
+                        <button class="btn-icon btn-ghost" onclick="event.stopPropagation(); toggleVerseDetails('${poem.id}-${verse.nr}')">📝</button>
                     </div>`;
                 
                 // Detailed Annotation View (if active)
@@ -1438,7 +1411,7 @@ function renderEditor() {
                 <div class="arrow-card">
                     <div class="arrow-card-row" style="align-items:flex-start;">
                         Von V<input type="number" value="${conn.from}" onchange="updateConn('${poem.id}', ${cIdx}, 'from', parseInt(this.value))" style="width:50px; ${!fromValid ? 'border-color:var(--red); box-shadow:2px 2px 0 var(--red);' : ''}" title="${!fromValid ? 'Vers ' + conn.from + ' existiert nicht!' : ''}">
-                        ? Bis V<input type="number" value="${conn.to}" onchange="updateConn('${poem.id}', ${cIdx}, 'to', parseInt(this.value))" style="width:50px; ${!toValid ? 'border-color:var(--red); box-shadow:2px 2px 0 var(--red);' : ''}" title="${!toValid ? 'Vers ' + conn.to + ' existiert nicht!' : ''}">
+                        → Bis V<input type="number" value="${conn.to}" onchange="updateConn('${poem.id}', ${cIdx}, 'to', parseInt(this.value))" style="width:50px; ${!toValid ? 'border-color:var(--red); box-shadow:2px 2px 0 var(--red);' : ''}" title="${!toValid ? 'Vers ' + conn.to + ' existiert nicht!' : ''}">
                         <textarea placeholder="Text / Interpretation" onchange="updateConn('${poem.id}', ${cIdx}, 'label', this.value)" style="flex-grow:1; height:44px; font-family:inherit; font-size:0.85rem; border:2.5px solid var(--black); border-radius:0.5rem; padding:0.3rem; resize:vertical;">${escapeHtml(conn.label)}</textarea>
                         <button class="btn-icon btn-ghost" onclick="deleteConn('${poem.id}', ${cIdx})" style="color:var(--red)">&times;</button>
                     </div>
@@ -1461,7 +1434,7 @@ function renderEditor() {
     }
     
     // --- WORD GROUPS SECTION ---
-    html += `<div class="section-header">?? Wortgruppen (Global)</div><div>`;
+    html += `<div class="section-header">🔗 Wortgruppen (Global)</div><div>`;
     state.wordgroups.forEach((wg) => {
         html += `<div class="group-card">
             <div style="display:flex; gap:0.5rem; align-items:center;">
@@ -1756,9 +1729,6 @@ function setupEventListeners() {
     const btnHelp = document.getElementById('btnShowHelp');
     if (btnHelp) btnHelp.onclick = showHelp;
     
-    const btnTpl = document.getElementById('btnTemplates');
-    if (btnTpl) btnTpl.onclick = () => document.getElementById('templateModal').showModal();
-    
     const btnExp = document.getElementById('btnExportDialog');
     if (btnExp) {
         btnExp.onclick = () => {
@@ -1804,27 +1774,6 @@ function setupEventListeners() {
 function showHelp() {
     const modal = document.getElementById('helpModal');
     if (modal) modal.showModal();
-}
-
-/**
- * 11b. TEMPLATE SYSTEM
- * Pre-built example analyses that can be loaded as starting points.
- */
-const TEMPLATES = {
-    mondnacht: {"meta":{"title":"Lyrik Projekt","epoch":"Romantik","version":"1.0"},"legend":[{"id":"l1","color":"#FFD84D","label":"Motive und Wortwahl"},{"id":"l2","color":"#4DD7FF","label":"Person"},{"id":"l4","color":"#92E48A","label":"Raumstruktur"},{"id":"l3","color":"#FF6FB3","label":"Moduswahl"},{"id":"l5","color":"#5C6BFF","label":"Nacht"}],"wordgroups":[{"id":"wg1","label":"Traumwelt","color":"#4DD7FF","members":[{"poemId":"brentano-1","verseNr":4,"tokenIndex":7,"tokenText":"Tr\u00e4umen"},{"poemId":"brentano-1","verseNr":5,"tokenIndex":7,"tokenText":"Wolken"},{"poemId":"brentano-1","verseNr":6,"tokenIndex":8,"tokenText":"Schlaflied"},{"poemId":"brentano-1","verseNr":5,"tokenIndex":9,"tokenText":"wiegen"},{"poemId":"poem-50tz2ij33","verseNr":4,"tokenIndex":6,"tokenText":"tr\u00e4umen"},{"poemId":"poem-50tz2ij33","verseNr":8,"tokenIndex":8,"tokenText":"Nacht"},{"poemId":"poem-50tz2ij33","verseNr":11,"tokenIndex":6,"tokenText":"stillen"}]},{"id":"wg-kr5k9n8m5","label":"Naturerfahrung","color":"#00ff00","members":[{"poemId":"poem-50tz2ij33","verseNr":3,"tokenIndex":6,"tokenText":"Bl\u00fctenschimmer"},{"poemId":"poem-50tz2ij33","verseNr":5,"tokenIndex":10,"tokenText":"Felder"},{"poemId":"poem-50tz2ij33","verseNr":6,"tokenIndex":2,"tokenText":"\u00c4hren"},{"poemId":"poem-50tz2ij33","verseNr":7,"tokenIndex":8,"tokenText":"W\u00e4lder"},{"poemId":"poem-50tz2ij33","verseNr":8,"tokenIndex":2,"tokenText":"sternklar"}]}],"poems":[{"id":"poem-50tz2ij33","author":"Joseph von Eichendorff","title":"Mondnacht","year":"1835","meter":"Dreihebiger Jambus","theme":"Transzendenz durch Naturerfahrung","strophen":[{"randnotiz":"","verses":[{"nr":1,"text":"Es w\u00e1r, als h\u00e4tt' der H\u00edmmel","reim":"(a)","kadenz":"\u2640","marks":[{"tokenIndex":7,"legendId":"l3"},{"tokenIndex":11,"legendId":"l4"},{"tokenIndex":2,"legendId":"l3"}],"annotation":"Unm\u00f6gliche Darstellung: Ann\u00e4herung \u00fcber Vergleich im Konjunktiv; Himmel und Erde: Anklang an Urmythos von Uranos und Gaia"},{"nr":2,"text":"Die \u00c9rde st\u00edll gek\u00fc\u00dft,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":6,"legendId":"l1"}],"annotation":"Kuss als Ausdruck inniger Liebe = Bild f\u00fcr Harmonie"},{"nr":3,"text":"Da\u00df s\u00ede im Bl\u00fctenschimmer","reim":"(a)","kadenz":"\u2640","marks":[{"tokenIndex":6,"legendId":"l1"}],"annotation":"Bl\u00fctenschimmer: Neologismus"},{"nr":4,"text":"Von \u00edhm nun tr\u00e4umen m\u00fc\u00dft'.","reim":"b","kadenz":"\u2642","marks":[],"annotation":""},{"nr":5,"text":"Die Luft ging durch die Felder,","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":4,"legendId":"l3"}],"annotation":"Wechsel in Indikativ"},{"nr":6,"text":"Die \u00c4hren wogten sacht,","reim":"d","kadenz":"\u2642","marks":[{"tokenIndex":4,"legendId":"l3"}],"annotation":"Verinnerlichte Naturerfahrung"},{"nr":7,"text":"Es rauschten leis' die W\u00e4lder,","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"}],"annotation":""},{"nr":8,"text":"So sternklar war die Nacht.","reim":"d","kadenz":"\u2642","marks":[{"tokenIndex":4,"legendId":"l3"},{"tokenIndex":8,"legendId":"l5"}],"annotation":"Erinnerungsraum Nacht"},{"nr":9,"text":"Und meine Seele spannte","reim":"(e)","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l2"}],"annotation":"Erstmals explizit \"meine\""},{"nr":10,"text":"Weit ihre Fl\u00fcgel aus,","reim":"f","kadenz":"\u2642","marks":[{"tokenIndex":4,"legendId":"l1"}],"annotation":"Metapher vom Seelenflug"},{"nr":11,"text":"Flog durch die stillen Lande,","reim":"(e)","kadenz":"\u2640","marks":[{"tokenIndex":6,"legendId":"l1"}],"annotation":"Ruhe"},{"nr":12,"text":"Als fl\u00f6ge sie nach Haus","reim":"f","kadenz":"\u2642","marks":[{"tokenIndex":8,"legendId":"l4"}],"annotation":"M\u00f6glichkeit, Gott zu finden"}]}],"connections":[{"id":"conn-1","from":9,"to":12,"label":"Seele kehrt \"nach Hause\" zu Gott","lineStyle":"solid","lineColor":"#008000","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"},{"id":"conn-2","from":5,"to":9,"label":"Syn\u00e4sthetische Wahrnehmung f\u00fchrt zu Transzendenz","lineStyle":"solid","lineColor":"#0000ff","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"straight"},{"id":"conn-3","from":1,"to":8,"label":"Erinnerungsraum aufgespannt \u00fcber \"war\"","lineStyle":"dashed","lineColor":"#ff8000","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"}]},{"id":"brentano-1","author":"Clemens Brentano","title":"H\u00f6rst du, wie die Brunnen rauschen","year":"1801","meter":"Troch\u00e4us","theme":"Natur und Traumwelt der Romantik","strophen":[{"randnotiz":"Strophe 1","verses":[{"nr":1,"text":"H\u00f6rst du, wie die Brunnen rauschen,","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":6,"legendId":"l1"}],"annotation":"Brunnen als Transzendenzzeichen"},{"nr":2,"text":"H\u00f6rst du, wie die Grille zirpt?","reim":"b","kadenz":"\u2642","marks":[],"annotation":""},{"nr":3,"text":"Stille, stille, la\u00df uns lauschen,","reim":"a","kadenz":"\u2640","marks":[],"annotation":""},{"nr":4,"text":"Selig, wer in Tr\u00e4umen stirbt.","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":5,"legendId":"l2"}],"annotation":""}]},{"randnotiz":"Mittelteil","verses":[{"nr":5,"text":"Selig, wen die Wolken wiegen,","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":4,"legendId":"l1"}],"annotation":""},{"nr":6,"text":"Wem der Mond ein Schlaflied singt,","reim":"d","kadenz":"\u2642","marks":[{"tokenIndex":2,"legendId":"l2"}],"annotation":""},{"nr":7,"text":"O, wie selig kann der fliegen,","reim":"c","kadenz":"\u2640","marks":[],"annotation":""},{"nr":8,"text":"Dem der Traum den Fl\u00fcgel schwingt,","reim":"d","kadenz":"\u2642","marks":[{"tokenIndex":2,"legendId":"l2"}],"annotation":"Enjambement"}]},{"randnotiz":"Schluss","verses":[{"nr":9,"text":"Da\u00df an blauer Himmelsdecke","reim":"e","kadenz":"\u2640","marks":[],"annotation":""},{"nr":10,"text":"Sterne er wie Blumen pfl\u00fcckt,","reim":"f","kadenz":"\u2642","marks":[],"annotation":""},{"nr":11,"text":"Bis ihn seine Liebe wecke","reim":"e","kadenz":"\u2640","marks":[{"tokenIndex":3,"legendId":"l3"}],"annotation":"Klammer zum Anfang"},{"nr":12,"text":"Und an seinen Busen dr\u00fcckt.","reim":"f","kadenz":"\u2642","marks":[],"annotation":""}]}],"connections":[{"id":"c1","from":11,"to":1,"label":"Klammer zum Anfang","lineStyle":"dashed","lineColor":"#9B72CF","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"}]}]},
-    spinnerin: {"meta":{"title":"Lyrik Projekt","epoch":"Romantik","version":"1.0"},"legend":[{"id":"l1","color":"#FFD84D","label":"Motive und Wortwahl"},{"id":"l2","color":"#fe7a23","label":"M\u00e4rchenton"},{"id":"l4","color":"#92E48A","label":"Symbole"},{"id":"l3","color":"#FF6FB3","label":"Moduswahl"},{"id":"l5","color":"#5C6BFF","label":"Nacht"}],"wordgroups":[{"id":"wg1","label":"Liebeserfahrung","color":"#ff0080","members":[{"poemId":"poem-amnb0xr1h","verseNr":24,"tokenIndex":6,"tokenText":"m\u00f6chte"},{"poemId":"poem-amnb0xr1h","verseNr":24,"tokenIndex":8,"tokenText":"weinen"},{"poemId":"poem-amnb0xr1h","verseNr":20,"tokenIndex":4,"tokenText":"zusammen"},{"poemId":"poem-amnb0xr1h","verseNr":20,"tokenIndex":6,"tokenText":"waren"},{"poemId":"poem-amnb0xr1h","verseNr":9,"tokenIndex":4,"tokenText":"zusammen"},{"poemId":"poem-amnb0xr1h","verseNr":9,"tokenIndex":6,"tokenText":"waren"},{"poemId":"poem-amnb0xr1h","verseNr":5,"tokenIndex":6,"tokenText":"k\u00e1nn"},{"poemId":"poem-amnb0xr1h","verseNr":5,"tokenIndex":8,"tokenText":"nicht"},{"poemId":"poem-amnb0xr1h","verseNr":5,"tokenIndex":10,"tokenText":"w\u00e9inen"},{"poemId":"poem-amnb0xr1h","verseNr":4,"tokenIndex":4,"tokenText":"zus\u00e1mmen"},{"poemId":"poem-amnb0xr1h","verseNr":4,"tokenIndex":6,"tokenText":"w\u00e1ren"}]},{"id":"wg-kr5k9n8m5","label":"Naturerfahrung","color":"#00ff00","members":[{"poemId":"poem-amnb0xr1h","verseNr":2,"tokenIndex":6,"tokenText":"N\u00e1chtig\u00e1ll"},{"poemId":"poem-amnb0xr1h","verseNr":8,"tokenIndex":6,"tokenText":"M\u00f3nd"},{"poemId":"poem-amnb0xr1h","verseNr":10,"tokenIndex":6,"tokenText":"Nachtigall"},{"poemId":"poem-amnb0xr1h","verseNr":13,"tokenIndex":6,"tokenText":"Mond"},{"poemId":"poem-amnb0xr1h","verseNr":18,"tokenIndex":6,"tokenText":"Nachtigall"},{"poemId":"poem-amnb0xr1h","verseNr":23,"tokenIndex":2,"tokenText":"Mond"}]}],"poems":[{"id":"poem-amnb0xr1h","author":"Clemens Brentano","title":"Der Spinnerin Nachtlied","year":"1818","meter":"dreihebiger Jambus","theme":"Harmonie und Transzendenz durch Liebe","strophen":[{"randnotiz":"","verses":[{"nr":1,"text":"Es s\u00e1ng vor l\u00e1ngen J\u00e1hren","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l2"},{"tokenIndex":0,"legendId":"l2"}],"annotation":"M\u00e4rchenton"},{"nr":2,"text":"Wohl \u00e1uch die N\u00e1chtig\u00e1ll,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":6,"legendId":"l4"}],"annotation":"Nachtigall: Symbol der Liebe"},{"nr":3,"text":"Das w\u00e1r wohl s\u00fc\u00dfer Sch\u00e1ll,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":6,"legendId":"l4"},{"tokenIndex":8,"legendId":"l4"}],"annotation":""},{"nr":4,"text":"Da w\u00edr zus\u00e1mmen w\u00e1ren.","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"}],"annotation":""}]},{"randnotiz":"","verses":[{"nr":5,"text":"Ich s\u00edng' und k\u00e1nn nicht w\u00e9inen,","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":0,"legendId":"l3"},{"tokenIndex":2,"legendId":"l4"}],"annotation":"Tempuswechsel; Apokope"},{"nr":6,"text":"Und sp\u00ednne s\u00f3 all\u00e9in","reim":"d","kadenz":"\u2642","marks":[],"annotation":""},{"nr":7,"text":"Den F\u00e1den kl\u00e1r und r\u00e9in,","reim":"d","kadenz":"\u2642","marks":[],"annotation":"Faden: Spinnen + Schicksalsfaden"},{"nr":8,"text":"So l\u00e1ng der M\u00f3nd wird sch\u00e9inen.","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":6,"legendId":"l5"}],"annotation":"Mond als Sehnsuchtsmotiv"}]},{"randnotiz":"","verses":[{"nr":9,"text":"Da wir zusammen waren,","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"}],"annotation":"Variierte Wiederholung"},{"nr":10,"text":"Da sang die Nachtigall,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":6,"legendId":"l4"},{"tokenIndex":2,"legendId":"l4"}],"annotation":""},{"nr":11,"text":"Nun mahnet mich ihr Schall,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":4,"legendId":"l3"},{"tokenIndex":8,"legendId":"l4"}],"annotation":"Antithese: ich/wir"},{"nr":12,"text":"Da\u00df du von mir gefahren","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"}],"annotation":"Erste Anrede des lyr. Du"}]},{"randnotiz":"","verses":[{"nr":13,"text":"So oft der Mond mag scheinen,","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":6,"legendId":"l5"}],"annotation":""},{"nr":14,"text":"Gedenk' ich dein allein,","reim":"d","kadenz":"\u2642","marks":[],"annotation":"Apokope"},{"nr":15,"text":"Mein Herz ist klar und rein,","reim":"d","kadenz":"\u2642","marks":[],"annotation":"Schl\u00fcsselwort \u201eHerz\u201c"},{"nr":16,"text":"Gott wolle uns vereinen.","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":0,"legendId":"l1"}],"annotation":"Sakralisierung, Konjunktiv"}]},{"randnotiz":"","verses":[{"nr":17,"text":"Seit du von mir gefahren,","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"},{"tokenIndex":6,"legendId":"l3"}],"annotation":""},{"nr":18,"text":"Singt stets die Nachtigall,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":6,"legendId":"l4"},{"tokenIndex":0,"legendId":"l4"}],"annotation":"Vergegenwärtigungsreflex"},{"nr":19,"text":"Ich denk bei ihrem Schall,","reim":"b","kadenz":"\u2642","marks":[{"tokenIndex":8,"legendId":"l4"}],"annotation":""},{"nr":20,"text":"Wie wir zusammen waren","reim":"a","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l3"}],"annotation":"Anklang Liebesvereinigung"}]},{"randnotiz":"","verses":[{"nr":21,"text":"Gott wolle uns vereinen,","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":4,"legendId":"l3"},{"tokenIndex":0,"legendId":"l1"}],"annotation":"Bitte um jenseitige Vereinigung"},{"nr":22,"text":"Hier spinn ich so allein,","reim":"d","kadenz":"\u2642","marks":[],"annotation":""},{"nr":23,"text":"Der Mond scheint klar und rein,","reim":"d","kadenz":"\u2642","marks":[{"tokenIndex":2,"legendId":"l5"}],"annotation":""},{"nr":24,"text":"Ich sing und m\u00f6chte weinen!","reim":"c","kadenz":"\u2640","marks":[{"tokenIndex":2,"legendId":"l4"}],"annotation":""}]}],"connections":[{"id":"conn-1","from":16,"to":21,"label":"Anrufung Gottes: Transzendenz","lineStyle":"dashed","lineColor":"#ff8000","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"},{"id":"conn-2","from":13,"to":23,"label":"Nacht: erweiterte Wahrnehmung","lineStyle":"dashed","lineColor":"#0000ff","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"},{"id":"conn-3","from":2,"to":10,"label":"Liebesvogel: Harmonie","lineStyle":"dashed","lineColor":"#00db00","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"},{"id":"conn-4","from":10,"to":18,"label":"Liebesvogel: Harmonie","lineStyle":"dashed","lineColor":"#00db00","lineWidth":2,"markerStart":"none","markerEnd":"arrow","curve":"bezier"}]}]}
-};
-
-function loadTemplate(name) {
-    const tpl = TEMPLATES[name];
-    if (!tpl) return;
-    if (!confirm('Vorlage "' + (tpl.meta?.title || name) + '" laden?\nAlle aktuellen Daten werden ersetzt!')) return;
-    state = JSON.parse(JSON.stringify(tpl));
-    currentPoemId = state.poems[0]?.id || null;
-    openPoemIds = new Set(state.poems.map(p => p.id));
-    saveSnapshot();
-    renderAll();
-    document.getElementById('templateModal').close();
 }
 
 function switchPoem(id) {
@@ -1887,7 +1836,7 @@ function handleTokenClick(event, poemId, verseNr, tokenIndex) {
         html += `<div class="group-selector-item ${isInGroup ? 'active' : ''}" data-action="addToGroup" data-group="${wg.id}" data-poem="${poemId}" data-verse="${verseNr}" data-token="${tokenIndex}">
             <span style="display:inline-block; width:14px; height:14px; background:${wg.color}; border:2px solid var(--black); border-radius:50%;"></span>
             <span style="flex-grow:1">${escapeHtml(wg.label)}</span>
-            ${isInGroup ? '<span>?</span>' : ''}
+            ${isInGroup ? '<span>✓</span>' : ''}
         </div>`;
     });
     
@@ -2298,7 +2247,7 @@ function exportHtml() {
         .learn-mode-revealed .preview-verse.active-interactive .preview-annotation { display: block !important; }
         .learn-toggle { position:fixed; bottom:1rem; right:1rem; z-index:999; }
     ` : '';
-    const learnModeBtn = opts.learnMode ? `<button class="btn-primary learn-toggle" onclick="document.getElementById('previewContentWrapper').classList.toggle('learn-mode-revealed')">?? Annotationen ein/aus</button>` : '';
+    const learnModeBtn = opts.learnMode ? `<button class="btn-primary learn-toggle" onclick="document.getElementById('previewContentWrapper').classList.toggle('learn-mode-revealed')">💡 Annotationen ein/aus</button>` : '';
     
     // Legend section for export
     let legendHtml = '';
@@ -2367,19 +2316,7 @@ function exportHtml() {
         ${renderArrows.toString()}
         ${showViewTooltip.toString()}
         
-        // Aliases needed by toString()-serialized functions (R1+R2)
-        function renderAll() { renderPreview(); if(exportOpts.arrows) renderArrows(); }
-        function renderOnly() { renderAll(); }
-        
-        window.onload = () => { 
-            renderPreview(); 
-            if(exportOpts.arrows) renderArrows();
-            // Event delegation for data-action=viewTooltip (R3)
-            document.getElementById('previewContentWrapper').addEventListener('click', (e) => {
-                const el = e.target.closest('[data-action="viewTooltip"]');
-                if (el) showViewTooltip(e, el);
-            });
-        };
+        window.onload = () => { renderPreview(); if(exportOpts.arrows) renderArrows(); };
         let resizeTimer;
         window.onresize = () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { if(exportOpts.arrows) renderArrows(); }, 100); };
     <\/script>
@@ -2398,5 +2335,4 @@ window.onload = init;
 </script>
 </body>
 </html>
-
 
