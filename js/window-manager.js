@@ -339,6 +339,9 @@
           showFullscreenWarning();
         }
         break;
+      case 'volume-click':
+      case 'focus-click':
+        break;
       default:
         createWindow({
           title: data.action,
