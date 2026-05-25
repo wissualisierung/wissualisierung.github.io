@@ -95,6 +95,7 @@
     _bus.emit('startmenu:closed');
   }
 
+
   // ===== Sound Volume =====
   function initVolume() {
     var volIcon = document.getElementById('volume-icon');
