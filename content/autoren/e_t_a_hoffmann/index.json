@@ -1,0 +1,322 @@
+﻿{
+    "id":  "e_t_a_hoffmann",
+    "name":  "E.T.A. Hoffmann",
+    "short":  "Hoffmann",
+    "dates":  "1776 – 1822",
+    "epoch":  "Spätromantik",
+    "epochShort":  "Romantik",
+    "color":  "#1565C0",
+    "highlight":  "#1E88E5",
+    "icon":  "🎭",
+    "quote":  "Die Musik schließt dem Menschen ein unbekanntes Reich auf.",
+    "timelinePos":  16.3,
+    "avatar":  "avatar.jpg",
+    "source":  "https://de.wikipedia.org/wiki/E._T._A._Hoffmann#/media/Datei:ETA_Hoffmann.jpg",
+    "theme":  "sebastian-wolf",
+    "modules":  [
+                    {
+                        "type":  "framing",
+                        "content":  "Du triffst gleich auf E.T.A. Hoffmann – oder besser: auf eine Konstruktion, die so spricht, wie er vielleicht geschrieben hätte. Hoffmann selbst ist 1822 in Berlin gestorben. Was du hier liest, basiert auf seinen Texten, Erzählungen und Briefen, ist aber eine didaktische Interpretation. Lies kritisch!"
+                    },
+                    {
+                        "type":  "timeline",
+                        "epochs":  [
+                                       {
+                                           "name":  "Hoffmanns Leben",
+                                           "start":  1776,
+                                           "end":  1822,
+                                           "active":  true,
+                                           "info":  "Geboren als Ernst Theodor Wilhelm Hoffmann in Königsberg. Gestorben in Berlin mit nur 46 Jahren."
+                                       },
+                                       {
+                                           "name":  "Romantik",
+                                           "start":  1795,
+                                           "end":  1835,
+                                           "active":  false,
+                                           "info":  "Gefühlstiefe, Natursehnsucht, Hinwendung zum Irrationalen und Übernatürlichen."
+                                       },
+                                       {
+                                           "name":  "Schwarze Romantik",
+                                           "start":  1800,
+                                           "end":  1830,
+                                           "active":  false,
+                                           "info":  "Schauerromantik, Doppelgängermotiv, dämonische Psyche, Automaten, Wahnsinn."
+                                       },
+                                       {
+                                           "name":  "Befreiungskriege",
+                                           "start":  1813,
+                                           "end":  1815,
+                                           "active":  false,
+                                           "info":  "Napoleons Feldzüge erschüttern Europa. Hoffmann erlebt politische Zeitenwende und persönliche Not."
+                                       }
+                                   ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Guten Abend – oder sollte ich sagen: Gute Nacht? Das ist wohl die passendere Stunde für mein Werk. Ich bin Ernst Theodor Amadeus Hoffmann, Jurist, Komponist, Zeichner und Schriftsteller; obwohl mir die Reihenfolge dieser Tätigkeiten herzlich gleichgültig war. Meinen dritten Vornamen Wilhelm habe ich übrigens selbst in Amadeus umgetauft, zu Ehren meines Abgottes Mozart. Du begegnest mir in der Schule? Nun, dort begegnete ich selbst dem langweiligsten aller Zwänge: dem bürgerlichen Vernunftleben. Doch es blieb mir wenig übrig. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 25.06.2022\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 25.06.2022\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Du warst also eigentlich kein reiner Schriftsteller?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "E.T.A. Hoffmann (1776–1822) war ein echter Universalkünstler: Er arbeitete hauptberuflich als Jurist und Richter, komponierte Opern und Sinfonien, zeichnete Karikaturen und schrieb Erzählungen – oft parallel. Er selbst formulierte seine Zerrissenheit in einem Brief: \"Die Wochentage bin ich Jurist und höchstens etwas Musiker. Sonntags am Tage wird gezeichnet und abends bin ich ein sehr witziger Autor bis spät in die Nacht.\" Sein literarisches Werk entstand fast ausschließlich in den letzten acht Jahren seines Lebens."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich musste mich zwingen, Jurist zu werden. Die Kunst war mein eigentliches Leben. Aber die Familie, die Gesellschaft, das notwendige Übel Geld; alles verlangte, dass ich Akten wälze. Ich schloss das Studium mit Auszeichnung ab. Dann aber begannen die Jahre der Strafversetzungen, der Skandale, des Hungers. In Posen zeichnete ich Spottbilder auf hochrangige Offiziere. Das war, nun, sagen wir einfach \"diplomatisch unklug\". Man versetzte mich nach Płock, ans Ende der Welt. Dort komponierte ich. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 25.06.2022\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 25.06.2022\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Spottbilder auf Militäroffiziere? Wie kam es dazu?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Beim Posener Karnevalsumzug 1802 kursierten Karikaturen hochrangiger Militärangehöriger. Als herauskam, dass Hoffmann die Zeichnungen angefertigt hatte, wurde er disziplinarisch strafversetzt – zunächst nach Płock, dann nach Warschau. Hoffmann hatte schon eine gewisse Begabung für Skandale. Er verabscheute Spitzelwesen und preußische Bürokratie zeitlebens und wehrte sich – mal literarisch, mal zeichnerisch."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Płock war eine Strafe, ja. Aber ich komponierte dort. Warschau dann war besser; eine Großstadt, ein Orchester, ein Singspiel. Doch 1806 rückten Napoleons Soldaten ein, die preußischen Behörden wurden aufgelöst, und ich verlor meine Stellung. Berlin. Hunger. Fünf Tage nur Brot. Ich schrieb damals an meinen Freund Hippel: \"Ich arbeite mich müde und matt, setze der Gesundheit zu und erwerbe nichts. Seit fünf Tagen habe ich nichts gegessen als Brot. So war es noch nie.\" \u003cspan class=\"chat-source-ref\" title=\"Brief an Theodor Gottlieb von Hippel, zit. nach WDR Zeitzeichen, 25.06.2022\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Brief an Theodor Gottlieb von Hippel, zit. nach WDR Zeitzeichen, 25.06.2022\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Die Wochentage bin ich Jurist und höchstens etwas Musiker. Sonntags am Tage wird gezeichnet und abends bin ich ein sehr witziger Autor bis spät in die Nacht.",
+                        "prompt":  "Markiere Hinweise auf Hoffmanns Doppelleben als Beamter und Künstler.",
+                        "targets":  [
+                                        {
+                                            "word":  "Wochentage / Jurist",
+                                            "feedback":  "Das bürgerliche Pflichtleben dominiert den Alltag; die Kunst ist in die Randzeiten verbannt."
+                                        },
+                                        {
+                                            "word":  "Sonntags",
+                                            "feedback":  "Der einzige freie Tag gehört der Kunst – Zeichnen und Schreiben als Gegenwelt zum Berufsalltag."
+                                        },
+                                        {
+                                            "word":  "witziger Autor",
+                                            "feedback":  "Die Selbstironie verdeckt den Ernst: Hoffmann schreibt bis tief in die Nacht, was ihm eigentlich am wichtigsten ist."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Warum ersetzte Hoffmann seinen Vornamen Wilhelm durch Amadeus?",
+                        "options":  [
+                                        {
+                                            "text":  "Aus Verehrung für Mozart, der starb, als Hoffmann 15 Jahre alt war.",
+                                            "correct":  true,
+                                            "feedback":  "Genau! Hoffmann bewunderte Mozart als musikalisches Vorbild und übernahm dessen zweiten Vornamen als Zeichen seiner Huldigung."
+                                        },
+                                        {
+                                            "text":  "Um sich vor seinen Vorgesetzten zu verbergen.",
+                                            "correct":  false,
+                                            "feedback":  "Nein, das ist eine Verwechslung mit späteren Zensurproblemen."
+                                        },
+                                        {
+                                            "text":  "Weil sein Vater diesen Namen trug.",
+                                            "correct":  false,
+                                            "feedback":  "Nein, sein Vater verließ die Familie früh; der Name ist eine künstlerische Geste."
+                                        },
+                                        {
+                                            "text":  "Auf Geheiß seines Verlegers, um Verwechslungen zu vermeiden.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Hoffmanns literarisches Gesamtwerk entstand fast ausschließlich zwischen 1814 und 1822 – den letzten acht Jahren seines Lebens. In diesen letzten acht Jahren seines Lebens ist Hoffmann künstlerisch förmlich explodiert. In dieser Zeit schrieb er über 40 teils umfangreiche Erzählungen, sieben Romane und mehrere Sammelwerke. Bekannte Werke sind u. a. Der Sandmann (1816), Die Elixiere des Teufels (1815/16), Lebensansichten des Katers Murr (1819–1821) und das Märchen Das fremde Kind."
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Was ist das Besondere an deinen Erzählungen? Warum nennt man dich \"Gespenster-Hoffmann\"?"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Weil ich das beschreibe, was die Aufklärung so gerne verdrängen wollte: die dunklen Seiten der menschlichen Seele. Das Triebhafte, das Dämonische, den Wahnsinn. Nach einem Jahrhundert der Vernunft wollte ich wissen: Was lauert darunter? In meinen Nachtstücken – zu denen der Sandmann gehört – begegnen euch menschliche Automaten, Traumata, Träume und unheimliche Wiederholungen. Und die Grenzen zwischen Wirklichkeit und Fantasie? Die habe ich absichtlich fließend gehalten. \u003cspan class=\"chat-source-ref\" title=\"vgl. WDR Zeitzeichen, 25.06.2022\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. WDR Zeitzeichen, 25.06.2022\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Sie schließt den Menschen ein unbekanntes Reich auf, eine Welt, die nichts gemein hat mit der äußeren Sinnenwelt, die ihn umgibt.",
+                        "source":  "E.T.A. Hoffmann über die Musik, zit. nach WDR Zeitzeichen (2022)"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Der Sandmann – was passiert da eigentlich?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Der Sandmann (1816) ist Hoffmanns bekannteste Erzählung und Teil des Zyklus Nachtstücke. Im Mittelpunkt steht der Student Nathanael, der seit seiner Kindheit vom \"Sandmann\" verfolgt wird – einer Schreckfigur, die in seiner Vorstellung mit dem Advokaten Coppelius verschmilzt. Später begegnet Nathanael dem Wetterglashändler Coppola, hält ihn für dieselbe unheimliche Gestalt und gerät immer tiefer in Angst und Wahn. Zugleich verliebt er sich in Olimpia, die Tochter des Professors Spalanzani, die sich schließlich als Automat erweist. Gerade diese Mischung aus Kindheitstrauma, Verfolgungsangst, Automatenmotiv und Realitätsverlust macht die Erzählung zu einem Schlüsseltext der Schwarzen Romantik."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Viele lesen den Sandmann als bloße Schauergeschichte. Das ist zu wenig. Mich interessierte, wie ein Mensch an seiner Wahrnehmung zerbricht. Nathanael sieht, hört und deutet die Welt nicht mehr verlässlich; alles wird Zeichen einer Bedrohung. Olimpia ist deshalb so wichtig: Sie ist schön, reglos, künstlich, scheinbar vollkommen – und doch nur Mechanik. Der Schrecken entsteht nicht erst im Dämonischen, sondern dort, wo das Leblose dem Lebendigen zu ähnlich wird. \u003cspan class=\"chat-source-ref\" title=\"vgl. WDR Zeitzeichen, 25.06.2022\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. WDR Zeitzeichen, 25.06.2022\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Da fiel mein in der Kirche umherschweifender Blick auf einen langen, hageren Mann, der mir schräg gegenüber auf eine Bank gestiegen, sich an einen Eckpfeiler lehnte. Er hatte auf seltsame, fremde Weise einen dunkelvioletten Mantel umgeworfen und die übereinander geschlagenen Arme darin gewickelt. Sein Gesicht war leichenblass, aber der Blick der großen, schwarzen, stieren Augen fuhr wie ein glühender Dolchstich durch meine Brust.",
+                        "prompt":  "Markiere Stilmittel der Schauerromantik.",
+                        "targets":  [
+                                        {
+                                            "word":  "leichenblass",
+                                            "feedback":  "Leichenmetaphorik – das Lebendige wird mit dem Tod kontaminiert; typisches Motiv der Schwarzen Romantik."
+                                        },
+                                        {
+                                            "word":  "glühender Dolchstich",
+                                            "feedback":  "Synästhesie und Gewaltmetapher: Ein Blick wird als körperlicher Angriff dargestellt; so wird Angst sinnlich erfahrbar."
+                                        },
+                                        {
+                                            "word":  "dunkelvioletter Mantel",
+                                            "feedback":  "Farb- und Kostümsymbolik: Dunkelviolett verbindet Trauer, Mysterium und das Dämonische."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Der Sandmann, der den Kindern die Augen nimmt, ist für Nathanael keine harmlose Märchenfigur, sondern der Kern eines lebenslangen Traumas. Später erscheint Coppola wieder – oder scheint wiederzuerscheinen.",
+                        "prompt":  "Markiere, mit welchen Elementen das Unheimliche erzeugt wird.",
+                        "targets":  [
+                                        {
+                                            "word":  "Augen",
+                                            "feedback":  "Das Motiv bündelt Angst, Wahrnehmung und Identität; bedroht sind nicht nur Körperteile, sondern das sichere Sehen selbst."
+                                        },
+                                        {
+                                            "word":  "wieder - oder scheint",
+                                            "feedback":  "Das Unheimliche entsteht aus Unsicherheit: Ist es wirklich dieselbe Figur oder nur Nathanaels Projektion?"
+                                        },
+                                        {
+                                            "word":  "Traumas",
+                                            "feedback":  "Kindheitserfahrung wirkt in die Gegenwart hinein und verzerrt die Wirklichkeit."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Warum wirkt Olimpia im Sandmann so unheimlich?",
+                        "options":  [
+                                        {
+                                            "text":  "Weil sie eine offen dämonische Hexengestalt ist.",
+                                            "correct":  false,
+                                            "feedback":  "Nein, gerade ihre scheinbare Perfektion macht sie unheimlich."
+                                        },
+                                        {
+                                            "text":  "Weil sie wie ein Mensch erscheint, aber in Wahrheit ein Automat ist.",
+                                            "correct":  true,
+                                            "feedback":  "Genau! Das Leblose im Gewand des Lebendigen gehört zum Kern des Unheimlichen."
+                                        },
+                                        {
+                                            "text":  "Weil sie Nathanael absichtlich in den Wahnsinn treibt.",
+                                            "correct":  false,
+                                            "feedback":  "Nicht direkt; entscheidend ist Nathanaels Wahrnehmung."
+                                        },
+                                        {
+                                            "text":  "Weil sie am Ende als Doppelgängerin Claras entlarvt wird.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Freilich hat Goethe meine Texte als \"fieberhafte Träume eines leicht beweglichen, kranken Gehirns\" abgetan. Und doch: Edgar Allan Poe, Balzac, Baudelaire und Gogol haben mich gelesen. Die Nachwelt hat geurteilt, nicht Goethe. Meister-Erzähler der Schauerromantik nennt man mich heute. Das nehme ich an. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 25.06.2022\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 25.06.2022\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Hoffmanns Einfluss auf die Weltliteratur ist enorm. Zu seinen Nachfolgern zählen unter anderem Edgar Allan Poe, Honoré de Balzac, Charles Baudelaire und Nikolai Gogol. Auch moderne Literaturtheorien und spätere Erzählverfahren knüpfen an ihn an: Die ungewöhnliche Struktur des Katers Murr, bei der zwei Manuskripte quer durcheinander gedruckt sind, wirkt erstaunlich modern. Friedhelm Marx sagt dazu, die Postmoderne habe in gewisser Weise erst wieder eingeholt, was Hoffmann dort schon angestellt habe."
+                    },
+                    {
+                        "type":  "quiz-multi",
+                        "question":  "Welche der folgenden Aussagen über Hoffmanns Werk sind korrekt?",
+                        "options":  [
+                                        {
+                                            "text":  "Der Sandmann thematisiert das Motiv des Automaten und des Wahnsinns.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Nathanaels Liebe zu Olimpia und sein Absturz in den Wahn stehen im Zentrum."
+                                        },
+                                        {
+                                            "text":  "Hoffmann gilt als prägender Autor der deutschen Schauerromantik.",
+                                            "correct":  true,
+                                            "feedback":  "Korrekt! Mit Texten wie Die Elixiere des Teufels und dem Sandmann prägte er die \"Schwarze Romantik\" wie kaum ein anderer."
+                                        },
+                                        {
+                                            "text":  "Hoffmann veröffentlichte sein Gesamtwerk über einen Zeitraum von 30 Jahren.",
+                                            "correct":  false,
+                                            "feedback":  "Nein, das Werk entstand fast vollständig in nur acht Jahren (1814–1822)."
+                                        },
+                                        {
+                                            "text":  "Im Kater Murr parodiert Hoffmann den klassischen Bildungsroman.",
+                                            "correct":  true,
+                                            "feedback":  "Genau! Statt eines Menschen durchläuft ein Kater den Bildungsweg und die Manuskriptseiten werden mit einer anderen Biographie vermischt."
+                                        },
+                                        {
+                                            "text":  "Goethe lobte Hoffmanns Werk ausdrücklich als Vorbild für die Romantik.",
+                                            "correct":  false,
+                                            "feedback":  "Das Gegenteil ist der Fall: Goethe verbreitete Walter Scotts vernichtende Kritik mit."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Im Sandmann zerbricht Nathanael an seiner Wahrnehmung. Erkläre, wie Hoffmann Angst erzeugt."
+                    },
+                    {
+                        "type":  "barometer",
+                        "statement":  "Hoffmanns Automaten-Motiv ist auch heute noch aktuell.",
+                        "min":  "stimme nicht zu",
+                        "max":  "stimme voll zu"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Am Ende meines Lebens war ich gelähmt. Beine, Arme, nichts gehorchte mehr. Ich diktierte meine Texte. Mein letztes großes Werk, den Kater Murr, konnte ich nicht mehr vollenden; der Roman bricht ab. Am 25. Juni 1822 starb ich in Berlin an einer Atemlähmung. 46 Jahre. Ich habe nicht viel Zeit gehabt. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 25.06.2022\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 25.06.2022\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "„Wer wagt durch das Reich der Träume zu schreiten, gelangt zur Wahrheit.“ – E.T.A. Hoffmann, zit. nach WDR Zeitzeichen (2022)",
+                        "source":  ""
+                    },
+                    {
+                        "type":  "checkpoint",
+                        "question":  "Erkläre, was mit dem Begriff \"das Unheimliche\" bei Hoffmann gemeint ist."
+                    },
+                    {
+                        "type":  "self-assessment",
+                        "items":  [
+                                      "Ich kenne die wichtigsten Lebensstationen E.T.A. Hoffmanns",
+                                      "Ich kann Hoffmanns Doppelleben als Jurist und Künstler erläutern",
+                                      "Ich verstehe, was die Schwarze Romantik von der Hochromantik unterscheidet",
+                                      "Ich kann das Motiv des Automaten und des Unheimlichen im Sandmann erklären"
+                                  ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich war Jurist, der lieber Künstler gewesen wäre. Ich war Komponist, der auch als Schriftsteller überleben konnte. Ich war Romantiker, der das Dunkle, das Irrationale und das Wahnhafte in die Literatur trug. Widersprüchlich? Gewiss. Aber vielleicht ist es gerade das, was meine Texte lebendig hält. Die Vernunft ordnet. Die Fantasie öffnet Türen, die ihr am liebsten geschlossen ließet. \u003cspan class=\"chat-source-ref\" title=\"vgl. WDR Zeitzeichen, 25.06.2022\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. WDR Zeitzeichen, 25.06.2022\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Welcher Aspekt des Sandmanns oder von Hoffmanns Leben hat dich am meisten überrascht oder beeindruckt? Begründe kurz."
+                    },
+                    {
+                        "type":  "finale",
+                        "text":  "Wenn dich mein Leben und mein Werk interessieren, dann recherchiere weiter!",
+                        "links":  [
+                                      {
+                                          "label":  "WDR Zeitzeichen",
+                                          "url":  "https://www1.wdr.de/radio/wdr5/sendungen/zeitzeichen/zeitzeichen-todestag-e-t-a-hoffmann-100.html"
+                                      },
+                                      {
+                                          "label":  "BR2 RadioWissen",
+                                          "url":  "https://www.ardsounds.de/episode/urn:ard:episode:6c41e6875320e19c/"
+                                      },
+                                      {
+                                          "label":  "Wikipedia",
+                                          "url":  "https://de.wikipedia.org/wiki/E._T._A._Hoffmann"
+                                      }
+                                  ],
+                        "literature":  [
+                                           "Friedhelm Marx: E.T.A. Hoffmann. Reclam, Stuttgart 2005.",
+                                           "Hartmut Steinecke: E.T.A. Hoffmann. Darmstadt 2011."
+                                       ]
+                    }
+                ]
+}

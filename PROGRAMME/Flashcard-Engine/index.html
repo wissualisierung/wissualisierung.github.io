@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Didaktische Kartei-Engine – WissOS 2.0</title>
+  
+  <!-- In-Frame Neobrutalist Styling Conforming to Host Token Styles -->
+  <style>
+    :root {
+      /* Dynamic Theme Token Fallbacks */
+      --color-primary: #7DFFC2;
+      --color-secondary: #FFE66D;
+      --color-accent: #FF6B9D;
+      --color-bg: #e0f2fe;
+      --color-bg-darker: #bae6fd;
+      --color-button-face: #fff;
+      --color-text: #000;
+      
+      --font-system: system-ui, -apple-system, sans-serif;
+      --font-body: system-ui, -apple-system, sans-serif;
+      --font-mono: monospace;
+    }
+
+    /* Class themes injected by SDK based on parent OS settings */
+    .theme-retro-classic {
+      --color-primary: #7DFFC2;
+      --color-secondary: #FFE66D;
+      --color-accent: #FF6B9D;
+      --color-bg: #e0f2fe;
+      --color-bg-darker: #bae6fd;
+      --color-button-face: #fff;
+    }
+    .theme-vaporwave {
+      --color-primary: #00f0ff;
+      --color-secondary: #ff007f;
+      --color-accent: #9d00ff;
+      --color-bg: #120136;
+      --color-bg-darker: #03001e;
+      --color-button-face: #120136;
+      --color-text: #fff;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px) !important;
+      background-size: 20px 20px !important;
+    }
+    .theme-schreibstube {
+      --color-primary: #C3B091;
+      --color-secondary: #e2d4be;
+      --color-accent: #8b5a2b;
+      --color-bg: #f5f0e6;
+      --color-bg-darker: #e8dfd0;
+      --color-button-face: #fff;
+    }
+    .theme-pommes {
+      --color-primary: #ff4500;
+      --color-secondary: #ffd700;
+      --color-accent: #fff;
+      --color-bg: #800000;
+      --color-bg-darker: #5c0000;
+      --color-button-face: #ffd700;
+      --color-text: #fff;
+    }
+    .theme-neo-dark {
+      --color-primary: #3B82F6;
+      --color-secondary: #EC4899;
+      --color-accent: #10B981;
+      --color-bg: #111827;
+      --color-bg-darker: #1F2937;
+      --color-button-face: #374151;
+      --color-text: #fff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      padding: 16px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    header {
+      background: var(--color-primary);
+      color: #000;
+      border: 4px solid #000;
+      box-shadow: 6px 6px 0px #000;
+      padding: 12px 18px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    header h1 {
+      font-family: var(--font-system);
+      font-size: 20px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .progress-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #fff;
+      color: #000;
+      border: 3px solid #000;
+      padding: 4px 10px;
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    .progress-track {
+      width: 120px;
+      height: 16px;
+      background: var(--color-bg-darker);
+      border: 2px solid #000;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--color-primary);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .engine-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 20px;
+      flex: 1;
+    }
+
+    @media (max-width: 768px) {
+      .engine-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Sidebar controls */
+    .sidebar {
+      background: var(--color-secondary);
+      color: #000;
+      border: 4px solid #000;
+      box-shadow: 6px 6px 0px #000;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      height: fit-content;
+    }
+
+    .sidebar h2 {
+      font-family: var(--font-system);
+      font-size: 14px;
+      font-weight: 900;
+      text-transform: uppercase;
+      border-bottom: 3px solid #000;
+      padding-bottom: 4px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 8px;
+      font-family: var(--font-system);
+      font-size: 12px;
+      font-weight: bold;
+      border: 3px solid #000;
+      outline: none;
+      background: #fff;
+      color: #000;
+    }
+
+    .form-control:focus {
+      background: var(--color-bg);
+    }
+
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .filter-tag {
+      font-size: 10px;
+      font-weight: bold;
+      padding: 4px 8px;
+      border: 2px solid #000;
+      background: #fff;
+      color: #000;
+      cursor: pointer;
+      box-shadow: 2px 2px 0px #000;
+    }
+
+    .filter-tag.active {
+      background: var(--color-accent);
+      color: #000;
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px #000;
+    }
+
+    /* Main Card Viewer */
+    .card-viewer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    /* 3D Neobrutalist Flipping card container */
+    .card-container {
+      perspective: 1000px;
+      width: 100%;
+      max-width: 620px;
+      height: 380px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .card-flipper {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .card-container.flipped .card-flipper {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border: 4px solid #000;
+      box-shadow: 8px 8px 0px #000;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      color: #000;
+      overflow-y: auto;
+    }
+
+    .card-face--front {
+      z-index: 2;
+      transform: rotateY(0deg);
+      border-color: #000;
+    }
+
+    .card-face--back {
+      transform: rotateY(180deg);
+      border-color: #000;
+      background: #fafaf5;
+    }
+
+    .card-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      border-bottom: 3px solid #000;
+      padding-bottom: 8px;
+    }
+
+    .card-title {
+      font-family: var(--font-system);
+      font-size: 22px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .card-num {
+      font-family: var(--font-mono);
+      font-weight: bold;
+      background: var(--color-accent);
+      color: #000;
+      border: 2px solid #000;
+      padding: 2px 6px;
+      font-size: 12px;
+      box-shadow: 2px 2px 0 #000;
+    }
+
+    .card-body-text {
+      flex: 1;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .card-body-text h2, .card-body-text h3 {
+      font-family: var(--font-system);
+      font-weight: 900;
+      font-size: 13px;
+      margin: 12px 0 6px 0;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      border-bottom: 2px solid #000;
+      padding-bottom: 2px;
+      display: inline-block;
+    }
+
+    .card-body-text p {
+      margin-bottom: 8px;
+    }
+
+    .card-footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 2px dashed #000;
+      padding-top: 10px;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .card-tag {
+      font-size: 10px;
+      font-weight: bold;
+      padding: 2px 6px;
+      border: 1.5px solid #000;
+      background: var(--color-secondary);
+      color: #000;
+    }
+
+    /* Flip hint floating indicator */
+    .flip-hint {
+      font-size: 11px;
+      font-weight: bold;
+      color: #555;
+      text-transform: uppercase;
+    }
+
+    /* Controls row */
+    .controls-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-top: 10px;
+      width: 100%;
+      max-width: 620px;
+      justify-content: space-between;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .os-button {
+      padding: 8px 16px;
+      font-family: var(--font-system);
+      font-weight: 900;
+      font-size: 12px;
+      text-transform: uppercase;
+      border: 3px solid #000;
+      background: var(--color-button-face);
+      color: #000;
+      cursor: pointer;
+      box-shadow: 4px 4px 0 #000;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .os-button:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 5px 5px 0 #000;
+    }
+
+    .os-button:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0 #000;
+    }
+
+    .os-button--primary {
+      background: var(--color-primary);
+    }
+
+    .os-button--accent {
+      background: var(--color-accent);
+    }
+
+    .os-button--disabled {
+      opacity: 0.5 !important;
+      pointer-events: none !important;
+    }
+
+    .checkbox-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 900;
+      font-size: 12px;
+      text-transform: uppercase;
+      background: #fff;
+      color: #000;
+      border: 3px solid #000;
+      box-shadow: 4px 4px 0 #000;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+
+    .checkbox-btn input {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .wiki-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      padding: 4px 10px;
+      background: var(--color-primary);
+      color: #000;
+      font-weight: bold;
+      font-size: 11px;
+      border: 2px solid #000;
+      box-shadow: 2px 2px 0 #000;
+    }
+
+    .wiki-btn:hover {
+      box-shadow: 3px 3px 0 #000;
+      transform: translate(-1px, -1px);
+    }
+
+    /* Empty state warning */
+    .empty-state {
+      border: 4px solid #000;
+      background: #fff;
+      color: #000;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 6px 6px 0 #000;
+      max-width: 400px;
+      font-weight: bold;
+    }
+
+    /* Custom Scrollbar for Card Faces */
+    .card-face::-webkit-scrollbar {
+      width: 10px;
+    }
+    .card-face::-webkit-scrollbar-track {
+      background: var(--color-bg-darker);
+      border-left: 3px solid #000;
+    }
+    .card-face::-webkit-scrollbar-thumb {
+      background: var(--color-primary);
+      border: 2px solid #000;
+    }
+    .card-face::-webkit-scrollbar-thumb:hover {
+      background: var(--color-accent);
+    }
+  </style>
+</head>
+<body class="theme-retro-classic">
+
+  <header>
+    <h1 id="deck-title">Didaktischer Navigator</h1>
+    <div style="display:flex; gap:12px; align-items:center;">
+      <button class="os-button" id="btn-reset-learning" style="padding:4px 8px; font-size:10px;">Zurücksetzen</button>
+      <div class="progress-container">
+        <span>Gelernt: <strong id="progress-text">0 / 0</strong></span>
+        <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="engine-layout">
+    
+    <!-- Sidebar Filters -->
+    <aside class="sidebar">
+      <h2>Karten filtern</h2>
+      
+      <div class="form-group">
+        <label for="filter-search">🔍 Textsuche</label>
+        <input type="text" id="filter-search" class="form-control" placeholder="Name oder Begriff ...">
+      </div>
+
+      <!-- Strophen: 4 Dropdown-Filter -->
+      <div id="strophen-filters" style="display:none;">
+
+        <div class="form-group">
+          <label for="filter-versanzahl">📍 Versanzahl</label>
+          <select id="filter-versanzahl" class="form-control">
+            <option value="">Alle</option>
+            <option value="2">2 Verse</option>
+            <option value="3">3 Verse</option>
+            <option value="4">4 Verse</option>
+            <option value="5">5 Verse</option>
+            <option value="6">6 Verse</option>
+            <option value="8">8 Verse</option>
+            <option value="14">14 Verse</option>
+            <option value="variabel">variabel</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="filter-metrum">✨ Metrum</label>
+          <select id="filter-metrum" class="form-control">
+            <option value="">Alle</option>
+            <option value="Jambus">Jambus</option>
+            <option value="Trochäus">Trochäus</option>
+            <option value="Daktylus">Daktylus</option>
+            <option value="Anapäst">Anapäst</option>
+            <option value="Antik">Antik (quantitierend)</option>
+            <option value="Silbenzählung">Silbenzählung (kein festes Metrum)</option>
+            <option value="Freier Rhythmus">Freie Rhythmen / Freie Verse</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="filter-reimschema">🔗 Reimschema</label>
+          <select id="filter-reimschema" class="form-control">
+            <option value="">Alle</option>
+            <option value="abab">Kreuzreim (abab / abcb)</option>
+            <option value="aabb">Paarreim (aabb)</option>
+            <option value="abba">Umarmender Reim (abba)</option>
+            <option value="xaxa">Waisenreim (xaxa)</option>
+            <option value="aabccb">Schweifreim (aabccb)</option>
+            <option value="Kettenreim">Kettenreim (Terzine)</option>
+            <option value="reimlos">reimlos</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="filter-kadenz">🎧 Kadenz</label>
+          <select id="filter-kadenz" class="form-control">
+            <option value="">Alle</option>
+            <option value="wechselnd">wechselnd (m/w)</option>
+            <option value="männlich">durchgehend männlich</option>
+            <option value="weiblich">durchgehend weiblich</option>
+            <option value="variabel">variabel / frei</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- Stilmittel: Epochen Tag-Cloud (nur für stilmittel-Deck) -->
+      <div id="stilmittel-filters" style="display:none;">
+        <div class="form-group">
+          <label id="filter-tag-label">🏺 Besonders häufig in der Epoche:</label>
+          <div class="tag-cloud" id="epoch-tag-cloud">
+            <!-- Befüllt dynamisch -->
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="filter-status">📌 Lernstand</label>
+        <select id="filter-status" class="form-control">
+          <option value="all">Alle Karten</option>
+          <option value="unlearned">Noch zu lernen</option>
+          <option value="learned">Bereits gelernt</option>
+        </select>
+      </div>
+
+      <div style="margin-top:auto; font-size:10px; font-weight:bold; opacity:0.8; text-align:center;">
+        WissOS 2.0 – Kartei-Engine
+      </div>
+    </aside>
+
+    <!-- Main Card View -->
+    <main class="card-viewer">
+      
+      <!-- Card Flipping container -->
+      <div class="card-container" id="card-container">
+        <div class="card-flipper">
+          
+          <!-- FRONT FACE -->
+          <div class="card-face card-face--front" id="card-front">
+            <div class="card-header-row">
+              <span class="card-title" id="card-title-front">Figur</span>
+              <span class="card-num" id="card-num-front">#00</span>
+            </div>
+            <div class="card-body-text" id="card-body-front">
+              Lade Definition ...
+            </div>
+            <div class="card-footer-row">
+              <span class="flip-hint">Klicken zum Umdrehen ↵</span>
+            </div>
+          </div>
+
+          <!-- BACK FACE -->
+          <div class="card-face card-face--back" id="card-back">
+            <div class="card-header-row">
+              <span class="card-title" id="card-title-back">Figur</span>
+              <a class="wiki-btn" id="card-wiki" href="#" target="_blank">🌐 Wikipedia</a>
+            </div>
+            <div class="card-body-text" id="card-body-back">
+              Lade Wirkung und Beispiele ...
+            </div>
+            <div class="card-footer-row">
+              <div class="card-tags" id="card-tags-back">
+                <!-- Epoch tags -->
+              </div>
+              <span class="flip-hint">Klicken zum Umdrehen ↵</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Controls row -->
+      <div class="controls-row">
+        <div class="nav-buttons">
+          <button class="os-button" id="btn-prev" aria-label="Vorherige Karte">◀ Zurück</button>
+          <button class="os-button os-button--primary" id="btn-flip">Umdrehen ↻</button>
+          <button class="os-button" id="btn-next" aria-label="Nächste Karte">Weiter ▶</button>
+        </div>
+        
+        <label class="checkbox-btn" id="btn-learn-wrap">
+          <input type="checkbox" id="chk-learned">
+          <span>Gelernt</span>
+        </label>
+      </div>
+
+      <div class="empty-state" id="empty-warning" style="display:none;">
+        ⚠️ Keine Karten entsprechen den gewählten Filtern!<br>
+        Bitte passen Sie Ihre Suche oder Epochenauswahl an.
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- Local Offline Markdown Processing & Parent OS API Connection -->
+  <script src="../../js/lib/marked.min.js"></script>
+  <script src="../../sdk/wissos-sdk.js"></script>
+  <script>
+    'use strict';
+
+    // Deck Database variables
+    let DECK_ID = 'strophen'; // default: Strophen-Lexikon
+    let CARDS_DB = [];
+    let FILTERED_CARDS = [];
+    let CURRENT_INDEX = 0;
+    
+    // Learned states (saved in localStorage via WissOS Storage API)
+    let LEARNED_STATES = {};
+
+    // Get URL Parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('deck')) {
+      DECK_ID = urlParams.get('deck');
+    }
+
+    // Connect to host SDK
+    WissOS.sdk.ready();
+
+    // Volume changer placeholder
+    let isMuted = true;
+    WissOS.sdk.onVolumeChanged(function(muted) {
+      isMuted = muted;
+    });
+
+    function playSound(type) {
+      if (!isMuted) {
+        WissOS.sdk.playSound(type);
+      }
+    }
+
+    // Load dynamic deck content
+    async function loadDeck() {
+      // Set Header Title
+      const deckTitleEl = document.getElementById('deck-title');
+      if (DECK_ID === 'strophen') {
+        deckTitleEl.textContent = 'Strophen-Navigator (Formanalyse)';
+      } else {
+        deckTitleEl.textContent = 'Stilmittel-Navigator (Rhetorische Figuren)';
+      }
+
+      // Load persistent learned states
+      WissOS.sdk.loadState(DECK_ID + '_learned_v2', function(state) {
+        if (state) {
+          LEARNED_STATES = state;
+        } else {
+          LEARNED_STATES = {};
+        }
+        
+        // Fetch compiled JSON index
+        const indexUrl = `../../content/${DECK_ID}/index.json`;
+
+        // Block if running via file:// – fetch() is cross-origin restricted
+        if (window.location.protocol === 'file:') {
+          showFileProtocolError();
+          return;
+        }
+
+        fetch(indexUrl)
+          .then(res => {
+            if (!res.ok) throw new Error('HTTP ' + res.status + ' – ' + indexUrl);
+            return res.json();
+          })
+          .then(data => {
+            CARDS_DB = data;
+            initializeFilters();
+            applyFilters();
+          })
+          .catch(err => {
+            console.error('Failed fetching content index:', err);
+            showFileProtocolError(err.message);
+          });
+      });
+    }
+
+    function showFileProtocolError(detail) {
+      const el = document.getElementById('cards-area') || document.body;
+      el.innerHTML =
+        '<div style="padding:24px;font-family:monospace;line-height:1.8;border:4px solid #000;margin:20px;background:#fff;">' +
+        '<strong style="font-size:15px;">⚠️ ' + (detail ? 'Ladefehler' : 'Server erforderlich') + '</strong><br><br>' +
+        (detail ? 'Fehler: <code>' + detail + '</code><br><br>' : '') +
+        'WissOS 2.0 muss über den lokalen HTTP-Server geöffnet werden:<br>' +
+        '<code style="background:#000;color:#7DFFC2;padding:6px 10px;display:inline-block;margin-top:6px;">' +
+        'powershell -File "start_server.ps1"</code><br><br>' +
+        'Dann im Browser: <strong>http://localhost:8000</strong>' +
+        '</div>';
+    }
+
+
+    // Initializer: show correct sidebar panel + populate stilmittel epoch cloud
+    function initializeFilters() {
+      const isStrophen = DECK_ID === 'strophen';
+
+      const strophenEl   = document.getElementById('strophen-filters');
+      const stilmittelEl = document.getElementById('stilmittel-filters');
+      if (strophenEl)   strophenEl.style.display   = isStrophen ? '' : 'none';
+      if (stilmittelEl) stilmittelEl.style.display  = isStrophen ? 'none' : '';
+
+      if (!isStrophen) {
+        // Stilmittel: populate epoch tag cloud (existing behaviour)
+        const tags = new Set();
+        CARDS_DB.forEach(c => {
+          const list = Array.isArray(c.epochen) ? c.epochen
+            : (typeof c.epochen === 'string' ? [c.epochen] : []);
+          list.forEach(e => tags.add(e));
+          c._filterTags = list;
+        });
+        const cloud = document.getElementById('epoch-tag-cloud');
+        if (cloud) {
+          cloud.innerHTML = '';
+          Array.from(tags).sort().forEach(tag => {
+            const el = document.createElement('span');
+            el.className = 'filter-tag';
+            el.textContent = tag;
+            el.dataset.epoch = tag;
+            el.addEventListener('click', () => { playSound('click'); el.classList.toggle('active'); applyFilters(); });
+            cloud.appendChild(el);
+          });
+        }
+      }
+      // Strophen dropdowns are static in HTML and use smart, didactical matching logic
+    }
+
+    // Smart, didactical matching helper functions for Strophen forms
+    function matchesMetrum(form, filter) {
+      if (!filter) return true;
+      const metren = form.kriterien.metrum || [];
+      if (filter === 'Antik') {
+        return metren.some(m => m.includes('Antik') || m.includes('quantitierend'));
+      }
+      if (filter === 'Silbenzählung') {
+        return metren.some(m => m.includes('Silbenzählung') || m.includes('kein festes Metrum'));
+      }
+      if (filter === 'Freier Rhythmus') {
+        return metren.some(m => m.includes('Freier Rhythmus') || m.includes('Freier Vers') || m.includes('kein festes Metrum') || m.includes('Freie Rhythmen') || m.includes('Freie Verse'));
+      }
+      return metren.some(m => m.includes(filter));
+    }
+
+    function matchesReim(form, filter) {
+      if (!filter) return true;
+      const schemas = form.kriterien.reimschema || [];
+      if (filter === 'reimlos') {
+        return schemas.some(s => s.toLowerCase().includes('reimlos'));
+      }
+      if (filter === 'abab') {
+        return schemas.some(s => s.includes('abab') || s.includes('Kreuzreim') || s.includes('abcb') || s.includes('xaxa'));
+      }
+      if (filter === 'aabb') {
+        return schemas.some(s => s.includes('aabb') || s.includes('Paarreim') || s.includes('aa'));
+      }
+      if (filter === 'abba') {
+        return schemas.some(s => s.includes('abba') || s.includes('umarmend'));
+      }
+      if (filter === 'xaxa') {
+        return schemas.some(s => s.includes('xaxa') || s.includes('Waisenreim') || s.includes('abcb'));
+      }
+      if (filter === 'aabccb') {
+        return schemas.some(s => s.includes('aabccb') || s.includes('Schweifreim'));
+      }
+      if (filter === 'Kettenreim') {
+        return schemas.some(s => s.includes('bcb') || s.includes('Kettenreim') || s.includes('Terzine') || s.includes('aba bcb'));
+      }
+      return false;
+    }
+
+    function matchesKadenz(form, filter) {
+      if (!filter) return true;
+      const k = (form.kriterien.kadenz || '').toLowerCase();
+      if (filter === 'wechselnd') {
+        return k.includes('wechselnd') || k.includes('m/w') || k.includes('männlich/weiblich');
+      }
+      if (filter === 'männlich') {
+        return (k.includes('männlich') || k.includes('stumpf')) && !k.includes('wechselnd') && !k.includes('m/w') && !k.includes('männlich/weiblich');
+      }
+      if (filter === 'weiblich') {
+        return (k.includes('weiblich') || k.includes('klingend')) && !k.includes('wechselnd') && !k.includes('m/w') && !k.includes('männlich/weiblich');
+      }
+      if (filter === 'variabel') {
+        return k.includes('variabel') || k.includes('frei');
+      }
+      return false;
+    }
+
+    // Filter Logic
+    function applyFilters() {
+      const search  = document.getElementById('filter-search').value.toLowerCase();
+      const status  = document.getElementById('filter-status').value;
+      const isStrophen = DECK_ID === 'strophen';
+
+      const fVers   = isStrophen ? (document.getElementById('filter-versanzahl')?.value  || '') : '';
+      const fMetrum = isStrophen ? (document.getElementById('filter-metrum')?.value      || '') : '';
+      const fReim   = isStrophen ? (document.getElementById('filter-reimschema')?.value  || '') : '';
+      const fKadenz = isStrophen ? (document.getElementById('filter-kadenz')?.value      || '') : '';
+
+      const activeTags = Array.from(document.querySelectorAll('.filter-tag.active')).map(t => t.dataset.epoch);
+
+      FILTERED_CARDS = CARDS_DB.filter(c => {
+        const sf = [
+          c.name, c.definition, c.wirkung,
+          c.interpretation?.wirkung,
+          c.interpretation?.epoche_kontext
+        ].filter(Boolean).join(' ').toLowerCase();
+        if (!sf.includes(search)) return false;
+
+        if (isStrophen) {
+          const k = c.kriterien || {};
+          if (fVers && String(k.versanzahl) !== fVers) return false;
+          if (!matchesMetrum(c, fMetrum)) return false;
+          if (!matchesReim(c, fReim)) return false;
+          if (!matchesKadenz(c, fKadenz)) return false;
+        } else {
+          if (activeTags.length > 0) {
+            if (!activeTags.some(e => (c._filterTags || []).includes(e))) return false;
+          }
+        }
+
+        const learned = !!LEARNED_STATES[c.id];
+        if (status === 'learned'   && !learned) return false;
+        if (status === 'unlearned' &&  learned) return false;
+
+        return true;
+      });
+
+      CURRENT_INDEX = 0;
+      updateStats();
+      renderActiveCard();
+    }
+
+    // Stats calculations
+    function updateStats() {
+      const total = CARDS_DB.length;
+      let learned = 0;
+      CARDS_DB.forEach(c => {
+        if (LEARNED_STATES[c.id]) learned++;
+      });
+
+      document.getElementById('progress-text').textContent = `${learned} / ${total}`;
+      const fill = document.getElementById('progress-fill');
+      const percent = total > 0 ? (learned / total) * 100 : 0;
+      fill.style.width = percent + '%';
+    }
+
+    // Render active card with flip animations
+    function renderActiveCard() {
+      const container = document.getElementById('card-container');
+      const warning = document.getElementById('empty-warning');
+      
+      // Reset flip
+      container.classList.remove('flipped');
+
+      if (FILTERED_CARDS.length === 0) {
+        container.style.display = 'none';
+        document.getElementById('btn-prev').classList.add('os-button--disabled');
+        document.getElementById('btn-next').classList.add('os-button--disabled');
+        document.getElementById('btn-flip').classList.add('os-button--disabled');
+        document.getElementById('btn-learn-wrap').style.display = 'none';
+        warning.style.display = 'block';
+        return;
+      }
+
+      container.style.display = 'block';
+      warning.style.display = 'none';
+      
+      document.getElementById('btn-prev').classList.remove('os-button--disabled');
+      document.getElementById('btn-next').classList.remove('os-button--disabled');
+      document.getElementById('btn-flip').classList.remove('os-button--disabled');
+      document.getElementById('btn-learn-wrap').style.display = 'flex';
+
+      const card = FILTERED_CARDS[CURRENT_INDEX];
+      
+      // Load and Parse MD using marked
+      const cleanMarkdown = (text) => {
+        if (window.marked && window.marked.parse) {
+          return marked.parse(text);
+        }
+        return text;
+      };
+
+      // FRONT FACE DATA
+      document.getElementById('card-title-front').textContent = card.name;
+      document.getElementById('card-num-front').textContent = card.number || `#${CURRENT_INDEX + 1}`;
+      
+      if (DECK_ID === 'strophen') {
+        // Strophe criteria Front layout
+        let criteriaList = `<div style="margin-top: 10px; font-weight: bold; font-size:13px; line-height: 1.8;">`;
+        criteriaList += `📏 <strong>Versanzahl:</strong> ${card.kriterien.versanzahl}<br>`;
+        criteriaList += `🏺 <strong>Hebungen:</strong> ${card.kriterien.hebungen}<br>`;
+        criteriaList += `✨ <strong>Versmaß:</strong> ${(card.kriterien.metrum || []).join(', ')}<br>`;
+        criteriaList += `🔗 <strong>Reimschema:</strong> ${(card.kriterien.reimschema || []).join(', ')}<br>`;
+        criteriaList += `🎭 <strong>Kadenz:</strong> ${card.kriterien.kadenz}<br>`;
+        criteriaList += `</div>`;
+        document.getElementById('card-body-front').innerHTML = `<h3>Formmerkmale</h3>${criteriaList}`;
+      } else {
+        // Standard Stilmittel Definition
+        document.getElementById('card-body-front').innerHTML = `<h3>Definition</h3><p>${card.definition}</p>`;
+      }
+
+      // BACK FACE DATA
+      document.getElementById('card-title-back').textContent = card.name;
+      
+      // Set Wikipedia link
+      const wiki = document.getElementById('card-wiki');
+      if (card.wiki || card.wikipedia_link) {
+        wiki.href = card.wiki || card.wikipedia_link;
+        wiki.style.display = 'inline-flex';
+      } else {
+        wiki.style.display = 'none';
+      }
+
+      let backBody = '';
+      if (DECK_ID === 'strophen') {
+        if (card.interpretation.muster) {
+          backBody += `<h3>Muster der Strophe</h3><p>${card.interpretation.muster}</p>`;
+        }
+        if (card.interpretation.formales) {
+          backBody += `<h3>Formale Besonderheiten</h3><p>${card.interpretation.formales}</p>`;
+        }
+        backBody += `<h3>Wirkung & Charakter</h3><p>${card.interpretation.wirkung}</p>`;
+        backBody += `<h3>Literarhistorischer Kontext</h3><p>${card.interpretation.epoche_kontext}</p>`;
+        if (card.interpretation.aspekte) {
+          backBody += `<h3>Aspekte zur Interpretation</h3><p>${card.interpretation.aspekte}</p>`;
+        }
+        if (card.interpretation.interpretationshinweise && card.interpretation.interpretationshinweise.length > 0) {
+          backBody += `<h3>Interpretationshinweise</h3><ul style="padding-left: 20px; font-size:12px; list-style-type: disc;">`;
+          card.interpretation.interpretationshinweise.forEach(h => {
+            backBody += `<li style="margin-bottom:4px;">${h}</li>`;
+          });
+          backBody += `</ul>`;
+        }
+        if (card.interpretation.traditionslinien) {
+          backBody += `<h3>Traditionslinien & Beispielwerke</h3><p>${card.interpretation.traditionslinien}</p>`;
+        }
+        if (card.vergleichswerke && card.vergleichswerke.length > 0) {
+          backBody += `<h3>Vergleichswerke</h3><ul style="padding-left: 20px; font-size:12px; list-style-type: disc;">`;
+          card.vergleichswerke.forEach(w => {
+            backBody += `<li style="margin-bottom:4px;"><strong>${w.autor}</strong>: <em>${w.titel}</em> (${w.hinweis})</li>`;
+          });
+          backBody += `</ul>`;
+        }
+      } else {
+        backBody += `<h3>Didaktische Wirkung</h3><p>${card.wirkung}</p>`;
+        backBody += `<h3>Textbeispiel</h3><p style="font-style: italic; background:var(--color-bg-darker); border-left: 4px solid var(--color-accent); padding: 8px; font-weight: 900; margin-top: 6px;">${card.beispiel}</p>`;
+      }
+
+      document.getElementById('card-body-back').innerHTML = backBody;
+
+      // Populate tag cloud on back
+      const tagsContainer = document.getElementById('card-tags-back');
+      tagsContainer.innerHTML = '';
+      const tagsList = card.epochen || [];
+      tagsList.forEach(t => {
+        const span = document.createElement('span');
+        span.className = 'card-tag';
+        span.textContent = t;
+        tagsContainer.appendChild(span);
+      });
+
+      // Update learned checkbox state
+      document.getElementById('chk-learned').checked = !!LEARNED_STATES[card.id];
+    }
+
+    // Toggle Flip card
+    function toggleFlip() {
+      playSound('click');
+      document.getElementById('card-container').classList.toggle('flipped');
+    }
+
+    // Event binding
+    document.getElementById('card-container').addEventListener('click', (e) => {
+      const container = document.getElementById('card-container');
+      const isBack = container.classList.contains('flipped');
+      if (isBack) {
+        // On the back face (long content), only flip back if specifically clicking the flip-hint
+        if (e.target.closest('.flip-hint')) {
+          toggleFlip();
+        }
+      } else {
+        // On the front face, click anywhere to flip
+        toggleFlip();
+      }
+    });
+    document.getElementById('btn-flip').addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleFlip();
+    });
+
+    // Explicit scroll wheel support on card faces
+    ['card-front', 'card-back'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('wheel', (e) => {
+          if (el.scrollHeight > el.clientHeight) {
+            el.scrollTop += e.deltaY;
+            e.preventDefault();
+          }
+        }, { passive: false });
+      }
+    });
+
+    document.getElementById('btn-prev').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (FILTERED_CARDS.length === 0) return;
+      playSound('click');
+      CURRENT_INDEX--;
+      if (CURRENT_INDEX < 0) CURRENT_INDEX = FILTERED_CARDS.length - 1;
+      renderActiveCard();
+    });
+
+    document.getElementById('btn-next').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (FILTERED_CARDS.length === 0) return;
+      playSound('click');
+      CURRENT_INDEX++;
+      if (CURRENT_INDEX >= FILTERED_CARDS.length) CURRENT_INDEX = 0;
+      renderActiveCard();
+    });
+
+    // Learned status toggles
+    document.getElementById('chk-learned').addEventListener('change', (e) => {
+      if (FILTERED_CARDS.length === 0) return;
+      const card = FILTERED_CARDS[CURRENT_INDEX];
+      const isChecked = e.target.checked;
+      
+      if (isChecked) {
+        LEARNED_STATES[card.id] = true;
+        playSound('startup'); // play pleasant sound
+        WissOS.sdk.notify(`Karte „${card.name}“ als gelernt markiert!`, 'Lernfortschritt');
+      } else {
+        delete LEARNED_STATES[card.id];
+        playSound('click');
+      }
+
+      // Persist state in WissOS Storage
+      WissOS.sdk.saveState(DECK_ID + '_learned_v2', LEARNED_STATES);
+      updateStats();
+    });
+
+    // Reset progress
+    document.getElementById('btn-reset-learning').addEventListener('click', () => {
+      playSound('error');
+      if (confirm('Lernfortschritt für dieses Deck wirklich vollständig zurücksetzen?')) {
+        LEARNED_STATES = {};
+        WissOS.sdk.saveState(DECK_ID + '_learned_v2', LEARNED_STATES);
+        updateStats();
+        applyFilters();
+        WissOS.sdk.notify('Lernfortschritt erfolgreich zurückgesetzt.', 'Karten-Engine');
+      }
+    });
+
+    // Sync input events
+    document.getElementById('filter-search').addEventListener('input', applyFilters);
+    document.getElementById('filter-status').addEventListener('change', applyFilters);
+
+    // Strophen dropdown events (wired after DOM is ready)
+    ['filter-versanzahl', 'filter-metrum', 'filter-reimschema', 'filter-kadenz'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('change', applyFilters);
+    });
+
+    // Initializer
+    loadDeck();
+  </script>
+</body>
+</html>

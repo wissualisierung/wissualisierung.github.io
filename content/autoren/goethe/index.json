@@ -1,0 +1,251 @@
+﻿{
+    "id":  "goethe",
+    "name":  "Johann Wolfgang von Goethe",
+    "short":  "Goethe",
+    "dates":  "1749 – 1832",
+    "epoch":  "Weimarer Klassik",
+    "epochShort":  "Klassik",
+    "color":  "#D32F2F",
+    "highlight":  "#EF5350",
+    "icon":  "🏛️",
+    "quote":  "Das Land der Griechen mit der Seele suchend.",
+    "timelinePos":  4.1,
+    "avatar":  "avatar.jpg",
+    "source":  "https://de.wikipedia.org/wiki/Johann_Wolfgang_von_Goethe#/media/Datei:Goethe_(Stieler_1828).jpg",
+    "theme":  "sebastian-wolf",
+    "modules":  [
+                    {
+                        "type":  "framing",
+                        "content":  "Du triffst gleich auf Johann Wolfgang von Goethe – oder besser: auf eine Konstruktion, die so spricht, wie er vielleicht geschrieben hätte. Goethe selbst ist 1832 in Weimar gestorben. Was du hier liest, basiert auf seinen Texten, Gedichten, Briefen und Tagebüchern, ist aber eine didaktische Interpretation. Lies kritisch!"
+                    },
+                    {
+                        "type":  "timeline",
+                        "epochs":  [
+                                       {
+                                           "name":  "Goethes Leben",
+                                           "start":  1749,
+                                           "end":  1832,
+                                           "active":  true,
+                                           "info":  "Geboren in Frankfurt am Main. Gestorben in Weimar. Universalgenie der deutschen Literatur."
+                                       },
+                                       {
+                                           "name":  "Sturm und Drang",
+                                           "start":  1765,
+                                           "end":  1785,
+                                           "active":  false,
+                                           "info":  "Gefühl gegen Vernunft, Geniekult, Rebellion gegen Konventionen."
+                                       },
+                                       {
+                                           "name":  "Weimarer Klassik",
+                                           "start":  1786,
+                                           "end":  1832,
+                                           "active":  false,
+                                           "info":  "Humanitätsideal, Maß und Harmonie, Orientierung an der Antike."
+                                       },
+                                       {
+                                           "name":  "Italienische Reise",
+                                           "start":  1786,
+                                           "end":  1788,
+                                           "active":  false,
+                                           "info":  "Flucht aus Weimar. Wiedergeburt als Künstler. Wendepunkt im Schaffen."
+                                       }
+                                   ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Guten Tag. Ich bin Johann Wolfgang von Goethe, geboren am 28. August 1749 in Frankfurt am Main, gestorben am 22. März 1832 in Weimar. Du lernst mich in der Schule kennen? Das mag ich mir gut vorstellen. Meine Freunde prophezeiten mir schon zu Lebzeiten, was Professoren mit meinen Texten anstellen würden: \"Zergliedern, auslegen und der Jugend einpfläuen.\" Ich hoffe, es geschieht mit einigem Vergnügen. \u003cspan class=\"chat-source-ref\" title=\"Weihnachtsbrief von Goethes Mutter an Goethe, zit. nach Goethezeitportal.de\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Weihnachtsbrief von Goethes Mutter an Goethe, zit. nach Goethezeitportal.de\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Du warst ja fast zwei Jahre in Italien. Warum bist du überhaupt einfach so weggelaufen?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Am 3. September 1786 brach Goethe heimlich aus Karlsbad auf – inkognito, mit einem Mantelsack und einem Dachsranzen als einzigem Gepäck. Weder seinen Freunden noch vollständig dem Herzog Karl August hatte er seinen Plan offenbart. Goethe war seit 1775 am Weimarer Hof tätig und mit Ämtern überhäuft worden. Er fühlte sich als Dichter, hatte kaum noch Zeit für sein künstlerisches Schaffen, und litt unter einer tiefen inneren Krise. Auch die Beziehung zu Charlotte von Stein, die ihm Mäßigung verordnet hatte, empfand er zunehmend als Umklammerung."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Das Ziel meiner innigsten Sehnsucht, deren Qualen mein ganzes Inneres erfüllte, war Italien. Ich kämpfte mit Tod und Leben und keine Zunge spricht aus, was in mir vorging. Man hätte mich sonst nicht fortgelassen. Also schrieb ich meinen Freunden Herder ein kurzes Briefchen und überließ mich dem Strom der Ereignisse. \u003cspan class=\"chat-source-ref\" title=\"Goethes Reisetagebuch / Briefe, nach WDR Zeitzeichen, 18.06.2023\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Goethes Reisetagebuch / Briefe, nach WDR Zeitzeichen, 18.06.2023\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Ich warf mich ganz allein, nur einen Mantelsack und Dachsranzen aufpackend, in eine Postchäse.",
+                        "source":  "Goethe über seinen Aufbruch am 3. September 1786"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Und wie war Italien für dich?"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Eine Wiedergeburt. Ich setzte den Fuß auf römischen Boden und konnte nur sagen: Ich bin hier. Die griechische Antike hatte ich gesucht – und sie in Italien gefunden. Die Antike war mein Leitstern: das Maß, die Klarheit, die Harmonie. Ich zeichnete, aquarellierte, überarbeitete meine Manuskripte. Die Theaterstücke Faust, Egmont, vor allem Iphigenie auf Tauris. Und ich überließ mich auch den Wonnen des Lebens: In Rom fanden sich Frauen, die gewährten, was Frau von Stein nie zugelassen hatte. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 18.06.2023; vgl. Goethe: Italienische Reise, 1816/17\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 18.06.2023; vgl. Goethe: Italienische Reise, 1816/17\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Das Land der Griechen mit der Seele suchend.",
+                        "prompt":  "Markiere Hinweise auf Goethes ästhetisches Reise-Programm.",
+                        "targets":  [
+                                        {
+                                            "word":  "Griechen",
+                                            "feedback":  "Die Antike dient Goethe als ästhetisches Ideal: Harmonie, Maß, Schönheit."
+                                        },
+                                        {
+                                            "word":  "suchend",
+                                            "feedback":  "Goethe findet in Italien nicht nur Kunst, sondern sucht aktiv eine neue künstlerische Identität."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Fast zwei Jahre blieb Goethe. Herzog Karl August, sein großzügiger Arbeitgeber, finanzierte die Reise und ließ ihn gewähren. Während in Weimar alle warteten, entwickelte Goethe in Italien die ästhetischen Prinzipien, die später die Weimarer Klassik prägen sollten: Klarheit, Humanitätsideal, Orientierung an der Antike. Werke wie Iphigenie auf Tauris und Torquato Tasso entstammen diesem Geist."
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Welche Aussage beschreibt das zentrale ästhetische Ideal, das Goethe in Italien entwickelte?",
+                        "options":  [
+                                        {
+                                            "text":  "Gefühl und Leidenschaft gegen Vernunft und Ordnung",
+                                            "correct":  false,
+                                            "feedback":  "Das ist eher das Programm des Sturm und Drang; Goethes frühere Phase."
+                                        },
+                                        {
+                                            "text":  "Harmonie, Maß und Orientierung an der Antike",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! In Italien formte Goethe sein klassisches Ideal: Schönheit durch Ordnung, Klarheit und Humanität."
+                                        },
+                                        {
+                                            "text":  "Politischer Protest gegen die deutschen Fürsten",
+                                            "correct":  false,
+                                            "feedback":  "Das ist eher Heines Programm. Goethe stand dem Politischen auch aus beruflichen Gründen wesentlich distanzierter gegenüber."
+                                        },
+                                        {
+                                            "text":  "Volksnahe Schlichtheit und romantische Natursehnsucht",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Wie haben deine Freunde in Weimar auf deine Rückkehr reagiert?"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Aus Italien, dem Formenreichen, bin ich in das gestaltlose Deutschland zurückgekehrt, heiteren Himmel mit einem düsteren zu vertauschen. Die Freunde, statt mich zu trösten und wieder an sich zu ziehen, brachten mich zur Verzweiflung. Mein Entzücken über entfernteste Gegenstände, mein Leiden über das Verlorene, das schien sie zu beleidigen. Ich vermisste jede Teilnahme. Keiner verstand meine Sprache. \u003cspan class=\"chat-source-ref\" title=\"Goethe, Brief nach der Rückkehr, nach WDR Zeitzeichen, 18.06.2023\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Goethe, Brief nach der Rückkehr, nach WDR Zeitzeichen, 18.06.2023\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Am 18. Juni 1788 kehrte Goethe abends um 10 Uhr mit dem Vollmond nach Weimar zurück. Charlotte von Stein, die sich jahrelang in Sehnsucht verzehrt hatte, war tief gekränkt: Der Seelenfreund so vieler Jahre war zurück; aber verändert, verschlossen, distanziert. Sie fand fortan nur noch verächtliche Worte für ihn. Auch Friedrich Schiller, der 1787 eigens nach Weimar gezogen war, um dem hochgelobten nahe zu sein, musste enttäuscht feststellen: Goethe war noch in Italien."
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Goethe ist recht brav und gut. Es ist nur schlimm, dass er immer seinen Panzer anhat.",
+                        "source":  "Karoline Herder über Goethe nach seiner Rückkehr, 1788"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Charlotte von Stein und du – war das mehr als eine Freundschaft?"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Hatte ich ihr nicht in jenem wunderbaren Gedicht von gewissen Blicken gesprochen, als ich 1775 nach Weimar kam? Warum gabst du uns die tiefen Blicke, unsere Zukunft ahnungsvoll zu schauen? Wir waren uns aufs innigste nahe, soweit eine verheiratete Frau die Nähe eines Stürmers und Drängers dulden kann. Sie formte mich, mäßigte mich. In Italien aber löste ich mich von dieser Umklammerung. Und kaum einen Monat nach meiner Rückkehr traf ich im Park eine junge Frau: Christiane Vulpius. Ihre Natürlichkeit entzückte mich, ihre Unbefangenheit. \u003cspan class=\"chat-source-ref\" title=\"Gedicht \"Warum gabst du uns die tiefen Blicke\", 1776; WDR Zeitzeichen, 18.06.2023\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Gedicht \"Warum gabst du uns die tiefen Blicke\", 1776; WDR Zeitzeichen, 18.06.2023\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Beschreibe, worin sich die Beziehungen zu Charlotte von Stein und Christiane Vulpius unterschieden."
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Christiane Vulpius (1765–1816) wurde Goethes Lebensgefährtin. In Weimar rümpfte man die Nase über die bürgerliche Verbindung ohne Zeremonie. Goethe kommentierte trocken: \"Ich bin verheiratet, nur nicht mit Zeremonie.\" Die Begegnung mit Christiane inspirierte ihn zu einer neuen Gedichtsammlung: den Römischen Elegien (1788–1790), die sowohl die Erinnerung an Italien als auch die neue Liebe spiegeln. Erst 1806, nach 18 Jahren Zusammenleben, heiratete Goethe Christiane offiziell."
+                    },
+                    {
+                        "type":  "quiz-multi",
+                        "question":  "Welche der folgenden Aussagen über Goethes Rückkehr aus Italien 1788 sind korrekt?",
+                        "options":  [
+                                        {
+                                            "text":  "Goethe kehrte am 18. Juni 1788 nach fast zwei Jahren Abwesenheit nach Weimar zurück.",
+                                            "correct":  true,
+                                            "feedback":  "Korrekt!"
+                                        },
+                                        {
+                                            "text":  "Charlotte von Stein freute sich uneingeschränkt über seine Rückkehr.",
+                                            "correct":  false,
+                                            "feedback":  "Falsch. Sie war tief gekränkt und ließ kein gutes Haar an ihm."
+                                        },
+                                        {
+                                            "text":  "Friedrich Schiller war 1787 nach Weimar gezogen, um Goethe nahe zu sein.",
+                                            "correct":  true,
+                                            "feedback":  "Korrekt! Die berühmte Freundschaft begann erst einige Jahre später; zunächst überwog Schillers Neid."
+                                        },
+                                        {
+                                            "text":  "Goethe begann kurz nach seiner Rückkehr eine Beziehung mit Christiane Vulpius.",
+                                            "correct":  true,
+                                            "feedback":  "Korrekt! Sie begegneten sich im Weimarer Park und wurden noch im Sommer 1788 ein Paar."
+                                        },
+                                        {
+                                            "text":  "Goethe vollendete Faust direkt nach seiner Rückkehr.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich hatte mich in dieser anderthalbjährigen Einsamkeit selbst wiedergefunden. Aber als was? Als Künstler. Freude und Hoffnung waren wieder ganz in mir lebendig geworden. Und so vollendete ich nach der Rückkehr Torquato Tasso, ein Stück über die Konflikte einer Künstlerexistenz. Eine Tragödie. Im richtigen Leben aber lachte mir das Glück. \u003cspan class=\"chat-source-ref\" title=\"Goethe, Brief nach der Rückkehr; WDR Zeitzeichen, 18.06.2023\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Goethe, Brief nach der Rückkehr; WDR Zeitzeichen, 18.06.2023\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "barometer",
+                        "statement":  "Goethes Italienreise war vor allem eine Flucht vor Verantwortung.",
+                        "min":  "stimme nicht zu",
+                        "max":  "stimme voll zu"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Mein Tagebuch aus der Zeit im Süden wurde zur Grundlage eines der bekanntesten Reisewerke der deutschen Literatur. Zwischen 1813 und 1817 schrieb ich die Italienische Reise nieder. Sie endet mit einem Zitat des römischen Dichters Ovid, der aus Rom verbannt wurde – ihm fühlte ich mich nahe und teilte seinen Schmerz. \u003cspan class=\"chat-source-ref\" title=\"Goethe: Italienische Reise, veröff. 1816/17; WDR Zeitzeichen, 18.06.2023\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Goethe: Italienische Reise, veröff. 1816/17; WDR Zeitzeichen, 18.06.2023\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Wandelt von jener Nacht mir das traurige Bild vor die Seele, welche die letzte für mich war in der römischen Stadt, wiederhole ich die Nacht, wo des teuren so viel mir zurückblieb, gleitet vom Auge mir noch jetzt eine Träne herab.",
+                        "source":  "Goethe, Schluss der Italienischen Reise, nach Ovid"
+                    },
+                    {
+                        "type":  "checkpoint",
+                        "question":  "Erkläre, warum die Italienreise als Wendepunkt in Goethes Schaffen gilt."
+                    },
+                    {
+                        "type":  "self-assessment",
+                        "items":  [
+                                      "Ich verstehe, was Goethe zur heimlichen Flucht nach Italien trieb",
+                                      "Ich kann die Bedeutung der Antike für Goethes klassisches Ideal erläutern",
+                                      "Ich kenne mindestens drei Werke, die mit der Italienreise zusammenhängen",
+                                      "Ich kann Goethes Entwicklung vom Sturm und Drang zur Klassik beschreiben"
+                                  ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Das Haus am Frauenplan in Weimar richtete ich mir wie ein privates Italien ein: mit Statuen, Stichen und Gemälden. Ich brauchte diese Erinnerung. Sie hielt mich aufrecht. Die Freundschaft mit Schiller, die sich erst ab 1794 wirklich entwickelte, und die Vollendung des Faust, das alles wäre ohne die Wiedergeburt in Italien undenkbar gewesen. Ich habe mich selbst als Künstler erst in der Fremde gefunden. \u003cspan class=\"chat-source-ref\" title=\"vgl. WDR Zeitzeichen, 18.06.2023; Goethe: Dichtung und Wahrheit\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. WDR Zeitzeichen, 18.06.2023; Goethe: Dichtung und Wahrheit\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Welcher Aspekt von Goethes Reise-Biografie oder Werk hat dich am meisten überrascht oder beeindruckt?"
+                    },
+                    {
+                        "type":  "finale",
+                        "text":  "Wenn dich mein Leben interessiert, dann recherchiere doch weiter! Mehr über mich und meine \u003cem\u003estürmerische\u003c/em\u003e, \u003cem\u003eempfindsame\u003c/em\u003e oder \u003cem\u003eklassische\u003c/em\u003e Phase findest du im Internet.",
+                        "links":  [
+                                      {
+                                          "label":  "WDR Zeitzeichen",
+                                          "url":  "https://www1.wdr.de/mediathek/audio/zeitzeichen/audio-goethe-kehrt-von-seiner-italienischen-reise-nach-weimar-zurueck-100.html"
+                                      },
+                                      {
+                                          "label":  "Wikipedia",
+                                          "url":  "https://de.wikipedia.org/wiki/Johann_Wolfgang_von_Goethe"
+                                      }
+                                  ],
+                        "literature":  [
+                                           "Nicholas Boyle: Goethe. The Poet and the Age. 2 Bde. Oxford University Press, Oxford 1991/2000.",
+                                           "Karl Otto Conrady: Goethe. Leben und Werk. 2 Bde. Athenäum, Königstein 1982/1985."
+                                       ]
+                    }
+                ]
+}

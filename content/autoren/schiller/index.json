@@ -1,0 +1,295 @@
+﻿{
+    "id":  "schiller",
+    "name":  "Friedrich Schiller",
+    "short":  "Schiller",
+    "dates":  "1759 – 1805",
+    "epoch":  "Weimarer Klassik",
+    "epochShort":  "Klassik",
+    "color":  "#B71C1C",
+    "highlight":  "#D32F2F",
+    "icon":  "📜",
+    "quote":  "Alle Menschen werden Brüder.",
+    "timelinePos":  8.6,
+    "avatar":  "avatar.jpg",
+    "source":  "https://de.wikipedia.org/wiki/Friedrich_Schiller#/media/Datei:Friedrich_Schiller_by_Ludovike_Simanowiz.jpg",
+    "theme":  "sebastian-wolf",
+    "modules":  [
+                    {
+                        "type":  "framing",
+                        "content":  "Du triffst gleich auf Friedrich Schiller – oder besser: auf eine Konstruktion, die so spricht, wie er vielleicht geschrieben hätte. Schiller selbst ist 1805 in Weimar gestorben. Was du hier liest, basiert auf seinen Dramen, Gedichten und Briefen, ist aber eine didaktische Interpretation. Lies kritisch!"
+                    },
+                    {
+                        "type":  "timeline",
+                        "epochs":  [
+                                       {
+                                           "name":  "Schillers Leben und Tod",
+                                           "start":  1759,
+                                           "end":  1805,
+                                           "active":  true,
+                                           "info":  "Geboren in Marbach am Neckar. Gestorben in Weimar mit 45 Jahren."
+                                       },
+                                       {
+                                           "name":  "Karlsschule",
+                                           "start":  1772,
+                                           "end":  1780,
+                                           "active":  false,
+                                           "info":  "Militärakademie unter Herzog Karl Eugen. Drill, Unterdrückung – und heimliches Schreiben."
+                                       },
+                                       {
+                                           "name":  "Sturm und Drang",
+                                           "start":  1767,
+                                           "end":  1785,
+                                           "active":  false,
+                                           "info":  "Rebellion gegen Autorität, Freiheitsdrang, Leidenschaft. Die Räuber als Höhepunkt."
+                                       },
+                                       {
+                                           "name":  "Weimarer Klassik",
+                                           "start":  1786,
+                                           "end":  1805,
+                                           "active":  false,
+                                           "info":  "Freundschaft mit Goethe. Wallenstein, Maria Stuart, Wilhelm Tell, Die Jungfrau von Orléans."
+                                       }
+                                   ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Guten Tag. Ich bin Johann Christoph Friedrich Schiller. Dass ich je Nationaldichter werden würde, hätte mir in meiner Jugend niemand geglaubt; meine Lehrer hielten mich für faul und verträumt. Dabei las ich nachts heimlich Shakespeare, Klopstock und Goethes Werther, während ich tagsüber im Drill der Karlsschule steckte. Manchmal, so erinnert sich ein Freund, deklamierte ich meine Texte und tanzte dazu nachts im Schlafsaal. Wer weiß, vielleicht war das schon Theater. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 10.11.2024\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 10.11.2024\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Was war das für eine Schule, diese Karlsschule?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Friedrich Schiller wurde am 10. November 1759 in Marbach am Neckar im Herzogtum Württemberg geboren. Mit 13 Jahren wurde er auf Befehl von Herzog Karl Eugen in dessen Fürstenakademie, die sogenannte Karlsschule in Stuttgart, aufgenommen. Dort studierte er zunächst Jura, später Medizin, um Militärarzt zu werden. Der Herzog ließ sich \"Vater\" nennen und verlangte, dass die Eltern beim Eintritt alle Rechte an ihren Kindern an ihn abtraten. Schiller litt unter dem Verlust seiner Familie und der strengen autoritären Zucht; Erfahrungen, die direkt in sein erstes Drama einflossen. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 13.01.2022; WDR Zeitzeichen, 10.11.2024\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 13.01.2022; WDR Zeitzeichen, 10.11.2024\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Die Karlsschule war eine allzu autoritäre Umgebung, die mich presste und unterdrückte! Schreiben war für mich Befreiung, aber nie ein leichtes Fließen. Ein Freund beobachtete: \"Es ist ein wahres Pressen und Herauspumpen.\" Aber die Kraft kam aus genau diesem Druck heraus. Mit 18, 19 Jahren gelingt mir etwas, das die deutsche Bühne bis dahin nicht kannte: Die Räuber. Rasant, wortgewaltig, respektlos. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 10.11.2024\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 10.11.2024\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Mir ekelt vor diesem Tintenklecksenden Säkulum. Pfui über das schlaffe Kastraten Jahrhundert. Das Gesetz hat noch keinen großen Mann gebildet, aber die Freiheit brütet Kolosse und Extremitäten aus.",
+                        "source":  "Friedrich Schiller, Die Räuber, I/2 (1781), Karl Moor"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Was passiert in den Räubern eigentlich genau?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Die Räuber (1781/1782) erzählt die Geschichte zweier Brüder: Franz Moor, der Jüngere, manipuliert den Vater und treibt Karl, den älteren, bevorzugten Erstgeborenen, durch eine Intrige aus dem Haus. Karl Moor schließt sich aus Schmerz und Idealismus einer Räuberbande an; er kämpft für die Armen und gegen die Obrigkeit. Doch wie so vielen Idealisten geht es auch Karl und seiner Bande schlecht: Sie scheitern und richten mehr Schaden an als Nutzen. Am Ende übergibt sich Karl der Staatsgewalt. Die Hälfte der Bande ist tot. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 10.11.2024\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 10.11.2024\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Menschen, Menschen, falsche heuchlerische Krokodilbrut. Ihre Augen sind Wasser, ihre Herzen sind Erz. Küsse auf den Lippen, Schwerter im Busen.",
+                        "prompt":  "Markiere sprachliche Mittel, die Karls Weltbild zeigen.",
+                        "targets":  [
+                                        {
+                                            "word":  "Krokodilbrut",
+                                            "feedback":  "Tiermetapher für verlogene Gesellschaft; aggressiv, archaisch, nicht verhandelbar. Typisch für den Furor des Sturm und Drang."
+                                        },
+                                        {
+                                            "word":  "Augen sind Wasser, Herzen sind Erz",
+                                            "feedback":  "Antithese aus weichen Oberflächen und harten Kernen verweist auf die wahrgenommene Heuchelei."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Wie endet Karl Moors Geschichte in den Räubern?",
+                        "options":  [
+                                        {
+                                            "text":  "Er siegt über seinen Bruder und kehrt zum Vater zurück.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        },
+                                        {
+                                            "text":  "Er flieht in die Böhmischen Wälder und bleibt unangetastet.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        },
+                                        {
+                                            "text":  "Er übergibt sich der Staatsgewalt, damit ein armer Tagelöhner das Kopfgeld erhält.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Karl Moor scheitert als Idealist, behält aber am Ende einen Rest moralischer Haltung."
+                                        },
+                                        {
+                                            "text":  "Er und seine Bande triumphieren über die Unterdrücker.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Bei der Uraufführung am 13. Januar 1782 in Mannheim bricht ein Sturm los. Rollende Augen, geballte Fäuste, stampfende Füße, heisere Aufschreie. Fremde Menschen fielen einander in die Arme. Frauen wankten einer Ohnmacht nahe zur Türe. Das nennt man Wirkung. Dass der Intendant die Handlung ins Mittelalter verlegt hatte, um das Stück politisch zu entschärfen, half da wohl nicht; das Publikum ließ sich nicht täuschen. Es spürte den rebellischen Geist genau. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 13.01.2022; WDR Zeitzeichen, 10.11.2024\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 13.01.2022; WDR Zeitzeichen, 10.11.2024\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "barometer",
+                        "statement":  "Karl Moor ist trotz seiner Verbrechen eine sympathische Figur.",
+                        "min":  "stimme nicht zu",
+                        "max":  "stimme voll zu"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Hat dir das Stück nicht Ärger eingebracht?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Als Herzog Karl Eugen erfuhr, dass Schiller ohne seine Erlaubnis zur Uraufführung nach Mannheim gereist war, bestrafte er ihn mit 14 Tagen Arrest und einem Ausreiseverbot. Als Schiller sich auch darüber hinwegsetzte, untersagte ihm der Herzog jede schriftstellerische Tätigkeit. Diese Strafe trieb Schiller im September 1782 in die Flucht nach Mannheim. \"Die Räuber kosteten mir Familie und Vaterland\", sagte er selbst. Zugleich begründeten sie seinen Ruhm: Das Stück wurde in München, Frankfurt, Hamburg, Erfurt, Weimar, Leipzig und Berlin gespielt und überall gefeiert. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 13.01.2022\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 13.01.2022\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich wurde hart bestraft, schließlich zur Flucht getrieben, die ich viel zu lange meinem Vater zuliebe aufgeschoben hatte. Nun war ich völlig gebrochen: heimatlos, ehrlos, brotlos. Und krank, fast immer war ich krank. Durch die erzwungene Geheimnistuerei hatte ich mir im sumpfigen Klima Mannheims eine schwere Lungenerkrankung zugezogen. Kurz: Es schien mir recht wirklich eine Katastrophe zu sein. Kein Geld, keine Gesundheit, kein Vaterland mehr. Ich war am Ende. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 10.11.2024\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 10.11.2024\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "War das nicht die Zeit, in der die Ode an die Freude entstand? Wie passt das zu dieser persönlichen Vernichtung?"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich war am Boden. Aber dann erlebte ich eine herrlichste Überraschung: Ich bekomme Pakete aus Leipzig und finde von vier ganz fremden Personen Briefe voll Wärme und Leidenschaft für meine Schriften. Sie laden mich nach Sachsen ein. Ein solches Geschenk war mir die einzige nötige Entschädigung für tausend trübe Minuten. Neun Tage dauerte die Reise. Mit 26 Jahren komme ich den Orten näher, in denen ich der werde, der ich bin: Jena. Weimar. Rudolfstadt. Dank meiner Freude fasse ich neuen Mut! \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 10.11.2024\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 10.11.2024\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Schiller verliert durch Die Räuber sein Vaterland, gewinnt aber Ruhm und neue Freunde. Wie beurteilst du diesen Tausch?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "1785, mit 26 Jahren, schreibt Schiller die Ode an die Freude; ein Gedicht, das durch Ludwig van Beethovens 9. Sinfonie Weltgeltung erlangt und heute als Melodie der Europahymne erklingt. Es entsteht in einer Phase persönlichen Aufbruchs: Schiller hat die Enge Württembergs hinter sich gelassen und spürt zum ersten Mal die Möglichkeit einer freien bürgerlichen Existenz. Gleichzeitig berichten die Freunde, dass ihm die Worte nie zuflogen, sondern immer hart erarbeitet werden mussten. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 10.11.2024\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 10.11.2024\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Freude, schöner Götterfunken, Tochter aus Elysium. Wir betreten feuertrunken, Himmlische, dein Heiligtum. Deine Zauber binden wieder, was die Mode streng geteilt. Bettler werden Fürstenbrüder, wo dein sanfter Flügel weilt.",
+                        "source":  "Friedrich Schiller, An die Freude (1785)"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Bettler werden Fürstenbrüder, wo dein sanfter Flügel weilt.",
+                        "prompt":  "Markiere die Bilder, die das politische Ideal zeigen.",
+                        "targets":  [
+                                        {
+                                            "word":  "Bettler werden Fürstenbrüder",
+                                            "feedback":  "Soziale Utopie: Freude und Freundschaft hebt alle Standesunterschiede auf; kein Gesetz, keine Herkunft, nur das gemeinsame Gefühl."
+                                        },
+                                        {
+                                            "word":  "sanfter Flügel",
+                                            "feedback":  "Die Freude wirkt nicht durch Gewalt oder Revolution, sondern durch eine zärtliche, fast fragile Kraft; ein Gegenbild zu Karls Furor in den Räubern."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-multi",
+                        "question":  "Welche Aussagen über die Ode an die Freude sind korrekt?",
+                        "options":  [
+                                        {
+                                            "text":  "Sie entstand 1785, als Schiller 26 Jahre alt war.",
+                                            "correct":  true,
+                                            "feedback":  "Korrekt! Es war eine Phase des persönlichen Aufbruchs nach der Flucht aus Württemberg."
+                                        },
+                                        {
+                                            "text":  "Beethoven vertonte sie Jahrzehnte nach Schillers Tod in seiner 9. Sinfonie.",
+                                            "correct":  true,
+                                            "feedback":  "Korrekt! Beethoven hatte Schiller von Jugend an verehrt."
+                                        },
+                                        {
+                                            "text":  "Die Ode ist Schillers bekanntestes Drama.",
+                                            "correct":  false,
+                                            "feedback":  "Falsch. Es ist ein Gedicht, kein Drama."
+                                        },
+                                        {
+                                            "text":  "Die Melodie der Ode an die Freude ist heute die Europahymne.",
+                                            "correct":  true,
+                                            "feedback":  "Korrekt! Die EU übernahm Beethovens Vertonung als ihr musikalisches Symbol."
+                                        },
+                                        {
+                                            "text":  "Das Gedicht entstand während Schillers Zeit in der Karlsschule.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "In Jena wurde ich Professor für Geschichte; ohne Honorar, ich verabscheute ohnehin Menschen, die nur des Geldes wegen geistig arbeiten. Sklavenseelen im Reiche der vollkommenen Freiheit, nannte ich sie. Mich unterstützten meine Freunde. Der Großherzog von Weimar Karl August verschaffte mir schließlich ein kleines Einkommen, auf Empfehlung eines späteren Freundes. So konnte ich Charlotte von Lengefeld heiraten. Und dann die wichtigste Freundschaft meines Lebens finden: Goethe. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 10.11.2024\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 10.11.2024\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Wie war die Freundschaft mit Goethe zustandegekommen; ihr wart doch sehr verschieden?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Die Freundschaft zwischen Schiller und Goethe begann nach Jahren gegenseitiger Distanz und sogar persönlicher Abneigung, als beide gemeinsam eine Literaturzeitschrift planen. Schiller schrieb an Goethe: \"Ich bitte nur um die leidige Freiheit, bei Ihnen krank sein zu dürfen.\" Goethe – der sonst allen körperlichen Leiden aus dem Weg ging – unterstützte ihn sogar in akuten Krankheitsphasen. Für Goethe war diese Freundschaft existenziell: \"Sie haben mir eine zweite Jugend verschafft und mich wieder zum Dichter gemacht, welcher zu sein ich so gut wie aufgehört hatte.\" Erst durch Schillers Inspiration nahm Goethe die Arbeit am Faust wieder auf. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 10.11.2024\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 10.11.2024\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Die Freundschaft zu Goethe war nicht leicht entstanden. Wir waren uns zunächst in inniger Abneigung begegnet und hielten nicht viel voneinander. Doch eines Abends führten wir ein ganz vortreffliches Gespräch über Goethes Ansichten zur \"Metamorphose der Pflanzen\". Wenig später verband uns ein unzertrennliches Band der innigsten Freundschaft."
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Der Mensch spielt nur, wo er in voller Bedeutung des Worts Mensch ist, und er ist nur da ganz Mensch, wo er spielt.",
+                        "source":  "Friedrich Schiller, Über die ästhetische Erziehung des Menschen (1795)"
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Der Mensch ist nur ganz Mensch, wenn er spielt - Erkläre diese These mit eigenen Worten und nenne ein Beispiel aus deinem Alltag."
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "In den letzten Jahren seines Lebens schreibt Schiller – seinem kranken Körper abgerungen – jedes Jahr ein großes Drama: Wallenstein (1799), Maria Stuart (1800), Die Jungfrau von Orléans (1801), Wilhelm Tell (1804). Keinen der Schauplätze von Böhmen über England, Frankreich bis in die Schweiz hat er je besucht, trifft dank intensiver Recherchen dennoch bemerkenswert sicher. Schiller stirbt am 9. Mai 1805 in Weimar, gerade 45 Jahre alt. Goethe überlebt ihn um 27 Jahre und verteidigt ihn zeitlebens gegen jede Kritik. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 10.11.2024\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 10.11.2024\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Man erinnert sich an mich heute vor allem als den Dichter der Freiheit. Aber Freiheit war nie abstrakt für mich; sie war immer konkret, erkämpft, bezahlt. Mit 1,90 Meter war ich übrigens der Größere von uns beiden. Auf dem Denkmal vor dem Weimarer Theater hat man mich etwas kleiner gemacht, damit Goethe und ich gleich groß dastehen. Im Erz hat man uns auf Augenhöhe gebracht. Das amüsiert mich nun doch ein wenig. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 10.11.2024\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 10.11.2024\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "checkpoint",
+                        "question":  "Erkläre, inwiefern Schillers eigene Biografie in Die Räuber eingeflossen ist und warum das Stück bis heute immer wieder neu inszeniert wird."
+                    },
+                    {
+                        "type":  "self-assessment",
+                        "items":  [
+                                      "Ich kann die Entstehungsbedingungen von Schillers Räubern erläutern",
+                                      "Ich verstehe den Unterschied zwischen Karl und Franz Moor als Figurenkonzepte",
+                                      "Ich kann das Drama im Kontext des Sturm und Drang einordnen",
+                                      "Ich kenne Schillers Weg vom Sturm und Drang zur Weimarer Klassik",
+                                      "Ich weiß, was die Ode an die Freude mit Schillers Leben zu tun hat"
+                                  ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Man hat mich einen Idealisten, einen Dichter der Freiheit genannt. Vielleicht zu Recht. Die Frage, die mein gesamtes Werk durchzieht, ist ja eben diese Frage: Wie weit darf der Kampf für Gerechtigkeit gehen? Wo endet die Freiheit des Einen und beginnt die Freiheit des Anderen? Die Antwort muss das Publikum selbst finden. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 10.11.2024\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 10.11.2024\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Schiller zeigt Freiheit als Ideal, an dem Figuren scheitern. Recherchiere aktuelle Beispiele – aus Politik, Gesellschaft oder deinem Alltag – wo ein ähnlicher Konflikt sichtbar wird."
+                    },
+                    {
+                        "type":  "finale",
+                        "text":  "Wenn dich mein Leben und Werk interessieren, dann recherchiere weiter!",
+                        "links":  [
+                                      {
+                                          "label":  "WDR Zeitzeichen: Uraufführung Die Räuber (13.01.2022)",
+                                          "url":  "https://www1.wdr.de/mediathek/audio/zeitzeichen/audio-urauffuehrung-von-schillers-drama-die-raeuber-am-13-januar-1782-100.html"
+                                      },
+                                      {
+                                          "label":  "WDR Zeitzeichen",
+                                          "url":  "https://www1.wdr.de/radio/wdr5/sendungen/zeitzeichen/zeitzeichen-friedrich-schiller-102.html"
+                                      },
+                                      {
+                                          "label":  "WDR Zeitzeichen",
+                                          "url":  "https://www1.wdr.de/radio/wdr5/sendungen/zeitzeichen/urauffuehrung-raeuber-schiller-100.html"
+                                      },
+                                      {
+                                          "label":  "Wikipedia",
+                                          "url":  "https://de.wikipedia.org/wiki/Friedrich_Schiller"
+                                      }
+                                  ],
+                        "literature":  [
+                                           "Peter-André Alt: Schiller. Leben – Werk – Zeit. 2 Bde. Beck, München 2000.",
+                                           "Rüdiger Safranski: Schiller oder Die Erfindung des Deutschen Idealismus. Hanser, München 2004."
+                                       ]
+                    }
+                ]
+}

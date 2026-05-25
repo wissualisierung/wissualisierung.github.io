@@ -1,0 +1,256 @@
+﻿{
+    "id":  "erich_kaestner",
+    "name":  "Erich Kästner",
+    "short":  "Kästner",
+    "dates":  "1899 – 1974",
+    "epoch":  "Neue Sachlichkeit",
+    "epochShort":  "Neue Sachlichkeit",
+    "color":  "#263238",
+    "highlight":  "#455A64",
+    "icon":  "👓",
+    "quote":  "Es gibt nichts Gutes, außer: Man tut es.",
+    "timelinePos":  72.3,
+    "avatar":  "avatar.jpg",
+    "source":  "https://de.wikipedia.org/wiki/Erich_K%C3%A4stner#/media/Datei:Erich_K%C3%A4stner_1961.jpg",
+    "theme":  "sebastian-wolf",
+    "modules":  [
+                    {
+                        "type":  "framing",
+                        "content":  "Du triffst gleich auf Erich Kästner – oder besser: auf eine Konstruktion, die so spricht, wie er vielleicht geschrieben hätte. Kästner selbst ist 1974 in München gestorben. Was du hier liest, basiert auf seinen Texten, Gedichten, Romanen und Selbstzeugnissen, ist aber eine didaktische Interpretation. Lies kritisch!"
+                    },
+                    {
+                        "type":  "timeline",
+                        "epochs":  [
+                                       {
+                                           "name":  "Kästners Leben",
+                                           "start":  1899,
+                                           "end":  1974,
+                                           "active":  true,
+                                           "info":  "Geboren am 23. Februar 1899 in Dresden. Gestorben am 29. Juli 1974 in München."
+                                       },
+                                       {
+                                           "name":  "Weimarer Republik",
+                                           "start":  1919,
+                                           "end":  1933,
+                                           "active":  false,
+                                           "info":  "Demokratie, Großstadtkultur, Kabarett – Kästners produktivste Schaffensphase."
+                                       },
+                                       {
+                                           "name":  "Neue Sachlichkeit",
+                                           "start":  1920,
+                                           "end":  1933,
+                                           "active":  false,
+                                           "info":  "Nüchterne, klare Sprache statt Pathos. Alltag und Gesellschaftskritik als Stoff."
+                                       },
+                                       {
+                                           "name":  "Drittes Reich",
+                                           "start":  1933,
+                                           "end":  1945,
+                                           "active":  false,
+                                           "info":  "Bücherverbrennung, Publikationsverbot, innere Emigration."
+                                       },
+                                       {
+                                           "name":  "Nachkriegszeit",
+                                           "start":  1945,
+                                           "end":  1974,
+                                           "active":  false,
+                                           "info":  "Rückkehr zur Öffentlichkeit, Friedensengagement, Kinderliteratur."
+                                       }
+                                   ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Guten Tag! Ich bin Erich Kästner aus Dresden. Oder bin ich der Journalist, der über den Schriftsteller berichtet? 1956 habe ich mich in einer Radiosendung selbst in zwei Personen gespalten: den Journalisten und den Schriftsteller. Beide heißen Erich Kästner. Das amüsiert mich noch immer. Du liest meine Bücher in der Schule? Gut so. Denn ich war, wie ich selbst sagte: \"ein Moralist, ein Rationalist, ein Urenkel der deutschen Aufklärung.\" \u003cspan class=\"chat-source-ref\" title=\"Kästner in einer Radiosendung, 1956, zit. nach WDR Zeitzeichen 23.02.2019\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Kästner in einer Radiosendung, 1956, zit. nach WDR Zeitzeichen 23.02.2019\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Kästner – das ist doch der mit Emil und die Detektive, oder? Ein Kinderbuchautor?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Erich Kästner (1899–1974) gilt als einer der vielseitigsten deutschsprachigen Autoren des 20. Jahrhunderts. Er schrieb Satiren, Gedichte, Romane, Kabaretttexte und Kinderbücher. Sein erster Gedichtband Herz auf Taille (1928) machte ihn bekannt; mit Emil und die Detektive (1929) gelang ihm der Welterfolg. Hinzu kamen Pünktchen und Anton (1931), Das fliegende Klassenzimmer (1933) und der düstere Erwachsenenroman Fabian (1931). Der Germanistik-Professor Sven Hanuschek, Autor der maßgeblichen Kästner-Biographie Keiner blickte hinter das Gesicht, betont: Das Bild vom harmlosen Kinderbuchautor greife entschieden zu kurz."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Kinderbuchautor – ja, das auch. Aber vor allem: Schulmeister. Ich selbst habe gesagt, man solle alle meine Texte vom Bilderbuch bis zum verfänglichsten Gedicht unter diesem Gesichtspunkt betrachten: geht die Rechnung ohne Bruch auf? Ist das Ergebnis klar genug? Ich wollte einfach und klar schreiben, mein Stil sollte klingen wie hingespuckt. Wobei man mich da heute gern korrigiert: Mein Stil war sehr poliert, ich hatte sehr lange daran gesessen. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen 23.02.2019\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen 23.02.2019\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Wie war deine Kindheit? Du kommst aus Dresden?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Erich Kästner wurde am 23. Februar 1899 in einer Mietskaserne in Dresden geboren. Sein Vater Emil, gelernter Sattlermeister und später Arbeiter in einer Kofferfabrik, hatte in der Familie wenig zu sagen. Die eigentliche prägende Kraft war seine Mutter Ida Kästner: überaus ehrgeizig, kontrollierend und zeitweise an Depressionen erkrankt. Sie unternahm wiederholt Suizidversuche – Erich fand als Kind mehrfach Abschiedsbriefe auf dem Küchentisch und lief ihr nach, um sie von den Brücken zurückzuholen. Ida wollte dennoch stets eine perfekte Mutter sein, sie vermietete sogar Zimmer der kleinen Wohnung gezielt an Lehrer, damit ihr Sohn die richtigen Vorbilder hatte. Mit 14 wurde Kästner bereits ins Lehrerseminar aufgenommen. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen 23.02.2019\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen 23.02.2019\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Meine Mutter wollte die vollkommene Mutter werden. Und weil sie das wollte, nahm sie auf niemanden Rücksicht, auch auf sich selbst nicht. Und wurde es. Wenn man mich als Kind fragte, was ich werden wolle, antwortete ich aus ganzem Herzen: Lehrer. Woher dieser Wunsch kam, muss ich wohl nicht erklären. Ich habe sie später in meinem autobiographischen Buch Als ich ein kleiner Junge war (1957) beschrieben; mit Liebe, aber auch mit dem kühlen Blick des Moralisten. \u003cspan class=\"chat-source-ref\" title=\"Kästner, Als ich ein kleiner Junge war, 1957\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Kästner, Als ich ein kleiner Junge war, 1957\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Und wie bist du dann Schriftsteller geworden?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Nach dem Lehrerseminar erkannte Kästner, dass er für den Lehrerberuf nicht geeignet sei. Er holte das Abitur nach und studierte in Leipzig Germanistik. Seine Doktorarbeit über die Aufklärung schloss er mit Summa cum Laude ab. Parallel begann er als Journalist zu arbeiten; der Journalismus war Kästners eigentliche Schriftstellerausbildung. Allein in den Leipziger Jahren soll er rund 10.000 Artikel verfasst haben, meist unter Pseudonym. 1927 zog er nach Berlin, wo er in Rekordzeit Autor für alle wichtigen Zeitungen wurde und auch für Hörfunk und Film schrieb. Alle seine Texte entstanden in Cafés und Bars, in Kurzschrift auf Papier gekritzelt, um sie später zu diktieren. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen 23.02.2019\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen 23.02.2019\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Berlin, 1927. Das war meine Zeit. Die Weimarer Republik, die Großstadt, das Kabarett, das Kino. Ich schrieb für alle, ich schrieb über alles. Mein erster Gedichtband Herz auf Taille (1928) war ein Erfolg. Und dann kam Emil. Ich habe die Großstadt zum Schauplatz eines Kinderromans gemacht und die Sprache der Berliner Straße benutzt. Kein Wunder, dass Kinder und Erwachsene dieses Buch liebten. Ich wollte Mut machen und zeigen, dass Kinder, wenn sie zusammenhalten, Erwachsenen in nichts nachstehen. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen 23.02.2019\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen 23.02.2019\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Als sie einander 8 Jahre kannten / und man darf sagen, sie kannten sich gut, / kam ihre Liebe plötzlich abhanden, / wie anderen Leuten ein Stock oder Hut.",
+                        "prompt":  "Markiere Merkmale der Neuen Sachlichkeit.",
+                        "targets":  [
+                                        {
+                                            "word":  "abhanden",
+                                            "feedback":  "Alltägliches, nüchternes Bild; Liebe wie ein verlorenes Alltagsobjekt, kein romantischer Pathos."
+                                        },
+                                        {
+                                            "word":  "8 Jahre kannten",
+                                            "feedback":  "Sachliche Zeitangabe statt emotionaler Beschreibung; typisch für den „Gebrauchslyriker\" Kästner."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Welche literarische Epoche ist mit Kästners Schreibstil in der Weimarer Republik am engsten verbunden?",
+                        "options":  [
+                                        {
+                                            "text":  "Expressionismus",
+                                            "correct":  false,
+                                            "feedback":  "Der Expressionismus ist zeitlich früher (ca. 1910–1925) und arbeitet mit Übertreibung und Zerrissenheit, nicht mit Kästners kühler Sachlichkeit."
+                                        },
+                                        {
+                                            "text":  "Neue Sachlichkeit",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Kästner selbst nennt sich \"Gebrauchslyriker\" und schreibt bewusst klar, direkt und ohne Pathos – Kernmerkmale der Neuen Sachlichkeit."
+                                        },
+                                        {
+                                            "text":  "Romantik",
+                                            "correct":  false,
+                                            "feedback":  "Die Romantik liegt im frühen 19. Jahrhundert und ist geprägt von Gefühlstiefe und Natursehnsucht."
+                                        },
+                                        {
+                                            "text":  "Expressionismus",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Du hast die Bücherverbrennung 1933 selbst erlebt?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Am 10. Mai 1933 verbrannten die Nationalsozialisten auf dem Berliner Opernplatz Bücher zahlreicher Autoren, darunter explizit Erich Kästner. Kästner war als Augenzeuge anwesend und hörte, wie man seinen Namen rief: \"Für Zersetzung und moralischen Zersatz in Familie und Staat, ich übergebe dem Feuer die Schriften von Erich Kästner.\" Es folgten Publikationsverbot im Inland, Beobachtung durch die Gestapo und zwei Verhaftungen. Kästner blieb dennoch in Deutschland; anders als viele seiner Kollegen, die ins Exil gingen. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen 23.02.2019\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen 23.02.2019\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich stand dabei und sah meine Bücher brennen. Ich war einer von wenigen Autoren, die das selbst mit ansehen mussten. Danach war ich, wie ich es selbst beschrieben habe: \"ein verbotener, ein ausradierter Schriftsteller – beschimpft, bespitzelt und jeden Tag und jede Stunde auf eigene Gefahr.\" Ich ging trotzdem nicht ins Ausland. Ich dachte zunächst: Der Spuk dauert ein Jahr. Und dann: Ich will Zeitzeuge sein und eines Tages darüber schreiben; einen großen Roman über das Dritte Reich. \u003cspan class=\"chat-source-ref\" title=\"Kästner, zit. nach WDR Zeitzeichen 23.02.2019\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Kästner, zit. nach WDR Zeitzeichen 23.02.2019\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Kästner blieb – im Gegensatz zu vielen Kollegen wie Thomas Mann oder Bertolt Brecht – in Deutschland. Beurteile diese Entscheidung."
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Unter dem Pseudonym Berthold Bürger schrieb Kästner 1943 mit einer Sondergenehmigung von Goebbels das Drehbuch für Münchhausen, den teuersten Film des Dritten Reichs, gedreht zum 25. Jubiläum der UFA. Man deutet die Figur des Cagliostro im Film heute als Hitler-Karikatur; der Film soll Hitler in Berchtesgaden vorgeführt worden sein, woraufhin dieser einen Wutanfall bekam und ein Totalverbot erließ. Am Ende des Krieges begleitete Kästner mit gefälschten Papieren ein Filmteam nach Österreich. Dort traf er den KZ-Überlebenden Menno Kratz, dessen Bericht über Auschwitz ihn tief erschütterte. Den geplanten Roman über das Dritte Reich schrieb er nie. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen 23.02.2019\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen 23.02.2019\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich wollte Zeuge sein. Ich wollte es aufschreiben. Doch als Menno Kratz mir erzählte, was in Auschwitz geschehen war, fiel dieser ganze Lebensentwurf in sich zusammen. Wie hätte ich das in einen Roman fassen sollen? Ich war nicht weggelaufen und ich hatte das Schlimmste doch nicht gesehen. Diese Scham hat mich nie ganz losgelassen. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen 23.02.2019\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen 23.02.2019\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "barometer",
+                        "statement":  "Kästner trägt nach dem Krieg eine moralische Mitschuld, weil er unter dem NS-Regime weiter arbeitete.",
+                        "min":  "stimme nicht zu",
+                        "max":  "stimme voll zu"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "In der Nachkriegszeit lebte Kästner in München. Er berichtete als Journalist von den Nürnberger Prozessen, schrieb Kabaretttexte und engagierte sich öffentlich: gegen die Wiederaufrüstung, gegen Atomwaffen. Mit Das doppelte Lottchen (1949) gelang ihm der größte Nachkriegserfolg. Er besuchte regelmäßig Schulklassen. In den letzten Lebensjahren litt er unter Krankheit, Schreibblockaden und betäubte seine Sorgen mit Alkohol. Seine letzten beiden Kinderbücher musste er sich Zeile für Zeile abquälen. Am 29. Juli 1974 starb Erich Kästner in München an Krebs. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen 23.02.2019\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen 23.02.2019\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Lasst euch die Kindheit nicht austreiben. Nur wer erwachsen wird und Kind bleibt, ist ein Mensch. Haltet die Erinnerung wach. Wer das, was schön war, vergisst, wird böse. Wer das, was schlimm war, vergisst, wird dumm. \u003cspan class=\"chat-source-ref\" title=\"Kästner, zit. nach WDR Zeitzeichen 23.02.2019\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Kästner, zit. nach WDR Zeitzeichen 23.02.2019\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "quiz-multi",
+                        "question":  "Welche der folgenden Aussagen über Kästner sind korrekt?",
+                        "options":  [
+                                        {
+                                            "text":  "Kästner war 1933 selbst Augenzeuge der Bücherverbrennung auf dem Berliner Opernplatz.",
+                                            "correct":  true,
+                                            "feedback":  "Korrekt! Er hörte seinen Namen bei der Verbrennung und beschrieb sich später als \"ausradierten Schriftsteller\"."
+                                        },
+                                        {
+                                            "text":  "Kästner emigrierte 1933 wie Thomas Mann ins Ausland.",
+                                            "correct":  false,
+                                            "feedback":  "Falsch. Kästner blieb in Deutschland – eine seiner umstrittensten Entscheidungen."
+                                        },
+                                        {
+                                            "text":  "Unter falschem Namen schrieb Kästner 1943 das Drehbuch für den NS-Film Münchhausen.",
+                                            "correct":  true,
+                                            "feedback":  "Korrekt! Er arbeitete unter dem Pseudonym Berthold Bürger mit einer Sondergenehmigung von Goebbels."
+                                        },
+                                        {
+                                            "text":  "Emil und die Detektive (1929) war Kästners erster großer Welterfolg.",
+                                            "correct":  true,
+                                            "feedback":  "Korrekt! Das Buch wurde schnell übersetzt, auf dem Theater gespielt und 1931 erstmals verfilmt."
+                                        },
+                                        {
+                                            "text":  "Kästner schrieb nach dem Krieg den geplanten Roman über das Dritte Reich.",
+                                            "correct":  false,
+                                            "feedback":  "Falsch. Der Bericht des KZ-Überlebenden Menno Kratz erschütterte ihn so tief, dass er dieses Vorhaben aufgab."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Wer das, was schön war, vergisst, wird böse. Wer das, was schlimm war, vergisst, wird dumm.",
+                        "source":  "Erich Kästner"
+                    },
+                    {
+                        "type":  "checkpoint",
+                        "question":  "Erkläre, weshalb Kästners Entscheidung, in Deutschland zu bleiben, kontrovers diskutiert wird."
+                    },
+                    {
+                        "type":  "self-assessment",
+                        "items":  [
+                                      "Ich kann Kästners Werk den wichtigsten Gattungen zuordnen (Lyrik, Kinderliteratur, Roman)",
+                                      "Ich kann seinen Schreibstil mit der Neuen Sachlichkeit in Verbindung bringen",
+                                      "Ich kenne Kästners zwiespältige Rolle im Dritten Reich",
+                                      "Ich kann Kästners Selbstbild als Moralist und Aufklärer erläutern"
+                                  ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Keiner blickte hinter das Gesicht – das meint eine Biographie über mich. Vielleicht stimmt das. Ich habe viele Masken getragen: den Kinderbuchautor, den Kabarettisten, den Moralisten, den Bohemien. Dahinter steckte ein Mensch mit Schuldgefühlen, Schreibblockaden und einer übermächtigen Mutter. Schreiben war mein einziges verlässliches Handwerkszeug. Mit diesen Fähigkeiten schrieb ich vor allem für Kinder – in ihnen sah ich die Hoffnung. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen 23.02.2019\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen 23.02.2019\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Kästner nennt sich selbst einen „Urenkel der deutschen Aufklärung\". Erkläre diese Haltung."
+                    },
+                    {
+                        "type":  "finale",
+                        "text":  "Wenn dich mein Leben interessiert, dann recherchiere doch weiter! Mehr über mich findest du hier:",
+                        "links":  [
+                                      {
+                                          "label":  "WDR Zeitzeichen",
+                                          "url":  "https://www1.wdr.de/radio/wdr5/sendungen/zeitzeichen/erich-kaestner-118.html"
+                                      },
+                                      {
+                                          "label":  "Wikipedia",
+                                          "url":  "https://de.wikipedia.org/wiki/Erich_K%C3%A4stner"
+                                      }
+                                  ],
+                        "literature":  [
+                                           "Sven Hanuschek: Keiner blickte hinter das Gesicht. Das Leben Erich Kästners. Hanser, München 1999.",
+                                           "Kästner, Erich: Als ich ein kleiner Junge war. Atrium, Zürich 1957."
+                                       ]
+                    }
+                ]
+}

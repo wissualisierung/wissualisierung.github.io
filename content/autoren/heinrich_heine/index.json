@@ -1,0 +1,291 @@
+﻿{
+    "id":  "heinrich_heine",
+    "name":  "Heinrich Heine",
+    "short":  "Heine",
+    "dates":  "1797 – 1856",
+    "epoch":  "Romantik · Junges Deutschland",
+    "epochShort":  "Junges Deutschland",
+    "color":  "#607D8B",
+    "highlight":  "#FFC107",
+    "icon":  "⚡",
+    "quote":  "Wo man Bücher verbrennt, verbrennt man auch am Ende Menschen.",
+    "timelinePos":  26,
+    "avatar":  "avatar.jpg",
+    "source":  "https://de.wikipedia.org/wiki/Heinrich_Heine#/media/Datei:Heinrich_Heine-Oppenheim.jpg",
+    "theme":  "sebastian-wolf",
+    "modules":  [
+                    {
+                        "type":  "framing",
+                        "content":  "Du triffst gleich auf Heinrich Heine – oder besser: auf eine\u003cbr\u003eKonstruktion, die so spricht, wie er geschrieben hat. Heine selbst\u003cbr\u003eist 1856 in Paris gestorben. Was du hier liest, basiert auf seinen\u003cbr\u003eTexten, Gedichten und Briefen, ist aber eine didaktische\u003cbr\u003eInterpretation. Lies kritisch!"
+                    },
+                    {
+                        "type":  "timeline",
+                        "epochs":  [
+                                       {
+                                           "name":  "Romantik",
+                                           "start":  1795,
+                                           "end":  1835,
+                                           "active":  false,
+                                           "info":  "Volksliedton, Natursehnsucht, Gefühlstiefe."
+                                       },
+                                       {
+                                           "name":  "Heines Leben",
+                                           "start":  1797,
+                                           "end":  1856,
+                                           "active":  true,
+                                           "info":  "Geboren als Harry Heine in Düsseldorf. Gestorben im Pariser Exil."
+                                       },
+                                       {
+                                           "name":  "Vormärz",
+                                           "start":  1815,
+                                           "end":  1848,
+                                           "active":  false,
+                                           "info":  "Politisch aufgeladene Epoche vor der Revolution."
+                                       },
+                                       {
+                                           "name":  "Exil",
+                                           "start":  1831,
+                                           "end":  1856,
+                                           "active":  false,
+                                           "info":  "Ab 1831 in Paris. Publikationsverbote."
+                                       }
+                                   ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Bonjour – oder, wenn Dir das lieber ist: Guten Tag! Ich bin Harry Heine aus Düsseldorf. Harry war mein Geburtsname, wobei ich mich selbst gern als „ersten Mann des Jahrhunderts\" bezeichnet habe – denn ich behauptete scherzhaft, in der Neujahrsnacht 1800 geboren worden zu sein. Du liest meine Texte in der Schule? Das amüsiert mich. Man hat mich zu Lebzeiten verboten, verfolgt und verspottet. Und jetzt sitze ich im Lehrplan.\u003cbr\u003e\u003cspan class=\"chat-source-ref\" title=\"vgl. Frankfurter Bundestagsbeschluss 1835\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. Frankfurter Bundestagsbeschluss 1835\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Heine wurde also verboten? Was hatte er denn so Schlimmes geschrieben?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Bereits 1833 wurden Heines Werke in Preußen verboten. 1835 beschloss der Frankfurter Bundestag, die Werke der Schriftstellergruppe „Das Junge Deutschland\" in allen Mitgliedsstaaten des Deutschen Bundes zu verbieten – darunter auch alle zukünftigen Schriften Heines. Der Vorwurf: Angriff auf die christliche Religion, Herabwürdigung der sozialen Verhältnisse und Zerstörung von Zucht und Sittlichkeit. Heine lebte zu diesem Zeitpunkt bereits im Pariser Exil."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich habe die Wahrheit geschrieben – das ist das Schlimmste, was man einem Mächtigen antun kann. 1843 durfte ich mein Exil noch einmal verlassen, um meine Mutter zu besuchen. In meinem „Deutschland. Ein Wintermärchen\" (1844) reiste ich dann literarisch durch ein Deutschland, dessen Zustand mich aufgewühlt hatte. Ich beschrieb es, wie es war: gespalten, rückständig, von Fürsten regiert, die das Volk schlafend halten wollten. \u003cspan class=\"chat-source-ref\" title=\"Deutschland. Ein Wintermärchen, Caput I, 1844\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Deutschland. Ein Wintermärchen, Caput I, 1844\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Ein neues Lied, ein besseres Lied, \u003cbr\u003eO Freunde, will ich euch dichten! \u003cbr\u003eWir wollen hier auf Erden schon \u003cbr\u003eDas Himmelreich errichten.",
+                        "source":  "Heinrich Heine, Deutschland. Ein Wintermärchen, Caput I (1844)"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Aber du hast doch auch romantische Gedichte geschrieben?\u003cbr\u003eDie Loreley zum Beispiel?"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ah, die Loreley! Ich veröffentlichte sie zuerst 1824 in einer Zeitschrift, bevor sie 1827 ins „Buch der Lieder\" aufgenommen wurde. Aber merkst Du, was ich in meinen Gedichten mache? Ich spiele mit der Romantik. Ich benutze ihren Ton, ihre Bilder, ihren Schauder – und dann breche ich sie ironisch auf. Ich habe mich selbst einmal den „entlaufenen Romantiker\" genannt. An meinen Freund Varnhagen schrieb ich aus Paris: „Das tausendjährige Reich der Romantik hat ein Ende, und ich selbst war sein letzter und abgedankter Fabelkönig.\" \u003cspan class=\"chat-source-ref\" title=\"Brief an Karl August Varnhagen von Ense, Paris\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Brief an Karl August Varnhagen von Ense, Paris\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Ich weiß nicht, was soll es bedeuten, / \ndass ich so traurig bin; / \nein Märchen aus alten Zeiten, /  \ndas kommt mir nicht aus dem Sinn.",
+                        "prompt":  "Welche typisch romantischen Elemente erkennst du in diesen vier Versen?",
+                        "targets":  [
+                                        {
+                                            "word":  "Märchen",
+                                            "feedback":  "„Märchen\" und „alte Zeiten\" verweisen auf die romantische Hinwendung zur Vergangenheit und Volkskultur."
+                                        },
+                                        {
+                                            "word":  "traurig",
+                                            "feedback":  "Die unerklärliche, diffuse Melancholie ist ein Kernmotiv der Romantik – das lyrische Ich weiß selbst nicht, warum es leidet."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Welche literarische Technik ist typisch für Heines Lyrik?",
+                        "options":  [
+                                        {
+                                            "text":  "Er übernimmt romantische Motive und verstärkt sie noch.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        },
+                                        {
+                                            "text":  "Er benutzt romantische Formen und bricht sie durch Ironie.",
+                                            "correct":  true,
+                                            "feedback":  "Genau! Heine baut romantische Erwartungen auf und zerstört sie mit einer ironischen Pointe – das nennt man „Stimmungsbrechung\"."
+                                        },
+                                        {
+                                            "text":  "Er lehnt alle romantischen Themen vollständig ab.",
+                                            "correct":  false,
+                                            "feedback":  "Nicht ganz – Heine nutzt romantische Themen sehr bewusst als Ausgangsmaterial."
+                                        },
+                                        {
+                                            "text":  "Er schreibt ausschließlich politische Pamphlete.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Heinrich Heine wurde wahrscheinlich am 13. Dezember 1797 in Düsseldorf als Harry Heine in eine jüdische Kaufmannsfamilie geboren; das genaue Datum ist bis heute nicht zweifelsfrei belegt. Er studierte Jura in Bonn, Göttingen und Berlin, hörte u. a. Vorlesungen bei Hegel, und wurde im Juli 1825 in Göttingen zum Doktor der Rechte promoviert. Noch im selben Monat ließ er sich in Heiligenstadt evangelisch-lutherisch taufen. Ab 1831 lebte er dauerhaft im Pariser Exil und starb dort am 17. Februar 1856."
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Du hast dich später taufen lassen. Hast du das bereut?"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Mein Leben war alles andere als einfach. Ich bin als Jude in einer christlichen Gesellschaft aufgewachsen, die mir trotz Napoleons Emanzipationsgesetzen immer wieder die Türen vor der Nase zumachte.\u003cbr\u003eIch ließ mich taufen, um mir eine Karriere als Jurist zu ermöglichen. Religiös völlig gleichgültig sah ich in der Taufe „nichts als eine bloße Nützlichkeitstatsache\" und im Taufschein nur das „Entre Billet zur Europäischen Kultur\". Aber schon im Januar 1826 schrieb ich meinem Freund Moses Moser: „Ich bereue sehr daß ich mich getauft hab; ich seh noch gar nicht ein, daß es mir seitdem besser gegangen sey.\" \u003cspan class=\"chat-source-ref\" title=\"Brief an Moses Moser, 9. Januar 1826\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Brief an Moses Moser, 9. Januar 1826\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Heine nennt die Taufe ein „Entre Billet zur Europäischen Kultur\" – also eine Eintrittskarte. Wenig später bereut er sie. Was sagt dieser Widerspruch über seine Lage als Jude im frühen 19. Jahrhundert aus?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Das Buch der Lieder (1827) ist Heines bekannteste Gedichtsammlung; darin kehrt das Grundmotiv der unglücklichen, unerfüllten Liebe nach Heines eigenem Eingeständnis „auf geradezu monotone Weise\" wieder. Einzelne Gedichte wie die Loreley waren zuvor bereits in Zeitschriften erschienen. Die Reisebilder (1826–1831, 4 Bände) verbinden Reisebericht, Gesellschaftskritik und literarische Reflexion und begründeten den modernen politischen Journalismus in Deutschland. Deutschland. Ein Wintermärchen (1844) ist ein politisches Versepos. Der Romanzero (1851) versammelt späte Gedichte aus der „Matratzengruft\"."
+                    },
+                    {
+                        "type":  "quiz-multi",
+                        "question":  "Welche der folgenden Aussagen über Heine sind korrekt?",
+                        "options":  [
+                                        {
+                                            "text":  "Heine emigrierte 1831 nach Paris; Publikationsverbote 1833/1835 machten es zum echten Exil.",
+                                            "correct":  true,
+                                            "feedback":  "Korrekt! Die Verbote ließen ihm keine Rückkehroption mehr."
+                                        },
+                                        {
+                                            "text":  "Heine war ein überzeugter Nationalist und unterstützte die deutschen Fürsten.",
+                                            "correct":  false,
+                                            "feedback":  "Das stimmt nicht – Heine erkannte früh den zerstörerischen Zug im deutschen Nationalismus und kritisierte ihn scharf."
+                                        },
+                                        {
+                                            "text":  "Das Buch der Lieder erschien 1827 und wurde zu Heines bekanntestem Werk.",
+                                            "correct":  true,
+                                            "feedback":  "Korrekt! Es wurde noch zu Heines Lebzeiten zum Bestseller und vielfach vertont."
+                                        },
+                                        {
+                                            "text":  "Heines Werke wurden 1835 im gesamten Deutschen Bund verboten.",
+                                            "correct":  true,
+                                            "feedback":  "Korrekt! Der Frankfurter Bundestagsbeschluss traf ihn und das „Junge Deutschland\"."
+                                        },
+                                        {
+                                            "text":  "Heine schrieb ausschließlich Lyrik und keine Prosa.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Du fragst dich vielleicht, warum ich nie nach Deutschland zurückgekehrt bin. Nun, ich wollte zurück. Aber 1844 erließ Preußen einen Grenzhaftbefehl gegen mich. Und dann wurde ich krank. Seit 1848 lag ich in meiner Pariser Wohnung, die ich selbst meine „Matratzengruft\" nannte. Acht Jahre lang. Und schrieb weiter. Weil Schreiben das Einzige war, was ich noch konnte. \u003cspan class=\"chat-source-ref\" title=\"vgl. Jan-Christoph Hauschild / Michael Werner, Heine-Biographie\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. Jan-Christoph Hauschild / Michael Werner, Heine-Biographie\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Ich habe die größten Schmerzen ausgestanden, aber noch größere Freuden genossen, und mein Dank dafür ist, dass ich die Götter lobe und preise, die mir ein so reiches Leben gegeben.",
+                        "source":  "Heinrich Heine, Geständnisse (1854)"
+                    },
+                    {
+                        "type":  "barometer",
+                        "statement":  "Heine zeigt trotz Krankheit und Exil eine lebensbejahende Haltung.",
+                        "min":  "stimme nicht zu",
+                        "max":  "stimme voll zu"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Man wirft mir manchmal vor, ich sei zu bissig, zu sarkastisch, zu politisch. Aber was ist Literatur, die nicht brennt? Im „Almansor\" von 1820 schrieb ich: „Das war ein Vorspiel nur, dort wo man Bücher verbrennt, verbrennt man auch am Ende Menschen.\" Ich meinte damals die Verbrennung des Korans im Spanien der frühen Neuzeit... und vielleicht auch die Bücherverbrennungen der Burschenschaft beim Wartburgfest 1817, die ich entschieden ablehnte.\u003cspan class=\"chat-source-ref\" title=\"Almansor, Tragödie, 1820/1823\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Almansor, Tragödie, 1820/1823\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Dieser Satz ist erschreckend prophetisch. Die Nazis haben 1933 Heines Bücher verbrannt – und dann auch Menschen."
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Am 10. Mai 1933 verbrannten die Nationalsozialisten auf Berliner Plätzen u. a. Heines Bücher. Auf dem Bebelplatz in Berlin erinnert heute ein Denkmal daran: eine leere Bibliothek unter Glas. Heines vollständiges Zitat aus „Almansor\". „Das war ein Vorspiel nur, dort wo man Bücher verbrennt, verbrennt man auch am Ende Menschen\" ist dort in den Boden eingraviert. Die prophetische Kraft dieser Zeile macht sie zu einem der meistzitierten Sätze der deutschen Literaturgeschichte."
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Das war ein Vorspiel nur, dort wo man Bücher verbrennt, verbrennt man auch am Ende Menschen.",
+                        "prompt":  "Worin liegt die Stärke des Bildes?",
+                        "targets":  [
+                                        {
+                                            "word":  "Vorspiel",
+                                            "feedback":  "Kein Ende, sondern Auftakt zu etwas Schlimmerem."
+                                        },
+                                        {
+                                            "word":  "Bücher",
+                                            "feedback":  "Bücher stehen für Gedanken und Geistesfreiheit. Mit ihnen zerstört man auch ihre Träger."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Aus welchem Werk stammt Heines Satz über das Bücherverbrennen?",
+                        "options":  [
+                                        {
+                                            "text":  "Deutschland. Ein Wintermärchen",
+                                            "correct":  false,
+                                            "feedback":  "Das Wintermärchen entstand erst 1844 – der Satz wurde bereits 1820 geschrieben."
+                                        },
+                                        {
+                                            "text":  "Buch der Lieder",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        },
+                                        {
+                                            "text":  "Almansor (Tragödie, 1820)",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Der Satz stammt aus Heines früher Tragödie über das maurische Spanien. Im Stück bezieht er sich auf die Vernichtung des Korans."
+                                        },
+                                        {
+                                            "text":  "Die Harzreise",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "checkpoint",
+                        "question":  "Erkläre in zwei bis drei Sätzen, warum Heine als „entlaufener Romantiker\" gilt. Welche zwei Seiten stehen in seinen Texten in Spannung?"
+                    },
+                    {
+                        "type":  "self-assessment",
+                        "items":  [
+                                      "Ich verstehe Heines Doppelrolle als Romantiker und Kritiker der Romantik",
+                                      "Ich kann Heines politische Haltung im historischen Kontext einordnen",
+                                      "Ich kenne mindestens drei wichtige Werke Heines",
+                                      "Ich verstehe, was mit „Stimmungsbrechung\" gemeint ist"
+                                  ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich war ein Mensch. Ich war widersprüchlich, verletzt, verletzlich, verletztend, manchmal ungerecht, manchmal brillant. Ich schrieb moralisch und ich schrieb kommerziell. Gerade darin, in dieser Widersprüchlichkeit meines Menschseins, liegt vielleicht das Menschliche meiner Literatur. Ein Dichter, der sich selbst zu ernst nimmt, taugt nichts. \u003cspan class=\"chat-source-ref\" title=\"vgl. Heines Selbstironie in den Geständnissen, 1854\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. Heines Selbstironie in den Geständnissen, 1854\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Welcher Aspekt von Heines Leben oder Werk hat dich am meisten überrascht oder beeindruckt?"
+                    },
+                    {
+                        "type":  "finale",
+                        "text":  "Wenn dich mein Leben interessiert, dann recherchiere doch weiter! Mehr über mich findest du im Internet.",
+                        "links":  [
+                                      {
+                                          "label":  "WDR Zeitzeichen",
+                                          "url":  "https://www1.wdr.de/mediathek/audio/zeitzeichen/audio-heinrich-heine-warum-ein-dichter-fuer-seine-worte-fliehen-musste-100.html"
+                                      },
+                                      {
+                                          "label":  "BR2 RadioWissen",
+                                          "url":  "https://www.ardsounds.de/episode/urn:ard:episode:170c82ca2afed0b2/"
+                                      },
+                                      {
+                                          "label":  "Planet Schule",
+                                          "url":  "https://www.ardmediathek.de/video/planet-schule/heinrich-heine-dichter-dran/wdr/Y3JpZDovL3BsYW5ldC1zY2h1bGUuZGUvQVJEXzkyNTdfdmlkZW8"
+                                      },
+                                      {
+                                          "label":  "Heinrich-Heine-Gesellschaft",
+                                          "url":  "https://www.heinrich-heine-gesellschaft.de/"
+                                      }
+                                  ],
+                        "literature":  [
+                                           "Bernd Kortländer: Heinrich Heine. Reclam, Stuttgart 2003, ISBN 3-15-017638-7.",
+                                           "Gerhard Höhn: Heine-Handbuch. Zeit, Person, Werk. 3., überarb. u. erw. Auflage. Metzler, Stuttgart 2004."
+                                       ]
+                    }
+                ]
+}

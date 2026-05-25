@@ -1,0 +1,297 @@
+﻿{
+    "id":  "celan",
+    "name":  "Paul Celan",
+    "short":  "Celan",
+    "dates":  "1920 – 1970",
+    "epoch":  "Nachkriegsliteratur",
+    "epochShort":  "Gegenwart",
+    "color":  "#1B5E20",
+    "highlight":  "#2E7D32",
+    "icon":  "👣",
+    "quote":  "Der Tod ist ein Meister aus Deutschland.",
+    "timelinePos":  81.8,
+    "avatar":  "avatar.jpg",
+    "source":  "https://de.wikipedia.org/wiki/Paul_Celan#/media/Datei:Paul_Celan_(1938).jpg",
+    "theme":  "sebastian-wolf",
+    "modules":  [
+                    {
+                        "type":  "framing",
+                        "content":  "Du triffst gleich auf Paul Celan – oder besser: auf eine Konstruktion, die so spricht, wie er vielleicht gesprochen hätte. Celan selbst ist vermutlich in der Nacht vom 19. auf den 20. April 1970 in die Seine gegangen. Was du hier liest, basiert auf seinen Gedichten, Essays und Briefen, ist aber eine didaktische Interpretation. Lies kritisch!"
+                    },
+                    {
+                        "type":  "timeline",
+                        "epochs":  [
+                                       {
+                                           "name":  "Celans Leben",
+                                           "start":  1920,
+                                           "end":  1970,
+                                           "active":  true,
+                                           "info":  "Geboren als Paul Antschel in Czernowitz (Bukowina). Gestorben in Paris."
+                                       },
+                                       {
+                                           "name":  "Czernowitz",
+                                           "start":  1920,
+                                           "end":  1941,
+                                           "active":  false,
+                                           "info":  "Mehrsprachige Kulturstadt, Kindheit und Jugend. Eltern werden deportiert und ermordet."
+                                       },
+                                       {
+                                           "name":  "Zwangsarbeit \u0026 Exil",
+                                           "start":  1942,
+                                           "end":  1948,
+                                           "active":  false,
+                                           "info":  "Straßenbaukommando, Flucht, Odyssee durch Bukarest und Wien."
+                                       },
+                                       {
+                                           "name":  "Paris",
+                                           "start":  1948,
+                                           "end":  1970,
+                                           "active":  false,
+                                           "info":  "Ankunft buchstäblich aus dem Nichts. Lyrikdozent, preisgekrönter Dichter, psychiatrische Krisen."
+                                       }
+                                   ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich bin – oder war – Paul Celan. Aus Czernowitz, aus der Bukowina. \"Eine Gegend für Bücher und Menschen\", so habe ich das einmal genannt. Du lernst meine Gedichte in der Schule? Ich weiß nicht, ob mich das freut. Ich habe geschrieben, weil ich musste. Nicht für Lehrpläne. Nicht für Interpretationen. Sondern weil die Sprache das Einzige war, was mir geblieben ist. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 23. November 2020\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 23. November 2020\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Du giltst als bedeutendster Autor der Bukowina. Was bedeutet das für dich?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Paul Celan wurde am 23. November 1920 als Paul Antschel in Czernowitz geboren, der damaligen Hauptstadt der Bukowina, die zum österreichisch-ungarischen Reich gehört hatte und nach dem Ersten Weltkrieg zu Rumänien kam. Den Namen \"Celan\" bildete er als Anagramm aus der rumänischen Schreibweise seines Nachnamens: Ancel. Die Umbenennung vollzog er nach dem Krieg – als wäre der alte Name zugleich der Name einer untergegangenen Welt. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 23. November 2020\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 23. November 2020\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Die Bukowina war meine Heimat, meine Prägung. Czernowitz war eine Vielvölkerstadt. Deutsch, Rumänisch, Polnisch, Ukrainisch, Russisch, Jiddisch; der Klang von vielen Sprachen war meine erste Musik. Ich war jüdisch, deutschsprachig, und liebte Theater, Literatur, Musik. Dann kam der Krieg. Die rumänisch-deutsche Schreckensherrschaft. Meine Eltern wurden deportiert. Meine Mutter wurde erschossen. Meinen Vater hat Typhus in einem Lager getötet. Ich selbst entging der Deportation, indem ich mich einem Straßenbaukommando anschloss. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 23. November 2020\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 23. November 2020\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Espenbaum, dein Laub blickt weiß ins Dunkel.\u003cbr\u003eMeiner Mutter Haar wird nimmer weiß. \u003cbr\u003e\u003cbr\u003eLöwenzahn, so grün ist die Ukraine. \u003cbr\u003eMeine blonde Mutter kam nicht heim. [...] \u003cbr\u003e\u003cbr\u003eRunder Stern, du schlingst die goldene Schleife. \u003cbr\u003eMeiner Mutter Herz ward wund von Blei.",
+                        "source":  "Paul Celan, \"Espenbaum\" (1945)"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Und danach bist du nach Paris gegangen?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Nach Kriegsende lebte Celan zunächst in Bukarest, dann kurz in Wien, bevor er 1948 nach Paris kam. Dort blieb er für den Rest seines Lebens. Er lehrte deutsche Sprache und Literatur an der École Normale Supérieure, übersetzte Lyrik aus dem Englischen, Französischen und Russischen ins Deutsche und schrieb weiter Gedichte. 1955 erhielt er die französische Staatsbürgerschaft. Die Welt seiner Kindheit und Jugend war untergegangen; die deutsche Sprache blieb sein einziger Besitz. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 23. November 2020\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 23. November 2020\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Die Sprache blieb unverloren. Ja, trotz allem. Aber sie musste hindurchgehen durch ihre eigene Antwortlosigkeit, hindurchgehen durch furchtbares Verstummen. Sie ging hindurch und gab keine Worte her für das, was geschah – und durfte wieder zutage treten, angereichert von all dem. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 23. November 2020\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 23. November 2020\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Die Sprache blieb unverloren, ja, trotz allem, aber sie musste nun hindurchgehen durch ihre eigene Antwortlosigkeit, hindurchgehen durch furchtbares Verstummen.",
+                        "prompt":  "Markiere, wie die Sprachkrise sprachlich gefasst wird.",
+                        "targets":  [
+                                        {
+                                            "word":  "unverloren",
+                                            "feedback":  "Doppelte Verneinung als Beharrung: Nicht \"blieb erhalten\", sondern \"blieb nicht verloren\". die Formulierung selbst klingt wie ein mühsames Festhalten."
+                                        },
+                                        {
+                                            "word":  "hindurchgehen",
+                                            "feedback":  "vermittelt den langen, schmerzhaften Weg der Sprache durch das Unsagbare."
+                                        },
+                                        {
+                                            "word":  "Antwortlosigkeit",
+                                            "feedback":  "Die Sprache wird selbst zum schweigenden Zeugen."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Was ist die \"Todesfuge\"? Warum ist das Gedicht so berühmt?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Die \"Todesfuge\" entstand unmittelbar nach dem Krieg; Celan war damals 25 Jahre alt. Das Gedicht schildert das Leben und Sterben in den nationalsozialistischen Vernichtungslagern. Es ist formal einer Fuge nachempfunden: Motive kehren wie in der Musik immer wieder, werden variiert und gesteigert. \"Fuge\" ist auch ein Begriff der Bautechnik und verweist auch auf das fugenlose, nahtlose Morden im besetzten Osteuropa. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 23. November 2020; Thomas Sparr, Todesfuge. Biographie eines Gedichts, DVA 2020\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 23. November 2020; Thomas Sparr, Todesfuge. Biographie eines Gedichts, DVA 2020\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Schwarze Milch der Frühe wir trinken sie abends\u003cbr\u003ewir trinken sie mittags und morgens wir trinken sie nachts\u003cbr\u003ewir trinken und trinken\u003cbr\u003ewir schaufeln ein Grab in den Lüften da liegt man nicht eng [...] \u003cbr\u003eDer Tod ist ein Meister aus Deutschland sein Auge ist blau.",
+                        "source":  "Paul Celan, „Todesfuge\" (1944/45)"
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Was beschreibt der Begriff \"Fuge\" in Celans Gedichttitel \"Todesfuge\"?",
+                        "options":  [
+                                        {
+                                            "text":  "Eine musikalische Form mit wiederkehrenden Motivsträngen – und zugleich einen bautechnischen Begriff für das nahtlose Zusammenfügen.",
+                                            "correct":  true,
+                                            "feedback":  "Genau! Celan spielt bewusst auf die Bedeutungen an: die kunstvolle Form der Musik und das \"fugenlose\", lückenlose Morden in den Lagern."
+                                        },
+                                        {
+                                            "text":  "Ein veraltetes Wort für \"Flucht\" oder \"Fluchtweg\".",
+                                            "correct":  false,
+                                            "feedback":  "Nicht korrekt. Auch wenn \"Fuge\" und \"fliehen\" lautlich ähnlich klingen, ist hier die musikalisch-technische Bedeutung entscheidend."
+                                        },
+                                        {
+                                            "text":  "Eine Metapher für den Tod als Stille und Schweigen.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        },
+                                        {
+                                            "text":  "Den fragmentarischen, zerbrochenen Charakter von Celans Sprache.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Als Celan die \"Todesfuge\" 1952 beim Treffen der Gruppe 47 vorlas, stieß er auf scharfe Ablehnung. Kritiker und Schriftsteller verspotteten seine Vortragsweise als \"Singsang wie in der Synagoge\" oder verglichen sie mit Goebbels\u0027 Redeweise. Das war für Celan eine tiefe Kränkung: Nicht seine Sprache wurde kritisiert, sondern sein Wesen, sein Jüdischsein. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 23. November 2020\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 23. November 2020\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Es geht mir nicht um Wohllaut. Es geht mir um Wahrheit. Ich habe in meine Gedichte ein Äußerstes an menschlicher Erfahrung eingebracht. Selbstgefällig? Ich habe mich immer gegen den Vorwurf gewehrt, ich sei absichtsvoll verrätselt, elitär, schwierig. Ich stehe auf einer anderen Raum- und Zeitebene als mein Leser. Er kann mich nur entfernt verstehen. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 23. November 2020\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 23. November 2020\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Darf ein Gedicht über den Holocaust \"(selbst)gefällig\" sein, \"schön\" sein? Positoniere dich zu dieser Frage?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "1960 erhielt Celan den Georg-Büchner-Preis, die höchste literarische Auszeichnung Deutschlands. Seine Dankesrede, bekannt als \"Der Meridian\", ist zugleich sein wichtigstes poetologisches Dokument: In ihr beschreibt er das Gedicht als eine Art Flaschenpost; geworfen ins Ungewisse, aufgefangen von einem unbekannten Leser irgendwo in der Zukunft. Zu diesem Zeitpunkt hatte ihn die Witwe des Pariser Malers Yvan Goll bereits öffentlich des Plagiats beschuldigt; ein Vorwurf, dem jede Grundlage fehlte, der Celan aber jahrelang verfolgte. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 23. November 2020\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 23. November 2020\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Nachdem ich als Person aufgegeben wurde, darf ich zum Objekt pervertiert als Thema weiterleben; als herkunftsloser Steppenwolf mit weithin erkennbaren jüdischen Zügen. Ich bin der, den es nicht gibt. Der Plagiatsvorwurf war der Versuch, mich geistig auszulöschen. Was man mir nicht mit den Lagern nehmen konnte, sollte die Literaturwelt erledigen. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 23. November 2020\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 23. November 2020\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "quiz-multi",
+                        "question":  "Welche der folgenden Aussagen über Paul Celan sind korrekt?",
+                        "options":  [
+                                        {
+                                            "text":  "Celan wurde 1920 in Czernowitz geboren, einer mehrsprachigen Stadt in der Bukowina.",
+                                            "correct":  true,
+                                            "feedback":  "Korrekt! Czernowitz war ein besonderes kulturelles Zentrum mit vielen Sprachen und Traditionen."
+                                        },
+                                        {
+                                            "text":  "Celan wuchs in einer christlichen Familie auf und konvertierte später zum Judentum.",
+                                            "correct":  false,
+                                            "feedback":  "Falsch. Er entstammte einer jüdischen Familie; Judentum war von Anfang an Teil seiner Identität und seines Verfolgungsschicksals."
+                                        },
+                                        {
+                                            "text":  "Seine Eltern wurden während des Zweiten Weltkriegs deportiert und ermordet.",
+                                            "correct":  true,
+                                            "feedback":  "Korrekt. Seine Mutter wurde erschossen, sein Vater starb an Typhus im Lager."
+                                        },
+                                        {
+                                            "text":  "Die „Todesfuge\" wurde beim Treffen der Gruppe 47 zunächst abgelehnt und verspottet.",
+                                            "correct":  true,
+                                            "feedback":  "Korrekt. Celan erlebte dort eine tiefe Demütigung, die ihn sein Leben lang prägte."
+                                        },
+                                        {
+                                            "text":  "Celan erhielt den Büchnerpreis erst posthum, da er zu Lebzeiten nicht anerkannt wurde.",
+                                            "correct":  false,
+                                            "feedback":  "Falsch. Er erhielt den Büchnerpreis 1960, zehn Jahre vor seinem Tod."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Es sind noch Lieder zu singen jenseits der Menschen. Das habe ich 1967 geschrieben. Vielleicht ist das das Eingeständnis, dass die Sprache immer weiter muss; auch dann, wenn die Menschen nicht mehr da sind, um zuzuhören.\u003cbr\u003e\u003cspan class=\"chat-source-ref\" title=\"Paul Celan, „Fadensonnen\" (1968); WDR Zeitzeichen, 23. November 2020\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Paul Celan, „Fadensonnen\" (1968); WDR Zeitzeichen, 23. November 2020\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Niemand knetet uns wieder aus Erde und Lehm, niemand bespricht unsern Staub. Niemand. Gelobt seist du, Niemand.",
+                        "source":  "Paul Celan, \"Psalm\", aus: Die Niemandsrose (1963)"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Gelobt seist du, Niemand.",
+                        "prompt":  "Markiere, wo hier religiöse Tradition aufgerufen wird.",
+                        "targets":  [
+                                        {
+                                            "word":  "Gelobt seist du",
+                                            "feedback":  "Eine jüdische Gebetsformel – „Baruch ata Adonai\", „Gelobt seist du, Herr\". Celan richtet das Gebet an „Niemand\"."
+                                        },
+                                        {
+                                            "word":  "Niemand",
+                                            "feedback":  "Die Shoah hat für Celan jeden Gottesglauben erschüttert. Der Gott, der hätte eingreifen können, ist nicht da – oder ist das Nichts selbst."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Celan litt in seinen letzten Jahren unter schweren psychischen Krisen und wurde mehrfach psychiatrisch behandelt. Der Dichter Henry Michaux, ein enger Freund, sagte nach Celans Tod: \"Die Heilung, die vom Schreiben ausging, genügte nicht, hat nicht genügt.\" In der Nacht vom 19. auf den 20. April 1970 verließ Celan seine Pariser Wohnung. Auf dem Tisch ließ er seine Ausweise, seine Schlüssel, seine Uhr zurück. Am 1. Mai 1970 wurde sein Leichnam aus der Seine geborgen. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 23. November 2020\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 23. November 2020\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "barometer",
+                        "statement":  "Celans späte Lyrik – karg, dunkel, fragmentarisch – ist ein gültiger Ausdruck menschlicher Grenzerfahrung.",
+                        "min":  "stimme nicht zu",
+                        "max":  "stimme voll zu"
+                    },
+                    {
+                        "type":  "checkpoint",
+                        "question":  "Erkläre, inwiefern die deutsche Sprache für Celan vielfältige Bedeutungen trägt."
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Celans Hauptwerke umfassen: „Mohn und Gedächtnis\" (1952, darin die „Todesfuge\"), „Von Schwelle zu Schwelle\" (1955), „Sprachgitter\" (1959), „Die Niemandsrose\" (1963, gewidmet Ossip Mandelstam), „Atemwende\" (1967) und „Fadensonnen\" (1968). Seine Büchnerpreis-Rede „Der Meridian\" (1960) gilt als sein poetologisches Hauptdokument. Er übersetzte u. a. Apollinaire, Rimbaud, Pessoa, Shakespeare und Mandelstam ins Deutsche. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 23. November 2020\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 23. November 2020\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Wie nennt Celan in seiner Büchnerpreis-Rede das Gedicht?",
+                        "options":  [
+                                        {
+                                            "text":  "Eine Flaschenpost – geworfen ins Ungewisse, adressiert an einen unbekannten Leser in der Zukunft.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Das Bild der Flaschenpost beschreibt Celans Überzeugung, dass ein Gedicht seinen Leser nicht kennen kann – und doch auf ihn hofft."
+                                        },
+                                        {
+                                            "text":  "Einen Spiegel, der dem Leser sein eigenes Gesicht zeigt.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        },
+                                        {
+                                            "text":  "Eine Waffe gegen das Vergessen.",
+                                            "correct":  false,
+                                            "feedback":  "Diese Formulierung trifft seinen Anspruch inhaltlich, ist aber nicht das Bild aus der Meridian-Rede."
+                                        },
+                                        {
+                                            "text":  "Ein Grabmal für die Toten der Shoah.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "self-assessment",
+                        "items":  [
+                                      "Ich kann erklären, warum Celan den Namenswechsel von Antschel zu Celan vollzog",
+                                      "Ich verstehe, was die \"Todesfuge\" über den Holocaust aussagt und wie ihre Form diese Aussage trägt",
+                                      "Ich kann beschreiben, was Celan unter dem Gedicht als \"Flaschenpost\" versteht",
+                                      "Ich kann Celans Verhältnis zur deutschen Sprache als Muttersprache und Sprache der Täter erläutern"
+                                  ]
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Welcher Aspekt von Celans Leben oder Werk hat dich am meisten berührt oder irritiert? Begründe deine Antwort."
+                    },
+                    {
+                        "type":  "finale",
+                        "text":  "Wenn dich Paul Celan weiter interessiert, dann lies und höre weiter!",
+                        "links":  [
+                                      {
+                                          "label":  "WDR Zeitzeichen",
+                                          "url":  "https://www1.wdr.de/radio/wdr5/sendungen/zeitzeichen/celan-100.html"
+                                      },
+                                      {
+                                          "label":  "Wikipedia",
+                                          "url":  "https://de.wikipedia.org/wiki/Paul_Celan"
+                                      }
+                                  ],
+                        "literature":  [
+                                           "Thomas Sparr: Todesfuge. Biographie eines Gedichts. DVA, München 2020.",
+                                           "John Felstiner: Paul Celan. Poet, Survivor, Jew. Yale University Press, New Haven 1995.",
+                                           "Barbara Wiedemann (Hrsg.): Paul Celan. Die Gedichte. Suhrkamp, Frankfurt am Main 2003."
+                                       ]
+                    }
+                ]
+}

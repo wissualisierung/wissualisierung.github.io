@@ -1,0 +1,281 @@
+﻿{
+    "id":  "joseph_von_eichendorff",
+    "name":  "Joseph von Eichendorff",
+    "short":  "Eichendorff",
+    "dates":  "1788 – 1857",
+    "epoch":  "Hochromantik",
+    "epochShort":  "Romantik",
+    "color":  "#455A64",
+    "highlight":  "#FFC107",
+    "icon":  "🌙",
+    "quote":  "Schläft ein Lied in allen Dingen, die da träumen fort und fort.",
+    "timelinePos":  21.8,
+    "avatar":  "avatar.jpg",
+    "source":  "https://commons.wikimedia.org/wiki/File:Joseph_Freiherr_von_Eichendorff_(1841).jpg",
+    "theme":  "sebastian-wolf",
+    "modules":  [
+                    {
+                        "type":  "framing",
+                        "content":  "Du triffst gleich auf Joseph Karl Benedikt Freiherr von Eichendorff – oder besser: auf eine Konstruktion, die so spricht, wie er geschrieben hat. Eichendorff selbst ist 1857 in Neiße gestorben. Was du hier liest, basiert auf seinen Texten, Gedichten und Briefen, ist aber eine didaktische Interpretation. Lies kritisch!"
+                    },
+                    {
+                        "type":  "timeline",
+                        "epochs":  [
+                                       {
+                                           "name":  "Befreiungskriege",
+                                           "start":  1813,
+                                           "end":  1815,
+                                           "active":  false,
+                                           "info":  "Nationalpatriotische Aufbruchsstimmung gegen Napoleon."
+                                       },
+                                       {
+                                           "name":  "Spätromantik",
+                                           "start":  1815,
+                                           "end":  1848,
+                                           "active":  false,
+                                           "info":  "Sehnsucht, Wandermotiv, Naturmystik, religiöse Tiefe."
+                                       },
+                                       {
+                                           "name":  "Revolution",
+                                           "start":  1848,
+                                           "end":  1849,
+                                           "active":  false,
+                                           "info":  "Eichendorff lehnt Volksaufstände und Militärreaktion gleichermaßen ab."
+                                       },
+                                       {
+                                           "name":  "Eichendorffs Leben",
+                                           "start":  1788,
+                                           "end":  1857,
+                                           "active":  true,
+                                           "info":  "Geboren auf Schloss Lubowitz in Schlesien. Gestorben in Neiße."
+                                       }
+                                   ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Guten Tag! Ich bin Joseph Freiherr von Eichendorff, geboren am 10. März 1788 auf Schloss Lubowitz in Schlesien. Schlesien... das klingt weit weg, und das war es dann auch wirklich. Du liest meine Gedichte in der Schule? Das freut mich und wundert mich zugleich. Denn ich schrieb sie eigentlich nicht für Lehrpläne, sondern gegen die Stille des Beamtendaseins. Taugenichts bin ich selbst manchmal gewesen... zumindest im Herzen. \u003cspan class=\"chat-source-ref\" title=\"vgl. WDR Zeitzeichen, 10.03.2018\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. WDR Zeitzeichen, 10.03.2018\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Du warst Beamter? Ich dachte, du bist Dichter?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Nach dem Bankrott seines Vaters wurde das Familiengut Lubowitz zwangsversteigert. Der Verlust des schlesischen Stammschlosses war für Eichendorff eine prägende, ja traumatische Erfahrung. Um sich zu finanzieren, musste er gemeinsam mit seinem Bruder eine Beamtenlaufbahn einschlagen. Als strenggläubiger Katholik hatte er im protestantischen Preußen kaum Aufstiegschancen. Die Beamtenstellen in Danzig, Königsberg und schließlich Berlin blieben bescheiden. Zeitlebens begleitete ihn die Verlusterfahrung der eigenen Heimat. So wurde die Sehnsucht nach dem Verlorenen zum eigentlichen Motor seines Schreibens."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich habe wenig Geld, wenig Protektion, wenig Konnässons, Liasons, Savoir Vivre und anderen solchen Teufelsdreck. Und wenn mich meine brave Frau nicht noch stark, frisch und frei erhielt, wäre ich längst schon fortgelaufen. So schrieb ich es einmal nieder. Ganz ehrlich. Ich bin Beamter nur am Tage, aber ein Dichter in der Dämmerung. Mit Vorliebe schreibe ich spätabends oder im Morgengrauen, wenn die Welt noch nicht vollständig wach und laut war. \u003cspan class=\"chat-source-ref\" title=\"Eichendorff, Briefe\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Eichendorff, Briefe\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Diese Sehnsucht; wonach hat Eichendorff sich eigentlich gesehnt? Seine Heimat?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Eichendorffs Sehnsucht richtet sich auf kein konkretes Ziel. Rüdiger Safranski, Autor des Buches „Romantik – eine deutsche Affäre\", betont, dass Eichendorff den romantischen Topos des Wanderns, des Unterwegsseins und des Aufbruchs wie kein anderer ausgeformt und in Sprache übersetzt hat. \u003cbr\u003eDiese Sehnsucht ist von vornherein als etwas Unerfüllbares angelegt. Es geht Eichendorff nicht darum, wirklich nach Lubowitz zurückzukehren, sondern darum, dass die Sehnsucht selbst der Antrieb bleibt. Solange man sich nach Verlorenem sehnt, kann man immer weiter schreiben."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Kein Dichter gibt einen fertigen Himmel. Er stellt nur die Himmelsleiter auf von der schönen Erde. So schrieb ich es in meinem ersten Roman Ahnung und Gegenwart. Wir müssen streben, Mühsal auf uns nehmen, leben. Ich wollte nie ankommen; auch nicht als Dichter, denn wer ankommt, der hat aufgehört zu suchen. Die Sehnsucht ist keine Schwäche. Sie ist das Menschlichste, was wir haben. Und diese ewige Suche ist doch etwas zutiefst Romantisches. \u003cspan class=\"chat-source-ref\" title=\"Ahnung und Gegenwart, 1815\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Ahnung und Gegenwart, 1815\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Und meine Seele spannte / weit ihre Flügel aus, / flog durch die stillen Lande, / als flöge sie nach Haus.",
+                        "prompt":  "Markiere die romantischen Motive im Auszug aus dem Gedicht \"Mondnacht\" (1837).",
+                        "targets":  [
+                                        {
+                                            "word":  "Seele",
+                                            "feedback":  "Die Seele als handelndes Subjekt ist ein Kernmotiv der Romantik. Erst die offene Wahrnehmung des Inneren erlaubt eine Transzendenzerfahrung."
+                                        },
+                                        {
+                                            "word":  "nach Haus",
+                                            "feedback":  "Dieses \"Haus\" meint kein konkretes Zuhause, sondern eine transzendente Heimat; das Unendliche, das Göttliche."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Was ist das zentrale Motiv in Eichendorffs Lyrik?",
+                        "options":  [
+                                        {
+                                            "text":  "Politischer Protest gegen Fürsten und Adel",
+                                            "correct":  false,
+                                            "feedback":  "Das ist eher Heines Terrain. Eichendorff kritisiert seine Zeit, aber nicht in Form direkten politischen Protests."
+                                        },
+                                        {
+                                            "text":  "Die unerfüllbare Sehnsucht nach einer verlorenen Heimat und Geborgenheit",
+                                            "correct":  true,
+                                            "feedback":  "Genau! Eichendorffs Schreiben kreist um eine Sehnsucht, die absichtlich kein Ziel findet; sie ist Motor, nicht Problem."
+                                        },
+                                        {
+                                            "text":  "Die ironische Brechung romantischer Klischees",
+                                            "correct":  false,
+                                            "feedback":  "Das ist ein Merkmal Heines. Eichendorff arbeitet mit romantischen Motiven, ohne sie zu ironisieren."
+                                        },
+                                        {
+                                            "text":  "Die nüchterne Beschreibung der industriellen Moderne",
+                                            "correct":  false,
+                                            "feedback":  "Im Gegenteil: Die Moderne bedeutet für Eichendorff Verlust. Ein wohlwollendes Aufgreifen als Thema liegt ihm fern."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Es war, als hätt\u0027 der Himmel\u003cbr\u003edie Erde still geküsst,\u003cbr\u003edass sie im Blütenschimmer\u003cbr\u003evon ihm nun träumen müsst.",
+                        "source":  "Joseph von Eichendorff, Mondnacht (1837)"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Deine Gedichte wurden so oft vertont. War das geplant oder kommerzielle Absicht?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Über 5000 Vertonungen von Eichendorffs Gedichten sind dokumentiert – eine außergewöhnliche Zahl. Es liegt wohl daran, dass diese Texte bereits in sich „liedhaft\" sind: rhythmisch fließend, klanglich weich, mit natürlichen Melodiebogen. Komponisten wie Robert Schumann und Franz Schubert schufen kongenialen Übersetzungen dieser Texte. Dabei hatten diese Vertonungen oft ein feines Gespür für das Abgründige in Eichendorffs Texten; denn so leicht und einfach, wie sie auf den ersten Blick erscheinen, sind sie nicht."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich höre die Bächlein rauschen im Walde her und hin, im Walde in dem Rauschen, ich weiß nicht, wo ich bin... Das klingt einfach, nicht wahr? Aber ich rang um jedes Wort. Merkst du, was darunter liegt? Das lyrische Ich weiß nicht, wo es ist. Es verliert sich. Die Natur ist kein gemütlicher Hintergrund, sondern ein Raum, in dem man sich auflösen kann oder auflösen muss, sich verliert. Das Angenehme und das Beunruhigende liegen dicht beieinander. \u003cspan class=\"chat-source-ref\" title=\"Eichendorff, In der Fremde I\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Eichendorff, In der Fremde I\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Und dein \u003cem\u003eTaugenichts\u003c/em\u003e – bist du das selbst?"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ha! Nun sagte ich, wenn ich ein Taugenichts bin, so ist es gut, so will ich in die Welt gehen und mein Glück machen. Ich gebe zu: Manches von mir steckt vielleicht wirklich in dieser Figur. Der Taugenichts ist das Gegenbild zum Beamten, zum Bürger, zum Philister. Er fragt nicht nach Nützlichkeit. Er wandert, spielt Musik und verlässt sich auf Gottes Fügung. Das ist eine Provokation und auch eine Sehnsucht. \u003cspan class=\"chat-source-ref\" title=\"Aus dem Leben eines Taugenichts, 1826\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Aus dem Leben eines Taugenichts, 1826\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "\"Aus dem Leben eines Taugenichts\" (1826) ist Eichendorffs bekannteste Prosaarbeit und gilt als Aushängeschild der deutschen Romantik. Ein Müllersohn – von seinem Vater als \u003cem\u003eTaugenichts\u003c/em\u003e bezeichnet – zieht mit seiner Geige in die Welt, verliebt sich in eine Schlossdame, reist nach Italien und findet am Ende durch glückliche Fügungen sein Glück. Der Text ist einer der wenigen Eichendorffs mit einem Ich-Erzähler; das ermöglicht eine besonders direkte Identifikation. Zugleich ist der Text satirischer als er scheint: Eichendorff verspottet darin den Philister und das kleinbürgerliche Eheglück mit ironischem Augenzwinkern."
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Mit seiner Geige wandert der Müllerssohn in den Süden. In der Nähe Wiens verliebt er sich Hals über Kopf in eine Schlossdame. Sie scheint für ihn unerreichbar zu sein.",
+                        "prompt":  "Markiere die in dieser Beschreibung des Handlungsauftakts erkennbaren romantischen Grundmotive.",
+                        "targets":  [
+                                        {
+                                            "word":  "Wandern",
+                                            "feedback":  "Das Wandermotiv ist das romantische Gegenbild zur bürgerlichen Sesshaftigkeit. In ihm zeigt sich Aufbruch als Lebenshaltung."
+                                        },
+                                        {
+                                            "word":  "unerreichbar",
+                                            "feedback":  "Die unerreichbare Geliebte ist ein klassisch romantisches Motiv. Die Sehnsucht wirkt als treibende Kraft, nicht erfüllte Liebe."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-multi",
+                        "question":  "Welche der folgenden Aussagen über den Taugenichts sind korrekt?",
+                        "options":  [
+                                        {
+                                            "text":  "Der Taugenichts wird von seinem Vater aus dem Haus geschickt und zieht mit einer Geige in die Welt.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Der Aufbruch ist unfreiwillig, aber der Taugenichts macht das Beste daraus."
+                                        },
+                                        {
+                                            "text":  "Der Taugenichts ist ein verbitterter Gesellschaftskritiker, der das Bürgertum offen angreift.",
+                                            "correct":  false,
+                                            "feedback":  "Nicht ganz; er spottet über Philister, aber aus naiver Fröhlichkeit, nicht aus bitterer Kritik."
+                                        },
+                                        {
+                                            "text":  "Der Text ist satirischer und ironischer, als er auf den ersten Blick wirkt.",
+                                            "correct":  true,
+                                            "feedback":  "Genau! Eichendorff untergräbt mit feinem Augenzwinkern die Idylle, die er selbst aufbaut."
+                                        },
+                                        {
+                                            "text":  "Der Taugenichts erschien erstmals 1815 gemeinsam mit Ahnung und Gegenwart.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Man sagt mir nach, ich sei ein reaktionärer Heimatdichter gewesen. Das ärgert mich. Als Napoleon Europa überrollte, meldete ich mich 1813 freiwillig zum Befreiungskrieg. Und als 1848 die Revolution ausbrach und dann das Militär die Aufstände niederschlug, schrieb ich: Das Pöbelregiment ist dumm, das Säbelregiment noch dümmer und so ärgere ich mich, ich mag mich stellen wie ich will, täglich tausendmal. Ich war kein einfacher Konservativer. Ich war ein Mensch, der seine Zeit sehr genau beobachtete und oft verzweifelte. \u003cspan class=\"chat-source-ref\" title=\"Eichendorff, Briefe, 1848\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Eichendorff, Briefe, 1848\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Eichendorff lehnt 1848 sowohl den Volksaufstand als auch die militärische Reaktion ab. Was sagt das über seine politische Haltung aus? Lässt sie sich eindeutig einordnen? Charakterisiere Eichendorffs Position."
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Eichendorff starb 1857 und damit mitten in der Epoche des Realismus. Man könnte das als \"Gleichzeitigkeit des Ungleichzeitigen\" beschreiben: 1857 war der Realismus längst etabliert, die Restaurationsepoche bereits Geschichte und Eichendorff schrieb noch immer romantische Texte. Das trug ihm Spott und Ablehnung ein. Als Spätromantiker war er seltsam aus der Zeit gefallen. Zugleich scheinen uns Eichendorffs Themen heute bemerkenswert zeitlos: Das Gefühl von Ordnungsverlust, die Frage nach gesellschaftlichem Zusammenhalt, die Erosion sozialer Strukturen sind Erfahrungen, die auch das 21. Jahrhundert kennt."
+                    },
+                    {
+                        "type":  "barometer",
+                        "statement":  "Eichendorffs Sehnsucht nach dem Verlorenen ist heute noch genauso verständlich wie 1820.",
+                        "min":  "stimme nicht zu",
+                        "max":  "stimme voll zu"
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "In welchem Jahr starb Eichendorff und was macht das biografisch besonders?",
+                        "options":  [
+                                        {
+                                            "text":  "1835 – mitten in der Hochromantik",
+                                            "correct":  false,
+                                            "feedback":  "Zu früh. Eichendorff lebte noch mehr als zwanzig Jahre länger."
+                                        },
+                                        {
+                                            "text":  "1848 – im Revolutionsjahr",
+                                            "correct":  false,
+                                            "feedback":  "Nein, aber 1848 war ein wichtiges Jahr für ihn: Er kritisierte sowohl Revolution als auch Militärreaktion."
+                                        },
+                                        {
+                                            "text":  "1857 – ein Romantiker im Realismus",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Das macht ihn zum \"aus der Zeit gefallenen Spätromantiker\", denn er schrieb gegen den Zeitgeist."
+                                        },
+                                        {
+                                            "text":  "1813 – gefallen im Befreiungskrieg gegen Napoleon",
+                                            "correct":  false,
+                                            "feedback":  "Nein, er überlebte den Krieg und schrieb danach noch Jahrzehnte lang."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "checkpoint",
+                        "question":  "Heute gelten Eichendorffs Themen als zeitlos. Erkläre, warum Eichendorffs Sehnsucht eine \u003cstrong\u003eproduktive Unerfüllbarkeit\u003c/strong\u003e ist."
+                    },
+                    {
+                        "type":  "self-assessment",
+                        "items":  [
+                                      "Ich verstehe, warum Eichendorffs Sehnsucht kein konkretes Ziel hat",
+                                      "Ich kann den Taugenichts als romantische Gegenfigur zum bürgerlichen Philister beschreiben",
+                                      "Ich kenne mindestens drei wichtige Werke Eichendorffs",
+                                      "Ich kann erklären, was mit \"Spätromantik\" gemeint ist"
+                                  ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich war kein Revolutionär. Ich war kein Nationalist. Ich war ein Beamter, der abends dichtete, ein Schlesier in Berlin, ein Katholik im protestantischen Preußen, ein Romantiker im Zeitalter des Realismus. Vielleicht liegt darin meine Modernität: Ich habe immer irgendwo nicht hingepasst. Und ich habe aus diesem Gefühl Literatur gemacht. \u003cspan class=\"chat-source-ref\" title=\"vgl. Rüdiger Safranski, Romantik – eine deutsche Affäre\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. Rüdiger Safranski, Romantik – eine deutsche Affäre\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Welcher Aspekt von Eichendorffs Leben oder Werk hat dich am meisten überrascht oder beeindruckt?"
+                    },
+                    {
+                        "type":  "finale",
+                        "text":  "Wenn dich mein Leben interessiert, dann recherchiere doch weiter! Mehr über mich findest du im Internet.",
+                        "links":  [
+                                      {
+                                          "label":  "WDR Zeitzeichen",
+                                          "url":  "https://www1.wdr.de/radio/wdr5/sendungen/zeitzeichen/freiherr-von-eichendorff-100.html"
+                                      },
+                                      {
+                                          "label":  "BR2 RadioWissen",
+                                          "url":  "https://www.ardsounds.de/episode/urn:ard:episode:e7a56ec4bbb344be/"
+                                      },
+                                      {
+                                          "label":  "Wikipedia",
+                                          "url":  "https://de.wikipedia.org/wiki/Joseph_von_Eichendorff"
+                                      }
+                                  ],
+                        "literature":  [
+                                           "Rüdiger Safranski: Romantik – eine deutsche Affäre. Hanser, München 2007.",
+                                           "Hartwig Schultz: Joseph von Eichendorff. Reclam, Stuttgart 2007."
+                                       ]
+                    }
+                ]
+}

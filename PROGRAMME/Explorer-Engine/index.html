@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evidenzbasierter Pädagogischer Navigator</title>
+  <meta name="description" content="Didaktischer Explorer für evidenzbasierte Einflussfaktoren auf den Lernerfolg.">
+  
+  <style>
+    /* ===== 1. Base Variables & Theme-Aware Tokens ===== */
+    :root {
+      --color-primary: #7DFFC2;        /* Saturated Neon Mint */
+      --color-secondary: #FF6B9D;      /* Hot Punch Pink */
+      --color-accent: #FFE66D;         /* Cyber Canary Yellow */
+      --color-bg: #EAE6FF;             /* Soft Lavender-Gray */
+      --color-text: #000000;           /* Pure Obsidian Black */
+      --color-shadow: #000000;
+      --color-window-bg: #FFFFFF;      /* Clean White */
+      --color-button-face: #FFE66D;    /* Vibrant Yellow Buttons */
+      --color-button-hover: #FFF1AA;
+      --border-width: 4px;
+      --shadow-offset: 6px;
+      --font-display: 'Outfit', 'Segoe UI', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+
+      --red: #ef4444;
+      --orange: #f97316;
+      --yellow: #eab308;
+      --light-green: #84cc16;
+      --green: #22c55e;
+      --dark-green: #15803d;
+      --transition: cubic-bezier(.4, 0, .2, 1);
+    }
+
+    /* --- THEME OVERRIDES FROM HOST OS --- */
+    body.theme-neo-dark {
+      --color-primary: #3B82F6;        /* Electric Blue */
+      --color-secondary: #EC4899;      /* Saturated Pink */
+      --color-accent: #10B981;         /* Bright Emerald */
+      --color-bg: #111827;             /* Dark Gray-Blue Slate */
+      --color-text: #FFFFFF;           /* High Contrast White */
+      --color-shadow: #000000;         /* Still Solid Black Shadow */
+      --color-window-bg: #1F2937;      /* Dark Window Interior */
+      --color-button-face: #374151;    /* Slate Buttons */
+      --color-button-hover: #4B5563;
+    }
+
+    body.theme-vaporwave {
+      --color-primary: #FF007F;        /* Deep Neon Pink */
+      --color-secondary: #00F0FF;      /* Laser Cyan */
+      --color-accent: #FFE600;         /* Neon Yellow */
+      --color-bg: #03001C;             /* Deep Cyber Void */
+      --color-text: #00F0FF;           /* Cyan Text */
+      --color-shadow: #FF007F;         /* Pink Shadows! */
+      --color-window-bg: #0B001A;      /* Indigo-Black Window Interior */
+      --color-button-face: #30005C;    /* Cyber Purple Buttons */
+      --color-button-hover: #5B0E9C;
+    }
+
+    body.theme-schreibstube {
+      --color-primary: #C3B091;        /* Antique Sepia */
+      --color-secondary: #4A3E3D;      /* Ink Black-Brown */
+      --color-accent: #E1D7C6;         /* Old Parchment */
+      --color-bg: #F4F1EA;             /* Warm Paper Tone */
+      --color-text: #2B2118;           /* Ink Black */
+      --color-shadow: #2B2118;
+      --color-window-bg: #FCFAF6;
+      --color-button-face: #EAE3D2;
+      --color-button-hover: #DFD5C0;
+    }
+
+    body.theme-pommes {
+      --color-primary: #FFCC00;        /* Gold-Yellow */
+      --color-secondary: #E50000;      /* Ketchup-Red */
+      --color-accent: #FFFFFF;
+      --color-bg: #FFE5D9;
+      --color-text: #000000;
+      --color-shadow: #E50000;
+      --color-window-bg: #FFFFFF;
+      --color-button-face: #FFCC00;
+      --color-button-hover: #FFE066;
+    }
+
+    /* ===== 2. Reset & Layout ===== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-display);
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: 40px;
+      background-image: radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px);
+      background-size: 24px 24px;
+      transition: background-color 0.2s;
+    }
+
+    body.theme-neo-dark {
+      background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+    }
+
+    /* ===== 3. Neobrutalist Header ===== */
+    .header {
+      background: var(--color-window-bg);
+      border-bottom: var(--border-width) solid var(--color-text);
+      padding: 1rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .header h1 {
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+      text-transform: uppercase;
+      margin: 0;
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header h1 span {
+      background-color: var(--color-secondary);
+      color: #FFF;
+      border: 3px solid #000;
+      padding: 2px 10px;
+      font-size: 1rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      letter-spacing: 0;
+      box-shadow: 3px 3px 0 #000;
+      transform: rotate(-1.5deg);
+    }
+
+    .header-subtitle {
+      font-size: 0.9rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--color-text);
+      opacity: 0.8;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* ===== 4. Interactive Controls ===== */
+    .controls {
+      background: var(--color-window-bg);
+      border-bottom: var(--border-width) solid var(--color-text);
+      padding: 1.2rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .controls-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .slider-wrap {
+      flex: 1;
+      min-width: 280px;
+    }
+
+    .slider-label {
+      font-size: 0.85rem;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      margin-bottom: 0.4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .slider-val {
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--color-text);
+      font-family: var(--font-mono);
+    }
+
+    .slider-category {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      font-weight: 800;
+      margin-left: 0.5rem;
+      color: #fff;
+      text-transform: uppercase;
+      border: 2px solid #000;
+      font-family: var(--font-mono);
+      box-shadow: 2px 2px 0 #000;
+    }
+
+    /* Neobrutalist Range Slider Styles */
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 14px;
+      outline: none;
+      cursor: pointer;
+      border: var(--border-width) solid var(--color-text);
+      background: var(--color-bg);
+      box-shadow: 3px 3px 0 var(--color-shadow);
+      transition: background-color 0.2s;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 24px;
+      height: 24px;
+      background: var(--color-accent);
+      border: 3px solid var(--color-text);
+      cursor: grab;
+      box-shadow: 2px 2px 0 #000;
+      transition: transform 0.1s;
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+    }
+
+    input[type=range]::-webkit-slider-thumb:active {
+      cursor: grabbing;
+    }
+
+    input[type=range]::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+      background: var(--color-accent);
+      border: 3px solid var(--color-text);
+      cursor: grab;
+      box-shadow: 2px 2px 0 #000;
+      transition: transform 0.1s;
+    }
+
+    .color-scale {
+      display: flex;
+      height: 8px;
+      margin-top: 6px;
+      border: 2px solid var(--color-text);
+      overflow: hidden;
+      box-shadow: 2px 2px 0 var(--color-shadow);
+    }
+
+    .color-scale span {
+      flex: 1;
+    }
+
+    /* Standard Bevel Button */
+    .neo-btn {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1rem;
+      background: var(--color-button-face);
+      color: var(--color-text);
+      border: var(--border-width) solid var(--color-text);
+      box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--color-shadow);
+      padding: 0.6rem 1.2rem;
+      cursor: pointer;
+      outline: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: transform 0.1s, box-shadow 0.1s, background-color 0.1s;
+    }
+
+    .neo-btn:hover {
+      background: var(--color-button-hover);
+      transform: translate(-2px, -2px);
+      box-shadow: calc(var(--shadow-offset) + 2px) calc(var(--shadow-offset) + 2px) 0 var(--color-shadow);
+    }
+
+    .neo-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: calc(var(--shadow-offset) - 4px) calc(var(--shadow-offset) - 4px) 0 var(--color-shadow);
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+
+    .filter-tab {
+      padding: 4px 10px;
+      border: 2px solid var(--color-text);
+      background: var(--color-window-bg);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background-color 0.15s, color 0.15s;
+    }
+
+    .filter-tab:hover {
+      background: var(--color-accent);
+      color: #000;
+    }
+
+    .filter-tab.active {
+      background: var(--color-text);
+      color: var(--color-window-bg);
+    }
+
+    /* ===== 5. Neighbour Factors Bar ===== */
+    .neighbour-bar {
+      max-width: 960px;
+      margin: 0.8rem auto 0;
+      padding: 0 2rem;
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .neighbour-label {
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--color-text);
+      white-space: nowrap;
+    }
+
+    .neighbour-chip {
+      font-size: 0.78rem;
+      padding: 4px 12px;
+      background: var(--color-window-bg);
+      color: var(--color-text);
+      cursor: pointer;
+      border: 2px solid var(--color-text);
+      font-family: var(--font-display);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 2px 2px 0 var(--color-shadow);
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .neighbour-chip:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0 var(--color-shadow);
+      background: var(--color-primary);
+    }
+
+    .neighbour-chip .nb-arrow {
+      font-size: 0.7rem;
+    }
+
+    .neighbour-chip.above {
+      border-left: 5px solid var(--dark-green);
+    }
+
+    .neighbour-chip.below {
+      border-left: 5px solid var(--orange);
+    }
+
+    /* ===== 6. Main Card Panel ===== */
+    .main {
+      max-width: 960px;
+      margin: 1.5rem auto;
+      padding: 0 2rem;
+    }
+
+    .main-card {
+      background: var(--color-window-bg);
+      border: var(--border-width) solid var(--color-text);
+      box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--color-shadow);
+      padding: 2.2rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: opacity 0.25s var(--transition), transform 0.25s var(--transition);
+    }
+
+    .main-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--red), var(--orange), var(--yellow), var(--light-green), var(--green), var(--dark-green));
+    }
+
+    .main-card.fade-out {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+
+    .main-card.fade-in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .badge {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      padding: 0.4rem 1.1rem;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-weight: 900;
+      font-size: 1.2rem;
+      border: 3px solid #000;
+      box-shadow: 3px 3px 0 #000;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .card-deutsch {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--color-text);
+      margin-bottom: 0.2rem;
+      padding-right: 140px;
+      line-height: 1.25;
+      letter-spacing: -0.5px;
+    }
+
+    .card-english {
+      font-size: 0.9rem;
+      color: var(--color-text);
+      opacity: 0.6;
+      font-style: italic;
+      margin-bottom: 1.2rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+    }
+
+    .card-divider {
+      height: 4px;
+      background: var(--color-text);
+      margin: 0.8rem 0 1.5rem;
+      opacity: 0.2;
+    }
+
+    .card-section {
+      margin-bottom: 1.6rem;
+    }
+
+    .card-section-title {
+      font-size: 0.85rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--color-text);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+    }
+
+    .card-section p {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: var(--color-text);
+    }
+
+    .methode-box {
+      background: var(--color-bg);
+      border: 3px solid var(--color-text);
+      border-left: 8px solid var(--color-primary);
+      padding: 1.1rem 1.4rem;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.06);
+    }
+
+    .methode-box p {
+      font-weight: 500;
+    }
+
+    /* Custom Hinge Comparison Bar */
+    .mini-bar-wrap {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 2px solid rgba(0,0,0,0.15);
+    }
+
+    body.theme-neo-dark .mini-bar-wrap {
+      border-top-color: rgba(255,255,255,0.1);
+    }
+
+    .mini-bar-label {
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--color-text);
+      opacity: 0.8;
+      margin-bottom: 0.6rem;
+    }
+
+    .mini-bar-container {
+      position: relative;
+      height: 32px;
+      background: var(--color-bg);
+      border: 3px solid var(--color-text);
+      overflow: visible;
+      box-shadow: 2px 2px 0 var(--color-shadow);
+    }
+
+    .mini-bar-fill {
+      height: 100%;
+      transition: width 0.4s var(--transition);
+    }
+
+    .mini-bar-marker {
+      position: absolute;
+      top: -3px;
+      width: 3px;
+      height: 32px;
+      background: var(--color-text);
+      opacity: 0.4;
+    }
+
+    .mini-bar-value {
+      position: absolute;
+      top: 50%;
+      right: 12px;
+      transform: translateY(-50%);
+      font-size: 0.85rem;
+      font-weight: 900;
+      color: #fff;
+      font-family: var(--font-mono);
+    }
+
+    .mini-bar-hinge-label {
+      position: absolute;
+      top: -18px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: var(--color-text);
+      transform: translateX(-50%);
+      white-space: nowrap;
+      font-family: var(--font-mono);
+    }
+
+    /* Expandable Chip Grid Cloud */
+    .chips-section {
+      margin-top: 2.5rem;
+    }
+
+    .chips-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      border-bottom: 2px dashed var(--color-text);
+      padding: 0.3rem 0.1rem;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--color-text);
+      text-align: left;
+      outline: none;
+    }
+
+    .chips-toggle:hover {
+      border-bottom-style: solid;
+      color: var(--color-secondary);
+    }
+
+    .chips-toggle-icon {
+      transition: transform 0.25s;
+      font-size: 0.8rem;
+    }
+
+    .chips-toggle[aria-expanded="true"] .chips-toggle-icon {
+      transform: rotate(180deg);
+    }
+
+    .chips-count {
+      font-size: 0.8rem;
+      font-weight: 900;
+      color: #000;
+      background: var(--color-primary);
+      padding: 1px 6px;
+      border: 2px solid #000;
+      font-family: var(--font-mono);
+      box-shadow: 2px 2px 0 #000;
+    }
+
+    .chips-grid {
+      display: none;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 1rem;
+      background: var(--color-window-bg);
+      border: var(--border-width) solid var(--color-text);
+      padding: 1.2rem;
+      box-shadow: 4px 4px 0 var(--color-shadow);
+    }
+
+    .chips-grid.open {
+      display: flex;
+    }
+
+    .chip {
+      padding: 5px 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 2px solid var(--color-text);
+      color: #fff;
+      font-family: var(--font-display);
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.15);
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .chip:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0 var(--color-shadow);
+    }
+
+    .chip.active {
+      border-color: var(--color-text);
+      outline: 3px solid var(--color-accent);
+      transform: scale(1.04);
+      box-shadow: 4px 4px 0 var(--color-shadow);
+    }
+
+    .chip .chip-d {
+      font-size: 0.7rem;
+      opacity: 0.85;
+      margin-left: 0.3rem;
+      font-family: var(--font-mono);
+    }
+
+    /* ===== 7. Modals ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--color-window-bg);
+      border: var(--border-width) solid var(--color-text);
+      box-shadow: 8px 8px 0 #000;
+      max-width: 680px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 2.5rem;
+      position: relative;
+      animation: modalIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 0.8rem;
+      right: 1.2rem;
+      background: none;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: var(--color-text);
+      font-family: var(--font-mono);
+      font-weight: bold;
+    }
+
+    .modal-close:hover {
+      color: var(--color-secondary);
+    }
+
+    .modal h2 {
+      font-size: 1.8rem;
+      font-weight: 900;
+      margin-bottom: 1.2rem;
+      text-transform: uppercase;
+    }
+
+    .modal h3 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin: 1.4rem 0 0.6rem;
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+    }
+
+    .modal p {
+      font-size: 0.9rem;
+      line-height: 1.65;
+      margin-bottom: 0.8rem;
+    }
+
+    .modal ul {
+      font-size: 0.9rem;
+      line-height: 1.65;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .modal .highlight-box {
+      background: var(--color-bg);
+      border: 3px solid var(--color-text);
+      border-left: 6px solid var(--color-accent);
+      padding: 0.9rem 1.2rem;
+      margin: 1.2rem 0;
+      font-size: 0.9rem;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.06);
+    }
+
+    .footer {
+      max-width: 960px;
+      margin: 3rem auto 0;
+      padding: 0 2rem;
+      text-align: center;
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+      opacity: 0.7;
+      color: var(--color-text);
+      line-height: 1.8;
+    }
+
+    /* ===== 8. Responsive Rules ===== */
+    @media(max-width: 768px) {
+      .header {
+        padding: 1rem;
+      }
+      .header h1 {
+        font-size: 1.6rem;
+      }
+      .controls {
+        padding: 0.8rem 1rem;
+      }
+      .main {
+        padding: 0 1rem;
+        margin: 1rem auto;
+      }
+      .main-card {
+        padding: 1.2rem 1.5rem;
+      }
+      .badge {
+        position: relative;
+        top: 0;
+        right: 0;
+        display: inline-block;
+        margin-bottom: 1rem;
+      }
+      .card-deutsch {
+        padding-right: 0;
+        font-size: 1.4rem;
+      }
+      .neighbour-bar {
+        padding: 0 1rem;
+      }
+    }
+  </style>
+
+  <!-- Universal SDK -->
+  <script src="../../sdk/wissos-sdk.js"></script>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-top">
+      <h1>Pädagogischer Navigator <span>Hattie-Matrix</span></h1>
+      <div class="header-actions">
+        <button class="neo-btn" id="btnInfo" style="font-size:0.85rem; padding: 4px 12px; box-shadow: 3px 3px 0 #000;" aria-label="Informationen zur App">Warum diese App? 💡</button>
+      </div>
+    </div>
+    <div class="header-subtitle">
+      Evidenzbasierte Einflussfaktoren auf den Lernerfolg (Hinge-Point d = 0,40)
+    </div>
+  </header>
+
+  <!-- Slider & Tabs Controls -->
+  <div class="controls" role="region" aria-label="Steuerungsbereich">
+    <div class="controls-inner">
+      <div class="slider-row">
+        <div class="slider-wrap">
+          <div class="slider-label">
+            <span>Effektstärke wählen:</span>
+            <span>
+              <span class="slider-val" id="sliderVal">d = 0,00</span>
+              <span class="slider-category" id="sliderCat"></span>
+            </span>
+          </div>
+          <input type="range" id="slider" min="-0.50" max="1.60" step="0.01" value="0.00" aria-label="Effektstärke (Cohen d)">
+          <div class="color-scale">
+            <span style="background:var(--red);flex:.30"></span>
+            <span style="background:var(--orange);flex:.20"></span>
+            <span style="background:var(--yellow);flex:.20"></span>
+            <span style="background:var(--light-green);flex:.20"></span>
+            <span style="background:var(--green);flex:.40"></span>
+            <span style="background:var(--dark-green);flex:.60"></span>
+          </div>
+        </div>
+        <button class="neo-btn" id="btnRandom" aria-label="Zufälligen Faktor auswählen">🎲 Zufallswert</button>
+      </div>
+      <div class="filter-tabs" role="tablist" aria-label="Filter nach Effektstärke">
+        <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true">Alle</button>
+        <button class="filter-tab" data-filter="very-high" role="tab">Sehr hoch (≥1,00)</button>
+        <button class="filter-tab" data-filter="high" role="tab">Hoch (0,60–0,99)</button>
+        <button class="filter-tab" data-filter="medium" role="tab">Mittel (0,40–0,59)</button>
+        <button class="filter-tab" data-filter="low" role="tab">Gering (0,01–0,39)</button>
+        <button class="filter-tab" data-filter="negative" role="tab">Kritisch (≤0,00)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Staggered Neighbouring Factors Panel -->
+  <div class="neighbour-bar" id="neighbourBar"></div>
+
+  <!-- Central Evidence Card Panel -->
+  <main class="main">
+    <div class="main-card" id="mainCard">
+      <span class="badge" id="badge">d = 0,00</span>
+      <div class="card-deutsch" id="cardDeutsch">Lade Daten ...</div>
+      <div class="card-english" id="cardEnglish">...</div>
+      <div class="card-divider"></div>
+      
+      <div class="card-section">
+        <div class="card-section-title">📖 Kurzerklärung</div>
+        <p id="cardErklaerung">Die Hattie-Datenbank wird aus dem System synchronisiert. Bitte warten ...</p>
+      </div>
+      
+      <div class="card-section">
+        <div class="card-section-title">🏫 Methode für den Unterricht</div>
+        <div class="methode-box">
+          <p id="cardMethode">...</p>
+        </div>
+      </div>
+      
+      <div class="card-section">
+        <div class="card-section-title">📊 Studienlage (Metaanalysen)</div>
+        <p id="cardStudienlage">...</p>
+      </div>
+
+      <!-- Hinge Point Comparative Scale -->
+      <div class="mini-bar-wrap">
+        <div class="mini-bar-label">Effektstärke aller Faktoren im Vergleich (Hinge-Point: d = 0,40)</div>
+        <div class="mini-bar-container" id="miniBarContainer">
+          <div class="mini-bar-fill" id="miniBarFill"></div>
+          <div class="mini-bar-value" id="miniBarValue"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Collapsible Full Tag Cloud Gitter -->
+    <div class="chips-section">
+      <button class="chips-toggle" id="chipsToggle" aria-expanded="false" aria-controls="chipsGrid">
+        <span class="chips-toggle-icon">▼</span>&nbsp;Alle Einflussfaktoren anzeigen&nbsp;<span class="chips-count" id="chipsCount">0</span>
+      </button>
+      <div class="chips-grid" id="chipsGrid"></div>
+    </div>
+  </main>
+
+  <!-- Sources Disclaimer Footer -->
+  <footer class="footer">
+    <strong>Quellenangabe:</strong> Effektstärken nach: Hattie, J. (2009/2023). <em>Visible Learning.</em> Routledge. Dt.: Zierer, K. &amp; Beywl, W. (2013). <em>Lernen sichtbar machen.</em> Schneider Verlag Hohengehren.<br>
+    Methodenvorschläge und Erläuterungen basieren auf Hatties Forschungsergebnissen, ergänzt durch Erfahrungswissen aus der Unterrichtspraxis.
+  </footer>
+
+  <!-- Informative Help Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" role="dialog" aria-labelledby="modalTitle">
+      <button class="modal-close" id="modalClose" aria-label="Schließen">&times;</button>
+      <h2 id="modalTitle">❓ Warum diese App?</h2>
+      <p>Als Referendarin oder Referendar, aber auch als fertige Lehrkraft stehen Sie vor einer anspruchsvollen Aufgabe: Sie sollen Unterricht planen, der <strong>nachweislich wirksam</strong> ist – oft ohne ausreichend Zeit, sich in die umfangreiche Forschungslage einzulesen.</p>
+      <h3>🔬 Was sind Effektstärken?</h3>
+      <p>Eine Effektstärke (Cohen’s d) misst, wie stark ein bestimmter Faktor das Lernen beeinflusst. Der Wert <strong>d&nbsp;=&nbsp;0,40</strong> gilt als Umschlagpunkt: Faktoren darüber bewirken mehr als gewöhnlicher Unterricht ohne gezielte Intervention.</p>
+      <div class="highlight-box">💡 <strong>Beispiel:</strong> „Unterrichtsklarheit“ (d&nbsp;=&nbsp;0,75) bedeutet, dass Lernende, die klare Lernziele und Erfolgskriterien erhalten, im Durchschnitt erheblich mehr lernen als Vergleichsgruppen ohne diese Klarheit.</div>
+      <h3>📚 Woher stammen die Daten?</h3>
+      <p>Die hier dargestellten Effektstärken basieren auf <strong>Meta-Analysen</strong> – also Zusammenfassungen von hunderten Einzelstudien mit insgesamt Millionen von Lernenden weltweit. Diese Synthese der Bildungsforschung ist die bisher umfassendste ihrer Art.</p>
+      <h3>🎯 Was bringt Ihnen diese App?</h3>
+      <ul>
+        <li><strong>Orientierung:</strong> Verstehen, welche Unterrichtsfaktoren den größten Hebel haben</li>
+        <li><strong>Konkrete Methoden:</strong> Zu jedem Faktor finden Sie einen direkt umsetzbaren Unterrichtsvorschlag</li>
+        <li><strong>Reflexion:</strong> Im Mentoring-Gespräch oder bei der Unterrichtsplanung fundiert argumentieren</li>
+        <li><strong>Überraschungen erkennen:</strong> Manche populäre Maßnahmen (z. B. Klassenverkleinerung) wirken weniger als erwartet – andere unterschätzte Faktoren umso mehr</li>
+      </ul>
+      <h3>⚖️ Wichtig: Evidenz als Kompass, nicht als Rezept</h3>
+      <p>Effektstärken sind <strong>statistische Durchschnittswerte</strong>. Sie ersetzen nicht Ihr professionelles Urteil, sondern ergänzen es. Jede Klasse, jede Schülerschaft und jeder Kontext ist anders. Nutzen Sie die Daten als <strong>Reflexionsinstrument</strong>, nicht als starre Handlungsanweisung.</p>
+      <p style="font-size:0.8rem; opacity: 0.6; margin-top:1.5rem; padding-top:1rem; border-top:2px solid var(--color-text); line-height:1.5;">Ausgangspunkt dieser App ist die Forschung von John Hattie (<em>Visible Learning</em>, 2009/2023). Die Methodenvorschläge und Erläuterungen verbinden die wissenschaftlichen Befunde mit Erfahrungswissen aus der Unterrichtspraxis.</p>
+    </div>
+  </div>
+
+  <!-- ===== 9. Javascript Logic ===== -->
+  <script>
+    // Global factors dataset state
+    let factors = [];
+    const dMin = -0.50;
+    const dMax = 1.60;
+    const dRange = dMax - dMin;
+    
+    let currentId = null;
+    let currentFilter = 'all';
+    let animating = false;
+
+    // neobrutalist dynamic color generator based on Hattie category
+    function getColor(d) {
+      if (d < 0) return '#ef4444'; // Red (critical)
+      if (d < 0.20) return '#f97316'; // Orange (negligible)
+      if (d < 0.40) return '#eab308'; // Yellow (low)
+      if (d < 0.60) return '#84cc16'; // Light Green (medium)
+      if (d < 1.00) return '#22c55e'; // Green (high)
+      return '#15803d'; // Dark Green (very high)
+    }
+
+    function getLabel(d) {
+      if (d < 0) return 'schädlich';
+      if (d < 0.20) return 'vernachlässigbar';
+      if (d < 0.40) return 'gering';
+      if (d < 0.60) return 'mittel';
+      if (d < 1.00) return 'hoch';
+      return 'sehr hoch';
+    }
+
+    function fmt(d) {
+      return d.toFixed(2).replace('.', ',');
+    }
+
+    // DOM selection helper
+    const $ = id => document.getElementById(id);
+
+    const slider = $('slider');
+    const sliderVal = $('sliderVal');
+    const sliderCat = $('sliderCat');
+    const btnRandom = $('btnRandom');
+    const mainCard = $('mainCard');
+    const badge = $('badge');
+    const cardDeutsch = $('cardDeutsch');
+    const cardEnglish = $('cardEnglish');
+    const cardErklaerung = $('cardErklaerung');
+    const cardMethode = $('cardMethode');
+    const cardStudienlage = $('cardStudienlage');
+    const miniBarFill = $('miniBarFill');
+    const miniBarValue = $('miniBarValue');
+    const miniBarContainer = $('miniBarContainer');
+    const chipsGrid = $('chipsGrid');
+    const chipsCount = $('chipsCount');
+    const neighbourBar = $('neighbourBar');
+    const filterTabs = document.querySelectorAll('.filter-tab');
+
+    // Update the colored gradient background on range slider
+    function updateSliderBg(val) {
+      const pct = ((val - dMin) / dRange) * 100;
+      const c = getColor(val);
+      slider.style.background = `linear-gradient(90deg, ${c} 0%, ${c} ${pct}%, var(--color-bg) ${pct}%, var(--color-bg) 100%)`;
+      sliderCat.textContent = getLabel(val);
+      sliderCat.style.backgroundColor = c;
+      sliderCat.style.color = (val >= 0.20 && val < 0.40) ? '#333' : '#fff';
+    }
+
+    // Render an selected Hattie factor in the core visual panel
+    function showEntry(entry, animate = true) {
+      if (!entry) return;
+      if (currentId === entry.id && !animate) return;
+      currentId = entry.id;
+
+      const doUpdate = () => {
+        const c = getColor(entry.d);
+        
+        // Populate core card fields
+        badge.textContent = 'd = ' + fmt(entry.d);
+        badge.style.backgroundColor = c;
+        badge.style.color = (entry.d >= 0.20 && entry.d < 0.40) ? '#333' : '#fff';
+        
+        cardDeutsch.textContent = entry.deutsch;
+        cardEnglish.textContent = entry.english;
+        cardErklaerung.textContent = entry.erklaerung;
+        cardMethode.textContent = entry.methode;
+        cardStudienlage.textContent = entry.studienlage;
+
+        // Animate Hinge comparative bar
+        const pct = Math.max(0, Math.min(100, ((entry.d - dMin) / dRange) * 100));
+        miniBarFill.style.width = pct + '%';
+        miniBarFill.style.backgroundColor = c;
+        miniBarValue.textContent = 'd = ' + fmt(entry.d);
+        
+        if (pct < 15) {
+          miniBarValue.style.color = 'var(--color-text)';
+          miniBarValue.style.right = 'auto';
+          miniBarValue.style.left = Math.max(pct, 2) + '%';
+          miniBarValue.style.paddingLeft = '6px';
+        } else {
+          miniBarValue.style.color = '#fff';
+          miniBarValue.style.right = '12px';
+          miniBarValue.style.left = 'auto';
+          miniBarValue.style.paddingLeft = '0';
+        }
+
+        // Draw Hinge point guidelines in comparative bar
+        miniBarContainer.querySelectorAll('.mini-bar-marker, .mini-bar-hinge-label').forEach(m => m.remove());
+        
+        const hinge = document.createElement('div');
+        hinge.className = 'mini-bar-marker';
+        const hingePct = ((0.40 - dMin) / dRange * 100);
+        hinge.style.left = hingePct + '%';
+        hinge.title = 'Hinge-Point d = 0,40';
+        miniBarContainer.appendChild(hinge);
+        
+        const hl = document.createElement('div');
+        hl.className = 'mini-bar-hinge-label';
+        hl.style.left = hingePct + '%';
+        hl.textContent = 'd=0,40';
+        miniBarContainer.appendChild(hl);
+
+        // Highlight currently selected tag inside the grid cloud
+        chipsGrid.querySelectorAll('.chip').forEach(ch => {
+          ch.classList.toggle('active', parseInt(ch.dataset.id) === entry.id);
+        });
+      };
+
+      if (animate) {
+        mainCard.classList.add('fade-out');
+        mainCard.classList.remove('fade-in');
+        setTimeout(() => {
+          doUpdate();
+          mainCard.classList.remove('fade-out');
+          mainCard.classList.add('fade-in');
+        }, 180);
+      } else {
+        doUpdate();
+      }
+    }
+
+    // Helper: find nearest entry by d value from filtered subset
+    function findNearest(val, pool) {
+      if (!pool || !pool.length) return null;
+      let best = pool[0];
+      let dist = Math.abs(pool[0].d - val);
+      for (let i = 1; i < pool.length; i++) {
+        const dd = Math.abs(pool[i].d - val);
+        if (dd < dist) {
+          dist = dd;
+          best = pool[i];
+        }
+      }
+      return best;
+    }
+
+    // Get current active subset of factors depending on filter tab selected
+    function getFiltered() {
+      if (currentFilter === 'all') return factors;
+      return factors.filter(e => {
+        if (currentFilter === 'very-high') return e.d >= 1.00;
+        if (currentFilter === 'high') return e.d >= 0.60 && e.d < 1.00;
+        if (currentFilter === 'medium') return e.d >= 0.40 && e.d < 0.595; // support loose float borders
+        if (currentFilter === 'low') return e.d > 0.00 && e.d < 0.40;
+        if (currentFilter === 'negative') return e.d <= 0.00;
+        return true;
+      });
+    }
+
+    // Populate full tag cloud drawer grid
+    function buildChips() {
+      chipsGrid.innerHTML = '';
+      const filtered = getFiltered();
+      chipsCount.textContent = filtered.length;
+
+      filtered.forEach(e => {
+        const ch = document.createElement('button');
+        ch.className = 'chip';
+        ch.dataset.id = e.id;
+        ch.style.backgroundColor = getColor(e.d);
+        ch.style.color = (e.d >= 0.20 && e.d < 0.40) ? '#333' : '#fff';
+        ch.innerHTML = e.deutsch + `<span class="chip-d">(${fmt(e.d)})</span>`;
+        ch.setAttribute('aria-label', `${e.deutsch}, Effektstärke ${fmt(e.d)}`);
+        
+        ch.addEventListener('click', () => {
+          if (window.WissOS) window.WissOS.playSound('click');
+          selectEntry(e, true);
+        });
+
+        if (currentId === e.id) ch.classList.add('active');
+        chipsGrid.appendChild(ch);
+      });
+    }
+
+    // Staggered neighbouring factor computation bar
+    function updateSuggestions(val) {
+      if (!neighbourBar || currentId === null || !factors.length) return;
+      
+      const sortedAll = [...factors].sort((a,b) => b.d - a.d);
+      const curIdx = sortedAll.findIndex(e => e.id === currentId);
+      if (curIdx < 0) {
+        neighbourBar.innerHTML = '';
+        return;
+      }
+
+      neighbourBar.innerHTML = '<span class="neighbour-label">Angrenzende Faktoren:</span>';
+      
+      // Select exactly 1 directly below (lower d / higher index)
+      if (curIdx < sortedAll.length - 1) {
+        const eBelow = sortedAll[curIdx + 1];
+        const btn = document.createElement('button');
+        btn.className = 'neighbour-chip below';
+        btn.innerHTML = `<span class="nb-arrow">▼</span> ${eBelow.deutsch} <em>(d=${fmt(eBelow.d)})</em>`;
+        btn.addEventListener('click', () => {
+          if (window.WissOS) window.WissOS.playSound('click');
+          selectEntry(eBelow, true);
+        });
+        neighbourBar.appendChild(btn);
+      }
+
+      // Select exactly 1 directly above (higher d / lower index)
+      if (curIdx > 0) {
+        const eAbove = sortedAll[curIdx - 1];
+        const btn = document.createElement('button');
+        btn.className = 'neighbour-chip above';
+        btn.innerHTML = `<span class="nb-arrow">▲</span> ${eAbove.deutsch} <em>(d=${fmt(eAbove.d)})</em>`;
+        btn.addEventListener('click', () => {
+          if (window.WissOS) window.WissOS.playSound('click');
+          selectEntry(eAbove, true);
+        });
+        neighbourBar.appendChild(btn);
+      }
+    }
+
+    // Trigger select action with slider ease transition
+    function selectEntry(entry, animateSlider = false) {
+      if (!entry) return;
+      if (animateSlider) {
+        animateSliderTo(entry.d, () => {
+          showEntry(entry);
+          updateSuggestions(entry.d);
+        });
+      } else {
+        slider.value = entry.d;
+        updateSliderBg(entry.d);
+        sliderVal.textContent = 'd = ' + fmt(entry.d);
+        showEntry(entry);
+        updateSuggestions(entry.d);
+      }
+    }
+
+    // Ease-out slider sliding animation
+    function animateSliderTo(target, cb) {
+      if (animating) return;
+      animating = true;
+      const start = parseFloat(slider.value);
+      const diff = target - start;
+      const duration = 450;
+      const t0 = performance.now();
+
+      function step(ts) {
+        const progress = Math.min(1, (ts - t0) / duration);
+        const ease = 1 - Math.pow(1 - progress, 3); // Cubic ease out
+        const currentVal = start + diff * ease;
+        
+        slider.value = currentVal;
+        updateSliderBg(currentVal);
+        sliderVal.textContent = 'd = ' + fmt(currentVal);
+        updateSuggestions(currentVal);
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          slider.value = target;
+          updateSliderBg(target);
+          sliderVal.textContent = 'd = ' + fmt(target);
+          updateSuggestions(target);
+          animating = false;
+          if (cb) cb();
+        }
+      }
+      requestAnimationFrame(step);
+    }
+
+    // --- Slider & UI Input Hookups ---
+    slider.addEventListener('input', () => {
+      const val = parseFloat(slider.value);
+      updateSliderBg(val);
+      sliderVal.textContent = 'd = ' + fmt(val);
+      
+      const filtered = getFiltered();
+      if (filtered.length) {
+        const nearest = findNearest(val, filtered);
+        showEntry(nearest, false);
+      }
+      updateSuggestions(val);
+    });
+
+    // Random dice selector
+    btnRandom.addEventListener('click', () => {
+      if (window.WissOS) window.WissOS.playSound('click');
+      const pool = getFiltered();
+      if (!pool || !pool.length) return;
+      
+      let entry = pool[Math.floor(Math.random() * pool.length)];
+      while (pool.length > 1 && entry.id === currentId) {
+        entry = pool[Math.floor(Math.random() * pool.length)];
+      }
+      selectEntry(entry, true);
+    });
+
+    // Filter tabs sorting trigger
+    filterTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        if (window.WissOS) window.WissOS.playSound('click');
+        filterTabs.forEach(t => {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+        
+        currentFilter = tab.dataset.filter;
+        buildChips();
+
+        const filtered = getFiltered();
+        if (filtered.length) {
+          const current = factors.find(e => e.id === currentId);
+          if (!current || !filtered.some(e => e.id === current.id)) {
+            selectEntry(filtered[0], true);
+          }
+        }
+      });
+    });
+
+    // Collapsible drawer click handler
+    const chipsToggle = $('chipsToggle');
+    const chipsGridEl = $('chipsGrid');
+    if (chipsToggle && chipsGridEl) {
+      chipsToggle.addEventListener('click', () => {
+        if (window.WissOS) window.WissOS.playSound('click');
+        const isOpen = chipsToggle.getAttribute('aria-expanded') === 'true';
+        chipsToggle.setAttribute('aria-expanded', String(!isOpen));
+        chipsGridEl.classList.toggle('open', !isOpen);
+      });
+    }
+
+    // Modal overlays
+    const modalOverlay = $('modalOverlay');
+    const btnInfo = $('btnInfo');
+    const modalClose = $('modalClose');
+
+    btnInfo.addEventListener('click', () => {
+      if (window.WissOS) window.WissOS.playSound('click');
+      modalOverlay.classList.add('active');
+    });
+
+    modalClose.addEventListener('click', () => {
+      if (window.WissOS) window.WissOS.playSound('click');
+      modalOverlay.classList.remove('active');
+    });
+
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) modalOverlay.classList.remove('active');
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') modalOverlay.classList.remove('active');
+    });
+
+    // ===== 10. Data Fetching & Sync Initialization =====
+    async function loadDataset() {
+      // Parse search params for dataset ID
+      const params = new URLSearchParams(window.location.search);
+      const datasetId = params.get('dataset') || 'hattie';
+      const contentPath = `../../content/${datasetId}/index.json`;
+
+      try {
+        const response = await fetch(contentPath);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        factors = await response.json();
+        
+        // Sort descending by d strength
+        factors.sort((a, b) => b.d - a.d);
+
+        // Populate drawer
+        buildChips();
+
+        // Select a pleasant start factor (collective self-efficacy or random high)
+        let startIndex = factors.findIndex(e => e.id === 1); // Kollektive Lehrerwirksamkeit
+        if (startIndex === -1) startIndex = 0;
+        
+        const startFactor = factors[startIndex];
+        slider.value = startFactor.d;
+        updateSliderBg(startFactor.d);
+        sliderVal.textContent = 'd = ' + fmt(startFactor.d);
+        showEntry(startFactor, false);
+        updateSuggestions(startFactor.d);
+      } catch (err) {
+        console.error('Failed loading didactical dataset:', err);
+        cardDeutsch.textContent = 'Fehler beim Laden';
+        cardErklaerung.textContent = `Der didaktische Datensatz [${datasetId}] konnte nicht geladen werden. Bitte stellen Sie sicher, dass content/${datasetId}/index.json existiert. Details: ${err.message}`;
+      }
+    }
+
+    // Fire sync
+    loadDataset();
+  </script>
+</body>
+</html>

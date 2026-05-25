@@ -1,0 +1,277 @@
+﻿{
+    "id":  "else_lasker_schueler",
+    "name":  "Else Lasker-Schüler",
+    "short":  "Lasker-Schüler",
+    "dates":  "1869 – 1945",
+    "epoch":  "Expressionismus · Moderne",
+    "epochShort":  "Klassische Moderne",
+    "color":  "#1A237E",
+    "highlight":  "#283593",
+    "icon":  "🃏",
+    "quote":  "Ich habe zu Hause ein blaues Klavier und kenne nicht eine Note.",
+    "timelinePos":  58.6,
+    "avatar":  "avatar.jpg",
+    "source":  "https://commons.wikimedia.org/wiki/Category:Else_Lasker-Sch%C3%BCler?uselang=de#/media/File:ElseLaskerSch%C3%BCler1907.jpg",
+    "theme":  "sebastian-wolf",
+    "modules":  [
+                    {
+                        "type":  "framing",
+                        "content":  "Du triffst gleich auf Else Lasker-Schüler – oder besser: auf eine Konstruktion, die so spricht, wie sie vielleicht geschrieben hätte. Lasker-Schüler selbst ist am 22. Januar 1945 in Jerusalem gestorben. Was du hier liest, basiert auf ihren Gedichten, Briefen und biografischen Zeugnissen, ist aber eine didaktische Interpretation. Lies kritisch!"
+                    },
+                    {
+                        "type":  "timeline",
+                        "epochs":  [
+                                       {
+                                           "name":  "Klassische Moderne / Expressionismus",
+                                           "start":  1900,
+                                           "end":  1933,
+                                           "active":  false,
+                                           "info":  "Großstadtboheme, Sprachrevolution, Subjektkrise, Avantgarde – Lasker-Schülers Berliner Kernphase."
+                                       },
+                                       {
+                                           "name":  "Weimarer Republik",
+                                           "start":  1919,
+                                           "end":  1933,
+                                           "active":  false,
+                                           "info":  "Blütezeit der Berliner Boheme – und Zeit von Lasker-Schülers größtem Ruhm."
+                                       },
+                                       {
+                                           "name":  "Exil",
+                                           "start":  1933,
+                                           "end":  1945,
+                                           "active":  false,
+                                           "info":  "Flucht über die Schweiz nach Palästina. Heimatlos bis zum Tod."
+                                       },
+                                       {
+                                           "name":  "Lasker-Schülers Leben",
+                                           "start":  1869,
+                                           "end":  1945,
+                                           "active":  true,
+                                           "info":  "Geboren in Elberfeld. Gestorben in Jerusalem. Eine ewige Außenseiterin."
+                                       }
+                                   ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich bin Else Lasker-Schüler, geboren am 11. Februar 1869 in Elberfeld im Wuppertal. Elisabeth war mein bürgerlicher Name; aber ich war nie bürgerlich. Ich war Dichterin von Arabien, Prinzessin von Bagdad, Enkelin des Scheichs, ehemaliger Josef von Ägypten, Deuter der Ehren, Kornverweser und Liebling Pharaos. Spielen ist alles, habe ich einmal geschrieben. Und ich meinte das ernst. \u003cspan class=\"chat-source-ref\" title=\"Lasker-Schüler, Selbstzeugnis\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Lasker-Schüler, Selbstzeugnis\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Dichterin von Arabien, Josef von Ägypten – warum diese Rollenspiele? War das nicht Flucht vor der Wirklichkeit?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Lasker-Schüler war eine Art Performance-Künstlerin, wie man heute sagen würde. Sie liebte die Maskerade, kleidete sich extravagant – glänzendes Gewand, Pluderhosen, Pagenkopf, ein kleiner Dolch am Gürtel. Die Alter Egos hatten oft biografische Wurzeln: Die Figur des Josef von Theben geht auf ihren Lieblingsbruder Paul zurück, der ihr im Alter von 13 Jahren die Geschichte von Josef und seinen Brüdern erzählt hatte – und der mit 13 starb. Der erste Verlust in einer langen Reihe."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Wie meine Mutter starb, zerbrach der Mond. Das schrieb ich, als sie starb – ich war 21. Die Mutter war mir die eigentliche Dichterin. Ich war nur die Sagerin. Verlust war der Motor meines Lebens und meines Schreibens. Ich sterbe am Leben und atme im Bild wieder auf. Jedenfalls liebe ich nach meiner Sehnsucht die Leute alle zu kleiden, damit ein Spiel zustande kommt. Spielen ist keine Flucht. Es ist die einzige Art, die Wahrheit zu sagen.\u003cbr\u003e\u003cspan class=\"chat-source-ref\" title=\"Lasker-Schüler, Selbstzeugnis\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Lasker-Schüler, Selbstzeugnis\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Ich habe mir nie ein System gemacht, wie es kluge Frauen tun, nie eine Weltanschauung mir irgendwo befestigt, wie es noch klügere Männer tun. Nicht eine Arche habe ich mir gezimmert. Ich bin ungebunden, überall liegt ein Wort von mir.",
+                        "prompt":  "Markiere, wo sich in der Selbstbeschreibung ein literarischer Anspruch zeigt.",
+                        "targets":  [
+                                        {
+                                            "word":  "nie ein System",
+                                            "feedback":  "Die Ablehnung von System und Weltanschauung ist ein programmatischer Akt. Sie stellt sich damit bewusst gegen den ordnenden, rationalen Diskurs ihrer Zeit."
+                                        },
+                                        {
+                                            "word":  "überall liegt ein Wort",
+                                            "feedback":  "Kein Gesamtwerk, keine Geschlossenheit. Verstreutheit als poetisches Prinzip. Das Werk als Resonanz auf das vielfältige Erleben."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Welcher Epoche lässt sich Else Lasker-Schüler zuordnen?",
+                        "options":  [
+                                        {
+                                            "text":  "Naturalismus",
+                                            "correct":  false,
+                                            "feedback":  "Der Naturalismus beschreibt soziale Wirklichkeit nüchtern. Lasker-Schüler verwandelt Wirklichkeit in Traumwelt; das ist das Gegenteil."
+                                        },
+                                        {
+                                            "text":  "Neue Sachlichkeit",
+                                            "correct":  false,
+                                            "feedback":  "Die Neue Sachlichkeit setzt auf klare Alltagssprache. Lasker-Schülers Bildsprache ist exzessiv, mythisch, alles andere als sachlich."
+                                        },
+                                        {
+                                            "text":  "Klassische Moderne / Expressionismus",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Es sei jedoch davor gewarnt, sie zu eng zu etikettieren: \u003cem\u003eExpressionistisch\u003c/em\u003e, dieser Stempel greift dann doch nicht. Besser ist da die \u003cem\u003eklassische Moderne\u003c/em\u003e, ein offenerer Begriff einer Epoche, zu der sie allemal zählt."
+                                        },
+                                        {
+                                            "text":  "Biedermeier",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Das literarische Berlin um 1900 war Lasker-Schülers Welt. Im Café des Westens – im Volksmund „Café Größenwahn\" – fand sie ihren Lieblingsschreibtisch. Sie war eine extreme Individualistin und Netzwerkerin zugleich. Ihre Lyrik ist oft dialogisch angelegt, mit einem lyrischen Ich und einem adressierten Du. Ihre Anhänger jedenfalls waren begeistert: Karl Kraus in Wien schwärmte, er würde für ein Gedicht von ihr \"den ganzen Heinrich Heine hergeben\". Peter Hille nannte sie \"den schwarzen Schwan Israels\". Gottfried Benn – zeitweilig in sie verliebt – nannte sie gar \"die größte Lyrikerin, die Deutschland je hatte\"."
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Deine Seele, die die meine liebet, ist verwirkt mit ihr im Teppichtibet. Strahl in Strahl verliebte Farben, Sterne, die sich himmellang umwarben. Unsere Füße ruhen auf der Kostbarkeit, Maschen tausend aber tausend weit.",
+                        "source":  "Else Lasker-Schüler, Ein Lied (Tibetteppich), ca. 1910"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Deine Seele, die die meine liebet, / ist verwirkt mit ihr im Teppichtibet.",
+                        "prompt":  "Markiere, wo sich die Bilder im Spiel mit der Sprache facettenreich irritierend aufspalten.",
+                        "targets":  [
+                                        {
+                                            "word":  "verwirkt",
+                                            "feedback":  "Das Wort spielt auf „verweben\" an; die Seelen sind wie Fäden in einem Teppich untrennbar ineinander verwoben. Ein Liebesbild, das durch den \"verwirkten\" Bruch zugleich auf Verlorenheit hinweist."
+                                        },
+                                        {
+                                            "word":  "Teppichtibet",
+                                            "feedback":  "Der orientalische Teppich steht für kostbare Fremdheit und Schönheit, öffnet sich in Weite. Lasker-Schülers Raum ist kein ethnographischer Ort, sondern ein poetischer Sehnsuchtsraum."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Lasker-Schüler nennt sich \"Dichterin von Arabien\" und entwirft orientalische Fantasiewelten, obwohl sie in Elberfeld geboren wurde. Was könnte diese Selbstinszenierung bedeuten? Ist es Eskapismus, kreative Freiheit oder beides? Positioniere dich hinsichtlich dieser Haltung."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Die große Freiheit hatte ihren Preis. Nach meiner zweiten Scheidung war ich finanziell nicht mehr abgesichert. Ich wohnte in Hotels oder schlief auf Parkbänken in Berlin. 1913 rief Karl Kraus in seiner Zeitschrift zur Spende für mich auf. Paul Klee, August Macke, Wassily Kandinsky – sie versteigerten eigene Bilder für mich. Damals brachten sie wenig ein. Dann verlor ich im Krieg Franz Marc, meinen lieben, wundervollen blauen Reiter. Und dann starb mein Sohn Paul, 28 Jahre alt, an Tuberkulose. \u003cspan class=\"chat-source-ref\" title=\"vgl. WDR Zeitzeichen, 11.02.2019\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. WDR Zeitzeichen, 11.02.2019\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "1933 übernehmen die Nationalsozialisten die Macht. Lasker-Schülers zweites Drama \u003cem\u003eArthur Aronymus und seine Väter\u003c/em\u003e steht vor der Premiere – ein Stück, das die Judenvernichtung prophezeit. Die Nazis nehmen es sofort vom Spielplan. Einige ihrer Anhänger lauern der jüdischen Dichterin auf und verprügeln sie. Mit 64 Jahren flieht sie in die Schweiz, erhält dort aber keine Arbeitserlaubnis. 1939, nach Kriegsbeginn, verweigert ihr die Schweizer Fremdenpolizei die Rückkehr. Von nun an sitzt sie in Jerusalem fest; im selbst so genannten \"Hebräerland\". Sie lebt von einer Ehrenrente, schreibt rastlos weiter und setzt sich für ein friedliches Miteinander von Juden und Arabern ein."
+                    },
+                    {
+                        "type":  "quiz-multi",
+                        "question":  "Welche der folgenden Aussagen über Lasker-Schüler sind korrekt?",
+                        "options":  [
+                                        {
+                                            "text":  "Karl Kraus nannte sie \"die stärkste und unwirksamste lyrische Erscheinung im modernen Deutschland\".",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Das Zitat bündelt Bewunderung und Klage: stark in der Dichtung, aber ohne Breitenwirkung in einer \"taubstummen Zeit\"."
+                                        },
+                                        {
+                                            "text":  "Lasker-Schüler zog nie eine klare Grenze zwischen Leben und Kunst – Privates und Poetisches gingen bei ihr ineinander über.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Sie scheute sich nicht, Intimes der Öffentlichkeit preiszugeben."
+                                        },
+                                        {
+                                            "text":  "Lasker-Schüler war eine überzeugte Zionistin, die früh für einen jüdischen Staat kämpfte.",
+                                            "correct":  false,
+                                            "feedback":  "Sie setzte sich in Jerusalem für ein friedliches Miteinander von Juden und Arabern ein."
+                                        },
+                                        {
+                                            "text":  "Ihr letzter Gedichtband *Mein blaues Klavier* erschien 1943 in Jerusalem und ist ihr bekanntestes Werk.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Der Band enthält das gleichnamige Gedicht, das zum Symbol für Exil, Verlust und verlorene Heimat wurde."
+                                        },
+                                        {
+                                            "text":  "Lasker-Schüler kehrte nach dem Zweiten Weltkrieg nach Berlin zurück und starb dort.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich habe zu Hause ein blaues Klavier und kenne doch keine Note. Es steht im Dunkel der Kellertür, seitdem die Welt verrohte. Das blaue Klavier steht für die Poesie selbst und die Farbe Blau ist meine Farbe schlechthin, die Farbe der Dichtung. Zerbrochen ist die Klaviatur. Ich beweine die blaue Tote. Ach liebe Engel öffnet mir – ich aß vom bitteren Brote – mir lebend schon die Himmelstür, auch wider dem Verbote. Spielen war alles. Und dann war das Spielzeug kaputt. \u003cspan class=\"chat-source-ref\" title=\"Lasker-Schüler, Mein blaues Klavier, 1937/1943\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Lasker-Schüler, Mein blaues Klavier, 1937/1943\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Ich habe zu Hause ein blaues Klavier / und kenne doch keine Note. / Es steht im Dunkel der Kellertür, / seitdem die Welt verrohte.",
+                        "prompt":  "Markiere die Kernaspekte des sprachlichen Bildes.",
+                        "targets":  [
+                                        {
+                                            "word":  "blaues Klavier",
+                                            "feedback":  "Blau ist bei Lasker-Schüler die Farbe der Poesie. Das Klavier steht für schöpferische Kraft, Kindheit und Heimat zugleich; alles, was im Exil verloren gegangen ist."
+                                        },
+                                        {
+                                            "word":  "kenne doch keine Note",
+                                            "feedback":  "Obwohl die Dichterin das Instrument besitzt, kann sie es nicht spielen. Kreativität und Zugang zur Dichtung sind ihr abhandengekommen. Verlust und Sehnsucht liegen dicht beieinander."
+                                        },
+                                        {
+                                            "word":  "seitdem die Welt verrohte",
+                                            "feedback":  "Die Welt ist schuld, nicht das Ich. Der Moment des Verlustes ist benennbar und hat ein Datum."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "barometer",
+                        "statement":  "Lasker-Schülers Selbstinszenierung mit Fantasierollen wie „Prinzessin von Bagdad\" ist eine angemessene künstlerische Strategie fernab von narzisstischer Spielerei.",
+                        "min":  "stimme nicht zu",
+                        "max":  "stimme voll zu"
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Was ist das Besondere an Lasker-Schülers Farbsymbolik?",
+                        "options":  [
+                                        {
+                                            "text":  "Sie benutzt Farben rein dekorativ als ästhetisches Mittel ohne Bedeutungstiefe.",
+                                            "correct":  false,
+                                            "feedback":  "Im Gegenteil: bei Lasker-Schüler sind Farben immer Bedeutungsträger, nie bloße Dekoration."
+                                        },
+                                        {
+                                            "text":  "Rot ist ihre zentrale Farbe als Zeichen für Leidenschaft und politischen Aufruhr.",
+                                            "correct":  false,
+                                            "feedback":  "Rot spielt bei ihr eine Rolle, aber Blau ist die zentrale Farbe ihres Werkes."
+                                        },
+                                        {
+                                            "text":  "Blau ist für sie die Farbe der Poesie schlechthin; eine Motivkonstante, die sich durch ihr gesamtes Werk zieht.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Blau gilt als Lasker-Schülers Signalfarbe, erkennbar von frühen Gedichten bis zum letzten Lyrikband."
+                                        },
+                                        {
+                                            "text":  "Sie verwendet Farben nur im Kontext des Alten Orients als ethnografische Symbole.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "checkpoint",
+                        "question":  "Erkläre in zwei bis drei Sätzen, warum der Begriff \"Expressionismus\" für Lasker-Schüler als zu eng empfunden und stattdessen \"klassische Moderne\" bevorzugt wird."
+                    },
+                    {
+                        "type":  "self-assessment",
+                        "items":  [
+                                      "Ich verstehe, was Lasker-Schülers Alter Egos und Rollenspiele bedeuten",
+                                      "Ich kann das Gedicht Mein blaues Klavier im biografischen Kontext des Exils verstehen",
+                                      "Ich kenne die wichtigsten Stationen von Lasker-Schülers Leben",
+                                      "Ich kann die Farbsymbolik an einem Beispiel erklären"
+                                  ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Klein, knabenhaft schlank, pechschwarze Haare kurz geschnitten, große rabenschwarze Augen mit einem ausweichenden, unerklärlichen Blick. So beschrieb mich Gottfried Benn. Ich lebte in Cafés, auf Parkbänken, in Hotels. Ich war hoch verschuldet, zweimal geschieden, alleinerziehend, jüdisch, exzentrisch. Und ich war \u003cem\u003edie größte Lyrikerin, die Deutschland je hatte\u003c/em\u003e. Dieses Kostüm passt natürlich; Spielen ist alles.\u003cbr\u003e\u003cspan class=\"chat-source-ref\" title=\"Gottfried Benn über Lasker-Schüler\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Gottfried Benn über Lasker-Schüler\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Welcher Aspekt von Lasker-Schülers Leben oder Werk hat dich am meisten überrascht oder beeindruckt?"
+                    },
+                    {
+                        "type":  "finale",
+                        "text":  "Wenn dich mein Leben interessiert, dann recherchiere doch weiter! Mehr über mich findest du im Internet.",
+                        "links":  [
+                                      {
+                                          "label":  "WDR Zeitzeichen",
+                                          "url":  "https://www1.wdr.de/radio/wdr5/sendungen/zeitzeichen/lasker-schueler-100.html"
+                                      },
+                                      {
+                                          "label":  "BR2 RadioWissen",
+                                          "url":  "https://www.ardsounds.de/episode/urn:ard:episode:d894caa25653db7e/"
+                                      },
+                                      {
+                                          "label":  "Wikipedia",
+                                          "url":  "https://de.wikipedia.org/wiki/Else_Lasker-Sch%C3%BCler"
+                                      }
+                                  ],
+                        "literature":  [
+                                           "Gabriele Sander (Hrsg.): Else Lasker-Schüler. Sämtliche Gedichte. dtv, München 2004.",
+                                           "Sigrid Bauschinger: Else Lasker-Schüler. Biographie. Wallstein, Göttingen 2004."
+                                       ]
+                    }
+                ]
+}

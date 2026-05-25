@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pädagogischer Navigator für Referendare</title>
+<meta name="description" content="Interaktiver Pädagogischer Navigator für Lehramtsreferendarinnen und -referendare. 50 evidenzbasierte Einflussfaktoren auf den Lernerfolg mit Effektstärken, Erklärungen und Unterrichtsmethoden.">
+<link href="../../css/fonts-paed.css" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --os-primary:#7DFFC2;--os-secondary:#FF6B9D;--os-accent:#FFE66D;
+  --os-bg:#D8D0E8;--os-text:#1A1A1A;--os-window-bg:#FAFAF5;
+  --os-btn-face:#D4D0C8;--os-border:3px solid #1A1A1A;--os-shadow:4px 4px 0 #000;
+  --os-font:'VT323',monospace;--os-font-body:'IBM Plex Mono',monospace;
+  --red:#ef4444;--orange:#f97316;--yellow:#eab308;--light-green:#84cc16;
+  --green:#22c55e;--dark-green:#15803d;--transition:cubic-bezier(.4,0,.2,1);
+}
+/* WissOS theme overrides */
+body.theme-retro-classic{
+  --os-primary:#7DFFC2;--os-secondary:#FF6B9D;--os-accent:#FFE66D;
+  --os-bg:#D8D0E8;--os-text:#1A1A1A;--os-window-bg:#FAFAF5;--os-btn-face:#D4D0C8;
+}
+body.theme-vaporwave{
+  --os-primary:#FF007F;--os-secondary:#00F0FF;--os-accent:#FFE600;
+  --os-bg:#03001C;--os-text:#00F0FF;--os-window-bg:#0B001A;--os-btn-face:#30005C;
+}
+body.theme-schreibstube{
+  --os-primary:#C3B091;--os-secondary:#4A3E3D;--os-accent:#E1D7C6;
+  --os-bg:#F4F1EA;--os-text:#2B2118;--os-window-bg:#FCFAF6;--os-btn-face:#EAE3D2;
+}
+body.theme-pommes{
+  --os-primary:#FFCC00;--os-secondary:#E50000;--os-accent:#FFFFFF;
+  --os-bg:#FFE5D9;--os-text:#000000;--os-window-bg:#FFFFFF;--os-btn-face:#FFCC00;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--os-font-body);background:var(--os-bg);background-image:radial-gradient(circle,rgba(0,0,0,.06) 1px,transparent 1px);background-size:24px 24px;color:var(--os-text);line-height:1.65;min-height:100vh}
+.header{background:var(--os-btn-face);color:var(--os-text);border-bottom:var(--os-border);position:relative;}
+.header-top{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1.5rem;gap:1rem;flex-wrap:wrap;}
+.header-top h1{font-family:var(--os-font);font-size:clamp(1.4rem,3vw,2rem);font-weight:400;letter-spacing:.04em;color:var(--os-text);margin:0;}
+.header-meta{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
+.header-subtitle{font-size:.75rem;color:#555;font-weight:500;font-family:var(--os-font-body);}
+.count-badge{display:inline-block;padding:.2rem .6rem;font-size:.75rem;font-weight:700;background:var(--os-primary);border:2px solid var(--os-text);color:var(--os-text);letter-spacing:.06em;font-family:var(--os-font);white-space:nowrap;}
+.btn-info{background:none;color:#777;border:none;padding:0;font-family:var(--os-font);font-size:.9rem;font-weight:400;cursor:pointer;transition:color .2s;text-decoration:none;border-bottom:1px dotted #999;padding-bottom:1px;margin-left:.4rem;}
+.btn-info:hover{color:var(--os-secondary);border-bottom-color:var(--os-secondary);}
+.header-toggle{background:none;border:1px solid #aaa;cursor:pointer;display:flex;align-items:center;gap:.3rem;padding:.2rem .5rem;font-family:var(--os-font);font-size:.8rem;color:#555;transition:all .2s;white-space:nowrap;}
+.header-toggle:hover{background:var(--os-accent);color:var(--os-text);border-color:var(--os-text);}
+.header-toggle .arrow{transition:transform .25s;font-style:normal;font-size:.7rem;}
+.header-toggle.open .arrow{transform:rotate(180deg);}
+.header-collapsible{overflow:hidden;max-height:0;transition:max-height .3s ease,padding .3s ease;padding:0 1.5rem;}
+.header-collapsible.open{max-height:120px;padding:.4rem 1.5rem .6rem;}
+.header .hint{background:var(--os-window-bg);display:inline-block;padding:.5rem 1rem;font-size:.8rem;line-height:1.6;max-width:700px;border:var(--os-border);box-shadow:var(--os-shadow);}
+.header .hint strong{color:var(--os-secondary);font-weight:700;}
+.controls{position:sticky;top:0;z-index:100;background:var(--os-btn-face);border-bottom:var(--os-border);padding:.8rem 1.5rem;}
+.controls-inner{max-width:960px;margin:0 auto;}
+.slider-row{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap;}
+.slider-wrap{flex:1;min-width:240px;}
+.slider-label{font-size:.78rem;color:#555;margin-bottom:.35rem;display:flex;justify-content:space-between;align-items:center;font-family:var(--os-font-body);}
+.slider-val{font-family:var(--os-font);font-weight:400;font-size:1.3rem;color:var(--os-text);min-width:85px;text-align:center;font-variant-numeric:tabular-nums;}
+.slider-category{font-size:.72rem;padding:.1rem .5rem;font-weight:700;margin-left:.5rem;color:#fff;font-family:var(--os-font);border:2px solid var(--os-text);}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:10px;outline:none;cursor:pointer;transition:background .2s;border:2px solid var(--os-text);}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;background:var(--os-accent);border:2px solid var(--os-text);cursor:grab;box-shadow:2px 2px 0 #000;}
+input[type=range]::-webkit-slider-thumb:hover{box-shadow:3px 3px 0 #000;}
+input[type=range]::-webkit-slider-thumb:active{cursor:grabbing;}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;background:var(--os-accent);border:2px solid var(--os-text);cursor:grab;box-shadow:2px 2px 0 #000;}
+.color-scale{display:flex;height:6px;overflow:hidden;margin-top:5px;border:1px solid var(--os-text);}
+.color-scale span{flex:1;}
+.btn-random{background:var(--os-primary);color:var(--os-text);border:var(--os-border);padding:.5rem 1.1rem;font-family:var(--os-font);font-size:1.1rem;font-weight:400;cursor:pointer;white-space:nowrap;box-shadow:var(--os-shadow);transition:all .15s;}
+.btn-random:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #000;}
+.btn-random:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #000;}
+.filter-tabs{display:flex;gap:.3rem;margin-top:.6rem;flex-wrap:wrap;}
+.filter-tab{padding:.25rem .65rem;border:2px solid var(--os-text);background:var(--os-window-bg);font-family:var(--os-font);font-size:.85rem;font-weight:400;cursor:pointer;transition:all .15s;color:var(--os-text);}
+.filter-tab:hover{background:var(--os-accent);color:var(--os-text);}
+.filter-tab.active{background:var(--os-text);color:#fff;}
+.neighbour-bar{max-width:960px;margin:.4rem auto 0;padding:0 1.5rem;display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;}
+.neighbour-label{font-size:.7rem;color:#555;font-family:var(--os-font-body);white-space:nowrap;}
+.neighbour-chip{font-size:.72rem;padding:.2rem .65rem;background:var(--os-window-bg);color:var(--os-text);cursor:pointer;transition:all .15s;border:2px solid var(--os-text);font-family:var(--os-font);display:flex;align-items:center;gap:.3rem;}
+.neighbour-chip:hover{background:var(--os-primary);}
+.neighbour-chip .nb-arrow{font-size:.65rem;opacity:.6;}
+.neighbour-chip.above{border-left:4px solid var(--dark-green);}
+.neighbour-chip.below{border-left:4px solid var(--orange);}
+.main{max-width:960px;margin:1.5rem auto;padding:0 1.5rem;}
+.main-card{background:var(--os-window-bg);border:var(--os-border);box-shadow:var(--os-shadow);padding:1.8rem 2rem;position:relative;overflow:hidden;transition:opacity .3s var(--transition),transform .3s var(--transition);}
+.main-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--red),var(--orange),var(--yellow),var(--light-green),var(--green),var(--dark-green));}
+.main-card.fade-out{opacity:0;transform:translateY(12px);}
+.main-card.fade-in{opacity:1;transform:translateY(0);}
+.badge{position:absolute;top:1.2rem;right:1.2rem;padding:.35rem .9rem;color:#fff;font-family:var(--os-font);font-weight:400;font-size:1rem;letter-spacing:.02em;border:2px solid var(--os-text);box-shadow:2px 2px 0 #000;}
+.card-deutsch{font-family:var(--os-font);font-size:clamp(1.3rem,3vw,1.7rem);font-weight:400;color:var(--os-text);margin-bottom:.15rem;padding-right:110px;line-height:1.3;letter-spacing:.02em;}
+.card-english{font-size:.82rem;color:#777;font-style:italic;margin-bottom:.8rem;font-family:var(--os-font-body);}
+.card-divider{height:3px;background:var(--os-text);margin:.8rem 0 1.2rem;opacity:.15;}
+.card-section{margin-bottom:1.3rem;}
+.card-section-title{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#555;margin-bottom:.4rem;display:flex;align-items:center;gap:.4rem;font-family:var(--os-font);}
+.card-section p{font-size:.88rem;line-height:1.75;color:#333;font-family:var(--os-font-body);}
+.methode-box{background:var(--os-window-bg);border-left:4px solid var(--os-primary);border:var(--os-border);border-left:4px solid var(--os-primary);padding:.9rem 1.2rem;box-shadow:2px 2px 0 rgba(0,0,0,.1);}
+.mini-bar-wrap{margin-top:1.5rem;padding-top:1.2rem;border-top:2px solid rgba(0,0,0,.1);}
+.mini-bar-label{font-size:.72rem;color:#555;margin-bottom:.5rem;font-family:var(--os-font-body);}
+.mini-bar-container{position:relative;height:26px;background:var(--os-btn-face);border:2px solid var(--os-text);overflow:visible;}
+.mini-bar-fill{height:100%;transition:width .5s var(--transition),background .3s;}
+.mini-bar-marker{position:absolute;top:-2px;width:2px;height:30px;background:var(--os-text);opacity:.35;}
+.mini-bar-value{position:absolute;top:50%;right:8px;transform:translateY(-50%);font-size:.72rem;font-weight:400;color:#fff;font-family:var(--os-font);}
+.mini-bar-hinge-label{position:absolute;top:-16px;font-size:.6rem;color:#555;transform:translateX(-50%);white-space:nowrap;font-family:var(--os-font);}
+.chips-section{margin-top:2.5rem;}
+.chips-toggle{display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;background:transparent;border:none;border-bottom:2px dashed #999;padding:.3rem .1rem;font-family:var(--os-font);font-size:1rem;font-weight:400;color:#555;text-align:left;transition:all .2s;margin-bottom:0;box-shadow:none;}
+.chips-toggle:hover{color:var(--os-text);border-bottom-color:var(--os-text);background:transparent;transform:none;box-shadow:none;}
+.chips-toggle:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #000;}
+.chips-toggle[aria-expanded="true"]{color:var(--os-text);border-bottom:2px solid var(--os-text);}
+.chips-toggle[aria-expanded="true"] .chips-count{background:var(--os-accent);color:var(--os-text);}
+.chips-toggle-icon{transition:transform .25s;display:inline-block;font-size:.7rem;opacity:.6;}
+.chips-toggle[aria-expanded="true"] .chips-toggle-icon{transform:rotate(180deg);}
+.chips-grid{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem;}
+.chips-title{font-family:var(--os-font);font-size:1.2rem;font-weight:400;color:var(--os-text);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;}
+.chips-count{font-size:.8rem;font-weight:400;color:var(--os-text);background:var(--os-primary);padding:.1rem .5rem;border:2px solid var(--os-text);font-family:var(--os-font);}
+.chip{padding:.3rem .75rem;font-size:.74rem;font-weight:600;cursor:pointer;transition:all .15s;border:2px solid var(--os-text);color:#fff;position:relative;font-family:var(--os-font);box-shadow:2px 2px 0 rgba(0,0,0,.15);}
+.chip:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 rgba(0,0,0,.25);}
+.chip.active{border-color:var(--os-accent);box-shadow:0 0 0 2px var(--os-accent),3px 3px 0 rgba(0,0,0,.2);transform:scale(1.03);}
+.chip .chip-d{font-size:.62rem;opacity:.8;margin-left:.25rem;}
+.footer{background:var(--os-btn-face);color:#555;text-align:center;padding:1.5rem;font-size:.76rem;line-height:1.9;margin-top:3rem;border-top:var(--os-border);font-family:var(--os-font-body);}
+.footer strong{color:var(--os-text);}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(26,26,26,.6);z-index:200;align-items:center;justify-content:center;padding:1.5rem;}
+.modal-overlay.active{display:flex;}
+.modal{background:var(--os-window-bg);border:var(--os-border);box-shadow:6px 6px 0 #000;max-width:680px;width:100%;max-height:85vh;overflow-y:auto;padding:2rem;position:relative;animation:modalIn .3s var(--transition);}
+@keyframes modalIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal-close{position:absolute;top:.8rem;right:1rem;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#555;transition:color .2s;line-height:1;font-family:var(--os-font);}
+.modal-close:hover{color:var(--os-secondary);}
+.modal h2{font-family:var(--os-font);font-size:1.5rem;font-weight:400;color:var(--os-text);margin-bottom:1rem;}
+.modal h3{font-family:var(--os-font);font-size:1.1rem;font-weight:400;color:var(--os-text);margin:1.2rem 0 .5rem;}
+.modal p{font-size:.85rem;line-height:1.8;color:#333;margin-bottom:.8rem;font-family:var(--os-font-body);}
+.modal ul{font-size:.83rem;line-height:1.8;color:#333;padding-left:1.2rem;margin-bottom:.8rem;font-family:var(--os-font-body);}
+.modal .highlight-box{background:var(--os-window-bg);border-left:4px solid var(--os-accent);border:var(--os-border);border-left:4px solid var(--os-accent);padding:.8rem 1rem;margin:1rem 0;font-size:.85rem;font-family:var(--os-font-body);box-shadow:2px 2px 0 rgba(0,0,0,.1);}
+@media(max-width:640px){
+  .header-top{padding:.5rem .8rem;}
+  .controls{padding:.6rem .8rem;}
+  .slider-row{flex-direction:column;align-items:stretch;}
+  .main-card{padding:1rem .8rem;}
+  .badge{position:relative;top:0;right:0;display:inline-block;margin-bottom:.8rem;}
+  .card-deutsch{padding-right:0;}
+  .chips-grid{gap:.3rem;}
+  .chip{font-size:.68rem;padding:.25rem .6rem;}
+  .neighbour-bar{padding:0 .8rem;}
+}
+</style>
+
+  <!-- WissOS SDK -->
+  <script src="../../sdk/wissos-sdk.js"></script>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-top">
+    <h1>P&#228;dagogischer Navigator</h1>
+    <div class="header-meta">
+      <span class="header-subtitle">Evidenzbasierte Einflussfaktoren auf den Lernerfolg &#8211; Effektst&#228;rken aus der Metaanalysenforschung</span>
+      
+      <button class="btn-info" id="btnInfo" aria-label="Informationen zur App">Warum diese App?</button>
+      <button class="header-toggle" id="headerToggle" aria-expanded="false" aria-controls="headerCollapsible">
+        &#8505; Hinge-Point <span class="arrow">&#9660;</span>
+      </button>
+    </div>
+  </div>
+  <div class="header-collapsible" id="headerCollapsible">
+    <p class="hint">Der Umschlagpunkt (<strong>Hinge-Point</strong>) liegt bei <strong>d&nbsp;=&nbsp;0,40</strong>. Faktoren dar&#252;ber beschleunigen Lernen deutlich st&#228;rker als durchschnittlicher Unterricht.</p>
+  </div>
+</header>
+
+<div class="controls" role="region" aria-label="Steuerungsbereich">
+  <div class="controls-inner">
+    <div class="slider-row">
+      <div class="slider-wrap">
+        <div class="slider-label">
+          <span>Effektstärke wählen</span>
+          <span><span class="slider-val" id="sliderVal">d = 0,00</span><span class="slider-category" id="sliderCat"></span></span>
+        </div>
+        <input type="range" id="slider" min="-0.50" max="1.60" step="0.01" value="0" aria-label="Effektstärke (Cohen d)" aria-valuemin="-0.50" aria-valuemax="1.60">
+        <div class="color-scale">
+          <span style="background:var(--red);flex:.30"></span>
+          <span style="background:var(--orange);flex:.20"></span>
+          <span style="background:var(--yellow);flex:.20"></span>
+          <span style="background:var(--light-green);flex:.20"></span>
+          <span style="background:var(--green);flex:.40"></span>
+          <span style="background:var(--dark-green);flex:.60"></span>
+        </div>
+      </div>
+      <button class="btn-random" id="btnRandom" aria-label="Zufälligen Faktor auswählen">🎲 Zufälliger Faktor</button>
+    </div>
+    <div class="filter-tabs" role="tablist" aria-label="Filter nach Effektstärke">
+      <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true">Alle</button>
+      <button class="filter-tab" data-filter="very-high" role="tab">Sehr hoch (≥1,00)</button>
+      <button class="filter-tab" data-filter="high" role="tab">Hoch (0,60–0,99)</button>
+      <button class="filter-tab" data-filter="medium" role="tab">Mittel (0,40–0,59)</button>
+      <button class="filter-tab" data-filter="low" role="tab">Gering (0,01–0,39)</button>
+      <button class="filter-tab" data-filter="negative" role="tab">Kritisch (≤0,00)</button>
+    </div>
+  </div>
+</div>
+
+<div class="neighbour-bar" id="neighbourBar"></div>
+
+<main class="main">
+  <div class="main-card" id="mainCard">
+    <span class="badge" id="badge"></span>
+    <div class="card-deutsch" id="cardDeutsch"></div>
+    <div class="card-english" id="cardEnglish"></div>
+    <div class="card-divider"></div>
+    <div class="card-section"><div class="card-section-title">📖 Kurzerklärung</div><p id="cardErklaerung"></p></div>
+    <div class="card-section"><div class="card-section-title">🏫 Methode für den Unterricht</div><div class="methode-box"><p id="cardMethode"></p></div></div>
+    <div class="card-section"><div class="card-section-title">📊 Studienlage (Metaanalysen)</div><p id="cardStudienlage"></p></div>
+    <div class="mini-bar-wrap">
+      <div class="mini-bar-label">Effektstärke aller Faktoren im Vergleich (Hinge-Point: d = 0,40)</div>
+      <div class="mini-bar-container" id="miniBarContainer">
+        <div class="mini-bar-fill" id="miniBarFill"></div>
+        <div class="mini-bar-value" id="miniBarValue"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chips-section">
+    <button class="chips-toggle" id="chipsToggle" aria-expanded="false" aria-controls="chipsGrid">
+      <span class="chips-toggle-icon">&#9660;</span>&nbsp;Alle Einflussfaktoren&nbsp;<span class="chips-count" id="chipsCount">54</span>
+    </button>
+    <div class="chips-grid" id="chipsGrid" style="display:none;"></div>
+  </div>
+</main>
+
+<footer class="footer">
+  <strong>Quellenangabe:</strong> Effektstärken nach: Hattie, J. (2009/2023). <em>Visible Learning.</em> Routledge. Dt.: Zierer, K. &amp; Beywl, W. (2013). <em>Lernen sichtbar machen.</em> Schneider Verlag Hohengehren.<br>
+  Methodenvorschläge und Erläuterungen basieren auf Hatties Forschungsergebnissen, ergänzt durch Erfahrungswissen aus der Unterrichtspraxis.
+</footer>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" role="dialog" aria-labelledby="modalTitle">
+    <button class="modal-close" id="modalClose" aria-label="Schließen">&times;</button>
+    <h2 id="modalTitle">❓ Warum diese App?</h2>
+    <p>Als Referendarin oder Referendar, aber auch als fertige Lehrkraft stehen Sie vor einer anspruchsvollen Aufgabe: Sie sollen Unterricht planen, der <strong>nachweislich wirksam</strong> ist – oft ohne ausreichend Zeit, sich in die umfangreiche Forschungslage einzulesen.</p>
+    <h3>🔬 Was sind Effektstärken?</h3>
+    <p>Eine Effektstärke (Cohen’s d) misst, wie stark ein bestimmter Faktor das Lernen beeinflusst. Der Wert <strong>d = 0,40</strong> gilt als Umschlagpunkt: Faktoren darüber bewirken mehr als gewöhnlicher Unterricht ohne gezielte Intervention.</p>
+    <div class="highlight-box">💡 <strong>Beispiel:</strong> „Unterrichtsklarheit“ (d = 0,75) bedeutet, dass Lernende, die klare Lernziele und Erfolgskriterien erhalten, im Durchschnitt erheblich mehr lernen als Vergleichsgruppen ohne diese Klarheit.</div>
+    <h3>📚 Woher stammen die Daten?</h3>
+    <p>Die hier dargestellten Effektstärken basieren auf <strong>Meta-Analysen</strong> – also Zusammenfassungen von hunderten Einzelstudien mit insgesamt Millionen von Lernenden weltweit. Diese Synthese der Bildungsforschung ist die bisher umfassendste ihrer Art.</p>
+    <h3>🎯 Was bringt Ihnen diese App?</h3>
+    <ul>
+      <li><strong>Orientierung:</strong> Verstehen, welche Unterrichtsfaktoren den größten Hebel haben</li>
+      <li><strong>Konkrete Methoden:</strong> Zu jedem Faktor finden Sie einen direkt umsetzbaren Unterrichtsvorschlag</li>
+      <li><strong>Reflexion:</strong> Im Mentoring-Gespräch oder bei der Unterrichtsplanung fundiert argumentieren</li>
+      <li><strong>Überraschungen erkennen:</strong> Manche populäre Maßnahmen (z. B. Klassenverkleinerung) wirken weniger als erwartet – andere unterschätzte Faktoren umso mehr</li>
+    </ul>
+    <h3>⚖️ Wichtig: Evidenz als Kompass, nicht als Rezept</h3>
+    <p>Effektstärken sind <strong>statistische Durchschnittswerte</strong>. Sie ersetzen nicht Ihr professionelles Urteil, sondern ergänzen es. Jede Klasse, jede Schülerschaft und jeder Kontext ist anders. Nutzen Sie die Daten als <strong>Reflexionsinstrument</strong>, nicht als starre Handlungsanweisung.</p>
+    <p style="font-size:0.85rem;color:#777;margin-top:1.5rem;padding-top:1rem;border-top:2px solid #1A1A1A;line-height:1.6;">Ausgangspunkt dieser App ist die Forschung von John Hattie (<em>Visible Learning</em>, 2009/2023). Die Methodenvorschläge und Erläuterungen verbinden die wissenschaftlichen Befunde mit Erfahrungswissen aus der Unterrichtspraxis.</p>
+  </div>
+</div>
+
+<script>
+let data = [];
+
+async function loadData() {
+  if (window.location.protocol === 'file:') {
+    showFileProtocolError();
+    return;
+  }
+  try {
+    const res = await fetch('../../content/hattie/index.json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    data = Object.values(json);
+    data.sort((a,b)=>b.d-a.d);
+    init();
+  } catch (err) {
+    showFileProtocolError(err.message);
+  }
+}
+
+function showFileProtocolError(detail) {
+  const el = document.querySelector('.main') || document.body;
+  el.innerHTML =
+    '<div style="padding:24px;font-family:monospace;line-height:1.8;border:4px solid #000;margin:20px;background:#fff;color:#000;">' +
+    '<strong style="font-size:15px;">⚠️ ' + (detail ? 'Ladefehler' : 'Server erforderlich') + '</strong><br><br>' +
+    (detail ? 'Fehler: <code>' + detail + '</code><br><br>' : '') +
+    'WissOS 2.0 muss über den lokalen HTTP-Server geöffnet werden:<br>' +
+    '<code style="background:#000;color:#7DFFC2;padding:6px 10px;display:inline-block;margin-top:6px;">' +
+    'powershell -File "start_server.ps1"</code><br><br>' +
+    'Dann im Browser: <strong>http://localhost:8000</strong>' +
+    '</div>';
+}
+
+
+const dMin=-0.50,dMax=1.60,dRange=dMax-dMin;
+function getColor(d){if(d<0)return'#ef4444';if(d<0.20)return'#f97316';if(d<0.40)return'#eab308';if(d<0.60)return'#84cc16';if(d<1.00)return'#22c55e';return'#15803d';}
+function getLabel(d){if(d<0)return'schädlich';if(d<0.20)return'vernachlässigbar';if(d<0.40)return'gering';if(d<0.60)return'mittel';if(d<1.00)return'hoch';return'sehr hoch';}
+function fmt(d){return d.toFixed(2).replace('.',',')}
+
+const $=id=>document.getElementById(id);
+const slider=$('slider'),sliderVal=$('sliderVal'),sliderCat=$('sliderCat'),btnRandom=$('btnRandom');
+const mainCard=$('mainCard'),badge=$('badge'),cardDeutsch=$('cardDeutsch'),cardEnglish=$('cardEnglish');
+const cardErklaerung=$('cardErklaerung'),cardMethode=$('cardMethode'),cardStudienlage=$('cardStudienlage');
+const miniBarFill=$('miniBarFill'),miniBarValue=$('miniBarValue'),miniBarContainer=$('miniBarContainer');
+const chipsGrid=$('chipsGrid'),suggestionsEl=$('neighbourBar'),chipsCount=$('chipsCount');
+const filterTabs=document.querySelectorAll('.filter-tab');
+
+let currentId=null,currentFilter='all',animating=false;
+
+function updateSliderBg(val){
+  const pct=((val-dMin)/dRange)*100;const c=getColor(val);
+  slider.style.background=`linear-gradient(90deg,${c} 0%,${c} ${pct}%,#dde3ea ${pct}%,#dde3ea 100%)`;
+  sliderCat.textContent=getLabel(val);sliderCat.style.background=c;
+  sliderCat.style.color=(val>=0.20&&val<0.40)?'#333':'#fff';
+}
+
+function showEntry(entry,animate=true){
+  if(currentId===entry.id&&!animate)return;
+  currentId=entry.id;
+  const doUpdate=()=>{
+    const c=getColor(entry.d);
+    badge.textContent='d = '+fmt(entry.d);badge.style.background=c;
+    badge.style.color=(entry.d>=0.20&&entry.d<0.40)?'#333':'#fff';
+    cardDeutsch.textContent=entry.deutsch;cardEnglish.textContent=entry.english;
+    cardErklaerung.textContent=entry.erklaerung;cardMethode.textContent=entry.methode;
+    cardStudienlage.textContent=entry.studienlage;
+    const pct=Math.max(0,Math.min(100,((entry.d-dMin)/dRange)*100));
+    miniBarFill.style.width=pct+'%';miniBarFill.style.background=`linear-gradient(90deg,${c},${c}dd)`;
+    miniBarValue.textContent='d = '+fmt(entry.d);
+    miniBarValue.style.color=pct<15?'#333':'#fff';
+    if(pct<15){miniBarValue.style.right='auto';miniBarValue.style.left=Math.max(pct,2)+'%';miniBarValue.style.paddingLeft='6px';}
+    else{miniBarValue.style.right='8px';miniBarValue.style.left='auto';miniBarValue.style.paddingLeft='0';}
+    miniBarContainer.querySelectorAll('.mini-bar-marker,.mini-bar-hinge-label').forEach(m=>m.remove());
+    const hinge=document.createElement('div');hinge.className='mini-bar-marker';
+    const hingePct=((0.40-dMin)/dRange*100);hinge.style.left=hingePct+'%';
+    hinge.title='Hinge-Point d = 0,40';miniBarContainer.appendChild(hinge);
+    const hl=document.createElement('div');hl.className='mini-bar-hinge-label';hl.style.left=hingePct+'%';hl.textContent='d=0,40';miniBarContainer.appendChild(hl);
+    chipsGrid.querySelectorAll('.chip').forEach(ch=>{ch.classList.toggle('active',parseInt(ch.dataset.id)===entry.id);});
+  };
+  if(animate){mainCard.classList.add('fade-out');mainCard.classList.remove('fade-in');
+    setTimeout(()=>{doUpdate();mainCard.classList.remove('fade-out');mainCard.classList.add('fade-in');},180);
+  }else{doUpdate();}
+}
+
+function findNearest(val,pool){let best=pool[0],dist=Math.abs(pool[0].d-val);for(let i=1;i<pool.length;i++){const dd=Math.abs(pool[i].d-val);if(dd<dist){dist=dd;best=pool[i];}}return best;}
+
+function getFiltered(){
+  if(currentFilter==='all')return data;
+  return data.filter(e=>{
+    if(currentFilter==='very-high')return e.d>=1.00;if(currentFilter==='high')return e.d>=0.60&&e.d<1.00;
+    if(currentFilter==='medium')return e.d>=0.40&&e.d<0.60;if(currentFilter==='low')return e.d>0&&e.d<0.40;
+    if(currentFilter==='negative')return e.d<=0;return true;
+  });
+}
+
+function buildChips(){
+  chipsGrid.innerHTML='';const filtered=getFiltered();
+  chipsCount.textContent=filtered.length;
+  filtered.forEach(e=>{
+    const ch=document.createElement('button');ch.className='chip';ch.dataset.id=e.id;
+    ch.style.background=getColor(e.d);ch.style.color=(e.d>=0.20&&e.d<0.40)?'#333':'#fff';
+    ch.innerHTML=e.deutsch+'<span class="chip-d">('+fmt(e.d)+')</span>';
+    ch.setAttribute('aria-label',e.deutsch+', Effektstärke '+fmt(e.d));
+    ch.addEventListener('click',()=>selectEntry(e,true));
+    if(currentId===e.id)ch.classList.add('active');chipsGrid.appendChild(ch);
+  });
+}
+
+function updateSuggestions(val){
+  const nbBar=document.getElementById('neighbourBar');
+  if(!nbBar)return;
+  if(currentId===null){nbBar.innerHTML='';return;}
+  // Sort by d value descending (highest first)  
+  const sortedAll=[...data].sort((a,b)=>b.d-a.d);
+  const curIdx=sortedAll.findIndex(e=>e.id===currentId);
+  if(curIdx<0){nbBar.innerHTML='';return;}
+  nbBar.innerHTML='<span class="neighbour-label">Angrenzende Faktoren:</span>';
+  // Show exactly 1 below (lower d = higher index) LEFT, then 1 above (higher d = lower index) RIGHT
+  if(curIdx<sortedAll.length-1){
+    const eBelow=sortedAll[curIdx+1];
+    const s=document.createElement('button');s.className='neighbour-chip below';
+    s.innerHTML='<span class="nb-arrow">&#9660;</span>'+eBelow.deutsch+' <em>(d='+fmt(eBelow.d)+')</em>';
+    s.addEventListener('click',()=>selectEntry(eBelow,true));nbBar.appendChild(s);
+  }
+  if(curIdx>0){
+    const eAbove=sortedAll[curIdx-1];
+    const s=document.createElement('button');s.className='neighbour-chip above';
+    s.innerHTML='<span class="nb-arrow">&#9650;</span>'+eAbove.deutsch+' <em>(d='+fmt(eAbove.d)+')</em>';
+    s.addEventListener('click',()=>selectEntry(eAbove,true));nbBar.appendChild(s);
+  }
+}
+function selectEntry(entry,animateSlider=false){
+  if(animateSlider){animateSliderTo(entry.d,()=>{showEntry(entry);updateSuggestions(entry.d);});}
+  else{slider.value=entry.d;updateSliderBg(entry.d);sliderVal.textContent='d = '+fmt(entry.d);showEntry(entry);updateSuggestions(entry.d);}
+}
+
+function animateSliderTo(target,cb){
+  if(animating)return;animating=true;const start=parseFloat(slider.value);const diff=target-start;const dur=450;const t0=performance.now();
+  function step(ts){const p=Math.min(1,(ts-t0)/dur);const ease=1-Math.pow(1-p,3);const v=start+diff*ease;
+    slider.value=v;updateSliderBg(v);sliderVal.textContent='d = '+fmt(v);updateSuggestions(v);
+    if(p<1){requestAnimationFrame(step);}else{slider.value=target;updateSliderBg(target);sliderVal.textContent='d = '+fmt(target);updateSuggestions(target);animating=false;if(cb)cb();}}
+  requestAnimationFrame(step);
+}
+
+slider.addEventListener('input',()=>{const v=parseFloat(slider.value);updateSliderBg(v);sliderVal.textContent='d = '+fmt(v);
+  const filtered=getFiltered();if(filtered.length){showEntry(findNearest(v,filtered),false);}updateSuggestions(v);});
+
+btnRandom.addEventListener('click',()=>{const pool=getFiltered();let entry=pool[Math.floor(Math.random()*pool.length)];
+  while(pool.length>1&&entry.id===currentId)entry=pool[Math.floor(Math.random()*pool.length)];selectEntry(entry,true);});
+
+filterTabs.forEach(tab=>{tab.addEventListener('click',()=>{
+  filterTabs.forEach(t=>{t.classList.remove('active');t.setAttribute('aria-selected','false');});
+  tab.classList.add('active');tab.setAttribute('aria-selected','true');currentFilter=tab.dataset.filter;buildChips();
+  const filtered=getFiltered();if(filtered.length){const cur=data.find(e=>e.id===currentId);if(!cur||!filtered.includes(cur)){selectEntry(filtered[0],true);}}});});
+
+function init(){
+  buildChips();
+  const s=data[Math.floor(Math.random()*data.length)];
+  slider.value=s.d;updateSliderBg(s.d);sliderVal.textContent='d = '+fmt(s.d);showEntry(s,false);updateSuggestions(s.d);
+  
+  // Update count badge
+  const countBadgeEl=document.getElementById('countBadge');
+  if(countBadgeEl){countBadgeEl.textContent=data.length+' EINFLUSSFAKTOREN';}
+}
+loadData();
+
+// Chips toggle logic
+const chipsToggle=document.getElementById('chipsToggle');
+const chipsGridEl=document.getElementById('chipsGrid');
+if(chipsToggle&&chipsGridEl){
+  chipsToggle.addEventListener('click',()=>{
+    const isOpen=chipsToggle.getAttribute('aria-expanded')==='true';
+    chipsToggle.setAttribute('aria-expanded',String(!isOpen));
+    chipsGridEl.style.display=isOpen?'none':'flex';
+  });
+}
+
+const modalOverlay=$('modalOverlay'),btnInfo=$('btnInfo'),modalClose=$('modalClose');
+btnInfo.addEventListener('click',()=>{modalOverlay.classList.add('active');});
+modalClose.addEventListener('click',()=>{modalOverlay.classList.remove('active');});
+modalOverlay.addEventListener('click',(e)=>{if(e.target===modalOverlay)modalOverlay.classList.remove('active');});
+document.addEventListener('keydown',(e)=>{if(e.key==='Escape')modalOverlay.classList.remove('active');});
+
+
+// Header toggle logic
+const headerToggle=document.getElementById('headerToggle');
+const headerCollapsible=document.getElementById('headerCollapsible');
+if(headerToggle&&headerCollapsible){
+  headerToggle.addEventListener('click',()=>{
+    const isOpen=headerCollapsible.classList.contains('open');
+    headerCollapsible.classList.toggle('open',!isOpen);
+    headerToggle.classList.toggle('open',!isOpen);
+    headerToggle.setAttribute('aria-expanded',String(!isOpen));
+  });
+}
+
+// Count badge is updated dynamically inside init() once data is loaded asynchronously.
+</script>
+
+<!-- WissOS SDK: Theme & Sound Bridge -->
+<script src="../../sdk/wissos-sdk.js"></script>
+<script>
+  // Connect to WissOS OS host for theme & sound propagation
+  WissOS.sdk.ready();
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

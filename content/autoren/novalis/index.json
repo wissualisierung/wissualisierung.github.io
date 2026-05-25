@@ -1,0 +1,290 @@
+﻿{
+    "id":  "novalis",
+    "name":  "Novalis",
+    "short":  "Novalis",
+    "dates":  "1772 – 1801",
+    "epoch":  "Frühromantik",
+    "epochShort":  "Romantik",
+    "color":  "#1976D2",
+    "highlight":  "#42A5F5",
+    "icon":  "💙",
+    "quote":  "Die Welt muss romantisiert werden.",
+    "timelinePos":  14.5,
+    "avatar":  "avatar.jpg",
+    "source":  "https://de.wikipedia.org/wiki/Novalis#/media/Datei:Franz_Gareis_-_Novalis.jpg",
+    "theme":  "sebastian-wolf",
+    "modules":  [
+                    {
+                        "type":  "framing",
+                        "content":  "Du triffst gleich auf Novalis – oder besser: auf eine Konstruktion, die so spricht, wie er vielleicht geschrieben hätte. Novalis ist 1801 in Weißenfels gestorben. Was du hier liest, basiert auf seinen Texten, Fragmenten und Briefen, ist aber eine didaktische Interpretation. Lies kritisch!"
+                    },
+                    {
+                        "type":  "timeline",
+                        "epochs":  [
+                                       {
+                                           "name":  "Aufklärung",
+                                           "start":  1700,
+                                           "end":  1800,
+                                           "active":  false,
+                                           "info":  "Vernunft, Rationalismus, Fortschrittsglaube. Gegen diese Einseitigkeit richtet sich die Romantik."
+                                       },
+                                       {
+                                           "name":  "Französische Revolution",
+                                           "start":  1789,
+                                           "end":  1799,
+                                           "active":  false,
+                                           "info":  "Novalis ist 17 – und von der Idee begeistert, Geschichte gestalten zu können."
+                                       },
+                                       {
+                                           "name":  "Novalis Leben",
+                                           "start":  1772,
+                                           "end":  1801,
+                                           "active":  true,
+                                           "info":  "Geboren als Friedrich von Hardenberg in Oberwiederstedt im Harz. Gestorben in Weißenfels mit nur 28 Jahren."
+                                       },
+                                       {
+                                           "name":  "Frühromantik",
+                                           "start":  1795,
+                                           "end":  1804,
+                                           "active":  false,
+                                           "info":  "Der Jenaer Kreis um Schlegel, Tieck und Novalis entwickelt ein neues Kunst- und Weltbild."
+                                       }
+                                   ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Guten Tag. Ich bin Friedrich von Hardenberg – doch du kennst mich besser als Novalis. Diesen Namen haben schon meine Vorfahren aus dem 12. Jahrhundert getragen. Für mich war er Programm: Neuland roden, aufbrechen ins Unbekannte. Du lernst mich in der Schule? Das überrascht mich kaum. Ich wusste früh: Wir sind auf einer Mission. Zur Bildung der Erde sind wir berufen. \u003cspan class=\"chat-source-ref\" title=\"Blütenstaub-Fragment 32, 1798\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Blütenstaub-Fragment 32, 1798\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Novalis, das klingt geheimnisvoll. Wer warst du eigentlich?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Friedrich von Hardenberg, genannt Novalis, wurde am 2. Mai 1772 in Oberwiederstedt im Harz geboren und pietistisch erzogen. Sein Vater war Direktor der Thüringer Salinen. Novalis studierte zunächst Jura mit Prädikatsexamen, dann Naturwissenschaften an der Bergakademie Freiberg; er wurde Bergbauingenieur, Philosoph und Dichter zugleich. Man beschreibt ihn als jemanden, der immer auf der Suche war, auf der Suche nach sich selbst und nach einer Bestimmung; und das alles mit Mitte zwanzig. Mit 28 Jahren starb er, wie seine Verlobte vor ihm, an Tuberkulose."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich gehörte zu einer goldenen Generation. Schlegel, Hölderlin, Schelling, Beethoven, Hegel; wir alle waren zur selben Zeit geboren. Wir spürten: Die alte Welt nimmt Abschied. Friedrich Schlegel schrieb nach unserer ersten Begegnung an seinen Bruder, ich sei \"voll tätiger unruhiger Freude\" und hätte \"unbeschreiblich viel Feuer\". Ich wollte nicht nur Dichter sein; ich wollte alles wissen, alles verbinden. Erkenntnis war für mich eine unabschließbare Bewegung. \u003cspan class=\"chat-source-ref\" title=\"Brief Friedrich Schlegels an August Wilhelm Schlegel, ca. 1792\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Brief Friedrich Schlegels an August Wilhelm Schlegel, ca. 1792\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Und was wolltest du mit deiner Dichtung? Was ist dein Programm?"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Die Welt muss romantisiert werden. So findet man den ursprünglichen Sinn wieder. Indem ich dem Gemeinen einen hohen Sinn gebe, dem Gewöhnlichen ein geheimnisvolles Ansehen, dem Bekannten die Würde des Unbekannten, dem Endlichen einen unendlichen Schein, so romantisiere ich es. Poesie ist für mich keine Freizeitbeschäftigung. Sie ist das, was die Wissenschaft nicht mehr kann: Die Lücken füllen, die Einheit von Mensch und Natur bewahren. \u003cspan class=\"chat-source-ref\" title=\"Novalis, Fragmente und Studien, ca. 1797/98\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Novalis, Fragmente und Studien, ca. 1797/98\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Die Welt muss romantisiert werden. So findet man den ursprünglichen Sinn wieder. Indem ich dem Gemeinen einen hohen Sinn, dem Gewöhnlichen ein geheimnisvolles Ansehen, dem Bekannten die Würde des Unbekannten, dem Endlichen einen unendlichen Schein gebe, so romantisiere ich es.",
+                        "prompt":  "Markiere zentrale Begriffe des romantischen Programms.",
+                        "targets":  [
+                                        {
+                                            "word":  "romantisieren",
+                                            "feedback":  "Novalis meint damit eine Transformation der Wahrnehmung: das Alltägliche soll geheimnisvoll, das Bekannte fremd und bedeutungsvoll erscheinen."
+                                        },
+                                        {
+                                            "word":  "dem Endlichen einen unendlichen Schein geben",
+                                            "feedback":  "Das Endliche (das Sterbliche, Greifbare) wird durch Poesie ins Unendliche (Ewige, Transzendente) gehoben – ein Kerngedanke der Romantik."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Was meint Novalis mit dem Programm \"Die Welt muss romantisiert werden\"?",
+                        "options":  [
+                                        {
+                                            "text":  "Die Welt soll in Liebesgeschichten verwandelt werden.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        },
+                                        {
+                                            "text":  "Das Alltägliche soll durch Poesie mit tieferem Sinn und Geheimnis aufgeladen werden.",
+                                            "correct":  true,
+                                            "feedback":  "Genau! Novalis will durch Dichtung das Gewöhnliche transzendieren, ihm ein geheimnisvolles Ansehen geben."
+                                        },
+                                        {
+                                            "text":  "Die Naturwissenschaft soll durch Gefühl ersetzt werden.",
+                                            "correct":  false,
+                                            "feedback":  "Nicht ganz. Novalis lehnt die Wissenschaft nicht ab, sondern will sie mit der Poesie verbinden."
+                                        },
+                                        {
+                                            "text":  "Deutschland soll politisch romantisiert, also nationalistisch geprägt werden.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Novalis gehörte zum Jenaer Kreis der Frühromantiker. Gemeinsam mit Friedrich und August Wilhelm Schlegel, Ludwig Tieck und anderen. In der Zeitschrift \"Athenäum\" (gegründet 1798 von den Schlegels) veröffentlichte Novalis seine Blütenstaub-Fragmente, für die er erstmals das Pseudonym Novalis verwendete. Das Fragment war für die Frühromantiker keine Notlösung, sondern bewusste Kunstform: Unvollständigkeit und Offenheit galten als Ausdruck eines unabgeschlossenen, ja unabschließbaren Denkens. Novalis selbst schrieb hoffnungsvoll über seine Fragmentsammlung: \"Es mag freilich manches Taubenkörnchen darunter sein, indessen, wenn nur einiges aufgeht.\" Dorothea Schlegel, die bei solchen Treffen dabei war, kommentierte die Gruppe trocken: \"Die Herren sind etwas toll. Ich will wetten, sie verstehen sich selbst nicht und einander nicht.\""
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Du hast dich auch mit der Sehnsucht beschäftigt. Warum so intensiv?"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "1794 verliebte ich mich in Sophie von Kühn. Sie war zwölf Jahre alt, ich zweiundzwanzig. Eine Viertelstunde hatte genügt, um mich zu entflammen. Doch sie erkrankte an Tuberkulose und starb mit fünfzehn. Ich war absolut lebensmüde. Ich glaubte ihr nachsterben zu müssen. Ich schrieb verliebt, ich schrieb melancholisch und fand mich schließlich in der ewigen Liebe, der ewigen Sehnsucht wieder. \u003cspan class=\"chat-source-ref\" title=\"Novalis, Tagebuch 1797 / Fragmente\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Novalis, Tagebuch 1797 / Fragmente\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Hinunter zu der süßen Braut,\u003cbr\u003eZu Jesus, dem Geliebten –\u003cbr\u003eGetrost, die Abenddämmrung graut\u003cbr\u003eDen Liebenden, Betrübten.\u003cbr\u003eEin Traum bricht unsre Banden los\u003cbr\u003eUnd senkt uns in des Vaters Schooß.",
+                        "source":  "Novalis, Hymnen an die Nacht, Hymne 6 (Sehnsucht nach dem Tode), 1800"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Die Hymnen an die Nacht (1800) entstanden im Gedenken an Sophie von Kühn. In sechs Hymnen – teils in rhythmischer Prosa, teils in Versform – erhebt Novalis die Nacht zum Gegenprinzip des aufgeklärten Tages: Sie steht für Traum, Tod, Liebe und Transzendenz. Das Werk gilt als einer der bedeutendsten lyrischen Texte der deutschen Frühromantik."
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Muß immer der Morgen wiederkommen? Endet nie des Irdischen Gewalt? Unselige Geschäftigkeit verzehrt den himmlischen Anflug der Nacht. Wird nie der Liebe geheimes Opfer ewig brennen? Zugemessen ward dem Lichte seine Zeit; aber zeitlos und raumlos ist der Nacht Herrschaft.",
+                        "prompt":  "Markiere die romantische Licht-Nacht-Gegensatz-Struktur.",
+                        "targets":  [
+                                        {
+                                            "word":  "Morgen / Licht",
+                                            "feedback":  "Stehen für den aufgeklärten, rationalen Tag – das Irdische, Vergängliche, Begrenzte."
+                                        },
+                                        {
+                                            "word":  "Nacht",
+                                            "feedback":  "Wird zum positiven Gegenpol: zeitlos, raumlos, dem Irdischen enthoben – ein romantischer Sehnsuchtsraum."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "barometer",
+                        "statement":  "Für Novalis ist die Nacht dem Tag überlegen.",
+                        "min":  "stimme nicht zu",
+                        "max":  "stimme voll zu"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Und in deinem Roman? Was hat es mit der blauen Blume auf sich?"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Im Heinrich von Ofterdingen, meinem Romanfragment, erscheint meinem Helden im Traum eine Blume. Eine blaue Blume. Die Blütenblätter zeigen einen ausgebreiteten Kragen, in dem ein zartes Gesicht schwebt. Er weiß nicht, was er sucht, aber er weiß, dass er suchen muss. Ich habe diesen Roman als Gegenentwurf zu Goethes Wilhelm Meister gedacht. Denn das Romantische geht im Wilhelm Meister zugrunde, auch das Wunderbare. \u003cspan class=\"chat-source-ref\" title=\"Novalis, Heinrich von Ofterdingen, Fragment, ca. 1799/1800\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Novalis, Heinrich von Ofterdingen, Fragment, ca. 1799/1800\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Der Heinrich von Ofterdingen ist Novalis\u0027 unvollendeter Bildungsroman (Fragment, ca. 1799/1800) und das Fragmentarische ist hier Programm: Für die Frühromantiker war das offene, nie abgeschlossene Kunstwerk die einzig ehrliche Form, weil das Streben nach dem Unendlichen niemals zu einem Ende kommen kann. Im Gegensatz zu Goethes Entwicklungsroman Wilhelm Meister, den Novalis kritisierte, stellt sein Werk nicht die bürgerliche Bildung, sondern die Poesie selbst ins Zentrum. Die blaue Blume, nach der Heinrich sich sehnt, wurde zum Schlüsselsymbol der gesamten Romantik. Sie hat kein eindeutiges Ziel: Sie steht für Sehnsucht, Unendlichkeit, das ewig Unerreichbare und verbindet Liebes- und Todessehnsucht in einem einzigen Bild. Blau und die geheimnisvolle Nacht sind bei Novalis zu Chiffren für Gegenwelten, für Freiheitsträume, für Sehnsuchtsräume geworden; doch sind sie keine persönlichen Chiffren geblieben, sie wurden dauerhaft, zu Symbolen der Sehnsucht, die bis heute wirken."
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Endlich wollte er sich ihr nähern, als sie auf einmal sich zu bewegen und zu verändern anfing. Die Blume neigte sich nach ihm zu und die Blütenblätter zeigten einen blauen ausgebreiteten Kragen, in welchem ein zartes Gesicht schwebte.",
+                        "prompt":  "Markiere, was die Bildlichkeit der blauen Blume.",
+                        "targets":  [
+                                        {
+                                            "word":  "blaue Blume",
+                                            "feedback":  "Blau ist die Farbe des Unendlichen, des Himmels, der Ferne. Die Blume ist kein erreichbares Ziel, sondern das Symbol der Sehnsucht selbst nach Liebe, Transzendenz und dem Ungreifbaren."
+                                        },
+                                        {
+                                            "word":  "zartes Gesicht",
+                                            "feedback":  "Die Blume verwandelt sich in ein Gesicht, doch das Begehrte bleibt unscharf, traumhaft. Viele Interpreten sehen hier Sophie von Kühn gespiegelt."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Was symbolisiert die blaue Blume im Heinrich von Ofterdingen?",
+                        "options":  [
+                                        {
+                                            "text":  "Sehnsucht, das Unendliche und das Unerreichbare – ein romantisches Wunschbild.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Die blaue Blume wurde zum zentralen Symbol der gesamten deutschen Romantik."
+                                        },
+                                        {
+                                            "text":  "Die Schönheit der Natur im realistischen Sinne.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        },
+                                        {
+                                            "text":  "Den politischen Widerstand gegen den Staat.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        },
+                                        {
+                                            "text":  "Die Vernunft und Klarheit der Aufklärung.",
+                                            "correct":  false,
+                                            "feedback":  "Das ist das Gegenteil. Die blaue Blume steht für das, was die Aufklärung nicht erfassen kann."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-multi",
+                        "question":  "Welche der folgenden Aussagen über Novalis sind korrekt?",
+                        "options":  [
+                                        {
+                                            "text":  "Novalis ist ein Pseudonym; bürgerlicher Name: Friedrich von Hardenberg.",
+                                            "correct":  true,
+                                            "feedback":  "Korrekt! Der Name bezieht sich auf einen Vorfahren und impliziert das Nutzbarmachen von Neuland."
+                                        },
+                                        {
+                                            "text":  "Novalis starb mit 28 Jahren an Tuberkulose.",
+                                            "correct":  true,
+                                            "feedback":  "Korrekt! Wie schon seine Verlobte Sophie von Kühn."
+                                        },
+                                        {
+                                            "text":  "Novalis schrieb einen vollendeten Bildungsroman.",
+                                            "correct":  false,
+                                            "feedback":  "Nicht korrekt. Der Heinrich von Ofterdingen blieb bewusst Fragment. Die Unabschließbarkeit war Prinzip."
+                                        },
+                                        {
+                                            "text":  "Die blaue Blume wurde zum Symbol der gesamten deutschen Romantik.",
+                                            "correct":  true,
+                                            "feedback":  "Korrekt! Sie steht für Sehnsucht, Unendlichkeit und das Unerreichbare."
+                                        },
+                                        {
+                                            "text":  "Novalis lehnte Naturwissenschaften und Philosophie ab.",
+                                            "correct":  false,
+                                            "feedback":  "Falsch. Er war Bergbauingenieur und philosophischer Denker zugleich. Er wollte alles verbinden."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Novalis war gleichzeitig Bergbauingenieur, Philosoph und Dichter. Charakterisiere das Weltbild, das diesen Facetten entspringt."
+                    },
+                    {
+                        "type":  "checkpoint",
+                        "question":  "Erkläre begründet, was Novalis mit \"Romantisierung der Welt\" meint."
+                    },
+                    {
+                        "type":  "self-assessment",
+                        "items":  [
+                                      "Ich verstehe, was Novalis mit dem Programm der Romantisierung meint",
+                                      "Ich kann die blaue Blume als Symbol erklären",
+                                      "Ich kenne die Bedeutung von Sophies Tod für Novalis\u0027 Werk",
+                                      "Ich kann das Fragment als romantische Kunstform erläutern",
+                                      "Ich kann Novalis in den Kontext der Frühromantik einordnen"
+                                  ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Wer es nicht unmittelbar weiß und fühlt, was Poesie ist, dem lässt sich kein Begriff davon beibringen. Es ist das der eigentliche Prüfstein jedes Lesers. Nicht das Wissen, das Fühlen. Und das Fragen.\u003cbr\u003e\u003cspan class=\"chat-source-ref\" title=\"Novalis, Fragmente und Studien\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Novalis, Fragmente und Studien\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "finale",
+                        "text":  "Wenn dich mein Leben und Werk interessieren, dann recherchiere weiter! Mehr über mich findest du hier:",
+                        "links":  [
+                                      {
+                                          "label":  "WDR Zeitzeichen",
+                                          "url":  "https://www1.wdr.de/mediathek/audio/zeitzeichen/audio-novalis-dichter-geburtstag--100.html"
+                                      },
+                                      {
+                                          "label":  "Deutschlandfunk: Novalis – Die Romantisierung der Welt",
+                                          "url":  "https://www.deutschlandfunk.de/novalis-die-romantisierung-der-welt-100.html"
+                                      },
+                                      {
+                                          "label":  "Wikipedia",
+                                          "url":  "https://de.wikipedia.org/wiki/Novalis"
+                                      }
+                                  ],
+                        "literature":  [
+                                           "Herbert Uerlings: Novalis. Reclam, Stuttgart 1998.",
+                                           "Gerhard Schulz: Novalis. Biographie. C.H. Beck, München 1969/2011."
+                                       ]
+                    }
+                ]
+}

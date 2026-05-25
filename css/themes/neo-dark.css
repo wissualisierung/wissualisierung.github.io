@@ -1,0 +1,27 @@
+/* ==========================================================================
+   Theme: Neo Dark (Chunky Dark Mode)
+   WissOS 2.0 Design System
+   ========================================================================== */
+
+:root, body.theme-neo-dark {
+  --color-primary: #3B82F6;        /* Electric Blue */
+  --color-secondary: #EC4899;      /* Saturated Pink */
+  --color-accent: #10B981;         /* Bright Emerald */
+  --color-bg: #111827;             /* Dark Gray-Blue Slate */
+  --color-text: #FFFFFF;           /* High Contrast White */
+  --color-shadow: #000000;         /* Still Solid Black Shadow */
+  --color-window-bg: #1F2937;      /* Dark Window Interior */
+  --color-button-face: #374151;    /* Slate Buttons */
+  --color-button-hover: #4B5563;
+  --color-titlebar-active: #3B82F6;
+  --color-titlebar-inactive: #4B5563;
+  --color-selection: rgba(59, 130, 246, 0.4);
+}
+
+/* Custom desktop overrides for Neo Dark */
+body.theme-neo-dark #desktop {
+  background: #111827;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}

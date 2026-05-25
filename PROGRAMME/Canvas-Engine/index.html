@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WissOS 2.0 – Kreative Canvas-Engine</title>
+  
+  <style>
+    /* ===== 1. Base Variables & Theme-Aware Tokens ===== */
+    :root {
+      --color-primary: #7DFFC2;        /* Neon Mint */
+      --color-secondary: #FF6B9D;      /* Punch Pink */
+      --color-accent: #FFE66D;         /* Canary Yellow */
+      --color-bg: #EAE6FF;             /* Lavender-Gray */
+      --color-text: #000000;           /* Pure Black */
+      --color-shadow: #000000;
+      --color-window-bg: #FFFFFF;
+      --color-button-face: #FFE66D;
+      --color-button-hover: #FFF1AA;
+      --border-width: 4px;
+      --shadow-offset: 6px;
+      --font-display: 'Outfit', 'Segoe UI', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+
+      --blue-blueprint: #1e3a8a;
+      --cyan: #00FFEE;
+      --paper: #FAFAF5;
+      --transition: cubic-bezier(.4, 0, .2, 1);
+    }
+
+    /* --- THEME OVERRIDES FROM HOST OS --- */
+    body.theme-neo-dark {
+      --color-primary: #3B82F6;
+      --color-secondary: #EC4899;
+      --color-accent: #10B981;
+      --color-bg: #111827;
+      --color-text: #FFFFFF;
+      --color-shadow: #000000;
+      --color-window-bg: #1F2937;
+      --color-button-face: #374151;
+      --color-button-hover: #4B5563;
+      --paper: #1F2937;
+    }
+
+    body.theme-vaporwave {
+      --color-primary: #FF007F;
+      --color-secondary: #00F0FF;
+      --color-accent: #FFE600;
+      --color-bg: #03001C;
+      --color-text: #00F0FF;
+      --color-shadow: #FF007F;
+      --color-window-bg: #0B001A;
+      --color-button-face: #30005C;
+      --color-button-hover: #5B0E9C;
+      --paper: #0B001A;
+    }
+
+    body.theme-schreibstube {
+      --color-primary: #C3B091;
+      --color-secondary: #4A3E3D;
+      --color-accent: #E1D7C6;
+      --color-bg: #F4F1EA;
+      --color-text: #2B2118;
+      --color-shadow: #2B2118;
+      --color-window-bg: #FCFAF6;
+      --color-button-face: #EAE3D2;
+      --color-button-hover: #DFD5C0;
+      --paper: #FCFAF6;
+    }
+
+    body.theme-pommes {
+      --color-primary: #FFCC00;
+      --color-secondary: #E50000;
+      --color-accent: #FFFFFF;
+      --color-bg: #FFE5D9;
+      --color-text: #000000;
+      --color-shadow: #E50000;
+      --color-window-bg: #FFFFFF;
+      --color-button-face: #FFCC00;
+      --color-button-hover: #FFE066;
+      --paper: #FFFFFF;
+    }
+
+    /* ===== 2. Reset & Base ===== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-display);
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 20px;
+      background-image: radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px);
+      background-size: 24px 24px;
+      transition: background-color 0.2s;
+    }
+
+    body.theme-neo-dark {
+      background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+    }
+
+    .wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .app-box {
+      background: var(--color-window-bg);
+      border: var(--border-width) solid var(--color-text);
+      box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--color-shadow);
+      padding: 1.5rem;
+    }
+
+    /* ===== 3. Titlebar ===== */
+    .titlebar {
+      background: #000;
+      color: var(--color-primary);
+      border: var(--border-width) solid #000;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: bold;
+    }
+
+    body.theme-neo-dark .titlebar {
+      background: #111;
+      border-color: #000;
+    }
+
+    .titlebar-mode-badge {
+      background: var(--color-secondary);
+      color: #fff;
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      border: 2px solid #000;
+      box-shadow: 2px 2px 0 #000;
+      letter-spacing: 0;
+    }
+
+    /* ===== 4. Grid Columns ===== */
+    .grid {
+      display: grid;
+      grid-template-columns: 280px 1fr 280px;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 1100px) {
+      .grid {
+        grid-template-columns: 1fr 280px;
+      }
+      .col-left {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .col-left, .col-right {
+        grid-column: auto;
+      }
+    }
+
+    /* ===== 5. Headings ===== */
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--color-text);
+      opacity: 0.7;
+      letter-spacing: 1px;
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+    }
+
+    .column-heading {
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: var(--color-text);
+      text-transform: uppercase;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.8rem;
+    }
+
+    .divider {
+      height: 4px;
+      background: var(--color-text);
+      margin: 0.8rem 0;
+      opacity: 0.2;
+    }
+
+    /* ===== 6. Left Column (Notepad & Steps) ===== */
+    .col-left {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    /* Chunky neobrutalist Notepad */
+    .notepad-container {
+      position: relative;
+    }
+
+    .notes-textarea {
+      width: 100%;
+      min-height: 250px;
+      background: var(--paper);
+      border: var(--border-width) solid var(--color-text);
+      color: var(--color-text);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.8;
+      padding: 14px;
+      resize: vertical;
+      outline: none;
+      box-shadow: 4px 4px 0 var(--color-shadow);
+      background-image: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent calc(1.8em - 1px),
+        rgba(0, 0, 0, 0.08) calc(1.8em - 1px),
+        rgba(0, 0, 0, 0.08) 1.8em
+      );
+      background-size: 100% 1.8em;
+      transition: background-color 0.2s;
+    }
+
+    body.theme-neo-dark .notes-textarea {
+      background-image: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent calc(1.8em - 1px),
+        rgba(255, 255, 255, 0.05) calc(1.8em - 1px),
+        rgba(255, 255, 255, 0.05) 1.8em
+      );
+    }
+
+    .notes-textarea:focus {
+      outline: 3px solid var(--color-primary);
+    }
+
+    .notes-meta {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: bold;
+      margin-top: 0.35rem;
+    }
+
+    .steps-label {
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 0.78rem;
+      margin-top: 1rem;
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+    }
+
+    .steps-group {
+      display: flex;
+      gap: 6px;
+    }
+
+    .step-btn {
+      flex: 1;
+      height: 38px;
+      font-family: var(--font-mono);
+      font-weight: 900;
+      font-size: 1.1rem;
+      border: 3px solid var(--color-text);
+      background: var(--color-window-bg);
+      color: var(--color-text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.1s;
+      box-shadow: 2px 2px 0 var(--color-shadow);
+    }
+
+    .step-btn:hover {
+      background: var(--color-accent);
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0 var(--color-shadow);
+    }
+
+    .step-btn.active {
+      background: var(--color-primary);
+      color: #000;
+      box-shadow: none;
+      transform: translate(2px, 2px);
+    }
+
+    /* Standard Bevel Button */
+    .neo-btn {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 0.9rem;
+      background: var(--color-button-face);
+      color: var(--color-text);
+      border: var(--border-width) solid var(--color-text);
+      box-shadow: 4px 4px 0 var(--color-shadow);
+      padding: 10px 14px;
+      cursor: pointer;
+      outline: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .neo-btn:hover {
+      background: var(--color-button-hover);
+      transform: translate(-1px, -1px);
+      box-shadow: 5px 5px 0 var(--color-shadow);
+    }
+
+    .neo-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 var(--color-shadow);
+    }
+
+    /* ===== 7. Center Column (Blueprint SVG & Elements) ===== */
+    .col-center {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .blueprint-box {
+      border: var(--border-width) solid var(--color-text);
+      background: var(--paper);
+      padding: 1rem;
+      box-shadow: 4px 4px 0 var(--color-shadow);
+    }
+
+    .blueprint-svg-wrap {
+      width: 100%;
+      position: relative;
+    }
+
+    .blueprint-svg-wrap svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .blueprint-hint {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: bold;
+      opacity: 0.8;
+    }
+
+    .btn-shuffle {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border: 2px solid var(--color-text);
+      background: var(--color-accent);
+      cursor: pointer;
+      box-shadow: 2px 2px 0 #000;
+    }
+
+    .btn-shuffle:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0 #000;
+    }
+
+    /* Accordions */
+    .accordion-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    details.neo-accordion {
+      border: var(--border-width) solid var(--color-text);
+      background: var(--color-window-bg);
+      box-shadow: 3px 3px 0 var(--color-shadow);
+    }
+
+    details.neo-accordion summary {
+      padding: 10px 14px;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    details.neo-accordion summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details.neo-accordion summary::before {
+      content: '▶';
+      font-size: 0.78rem;
+      transition: transform 0.15s;
+      display: inline-block;
+    }
+
+    details.neo-accordion[open] summary::before {
+      transform: rotate(90deg);
+    }
+
+    .accordion-body {
+      padding: 14px;
+      border-top: var(--border-width) solid var(--color-text);
+      background: var(--paper);
+    }
+
+    /* Cards inside Accordions */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    @media (max-width: 650px) {
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .ct-card {
+      border: 3px solid var(--color-text);
+      background: var(--color-window-bg);
+      padding: 12px;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 var(--color-shadow);
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .ct-card:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0 var(--color-shadow);
+      border-color: var(--color-secondary);
+    }
+
+    .ct-card.active {
+      outline: 3px solid var(--color-accent);
+      border-color: var(--color-text);
+      background: var(--color-primary);
+      color: #000 !important;
+    }
+
+    .ct-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .ct-card-icon {
+      font-size: 1.3rem;
+    }
+
+    .ct-card-name {
+      font-weight: 800;
+      font-size: 0.9rem;
+      letter-spacing: -0.3px;
+    }
+
+    .badge {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      font-weight: 900;
+      padding: 1px 6px;
+      background: var(--color-secondary);
+      color: #fff;
+      border: 2px solid #000;
+      box-shadow: 1px 1px 0 #000;
+      margin-left: auto;
+      text-transform: uppercase;
+    }
+
+    .ct-card-body {
+      display: none;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 2px dashed rgba(0,0,0,0.15);
+    }
+
+    .ct-card.expanded .ct-card-body {
+      display: block;
+    }
+
+    .ct-card-kurz {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .ct-card-mass {
+      font-family: var(--font-mono);
+      font-weight: 800;
+      color: var(--color-secondary);
+      font-size: 0.68rem;
+      margin-bottom: 4px;
+    }
+
+    .ct-card-tipp {
+      font-family: var(--font-mono);
+      background: var(--color-accent);
+      border: 2px solid #000;
+      padding: 4px 8px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #000;
+      margin-top: 6px;
+      box-shadow: 2px 2px 0 #000;
+    }
+
+    /* ===== 8. Right Column (Tips & Prompts) ===== */
+    .col-right {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .prompt-card {
+      border: var(--border-width) solid var(--color-text);
+      background: var(--color-window-bg);
+      box-shadow: 3px 3px 0 var(--color-shadow);
+      padding: 14px;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 10px;
+    }
+
+    .prompt-badge {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      font-weight: 900;
+      padding: 2px 6px;
+      background: var(--color-primary);
+      color: #000;
+      border: 2px solid #000;
+      box-shadow: 1.5px 1.5px 0 #000;
+      align-self: flex-start;
+      text-transform: uppercase;
+    }
+
+    .prompt-icon {
+      font-size: 2.2rem;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .prompt-text {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 800;
+      line-height: 1.6;
+      color: var(--color-text);
+    }
+
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 0.2rem;
+    }
+
+    .chip {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      font-weight: 800;
+      padding: 4px 6px;
+      border: 2px solid var(--color-text);
+      background: var(--color-window-bg);
+      color: var(--color-text);
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+
+    .chip:hover {
+      background: var(--color-accent);
+    }
+
+    .chip.active {
+      background: var(--color-text);
+      color: var(--color-window-bg);
+    }
+
+    .list-box {
+      border: var(--border-width) solid var(--color-text);
+      background: var(--paper);
+      padding: 10px;
+      max-height: 250px;
+      overflow-y: auto;
+      box-shadow: 3px 3px 0 var(--color-shadow);
+    }
+
+    .list-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      padding: 6px 0;
+      border-bottom: 2px dashed rgba(0,0,0,0.1);
+      font-size: 0.72rem;
+      line-height: 1.4;
+    }
+
+    .list-item:last-child {
+      border-bottom: none;
+    }
+
+    .list-item-icon {
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    /* Interactive SVG Zones styling */
+    .zone-interactive {
+      cursor: pointer;
+      transition: fill 0.15s, stroke 0.15s;
+    }
+
+    .zone-interactive:hover {
+      fill: var(--color-primary);
+      stroke: var(--color-text);
+    }
+
+    .zone-interactive.active {
+      fill: var(--color-secondary);
+      stroke: var(--color-text);
+    }
+  </style>
+
+  <!-- Universal SDK -->
+  <script src="../../sdk/wissos-sdk.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <div class="app-box">
+    
+    <!-- Titlebar -->
+    <header class="titlebar">
+      <span id="titlebarText">▓▓ Canvas-Engine.exe ▓▓</span>
+      <span class="titlebar-mode-badge" id="titlebarMode">LADE ...</span>
+    </header>
+
+    <div class="grid">
+      
+      <!-- LEFT SIDEBAR -->
+      <aside class="col-left" role="region" aria-label="Notizen und Fortschritt">
+        <div>
+          <div class="section-label">[ Arbeitsbereich ]</div>
+          <h2 class="column-heading" id="notesHeading">// NOTIZEN</h2>
+          <hr class="divider">
+        </div>
+
+        <div class="notepad-container">
+          <textarea id="notesTextarea" class="notes-textarea" placeholder="// Eigene Skizzen, Planungsgedanken und Entwürfe ..."></textarea>
+          <div class="notes-meta">
+            <span id="charCount">// 0 Zeichen</span>
+            <span id="saveStatus" style="color:var(--color-primary);">✔ Gespeichert</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="steps-label">➔ Fortschritt</div>
+          <div class="steps-group" role="group" aria-label="Fortschritts-Schritte">
+            <button class="step-btn" data-step="1">1</button>
+            <button class="step-btn" data-step="2">2</button>
+            <button class="step-btn" data-step="3">3</button>
+            <button class="step-btn" data-step="4">4</button>
+            <button class="step-btn" data-step="5">5</button>
+          </div>
+        </div>
+
+        <button class="neo-btn" id="btnDownload" aria-label="Arbeitsbereich als Textdatei exportieren">[ Notizen Speichern ↓ ]</button>
+      </aside>
+
+      <!-- CENTER VISUAL BLUEPRINT -->
+      <section class="col-center" aria-label="Didaktisches Visualisierungs-Schema">
+        <div>
+          <div class="section-label">[ Hauptbereich ]</div>
+          <h2 class="column-heading" id="blueprintHeading">ARCHITEKTUR-BLUEPRINT</h2>
+          <hr class="divider">
+        </div>
+
+        <!-- SVG Visual Sandbox Panel -->
+        <div class="blueprint-box">
+          <div class="blueprint-svg-wrap" id="svgContainer"></div>
+          <div class="blueprint-hint">
+            <span id="blueprintHintText">// Klicke auf eine Zone für Details</span>
+            <button class="btn-shuffle" id="btnShuffle">↻ Neu Mischen</button>
+          </div>
+        </div>
+
+        <!-- Collapsible Accordions -->
+        <div class="accordion-group" id="accordionGroup"></div>
+      </section>
+
+      <!-- RIGHT COLUMN (TIP GENERATOR) -->
+      <aside class="col-right" role="region" aria-label="Impulsgeber und Detail-Bibliothek">
+        <div>
+          <div class="section-label" id="generatorLabel">[ Tipp-Generator ]</div>
+          <h2 class="column-heading" id="generatorHeading">>> KREATIVIMPULS</h2>
+          <hr class="divider">
+        </div>
+
+        <!-- Random Prompt generator -->
+        <div class="prompt-card" id="promptCard">
+          <span class="prompt-badge" id="promptBadge">—</span>
+          <div class="prompt-icon" id="promptIcon">—</div>
+          <div class="prompt-text" id="promptText">Lade Impuls ...</div>
+        </div>
+
+        <button class="neo-btn" id="btnNewPrompt" aria-label="Nächsten kreativen Tipp anzeigen">[ >> NEUER IMPULS ]</button>
+
+        <div class="chip-group" id="chipGroup"></div>
+
+        <div>
+          <hr class="divider">
+          <div class="section-label" style="margin-bottom:6px">// Vollständige Liste</div>
+          <div class="list-box" id="fullPromptList"></div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===== Javascript Logic ===== -->
+<script>
+  // Mode configuration ('lapbook' or 'maerchen')
+  let appMode = 'lapbook';
+  let factors = [];
+  let notesKey = 'wissos_canvas_notes_lapbook';
+  let progressKey = 'wissos_canvas_progress_lapbook';
+  let currentRating = 0;
+
+  // Selected dynamic zone items
+  let activeZoneItems = [];
+  
+  // Embedded Didactical Datasets
+  const LAPBOOK_ELEMENTS = [
+    { id: "leporello", name: "Leporello", category: "Faltform", icon: "🪗", mass: "ca. 6 × 10 cm", kurz: "Zickzack-Faltstreifen für Zeitlinien.", explanation: "Ein Leporello entsteht durch mehrfaches Falten eines langen Papierstreifens in wechselnde Richtungen. Hervorragend geeignet als ausziehbare Chronologie.", tipp: "Klebe nur das erste Segment fest, um es ganz herausziehbar zu machen." },
+    { id: "klappkarte", name: "Klappkarte", category: "Faltform", icon: "📖", mass: "ca. 8 × 10 cm", kurz: "Klassische Karte mit Frage-Antwort-Klappe.", explanation: "Die einfachste interaktive Form: Ein gefaltetes Blatt. Außen steht die Leitfrage oder ein Begriff, innen die didaktische Auflösung.", tipp: "Schneide die Klappkarten aus dickerem Tonpapier für verbesserte Haptik." },
+    { id: "stufenbuch", name: "Stufenbuch", category: "Faltform", icon: "📑", mass: "ca. 6 × 12 cm", kurz: "Fächerbuch mit versetzten Registern.", explanation: "Mehrere Papierblätter in abgestufter Länge übereinandergelegt. Dadurch entsteht ein sofort sichtbares Inhaltsregister an der Unterkante.", tipp: "Nutze 4 bis 5 Stufen – das bietet das beste Verhältnis aus Schreibfläche und Übersicht." },
+    { id: "drehscheibe", name: "Drehscheibe", category: "Interaktives Element", icon: "🔄", mass: "ø ca. 12 cm", kurz: "Zwei Kreise mit Sichtfenster zum Drehen.", explanation: "Zwei übereinanderliegende Pappkreise, verbunden mit einer Musterbeutelklammer. Das Sichtfenster im oberen Kreis gibt beim Drehen Informationen frei.", tipp: "Teile die Sektoren mit Bleistift präzise ein, bevor du die Kreise beschriftest." },
+    { id: "pop-up", name: "Pop-up-Element", category: "Interaktives Element", icon: "🎁", mass: "variabel", kurz: "3D-Form, die beim Öffnen aufspringt.", explanation: "Durch parallele Einschnitte an der Falzlinie einer Karte wird beim Aufklappen ein Segment in den 3D-Raum gehoben. Erzeugt starke visuelle Akzente.", tipp: "Die Einschnitte müssen absolut parallel zur Hauptfalz verlaufen, um Klemmen zu verhindern." },
+    { id: "tasche", name: "Tasche / Umschlag", category: "Zubehör", icon: "✉️", mass: "ca. 9 × 12 cm", kurz: "Aufgeklebter Behälter für Fragekarten.", explanation: "Ein an drei Kanten fixierter Umschlag oder Papierkanal. Nimmt didaktisches Begleitmaterial, Kärtchen oder kleine Zettel auf.", tipp: "Verwende gemustertes Geschenkpapier oder Zeitungsausschnitte für kontrastreiche Optik." },
+    { id: "fenster", name: "Fenster-Klappe", category: "Interaktives Element", icon: "🔲", mass: "variabel", kurz: "Kartonfenster zum Aufdecken von Text.", explanation: "Ein in die Oberseite eingeschnittenes Fenster. Es lässt sich wie ein Fensterflügel öffnen und offenbart darunter liegende Texte oder Abbildungen.", tipp: "Verwende bunten Zeichenkarton unter dem Fenster für lebendige Kontraste." },
+    { id: "schieber", name: "Schieber-Karte", category: "Interaktives Element", icon: "👆", mass: "ca. 5 × 14 cm", kurz: "Zugstreifen zum Ein- und Ausschieben.", explanation: "Ein Kartonstreifen, der durch zwei Kanalschlitze gleitet. Beim Ziehen an der Lasche erscheint im Sichtbereich die Lösung oder eine Grafik.", tipp: "Schneide die Führungsschlitze mit einem Skalpell – das garantiert flüssiges Gleiten." }
+  ];
+
+  const LAPBOOK_TIPS = [
+    { category: "Struktur", text: "Silhouetten-Schnitt: Schneide die Außenhülle passend zum Thema aus (z.B. als Schloss-Silhouette oder Buchdeckel).", icon: "✂" },
+    { category: "Struktur", text: "Doppeltor-Öffnung: Falte die zwei Außenflügel so, dass sie sich in der Mitte treffen – das steigert die Neugier beim Öffnen.", icon: "🚪" },
+    { category: "Scherenschnitt", text: "Notan-Kontrast: Verwende zweifarbiges Papier. Klebe den ausgeschnittenen Teil gespiegelt daneben auf – erzeugt tolle Negativ-Effekte.", icon: "⬛" },
+    { category: "Scherenschnitt", text: "Transparentfenster: Ersetze ausgeschnittene Flächen durch farbiges Transparentpapier für wunderschöne Lichtdurchlässe.", icon: "🖼" },
+    { category: "Farbe", text: "Aquarell-Grundierung: Wasche die Minibücher vor dem Falten leicht mit Wasserfarbe – das erzeugt organische Texturen.", icon: "🎨" },
+    { category: "Material", text: "Wellpappe & Packpapier: Nutze strukturierte Verpackungsmaterialien als Akzentflächen, um Monotonie zu brechen.", icon: "📦" },
+    { category: "Interaktion", text: "Musterklammern: Verwende goldene Musterbeutelklammern für Drehscheiben und bewegliche Zeiger – das wirkt edel.", icon: "📌" },
+    { category: "Typografie", text: "Handlettering-Titel: Zeichne Überschriften mit Finelinern bewusst zweiliniger und schattiert – das wirkt handgemacht.", icon: "✍" }
+  ];
+
+  const MAERCHEN_MOTIFS = [
+    { id: "blaue_blume", name: "Die Blaue Blume", category: "Romantisches Symbol", icon: "🌸", mass: "Novalis (Heinrich v. Ofterdingen)", kurz: "Das zentrale Sehnsuchtssymbol der Romantik.", explanation: "Die Blaue Blume verbindet Natur, Liebe und das Unendliche. Sie steht für das Streben nach dem Unerreichbaren, das Aufbrechen philisterhafter Grenzen und die Verschmelzung von Traum und Wirklichkeit.", tipp: "Steht im Märchen oft am Übergang von der realen Welt in das magische Reich." },
+    { id: "doppelgaenger", name: "Der Doppelgänger", category: "Psychologisches Motiv", icon: "👤", mass: "E.T.A. Hoffmann (Der Sandmann)", kurz: "Die Spaltung der menschlichen Persönlichkeit.", explanation: "Der Doppelgänger spiegelt das zerrissene Ich wider. Oft symbolisiert er verdrängte Begierden, psychische Abgründe oder die Auseinandersetzung mit dem Wahnsinn in einer rationalen Welt.", tipp: "Nutze Spiegelungen oder geheimnisvolle Schatten im Text, um dieses Motiv anzudeuten." },
+    { id: "nacht", name: "Die Nacht", category: "Raum-Motiv", icon: "🌙", mass: "Novalis (Hymnen an die Nacht)", kurz: "Raum des Traums und der Transzendenz.", explanation: "Im Gegensatz zum Tag (dem Philistertum und der nüchternen Aufklärung) ist die Nacht der Raum der Poesie, des Unbewussten, der Phantasie und der magischen Transformation.", tipp: "Wichtige Initiationsriten und magische Wandlungen geschehen stets im Schutz der Dunkelheit." },
+    { id: "wald", name: "Der Wald / Waldeinsamkeit", category: "Natur-Symbol", icon: "🌲", mass: "Ludwig Tieck (Der blonde Eckbert)", kurz: "Ort der Besinnung und der unheimlichen Gefahr.", explanation: "Der Wald repräsentiert die Natur als beseeltes Wesen. Er ist Zufluchtsort ('Waldeinsamkeit'), aber auch Labyrinth, in dem die Zivilisation ihre Gültigkeit verliert und Dämonen hausen.", tipp: "Das Rauschen der Tannen kann als prophetische Stimme der Natur inszeniert werden." },
+    { id: "schwellenuebergang", name: "Der Schwellenübergang", category: "Strukturelement", icon: "🚪", mass: "Joseph von Eichendorff", kurz: "Grenze zwischen Alltag und Magie.", explanation: "Der Übergang von der alltäglichen 'Spießbürger-Welt' in die Welt des Wunderbaren. Oft markiert durch das Durchschreiten eines Tors, das Betreten des Waldes oder das Einschlafen.", tipp: "Gestalte diesen Moment atmosphärisch dicht mit Nebel, Spiegeln oder plötzlicher Stille." },
+    { id: "romantische_ironie", name: "Romantische Ironie", category: "Stilmittel", icon: "🎭", mass: "Friedrich Schlegel", kurz: "Die Zerstörung der poetischen Illusion.", explanation: "Der Autor greift selbst in die Handlung ein, spricht den Leser direkt an oder enthüllt, dass alles nur ein Spiel ist. Dies beweist die absolute Freiheit des schöpferischen Geistes.", tipp: "Lass eine Märchenfigur plötzlich über ihren eigenen Autor oder die Struktur des Textes reflektieren." },
+    { id: "goldenes_zeitalter", name: "Das Goldene Zeitalter", category: "Utopie", icon: "✨", mass: "Novalis", kurz: "Die poetische Versöhnung von Mensch und Natur.", explanation: "Die Utopie eines Urzustands, in dem Mensch, Natur und Poesie in vollkommener Harmonie lebten – und der durch die Poesie der Romantiker wiedererrichtet werden soll.", tipp: "Steht meist am Ende des Märchens als Erlösungsszenario nach bestandenen Prüfungen." },
+    { id: "wunderbare", name: "Das Wunderbare", category: "Strukturelement", icon: "🧙", mass: "Clemens Brentano", kurz: "Einbruch des Magischen in den Alltag.", explanation: "Der selbstverständliche Einbruch von Magie, Geistern und Wundern in die scheinbar geordnete bürgerliche Wirklichkeit. Die Grenzen der rationalen Physik werden poeitisierend aufgehoben.", tipp: "Präsentiere magische Ereignisse ohne Erstaunen der Figuren – sie sind Teil der romantischen Realität." }
+  ];
+
+  const MAERCHEN_TIPS = [
+    { category: "Charaktere", text: "Erschaffe einen Poeten-Helden: Ein verträumter Jüngling, der wegen seiner Phantasie von der bürgerlichen Welt verstoßen wird.", icon: "📜" },
+    { category: "Charaktere", text: "Der bürgerliche Philister: Ein extrem pedantischer Buchhalter, der nur an Zahlen glaubt und die Magie verspottet.", icon: "🎩" },
+    { category: "Orte", text: "Die Zauber-Mühle: Eine abgelegene Mühle im tiefen Tann, deren Räder im Takt uralter Lieder klappern.", icon: "🏚️" },
+    { category: "Orte", text: "Der Kristallpalast: Eine unterseeische Utopie, in der alle Gedanken als leuchtende Kristalle sichtbar sind.", icon: "🏰" },
+    { category: "Symbole", text: "Das sprechende Vögelchen: Es singt eine Melodie, die dem Helden das Geheimnis seiner eigenen Herkunft offenbart.", icon: "🐦" },
+    { category: "Symbole", text: "Der Zauberspiegel: Zeigt nicht das Gesicht, sondern die tiefste, unbewusste Sehnsucht des Betrachters.", icon: "🪞" },
+    { category: "Stil", text: "Nutze Synästhesien: Beschreibe Töne als Farben ('die blaue Melodie') oder Düfte als Klänge, um Poesie greifbar zu machen.", icon: "🎼" },
+    { category: "Stil", text: "Breche die Realität: Lass Traum- und Wachzustand so verschmelzen, dass der Leser nicht mehr weiß, was wahr ist.", icon: "🌫️" }
+  ];
+
+  // DOM Selection
+  const $ = id => document.getElementById(id);
+  const $$ = sel => document.querySelectorAll(sel);
+
+  // Initialize UI depending on search query param ?mode=
+  function detectMode() {
+    const params = new URLSearchParams(window.location.search);
+    appMode = params.get('mode') === 'maerchen' ? 'maerchen' : 'lapbook';
+    
+    // Set storage keys
+    notesKey = `wissos_canvas_notes_${appMode}`;
+    progressKey = `wissos_canvas_progress_${appMode}`;
+
+    // Swap Texts dynamically
+    if (appMode === 'lapbook') {
+      $('titlebarText').textContent = '▓▓ Lapbook-Designer.exe ▓▓';
+      $('titlebarMode').textContent = 'LAPBOOK-MODUS';
+      $('titlebarMode').style.backgroundColor = 'var(--color-secondary)';
+      $('notesHeading').textContent = '// LAPBOOK-NOTIZEN';
+      $('notesTextarea').placeholder = '// Entwerfe hier deine Faltformen, Maße und didaktischen Notizen ...';
+      $('blueprintHeading').textContent = 'BLUEPRINT-BAUPLAN';
+      $('generatorLabel').textContent = '[ Gestaltungs-Tipp ]';
+      $('generatorHeading').textContent = '>> KREATIVIMPULS';
+    } else {
+      $('titlebarText').textContent = '▓▓ Märchenwald-Visualizer.exe ▓▓';
+      $('titlebarMode').textContent = 'MÄRCHEN-EXPLORER';
+      $('titlebarMode').style.backgroundColor = 'var(--color-primary)';
+      $('titlebarMode').style.color = '#000';
+      $('notesHeading').textContent = '// DICHTER-KLADDE';
+      $('notesTextarea').placeholder = '// Notiere hier deine romantischen Motive, Entwürfe und Märchenfragmente ...';
+      $('blueprintHeading').textContent = 'ERZÄHLSTRUKTUR';
+      $('generatorLabel').textContent = '[ Dichter-Impuls ]';
+      $('generatorHeading').textContent = '>> MOTIV-GENERATOR';
+    }
+  }
+
+  // Load interactive SVGs
+  function renderSvg() {
+    const container = $('svgContainer');
+    container.innerHTML = '';
+
+    if (appMode === 'lapbook') {
+      // Precise Neobrutalist Lapbook Blueprint SVG
+      container.innerHTML = `
+        <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg">
+          <!-- Background Grid Lines -->
+          <rect x="0" y="0" width="700" height="320" fill="var(--paper)" stroke="var(--color-text)" stroke-width="4"/>
+          <line x1="200" y1="4" x2="200" y2="316" stroke="var(--color-text)" stroke-width="3" stroke-dasharray="8 6"/>
+          <line x1="500" y1="4" x2="500" y2="316" stroke="var(--color-text)" stroke-width="3" stroke-dasharray="8 6"/>
+
+          <!-- Header Titles inside SVG -->
+          <text x="100" y="32" text-anchor="middle" font-family="var(--font-mono)" font-size="9" font-weight="900" fill="var(--color-text)">LINKE KLAPPE (105mm)</text>
+          <text x="350" y="32" text-anchor="middle" font-family="var(--font-mono)" font-size="9" font-weight="900" fill="var(--color-text)">MITTELTEIL (210mm)</text>
+          <text x="600" y="32" text-anchor="middle" font-family="var(--font-mono)" font-size="9" font-weight="900" fill="var(--color-text)">RECHTE KLAPPE (105mm)</text>
+
+          <!-- Clickable neobrutalist zone card 0 -->
+          <g class="zone-interactive" data-zone="0" tabindex="0">
+            <rect x="25" y="70" width="150" height="180" fill="var(--color-window-bg)" stroke="var(--color-text)" stroke-width="3" rx="4"/>
+            <rect x="35" y="80" width="130" height="40" fill="var(--color-accent)" stroke="var(--color-text)" stroke-width="2"/>
+            <text x="100" y="105" text-anchor="middle" font-family="var(--font-display)" font-size="12" font-weight="900" fill="#000">ZONE L1</text>
+            <text id="z0-icon" x="100" y="170" text-anchor="middle" font-size="34">🪗</text>
+            <text id="z0-name" x="100" y="215" text-anchor="middle" font-family="var(--font-mono)" font-size="10" font-weight="900" fill="var(--color-text)">Leporello</text>
+          </g>
+
+          <!-- Clickable neobrutalist zone card 1 (Center Top) -->
+          <g class="zone-interactive" data-zone="1" tabindex="0">
+            <rect x="230" y="55" width="240" height="105" fill="var(--color-window-bg)" stroke="var(--color-text)" stroke-width="3" rx="4"/>
+            <rect x="240" y="65" width="220" height="26" fill="var(--color-primary)" stroke="var(--color-text)" stroke-width="2"/>
+            <text x="350" y="82" text-anchor="middle" font-family="var(--font-display)" font-size="11" font-weight="900" fill="#000">ZONE M1 (OBEN)</text>
+            <text id="z1-icon" x="280" y="125" text-anchor="middle" font-size="24">📖</text>
+            <text id="z1-name" x="375" y="122" text-anchor="middle" font-family="var(--font-mono)" font-size="11" font-weight="900" fill="var(--color-text)">Klappkarte</text>
+          </g>
+
+          <!-- Clickable neobrutalist zone card 2 (Center Bottom) -->
+          <g class="zone-interactive" data-zone="2" tabindex="0">
+            <rect x="230" y="175" width="240" height="105" fill="var(--color-window-bg)" stroke="var(--color-text)" stroke-width="3" rx="4"/>
+            <rect x="240" y="185" width="220" height="26" fill="var(--color-accent)" stroke="var(--color-text)" stroke-width="2"/>
+            <text x="350" y="202" text-anchor="middle" font-family="var(--font-display)" font-size="11" font-weight="900" fill="#000">ZONE M2 (UNTEN)</text>
+            <text id="z2-icon" x="280" y="245" text-anchor="middle" font-size="24">🔄</text>
+            <text id="z2-name" x="375" y="242" text-anchor="middle" font-family="var(--font-mono)" font-size="11" font-weight="900" fill="var(--color-text)">Drehscheibe</text>
+          </g>
+
+          <!-- Clickable neobrutalist zone card 3 -->
+          <g class="zone-interactive" data-zone="3" tabindex="0">
+            <rect x="525" y="70" width="150" height="180" fill="var(--color-window-bg)" stroke="var(--color-text)" stroke-width="3" rx="4"/>
+            <rect x="535" y="80" width="130" height="40" fill="var(--color-primary)" stroke="var(--color-text)" stroke-width="2"/>
+            <text x="600" y="105" text-anchor="middle" font-family="var(--font-display)" font-size="12" font-weight="900" fill="#000">ZONE R1</text>
+            <text id="z3-icon" x="600" y="170" text-anchor="middle" font-size="34">✉️</text>
+            <text id="z3-name" x="600" y="215" text-anchor="middle" font-family="var(--font-mono)" font-size="10" font-weight="900" fill="var(--color-text)">Tasche</text>
+          </g>
+        </svg>
+      `;
+    } else {
+      // Romantic Narrative Arc Blueprint SVG for Märchen-Explorer
+      container.innerHTML = `
+        <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg">
+          <!-- Background Grid Lines -->
+          <rect x="0" y="0" width="700" height="320" fill="var(--paper)" stroke="var(--color-text)" stroke-width="4"/>
+          
+          <!-- Narrative Arc Curve path -->
+          <path d="M 50 250 Q 200 80, 350 100 T 650 220" fill="none" stroke="var(--color-text)" stroke-width="5" stroke-dasharray="4 4"/>
+
+          <!-- Clickable zone 0: Exposition -->
+          <g class="zone-interactive" data-zone="0" tabindex="0">
+            <rect x="40" y="170" width="130" height="70" fill="var(--color-window-bg)" stroke="var(--color-text)" stroke-width="3" rx="4"/>
+            <rect x="50" y="178" width="110" height="20" fill="var(--color-accent)" stroke="#000" stroke-width="1.5"/>
+            <text x="105" y="192" text-anchor="middle" font-family="var(--font-mono)" font-size="8" font-weight="900" fill="#000">1. EXPOSITION</text>
+            <text id="z0-icon" x="70" y="225" text-anchor="middle" font-size="18">🌸</text>
+            <text id="z0-name" x="120" y="222" text-anchor="middle" font-family="var(--font-mono)" font-size="8" font-weight="900" fill="var(--color-text)">Blume</text>
+          </g>
+
+          <!-- Clickable zone 1: Schwellenübergang -->
+          <g class="zone-interactive" data-zone="1" tabindex="0">
+            <rect x="200" y="50" width="130" height="70" fill="var(--color-window-bg)" stroke="var(--color-text)" stroke-width="3" rx="4"/>
+            <rect x="210" y="58" width="110" height="20" fill="var(--color-primary)" stroke="#000" stroke-width="1.5"/>
+            <text x="265" y="72" text-anchor="middle" font-family="var(--font-mono)" font-size="8" font-weight="900" fill="#000">2. SCHWELLE</text>
+            <text id="z1-icon" x="230" y="105" text-anchor="middle" font-size="18">🌲</text>
+            <text id="z1-name" x="280" y="102" text-anchor="middle" font-family="var(--font-mono)" font-size="8" font-weight="900" fill="var(--color-text)">Wald</text>
+          </g>
+
+          <!-- Clickable zone 2: Magisches Zentrum -->
+          <g class="zone-interactive" data-zone="2" tabindex="0">
+            <rect x="370" y="70" width="130" height="70" fill="var(--color-window-bg)" stroke="var(--color-text)" stroke-width="3" rx="4"/>
+            <rect x="380" y="78" width="110" height="20" fill="var(--color-accent)" stroke="#000" stroke-width="1.5"/>
+            <text x="435" y="92" text-anchor="middle" font-family="var(--font-mono)" font-size="8" font-weight="900" fill="#000">3. ZENTRUM</text>
+            <text id="z2-icon" x="400" y="125" text-anchor="middle" font-size="18">👤</text>
+            <text id="z2-name" x="450" y="122" text-anchor="middle" font-family="var(--font-mono)" font-size="8" font-weight="900" fill="var(--color-text)">Doppelgänger</text>
+          </g>
+
+          <!-- Clickable zone 3: Synthese / Erlösung -->
+          <g class="zone-interactive" data-zone="3" tabindex="0">
+            <rect x="520" y="150" width="130" height="70" fill="var(--color-window-bg)" stroke="var(--color-text)" stroke-width="3" rx="4"/>
+            <rect x="530" y="158" width="110" height="20" fill="var(--color-primary)" stroke="#000" stroke-width="1.5"/>
+            <text x="585" y="172" text-anchor="middle" font-family="var(--font-mono)" font-size="8" font-weight="900" fill="#000">4. TRANSEKT</text>
+            <text id="z3-icon" x="550" y="205" text-anchor="middle" font-size="18">✨</text>
+            <text id="z3-name" x="600" y="202" text-anchor="middle" font-family="var(--font-mono)" font-size="8" font-weight="900" fill="var(--color-text)">Zeitalter</text>
+          </g>
+
+          <!-- Bottom narrative arrow -->
+          <line x1="50" y1="285" x2="640" y2="285" stroke="var(--color-text)" stroke-width="3"/>
+          <polygon points="650,285 635,278 635,292" fill="var(--color-text)"/>
+          <text x="350" y="304" text-anchor="middle" font-family="var(--font-mono)" font-size="8" font-weight="900" fill="var(--color-text)">POETISIERTER ENTWICKLUNGSVERLAUF (ROMANTISCHER KREISLAUF)</text>
+        </svg>
+      `;
+    }
+
+    // Attach click listeners to zones
+    $$('.zone-interactive').forEach(zone => {
+      zone.addEventListener('click', (e) => {
+        if (window.WissOS) window.WissOS.playSound('click');
+        const idx = parseInt(zone.dataset.zone);
+        handleZoneSelection(idx);
+      });
+      // Accessibility support
+      zone.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          zone.click();
+        }
+      });
+    });
+  }
+
+  // Populate dynamic zones with random items
+  function shuffleZones() {
+    const dataset = appMode === 'lapbook' ? LAPBOOK_ELEMENTS : MAERCHEN_MOTIFS;
+    
+    // Fisher-Yates shuffle
+    const shuffled = [...dataset].sort(() => 0.5 - Math.random());
+    activeZoneItems = shuffled.slice(0, 4);
+
+    for (let i = 0; i < 4; i++) {
+      const item = activeZoneItems[i];
+      const iconEl = $(`z${i}-icon`);
+      const nameEl = $(`z${i}-name`);
+      if (iconEl) iconEl.textContent = item.icon;
+      if (nameEl) nameEl.textContent = item.name;
+    }
+  }
+
+  // Handle zone click - expand details accordion
+  function handleZoneSelection(idx) {
+    const item = activeZoneItems[idx];
+    if (!item) return;
+
+    // Highlight all zones
+    $$('.zone-interactive').forEach(z => z.classList.remove('active'));
+    $$('.zone-interactive')[idx].classList.add('active');
+
+    // Find correct accordion
+    let accId = 'acc-elements';
+    if (appMode === 'maerchen' && item.category === 'Strukturelement') {
+      accId = 'acc-structure';
+    }
+
+    const details = $(accId);
+    if (details) {
+      details.open = true;
+      setTimeout(() => {
+        const card = details.querySelector(`.ct-card[data-id="${item.id}"]`);
+        if (card) {
+          // Remove previous selections
+          details.querySelectorAll('.ct-card').forEach(c => {
+            c.classList.remove('active');
+            c.classList.remove('expanded');
+          });
+          
+          card.classList.add('active');
+          card.classList.add('expanded');
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          details.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 50);
+    }
+  }
+
+  // Render Accordions with child cards
+  function buildAccordions() {
+    const accGroup = $('accordionGroup');
+    accGroup.innerHTML = '';
+
+    if (appMode === 'lapbook') {
+      // Accordion for Faltformen
+      const Faltformen = LAPBOOK_ELEMENTS.filter(e => e.category === 'Faltform');
+      const Interaktive = LAPBOOK_ELEMENTS.filter(e => e.category === 'Interaktives Element');
+      const Zubehoer = LAPBOOK_ELEMENTS.filter(e => e.category === 'Zubehör');
+
+      accGroup.innerHTML = `
+        <details class="neo-accordion" id="acc-elements" open>
+          <summary>[ Faltformen &amp; Elemente ]</summary>
+          <div class="accordion-body">
+            <div class="cards-grid">
+              ${Faltformen.map(renderCard).join('')}
+              ${Interaktive.map(renderCard).join('')}
+              ${Zubehoer.map(renderCard).join('')}
+            </div>
+          </div>
+        </details>
+      `;
+    } else {
+      // Accordion for structure and motifs
+      const Motifs = MAERCHEN_MOTIFS.filter(e => e.category !== 'Strukturelement');
+      const Structure = MAERCHEN_MOTIFS.filter(e => e.category === 'Strukturelement');
+
+      accGroup.innerHTML = `
+        <details class="neo-accordion" id="acc-structure" open>
+          <summary>[ Erzählstufen &amp; Schwellen ]</summary>
+          <div class="accordion-body">
+            <div class="cards-grid">
+              ${Structure.map(renderCard).join('')}
+            </div>
+          </div>
+        </details>
+        <details class="neo-accordion" id="acc-elements" style="margin-top:10px;">
+          <summary>[ Romantische Leitmotive &amp; Symbole ]</summary>
+          <div class="accordion-body">
+            <div class="cards-grid">
+              ${Motifs.map(renderCard).join('')}
+            </div>
+          </div>
+        </details>
+      `;
+    }
+
+    // Attach click listeners to cards
+    $$('.ct-card').forEach(card => {
+      card.addEventListener('click', () => {
+        if (window.WissOS) window.WissOS.playSound('click');
+        card.classList.toggle('expanded');
+      });
+    });
+  }
+
+  function renderCard(item) {
+    return `
+      <div class="ct-card" data-id="${item.id}">
+        <div class="ct-card-header">
+          <span class="ct-card-icon">${item.icon}</span>
+          <span class="ct-card-name">${item.name}</span>
+          <span class="badge">${item.category}</span>
+        </div>
+        <div class="ct-card-body">
+          <div class="ct-card-kurz">${item.kurz}</div>
+          <div class="ct-card-mass">🔍 <b>${appMode === 'lapbook' ? 'Maß' : 'Quellenbezug'}:</b> ${item.mass}</div>
+          <p>${item.explanation}</p>
+          <div class="ct-card-tipp">➔ ${item.tipp}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Tip / Prompt Generator logic
+  let activeFilter = 'all';
+
+  function buildPromptSelector() {
+    const chipGroup = $('chipGroup');
+    chipGroup.innerHTML = '';
+
+    const tips = appMode === 'lapbook' ? LAPBOOK_TIPS : MAERCHEN_TIPS;
+    // Extract unique categories
+    const cats = ['all', ...new Set(tips.map(t => t.category))];
+
+    cats.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.className = `chip ${cat === activeFilter ? 'active' : ''}`;
+      btn.textContent = cat.toUpperCase();
+      btn.dataset.category = cat;
+      btn.addEventListener('click', () => {
+        if (window.WissOS) window.WissOS.playSound('click');
+        activeFilter = cat;
+        $$('.chip').forEach(c => c.classList.toggle('active', c.dataset.category === cat));
+        showRandomPrompt();
+        buildPromptList();
+      });
+      chipGroup.appendChild(btn);
+    });
+  }
+
+  function showRandomPrompt() {
+    const tips = appMode === 'lapbook' ? LAPBOOK_TIPS : MAERCHEN_TIPS;
+    const pool = activeFilter === 'all' ? tips : tips.filter(t => t.category === activeFilter);
+    if (!pool.length) return;
+
+    const tip = pool[Math.floor(Math.random() * pool.length)];
+    $('promptBadge').textContent = tip.category.toUpperCase();
+    $('promptIcon').textContent = tip.icon;
+    $('promptText').textContent = tip.text;
+  }
+
+  function buildPromptList() {
+    const list = $('fullPromptList');
+    list.innerHTML = '';
+    const tips = appMode === 'lapbook' ? LAPBOOK_TIPS : MAERCHEN_TIPS;
+    const pool = activeFilter === 'all' ? tips : tips.filter(t => t.category === activeFilter);
+
+    pool.forEach(tip => {
+      const row = document.createElement('div');
+      row.className = 'list-item';
+      row.innerHTML = `
+        <span class="list-item-icon">${tip.icon}</span>
+        <div>
+          <strong style="text-transform:uppercase; font-size:0.62rem; color:var(--color-secondary); display:block; font-family:var(--font-mono);">${tip.category}</strong>
+          ${tip.text}
+        </div>
+      `;
+      list.appendChild(row);
+    });
+  }
+
+  // --- Notepad Character counter, auto-save and steps ---
+  const textarea = $('notesTextarea');
+  const charCount = $('charCount');
+  const saveStatus = $('saveStatus');
+
+  textarea.addEventListener('input', () => {
+    charCount.textContent = `// ${textarea.value.length} Zeichen`;
+    saveNotes();
+  });
+
+  function saveNotes() {
+    try {
+      localStorage.setItem(notesKey, textarea.value);
+      saveStatus.textContent = '✔ Gespeichert';
+      saveStatus.style.color = 'var(--color-primary)';
+    } catch(e) {
+      saveStatus.textContent = '✖ Fehler';
+      saveStatus.style.color = 'red';
+    }
+  }
+
+  function loadNotes() {
+    const saved = localStorage.getItem(notesKey);
+    if (saved) {
+      textarea.value = saved;
+      charCount.textContent = `// ${saved.length} Zeichen`;
+    }
+  }
+
+  // Progress steps
+  const steps = $$('.step-btn');
+  steps.forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (window.WissOS) window.WissOS.playSound('click');
+      const step = parseInt(btn.dataset.step);
+      currentRating = step;
+      steps.forEach(s => {
+        const sVal = parseInt(s.dataset.step);
+        s.classList.toggle('active', sVal <= step);
+      });
+      localStorage.setItem(progressKey, step);
+    });
+  });
+
+  function loadProgress() {
+    const saved = localStorage.getItem(progressKey);
+    if (saved) {
+      const step = parseInt(saved);
+      currentRating = step;
+      steps.forEach(s => {
+        const sVal = parseInt(s.dataset.step);
+        s.classList.toggle('active', sVal <= step);
+      });
+    }
+  }
+
+  // Download Notes
+  $('btnDownload').addEventListener('click', () => {
+    if (window.WissOS) window.WissOS.playSound('click');
+    const text = textarea.value || '// Keine Notizen vorhanden.';
+    const filename = appMode === 'lapbook' ? 'lapbook-architekt-notizen.txt' : 'dichterkladde-maerchen.txt';
+    
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  $('btnNewPrompt').addEventListener('click', () => {
+    if (window.WissOS) window.WissOS.playSound('click');
+    showRandomPrompt();
+  });
+
+  $('btnShuffle').addEventListener('click', () => {
+    if (window.WissOS) window.WissOS.playSound('click');
+    shuffleZones();
+  });
+
+  // ===== INITIALIZATION =====
+  document.addEventListener('DOMContentLoaded', () => {
+    detectMode();
+    renderSvg();
+    buildAccordions();
+    shuffleZones();
+    buildPromptSelector();
+    showRandomPrompt();
+    buildPromptList();
+    loadNotes();
+    loadProgress();
+  });
+</script>
+</body>
+</html>

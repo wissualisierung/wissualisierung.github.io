@@ -1,0 +1,261 @@
+﻿{
+    "id":  "mascha_kal_ko",
+    "name":  "Mascha Kaléko",
+    "short":  "Kaléko",
+    "dates":  "1907 – 1975",
+    "epoch":  "Neue Sachlichkeit · Exil",
+    "epochShort":  "Neue Sachlichkeit",
+    "color":  "#455A64",
+    "highlight":  "#78909C",
+    "icon":  "✒️",
+    "quote":  "Bedenkt: den eignen Tod, den stirbt man nur, doch mit dem Tod der anderen muss man leben.",
+    "timelinePos":  75.9,
+    "avatar":  "avatar.jpg",
+    "source":  "https://de.wikipedia.org/wiki/Mascha_Kal%C3%A9ko#/media/Datei:Mascha_Kal%C3%A9ko.jpg",
+    "theme":  "sebastian-wolf",
+    "modules":  [
+                    {
+                        "type":  "framing",
+                        "content":  "Du triffst gleich auf Mascha Kaléko – oder besser: auf eine Konstruktion, die so spricht, wie sie vielleicht geschrieben hätte. Kaléko selbst ist am 21. Januar 1975 in Zürich gestorben – unterwegs, wie so oft. Was du hier liest, basiert auf ihren Gedichten, Briefen und biografischen Zeugnissen, ist aber eine didaktische Interpretation. Lies kritisch!"
+                    },
+                    {
+                        "type":  "timeline",
+                        "epochs":  [
+                                       {
+                                           "name":  "Neue Sachlichkeit / Weimarer Republik",
+                                           "start":  1919,
+                                           "end":  1933,
+                                           "active":  false,
+                                           "info":  "Alltagslyrik, Ironie, Großstadtleben, Gebrauchskunst. Kalékos Berliner Erfolgsphase."
+                                       },
+                                       {
+                                           "name":  "Exil",
+                                           "start":  1938,
+                                           "end":  1975,
+                                           "active":  false,
+                                           "info":  "Flucht vor den Nationalsozialisten nach New York, später Jerusalem. Nie wirklich angekommen."
+                                       },
+                                       {
+                                           "name":  "Kalékos Leben",
+                                           "start":  1907,
+                                           "end":  1975,
+                                           "active":  true,
+                                           "info":  "Geboren in Galizien. Gestorben in Zürich. Eine ewige Emigrantin."
+                                       }
+                                   ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich bin Mascha Kaléko, geboren am 7. Juni 1907 in Galizien im Süden Polens als uneheliches jüdisches Kind eines russischen Kaufmanns und einer österreichischen Mutter ohne Beruf. Mein meist gesprochenes Wort als Kind war \u003cem\u003enein\u003c/em\u003e. Ich war lebhaft, aufsässig, mutig. Ein Wildfang, sagten sie. Diese Heimatlosigkeit begann damals und hat mich nie verlassen. Die Fremde ist ein kaltes Kleid mit einem engen Kragen. Ich habe es mit meinem Koffer oft im Leben schon getragen. \u003cspan class=\"chat-source-ref\" title=\"Kaléko, Gedichte\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Kaléko, Gedichte\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Woher kam das Schreiben bei dir? Wann hast du angefangen?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Als 1914 russische Truppen in Polen einmarschierten, floh die Familie. Der Vater wurde in Frankfurt als \"feindlicher Ausländer\" eingesperrt. Weiter nach Marburg, dort schrieb Mascha die ersten Gedichte und wollte ihrer Lehrerin für das Zuhören Kuchen spendieren. Nach dem Ersten Weltkrieg zog die Familie nach Berlin. Dort arbeitete die junge Kaléko acht Stunden täglich als Büroangestellte und schrieb abends Gedichte. Eines Tages schickte sie ein Gedicht, das ihr zu schade für den Papierkorb schien, an die Vossische Zeitung, die wichtigste Berliner Tageszeitung. Es wurde wenige Tage später abgedruckt."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Acht Stunden bin ich dienstlich angestellt und tue eine schlecht bezahlte Pflicht. Am Abend schreibe ich manchmal ein Gedicht. Mein Vater meint, das habe noch gefehlt. Bei schönem Wetter reise ich ein Stück per Bleistift auf der bunten Länderkarte. An stillen Regentagen aber warte ich manchmal auf das sogenannte Glück. So umschrieb ich seltsame Tage. Und das Glück kam, weil ich es nicht abgewartet, sondern einfach abgeschickt hatte.\u003cbr\u003e\u003cspan class=\"chat-source-ref\" title=\"Kaléko, Gedichte\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Kaléko, Gedichte\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "8 Stunden bin ich dienstlich angestellt / und tue eine schlecht bezahlte Pflicht. / Am Abend schreibe ich manchmal ein Gedicht.",
+                        "prompt":  "Markiere, worin man die Neue Sachlichkeit entdecken kann.",
+                        "targets":  [
+                                        {
+                                            "word":  "8 Stunden",
+                                            "feedback":  "Eine konkrete Zahl statt romantischer Vagheit; die Arbeitswelt der Weimarer Republik tritt direkt ins Gedicht ein. Kein lyrisches Ich auf dem Berggipfel, sondern am Schreibtisch."
+                                        },
+                                        {
+                                            "word":  "schlecht bezahlte Pflicht",
+                                            "feedback":  "Das Adjektiv \"schlecht bezahlt\" klingt prosaisch, fast bürokratisch. Kaléko ironisiert das Bürgerideal der Pflichterfüllung."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Welcher Epoche und welchem Stil wird Kalékos Berliner Frühwerk zugeordnet?",
+                        "options":  [
+                                        {
+                                            "text":  "Expressionismus",
+                                            "correct":  false,
+                                            "feedback":  "Der Expressionismus schreit und verzerrt, Kaléko schreibt klar, nah, alltagsbezogen. Der Ton ist ganz anders."
+                                        },
+                                        {
+                                            "text":  "Romantik",
+                                            "correct":  false,
+                                            "feedback":  "Die Romantik sehnt sich nach dem Fernen und Irrationalen. Kaléko beschreibt das ganz Nahe: Büro, Liebe, Alltag."
+                                        },
+                                        {
+                                            "text":  "Neue Sachlichkeit",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Kaléko war die einzige Frau im Kreis der Autoren der Neuen Sachlichkeit. Ihre Biografen vergleichen sie gerne mit Kästner, Ringelnatz und Heine, betonen aber, dass sie einen eigenen, unverwechselbaren Stil entwickelt hat."
+                                        },
+                                        {
+                                            "text":  "Biedermeier",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Im Romanischen Café in Berlin traf Kaléko die männlichen Kollegen der Neuen Sachlichkeit. Ihr erster Gedichtband Das lyrische Stenogrammheft erschien im Januar 1933; just als die Nationalsozialisten die Macht übernahmen. Ein denkbar ungünstiger Zeitpunkt für eine beginnende Dichterinnen-Karriere. Und doch: Die Gedichte trafen den Ton der Zeit, die Menschen erkannten sich darin wieder. Kaléko nannte ihre Kunst selbst bescheiden „Gebrauchslyrik\" – zur täglichen Anwendung, eine tröstliche Stimme des Alltags."
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Kaléko nennt ihre Gedichte \"Gebrauchslyrik\". Sie scheinen einfach, aber sie sind nicht simpel. Was ist der Unterschied zwischen simpel und einfach; und warum ist dies in der Lyrik entscheidend? Erkläre."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Wie Janus zeigt zuweilen mein Gedicht seines Verfassers doppeltes Gesicht. Die eine Hälfte des Gesichts ist lyrisch. Die andere hingegen fast satirisch. Denn was einst war, das stimmt uns meistens lyrisch, doch das was ist zum großen Teil satirisch. Das \u003cem\u003eJanuskript\u003c/em\u003e ist das Motto meiner Mimikry. Ein zweiter Boden, der nicht obenliegt, aber da ist. Für die, die suchen. \u003cspan class=\"chat-source-ref\" title=\"Kaléko, Quasi ein Januskript\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Kaléko, Quasi ein Januskript\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Denn was einst war, das stimmt uns meistens lyrisch, / doch das, was ist, zum großen Teil satirisch.",
+                        "prompt":  "Markiere die Gegensätzlichkeit, die ihre literarische Haltung zeigt.",
+                        "targets":  [
+                                        {
+                                            "word":  "was einst war",
+                                            "feedback":  "Die Vergangenheit wird in der Erinnerung verklärt als lyrischer Reflex."
+                                        },
+                                        {
+                                            "word":  "was ist",
+                                            "feedback":  "Die Gegenwart ruft nach kritischer Distanz. Satire ist Bewältigungsstrategie. Man lacht, weil man sonst weinen müsste."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-multi",
+                        "question":  "Welche der folgenden Aussagen über Kalékos Stil sind korrekt?",
+                        "options":  [
+                                        {
+                                            "text":  "Ihre Gedichte wirken einfach, haben aber oft einen zweiten Boden mit literarischen, religiösen und philosophischen Bezügen.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Es ist spannend, den Unterbau zu entdecken."
+                                        },
+                                        {
+                                            "text":  "Kaléko war die einzige Frau im Kreis der Autoren der Neuen Sachlichkeit.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Sie bewegte sich in einer rein männlich dominierten literarischen Szene und entwickelte darin einen eigenständigen Stil."
+                                        },
+                                        {
+                                            "text":  "Kaléko schrieb hauptsächlich politische Kampflyrik gegen den Nationalsozialismus.",
+                                            "correct":  false,
+                                            "feedback":  "Ihre Stärke lag im persönlichen, alltäglichen Ton. Die politische Dimension ist oft indirekt, eingewoben, nicht konfrontativ."
+                                        },
+                                        {
+                                            "text":  "Kalékos bekanntestes Gedicht ist eine politische Satire auf Hitler.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "1938 emigrierte ich in letzter Minute mit meinem zweiten Mann Chemjo Vinaver und unserem Sohn nach Amerika. Nun habe ich selbst ein Emigrantenkind, das lernt das Wörtchen Alien buchstabieren und spricht zur Mutter: Don\u0027t speak German, dear. Grad wie das Flüchtlingskind beim Rektor Mai; er denkt, was ich in seinem Alter dachte, dass wenn die Kriege aus sind, Frieden sei. Geschichte wiederholt sich. Nur die Namen ändern sich.\u003cbr\u003e\u003cspan class=\"chat-source-ref\" title=\"Kaléko, Gedichte\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Kaléko, Gedichte\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "In New York blieb Kaléko im Schatten ihres Mannes, eines Musikers und Chorleiters. Ihre eigene kreative Arbeit stellte sie hinten an. In Amerika kannte sie kaum jemand. Aus der gefeierten Berliner Dichterin war „Mrs. Wiener\" geworden. 1956 legte Ernst Rowohlt ihre Gedichtbände neu auf. Kaléko reiste zur Buchpräsentation nach Deutschland. Sie wurde begeistert empfangen. Und doch kehrte sie nicht zurück. Stattdessen folgte sie ihrem Mann nach Jerusalem. Als ihr Sohn Steven 1968 überraschend in New York starb, war es ihr Mann, der sie zusammenhielt. Fünf Jahre später verlor sie auch ihn."
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Vor meinem eigenen Tod ist mir nicht bang, nur vor dem Tode derer, die mir nah sind. Wie soll ich leben, wenn sie nicht mehr da sind? Allein im Nebel tast ich todentlang und lass mich willig in das Dunkel treiben. Das Gehen schmerzt nicht halb so wie das Bleiben. Bedenkt: den eigenen Tod, den stirbt man nur, doch mit dem Tod der andern muss man leben.",
+                        "source":  "Mascha Kaléko, Memento (1944/45)"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Den eigenen Tod, den stirbt man nur, / doch mit dem Tod der andern muss man leben.",
+                        "prompt":  "Markiere Stellen, die die Absurdität der Todesangst deutlich machen.",
+                        "targets":  [
+                                        {
+                                            "word":  "den eigenen Tod, den stirbt man nur",
+                                            "feedback":  "Sterben ist eine einmalige, abgeschlossene Handlung. Man stirbt und ist fertig. Das \"nur\" klingt fast wie Erleichterung."
+                                        },
+                                        {
+                                            "word":  "mit dem Tod der andern muss man leben",
+                                            "feedback":  "Weiterleben führt zu Schmerz. Das Verb \"muss\" zeigt: Es ist kein Trost, es ist eine Zumutung. Kaléko schrieb das 1944, noch ohne die persönlichen Verluste, aus reiner emotionaler Empathie, die später zur erschütternden Prophezeiung wurde."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "barometer",
+                        "statement":  "Den eigenen Tod stirbt man nur, doch mit dem Tod der andern muss man leben. Dieser Satz trifft etwas Wahres.",
+                        "min":  "stimme nicht zu",
+                        "max":  "stimme voll zu"
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Wann schrieb Kaléko ihr bekanntestes Gedicht Memento und was macht das besonders?",
+                        "options":  [
+                                        {
+                                            "text":  "1968, nach dem Tod ihres Sohnes Steven",
+                                            "correct":  false,
+                                            "feedback":  "Das Gedicht war da längst geschrieben. Kaléko setzte es dann jedoch über die Todesanzeige ihres Sohnes als erschütternde Wiederholung."
+                                        },
+                                        {
+                                            "text":  "1975, kurz vor ihrem eigenen Tod in Zürich",
+                                            "correct":  false,
+                                            "feedback":  "Nein. Memento entstand Jahrzehnte früher."
+                                        },
+                                        {
+                                            "text":  "1944 im Exil in New York, noch bevor sie selbst diese Verluste erlebte",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Das Gedicht zeigt Kalékos außerordentliche Empathie. Sie schrieb über Gefühle, die sie damals noch nicht selbst erlebt hatte, und traf damit dennoch etwas universell Menschliches."
+                                        },
+                                        {
+                                            "text":  "1933, als Reaktion auf die Machtergreifung der Nationalsozialisten.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "checkpoint",
+                        "question":  "Erkläre in zwei bis drei Sätzen, was Kaléko mit ihrem Begriff \"Gebrauchslyrik\" meint und warum ihre Gedichte trotz Schlichtheit nicht simpel sind."
+                    },
+                    {
+                        "type":  "self-assessment",
+                        "items":  [
+                                      "Ich verstehe, was Kaléko mit \"Gebrauchslyrik\" und dem \"Januskript\" meint",
+                                      "Ich kann Kalékos Biografie als Geschichte mehrfacher Heimatlosigkeit beschreiben",
+                                      "Ich kenne Memento und seinen biografischen Kontext",
+                                      "Ich kann Kaléko in die Neue Sachlichkeit einordnen und ihren Stil umschreiben"
+                                  ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Meine einzige Heimat, schrieb ich einmal, war die Liebe. Nicht Berlin, nicht New York, nicht Jerusalem. Die Liebe. Ich habe mit meinem Koffer oft im Leben die Fremde getragen. Am Ende starb ich heimatlos, in Zürich, auf der Durchreise. Als ob ich einfach nicht ankommen sollte.\u003cbr\u003e\u003cspan class=\"chat-source-ref\" title=\"Kaléko, Gedichte\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Kaléko, Gedichte\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Welcher Aspekt von Kalékos Leben oder Werk hat dich am meisten überrascht oder beeindruckt?"
+                    },
+                    {
+                        "type":  "finale",
+                        "text":  "Wenn dich mein Leben interessiert, dann recherchiere doch weiter! Mehr über mich findest du im Internet.",
+                        "links":  [
+                                      {
+                                          "label":  "WDR Zeitzeichen",
+                                          "url":  "https://www1.wdr.de/radio/wdr5/sendungen/zeitzeichen/zeitzeichen-mascha-kaleko-100.html"
+                                      },
+                                      {
+                                          "label":  "Wikipedia",
+                                          "url":  "https://de.wikipedia.org/wiki/Mascha_Kal%C3%A9ko"
+                                      },
+                                      {
+                                          "label":  "WDR 3 Kulturfeature zu Kaléko",
+                                          "url":  "https://www1.wdr.de/radio/wdr3/programm/sendungen/wdr3-kulturfeature/dichterin-mascha-kaleko-100.html"
+                                      }
+                                  ],
+                        "literature":  [
+                                           "Jutta Rosenkranz: Mascha Kaléko. Biographie. dtv, München 2012.",
+                                           "Mascha Kaléko: Sämtliche Werke und Briefe in vier Bänden. Hrsg. von Jutta Rosenkranz. dtv, München 2012."
+                                       ]
+                    }
+                ]
+}

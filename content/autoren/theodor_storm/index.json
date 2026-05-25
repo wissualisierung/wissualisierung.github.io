@@ -1,0 +1,262 @@
+﻿{
+    "id":  "theodor_storm",
+    "name":  "Theodor Storm",
+    "short":  "Storm",
+    "dates":  "1817 – 1888",
+    "epoch":  "Realismus",
+    "epochShort":  "Realismus",
+    "color":  "#5D4037",
+    "highlight":  "#8D6E63",
+    "icon":  "🌊",
+    "quote":  "Ein Grauen überkommt mich.",
+    "timelinePos":  35,
+    "avatar":  "avatar.jpg",
+    "source":  "https://de.wikipedia.org/wiki/Theodor_Storm#/media/Datei:Theodor_Storm_(1817-1888).jpg",
+    "theme":  "sebastian-wolf",
+    "modules":  [
+                    {
+                        "type":  "framing",
+                        "content":  "Du triffst gleich auf Theodor Storm – oder besser: auf eine Konstruktion, die so spricht, wie er vielleicht geschrieben hätte. Storm selbst ist am 4. Juli 1888 in Hanerau-Hademarschen gestorben. Was du hier liest, basiert auf seinen Texten, Novellen und Briefen, ist aber eine didaktische Interpretation. Lies kritisch!"
+                    },
+                    {
+                        "type":  "timeline",
+                        "epochs":  [
+                                       {
+                                           "name":  "Poetischer Realismus",
+                                           "start":  1848,
+                                           "end":  1890,
+                                           "active":  false,
+                                           "info":  "Verklärung der Wirklichkeit, psychologische Tiefe, Novelle als bevorzugte Form, Heimatgebundenheit."
+                                       },
+                                       {
+                                           "name":  "Storms Leben",
+                                           "start":  1817,
+                                           "end":  1888,
+                                           "active":  true,
+                                           "info":  "Geboren in Husum. Gestorben in Hanerau-Hademarschen. 70 Jahre alt."
+                                       },
+                                       {
+                                           "name":  "Schleswig-Holstein-Frage",
+                                           "start":  1848,
+                                           "end":  1864,
+                                           "active":  false,
+                                           "info":  "Dänische Herrschaft, politischer Widerstand, Exil und Rückkehr prägen Storms Leben direkt."
+                                       },
+                                       {
+                                           "name":  "Gründerzeit",
+                                           "start":  1871,
+                                           "end":  1890,
+                                           "active":  false,
+                                           "info":  "Industrialisierung, sozialer Wandel – im Schimmelreiter literarisch verarbeitet."
+                                       }
+                                   ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich bin Theodor Storm, geboren in der Mitternachtsstunde zwischen dem 14. und 15. September 1817 in Husum – mitten in einem starken Gewitter. Das war meine Geburtsstunde. Husum, eine graue Stadt am grauen Meer. Als Werbung für den Fremdenverkehr ein Albtraum. Und doch habe ich fast mein ganzes Leben hier verbracht und fast jede Zeile, die ich schrieb, hat diese Stadt in sich. Es hängt mein ganzes Herz an dir, Heimat Husum, du graue Stadt am Meer. \u003cspan class=\"chat-source-ref\" title=\"vgl. WDR Zeitzeichen, 14.09.2017; Theodor Storm, Die Stadt, 1851\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. WDR Zeitzeichen, 14.09.2017; Theodor Storm, Die Stadt, 1851\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Grau, neblig, abseits – wie wird man da Dichter?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Storm wuchs in einer wohlhabenden Husumscher Juristenfamilie auf – kulturell eher ferngestellt, wie er selbst sagte. Zwei Einflüsse prägten ihn entscheidend: Das Lübecker Katharineum, wo er erstmals gute Lyrik kennenlernte. Heine, Eichendorff und Goethe wurden seine \"Hausgötter\" fürs Leben. Neben den \"Großen\" verzauberte ihn die Bäckerstochter Lena Wiese abends mit plattdeutschen Spuk- und Gespenstergeschichten, Legenden und volkstümlichen Erinnerungen. Aus diesem Fundus schöpfte er zeitlebens. Mit elf Jahren schrieb er sein erstes Gedicht; nach dem Tod seiner siebenjährigen Schwester Luzi."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Von Religion und Christentum habe ich nie reden hören. So stehe ich dem sehr unbefangen gegenüber. Ich habe durchaus keinen Glauben aus der Kindheit her. Was mir blieb, waren die Geschichten der alten Lena – Geister, Spuk, das Rauschen des Meeres. Und die Überzeugung: Mein richterlicher und mein poetischer Beruf sind meistens in gutem Einvernehmen gewesen. Ich habe es sogar oft als Erfrischung empfunden, aus der Welt der Fantasie in die praktische des reinen Verstandes einzukehren. \u003cspan class=\"chat-source-ref\" title=\"Storm, Briefe\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Storm, Briefe\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Am grauen Strand, am grauen Meer / und seitab liegt die Stadt. / Der Nebel drückt die Dächer schwer / und durch die Stille braust das Meer / eintönig durch die Stadt.",
+                        "prompt":  "Markiere, wie in Die Stadt (1851) Atmosphäre geschaffen wird.",
+                        "targets":  [
+                                        {
+                                            "word":  "grau",
+                                            "feedback":  "Die zweifache Farbe „grau\" rahmt den Vers ein und macht Eintönigkeit zur Grundstimmung."
+                                        },
+                                        {
+                                            "word":  "eintönig",
+                                            "feedback":  "Das Gedicht beschreibt sich selbst: Form und Inhalt fallen zusammen, ein typisches Mittel des Poetischen Realismus."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Welcher Epoche wird Theodor Storm zugeordnet?",
+                        "options":  [
+                                        {
+                                            "text":  "Romantik",
+                                            "correct":  false,
+                                            "feedback":  "Storm ist zeitlich und stilistisch ein Nachfolger der Romantik, gehört aber einer anderen Epoche an. Er verarbeitet Wirklichkeit, nicht Traumwelten."
+                                        },
+                                        {
+                                            "text":  "Expressionismus",
+                                            "correct":  false,
+                                            "feedback":  "Der Expressionismus beginnt erst um 1910."
+                                        },
+                                        {
+                                            "text":  "Poetischer Realismus",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Storm ist einer der bedeutendsten Vertreter des Poetischen Realismus. Er wollte der Wirklichkeit \"eine poetische Seite abgewinnen\", nicht sie verzerren oder verklären."
+                                        },
+                                        {
+                                            "text":  "Biedermeier",
+                                            "correct":  false,
+                                            "feedback":  "Das Biedermeier endet um 1848; Storm entwickelt seinen eigenen Stil erst danach."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "1849 erschien Storms Novelle Immensee: die melancholische Rückschau eines alten Mannes auf seine Jugendliebe, die er durch eigene Nachlässigkeit verloren hatte. Die Resonanz war enorm. Storm wurde buchstäblich über Nacht berühmt, vergleichbar mit Goethe nach dem Werther. Die Novelle war für Storm die \"Schwester des Dramas\": konzentriert auf einen entscheidenden Moment, psychologisch präzise, offen für Mehrdeutigkeit. Kennzeichnend ist die Gleichzeitigkeit von Außen- und Innenperspektive; nicht die Handlung steht im Vordergrund, sondern die Stimmung."
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Und dann wurde er aus Husum vertrieben?"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich hatte Schleswig-Holstein geliebt und verteidigt. Als die Schleswig-Holsteinische Erhebung gegen Dänemark scheiterte, vertrat ich einige Aufständische vor Gericht. Ich verlor meine Anwaltszulassung. Man fertigte Akten über mich an. 1853 ging ich ins preußische Exil – mit Frau und Kindern zunächst nach Potsdam. Preußen konnte ich nicht ausstehen. Das Militär, das Junkertum – ein Graus. Und doch war Preußen das Land, das mich aufgenommen hatte. Das hat aber nicht dazu geführt, es zu lieben. \u003cspan class=\"chat-source-ref\" title=\"vgl. WDR Zeitzeichen, 14.09.2017\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. WDR Zeitzeichen, 14.09.2017\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Das Exil in Potsdam und später im thüringischen Heiligenstadt hatte auch eine unerwartete Seite: In Berlin war Storm als Autor von Immensee ein berühmter Literat. Theodor Fontane und Paul Heyse wurden seine Freunde. Man diskutierte, kritisierte, ermunterte einander. Freilich blieb Fontane kritisch: Storms gefühlvollem Seelenton konnte er nichts abgewinnen. Dennoch: In den Berliner Salons und Künstlerstammtischen knüpfte Storm ein literarisches Netz, das seine Karriere vorantrieb. Er traf sogar seinen Hausgott Josef von Eichendorff persönlich."
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Charakterisiere die \"Vielstimmigkeit\" der Literatur zur Zeit des Realismus anhand der Differenz zwischen Fontane und Storm."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich war kein einfacher Mensch. Ein aufgeheizter, eifersüchtiger und doch liebevoller Kontrollfreak. Meine erste Frau Konstanze starb 1865 nach der Geburt unseres siebten Kindes. Meine zweite Frau Doris war jahrelang ins Exil gedrängt worden – wegen mir. Und doch: Und war es auch ein großer Schmerz und war es vielleicht gar eine Sünde, wenn es noch einmal vor dir stünde, du tätest es noch einmal, mein Herz. Glück gibt es selten in meinen Geschichten. In meinem Leben auch nicht immer. \u003cspan class=\"chat-source-ref\" title=\"Storm, Gedichte\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Storm, Gedichte\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "barometer",
+                        "statement":  "Storm beschreibt in seinen Novellen vor allem Scheitern, Verlust und verpasstes Glück und trifft damit bis heute einen Nerv.",
+                        "min":  "stimme nicht zu",
+                        "max":  "stimme voll zu"
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Über die Heide hallet mein Schritt. Dumpf aus der Erde wandert es mit. Brauende Nebel geisten umher. Schwarz ist das Kraut und der Himmel so leer. Wär ich hier nur nicht gegangen im Mai. Leben und Liebe, wie flog es vorbei.",
+                        "source":  "Theodor Storm, Über die Heide (1875)"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Der Schimmelreiter (1888), Storms letzte und berühmteste Novelle, erschien kurz vor seinem Tod. Sie erzählt von Hauke Haien, einem ehrgeizigen Deichgrafen in Nordfriesland, der durch Fortschrittswahn, Eitelkeit und Selbstherrlichkeit sich selbst und andere in den Untergang reißt: Bei einer Sturmflut bricht der alte Deich an einer geschwächten Stelle, Hauke verliert Frau und Kind und stürzt sich mit seinem Schimmel in die Fluten. Der Schimmelreiter lässt sich als zeitlose Warnung lesen: Nur wer mit Durchblick, Augenmaß und bescheidenem Ehrgeiz an seine Aufgabe geht, wird nicht scheitern wie Hauke Haien."
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Die Persönlichkeit des Deichgrafen Hauke Haien ist hochgradig komplex. Er ist hingerissen von Ehrgeiz und Machthunger, von Eitelkeit und Selbstherrlichkeit.",
+                        "prompt":  "Was macht Hauke Haien zu einer modernen Figur?",
+                        "targets":  [
+                                        {
+                                            "word":  "Ehrgeiz und Machthunger",
+                                            "feedback":  "Diese Eigenschaften machen ihn produktiv und zerstörerisch zugleich; kein romantischer Held, sondern ein realistischer Charakter mit inneren Widersprüchen."
+                                        },
+                                        {
+                                            "word":  "Selbstherrlichkeit",
+                                            "feedback":  "Hauke ignoriert die Bedenken anderer und scheitert daran. Das Motiv des blinden Fortschrittsglaubens ist im Zeitalter der Industrialisierung hochaktuell und auch heute noch."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-multi",
+                        "question":  "Welche der folgenden Aussagen über Storm und sein Werk sind korrekt?",
+                        "options":  [
+                                        {
+                                            "text":  "Immensee machte Storm 1849 über Nacht berühmt und ist eine melancholische Rückschau auf verlorene Jugendliebe.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Die Novelle war Storms erster großer Erfolg und begründete seinen Ruf als Meister der Stimmungsnovelle."
+                                        },
+                                        {
+                                            "text":  "Storm lebte sein gesamtes Erwachsenenleben in Husum, ohne die Stadt je zu verlassen.",
+                                            "correct":  false,
+                                            "feedback":  "Nicht korrekt – Storm verbrachte rund 12 Jahre im Exil in Preußen und Thüringen, bevor er 1864 nach Husum zurückkehren konnte."
+                                        },
+                                        {
+                                            "text":  "Der Schimmelreiter erschien 1888 kurz vor Storms Tod und gilt als sein bedeutendstes Werk.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Die Novelle bündelt Storms lebenslange Themen: Heimat, Ehrgeiz, Scheitern und das Übernatürliche der Küstenlandschaft."
+                                        },
+                                        {
+                                            "text":  "Fontane und Storm waren befreundet, obwohl Fontane Storms Stil kritisch ablehnte.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Literarische Freundschaft und stilistische Differenz schlossen sich nicht aus – ein gutes Beispiel für die Vielstimmigkeit des Realismus."
+                                        },
+                                        {
+                                            "text":  "Storm sah sich selbst in erster Linie als Novellist, nicht als Lyriker.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Was versteht Storm unter der Novelle als „Schwester des Dramas\"?",
+                        "options":  [
+                                        {
+                                            "text":  "Novellen sollen immer ein glückliches Ende haben wie Theaterstücke.",
+                                            "correct":  false,
+                                            "feedback":  "Im Gegenteil: Storms Novellen enden fast nie glücklich."
+                                        },
+                                        {
+                                            "text":  "Die Novelle konzentriert sich wie das Drama auf einen zentralen Konflikt und einen entscheidenden Moment.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Storm meinte damit die Verdichtung, die Konzentration auf das Wesentliche; keine ausschweifende Romanhandlung, sondern dramatische Zuspitzung."
+                                        },
+                                        {
+                                            "text":  "Novellen müssen wie Dramen in Akte eingeteilt sein.",
+                                            "correct":  false,
+                                            "feedback":  "Storm meinte den Geist, nicht die äußere Form."
+                                        },
+                                        {
+                                            "text":  "Storm bevorzugte Novellen, weil sie kürzer zu schreiben waren als Dramen.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "checkpoint",
+                        "question":  "Erkläre, warum Hauke Haien aus dem Schimmelreiter als moderne Figur gilt."
+                    },
+                    {
+                        "type":  "self-assessment",
+                        "items":  [
+                                      "Ich verstehe, warum Storm dem Poetischen Realismus zugeordnet wird",
+                                      "Ich kann erklären, was Storm unter der Novelle als \"Schwester des Dramas\" versteht",
+                                      "Ich kenne den Handlungskern des Schimmelreiters und seine Deutungsdimensionen",
+                                      "Ich kann Storms Verhältnis zu seiner Heimat Husum beschreiben"
+                                  ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich war ein schmächtiger, agiler Mann mit strahlend blauen Augen und später mit einem schönen weißen Bart. Ich gründete Gesangsvereine, glänzte als eitler Tenor, stritt mit Fontane und liebte heftig. Meine Geschichten enden selten gut und trotzdem oder gerade deswegen wurden sie gelesen, in den großen Zeitschriften meiner Zeit, von vielen Menschen. Ich sah es wohl, schrieb ich einmal: der starre Blick über eine leere ungeheure Kluft, das unerreichbare Luftbild einer Jugend, das jetzt mit reißender Schnelle in Dunst zerfloss. Das ist das Leben, mein Leben. \u003cspan class=\"chat-source-ref\" title=\"Storm, Der Schimmelreiter, 1888\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Storm, Der Schimmelreiter, 1888\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Welcher Aspekt von Storms Leben oder Werk hat dich am meisten überrascht oder beeindruckt?"
+                    },
+                    {
+                        "type":  "finale",
+                        "text":  "Wenn dich mein Leben interessiert, dann recherchiere doch weiter! Mehr über mich findest du im Internet.",
+                        "links":  [
+                                      {
+                                          "label":  "WDR Zeitzeichen",
+                                          "url":  "https://www1.wdr.de/mediathek/audio/zeitzeichen/audio-theodor-storm-dichter-geburtstag--100.html"
+                                      },
+                                      {
+                                          "label":  "Wikipedia",
+                                          "url":  "https://de.wikipedia.org/wiki/Theodor_Storm"
+                                      }
+                                  ],
+                        "literature":  [
+                                           "Jochen Missfeld: Du graue Stadt am Meer. Der Dichter Theodor Storm in seiner Zeit. Hoffmann und Campe, Hamburg 2017.",
+                                           "Christian Demandt: Theodor Storm. Reclam, Stuttgart 2017."
+                                       ]
+                    }
+                ]
+}

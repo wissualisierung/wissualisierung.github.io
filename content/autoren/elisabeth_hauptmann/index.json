@@ -1,0 +1,237 @@
+﻿{
+    "id":  "elisabeth_hauptmann",
+    "name":  "Elisabeth Hauptmann",
+    "short":  "Hauptmann",
+    "dates":  "1897 – 1973",
+    "epoch":  "Neue Sachlichkeit · Exil",
+    "epochShort":  "Neue Sachlichkeit",
+    "color":  "#37474F",
+    "highlight":  "#546E7A",
+    "icon":  "🏢",
+    "quote":  "Und der Haifisch, der hat Zähne.",
+    "timelinePos":  71.4,
+    "avatar":  "avatar.jpg",
+    "source":  "KI-generiert",
+    "theme":  "sebastian-wolf",
+    "modules":  [
+                    {
+                        "type":  "framing",
+                        "content":  "Du triffst gleich auf Elisabeth Hauptmann – oder besser: auf eine Konstruktion, die so spricht, wie sie vielleicht geschrieben und gesprochen hätte. Elisabeth Hauptmann ist 1973 in Ostberlin gestorben. Was du hier liest, basiert auf ihren Briefen, Tagebüchern, Interviews und Texten, ist aber eine didaktische Interpretation. Lies kritisch!"
+                    },
+                    {
+                        "type":  "timeline",
+                        "epochs":  [
+                                       {
+                                           "name":  "Hauptmanns Leben",
+                                           "start":  1897,
+                                           "end":  1973,
+                                           "active":  true,
+                                           "info":  "Geboren in Peckelsheim (Westfalen). Gestorben in Ostberlin."
+                                       },
+                                       {
+                                           "name":  "Weimarer Republik",
+                                           "start":  1919,
+                                           "end":  1933,
+                                           "active":  false,
+                                           "info":  "Kulturelle Blütezeit, Kabarett, Avantgardetheater."
+                                       },
+                                       {
+                                           "name":  "Exil",
+                                           "start":  1933,
+                                           "end":  1945,
+                                           "active":  false,
+                                           "info":  "Flucht vor den Nationalsozialisten, Aufenthalt in Paris und St. Louis (USA)."
+                                       },
+                                       {
+                                           "name":  "DDR-Zeit",
+                                           "start":  1949,
+                                           "end":  1973,
+                                           "active":  false,
+                                           "info":  "Rückkehr nach Ostberlin; Dramaturgin am Berliner Ensemble; Herausgeberin von Brechts Gesamtwerk."
+                                       }
+                                   ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Guten Tag. Ich bin Elisabeth Hauptmann, geboren am 20. Juni 1897 in Peckelsheim, einem kleinen Ort in Westfalen. Meinen Namen wirst du vielleicht nicht kennen. Das ist bezeichnend. Dabei haben Millionen Menschen weltweit Texte gesungen, die ich geschrieben habe. Den Alabama Song zum Beispiel. Lotte Lenya sang ihn, Jim Morrison sang ihn, David Bowie sang ihn. Mein Name stand da nie.\u003cbr\u003e\u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 20.04.2023\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 20.04.2023\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Wie haben Sie eigentlich Brecht kennengelernt?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Elisabeth Hauptmann begegnete Bertolt Brecht erstmals im November 1924 in Berlin, bei einer gemeinsamen Bekannten. Sie war stark erkältet, beteiligte sich kaum am Gespräch und hörte nur aufmerksam zu. Dennoch rief Brecht sie am nächsten Tag an. Für Brecht war Zuhören entscheidend; er brauchte Menschen, denen er seine Gedanken und Pläne mitteilen konnte. Kurz darauf ließ er Hauptmann vom Kiepenheuer Verlag als seine Lektorin und Mitarbeiterin anstellen. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 20.04.2023\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 20.04.2023\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Wir sind im Grunewald auf und ab gegangen und haben geredet und geredet und geredet. Er verwickelte mich in viele Gespräche über die Arbeit an \"Mann ist Mann\". Er sagte mir, er sitze da so allein – Feuchtwanger sei in München, der Buri auch – und er fing an, mir den Inhalt zu erzählen und wo er nicht weiter kam. Ich war nützlich: Ich konnte Englisch, ich spielte Klavier, ich suchte in amerikanischen und englischen Zeitungen nach Stoffen. Brecht spielte Gitarre. So haben wir Songs entwickelt.\u003cbr\u003e\u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 20.04.2023; Interview Elisabeth Hauptmann, DDR-Rundfunk 1965\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 20.04.2023; Interview Elisabeth Hauptmann, DDR-Rundfunk 1965\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Und wie entstand dann die Dreigroschenoper?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Elisabeth Hauptmann entdeckte in englischsprachigen Zeitungen den Hinweis auf das 200-jährige Jubiläum von John Gays \"Beggar\u0027s Opera\" (1728) und begann, das Stück auf eigene Initiative ins Deutsche zu übersetzen. Sie wies Brecht darauf hin. Von März bis Mai 1928 erarbeiteten beide gemeinsam eine erste Textfassung; einen großen Teil schrieb Hauptmann weitgehend selbst. Literaturwissenschaftler bemessen ihren Arbeitsanteil auf bis zu 80 %. Das Uraufführungsprogramm vom 31. August 1928 nannte noch: \"Die Dreigroschenoper von John Gay, übersetzt von Elisabeth Hauptmann in der Bearbeitung von Bert Brecht.\" Später zog sie ihren eigenen Namen zurück.\u003cbr\u003e\u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 20.04.2023; Wikipedia: Die Dreigroschenoper\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 20.04.2023; Wikipedia: Die Dreigroschenoper\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich wollte nicht, dass es so aussieht, als ob hier Mitarbeiter ausgebeutet wurden. Wir hatten schließlich unendlich viele davon. Und Brecht hat einem ja auch geholfen. Das kollektive Arbeiten war das Prinzip. Der Spaß verhalf Brecht zum großen Durchbruch. Ich habe 12,5% der Tantiemen bekommen. Kurt Weill als Komponist 25%, Brecht als Texter 62,5%. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 20.04.2023; Kebir 2006\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 20.04.2023; Kebir 2006\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Den Literaturwissenschaftlern zufolge stammen bis zu 80 % des Textes der Dreigroschenoper von Elisabeth Hauptmann. Dennoch erhielt sie nur 12,5 % der Tantiemen und wurde später im Zuge des weltweiten Erfolgs kaum noch genannt.",
+                        "prompt":  "Markiere, wo ein Spannungsverhältnis zwischen Leistung und Anerkennung erkennbar ist.",
+                        "targets":  [
+                                        {
+                                            "word":  "80 %",
+                                            "feedback":  "Hauptmanns faktischer Arbeitsanteil; das macht sie zur Hauptautorin im Sinne des Textumfangs."
+                                        },
+                                        {
+                                            "word":  "12,5 %",
+                                            "feedback":  "Der geringe Tantiemenanteil spiegelt nicht die tatsächliche kreative Leistung wider."
+                                        },
+                                        {
+                                            "word":  "nicht genannt",
+                                            "feedback":  "Das Verschwinden ihres Namens mag sie nicht als Ungerechtigkeit empfunden haben, ist aber Zeichen einer systematischen Unsichtbarkeit von Frauen im Kulturbetrieb."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Wie hoch schätzen Literaturwissenschaftler den Textanteil Elisabeth Hauptmanns an der Dreigroschenoper?",
+                        "options":  [
+                                        {
+                                            "text":  "Etwa 10 % als reine Übersetzerin",
+                                            "correct":  false,
+                                            "feedback":  "Das stimmt nicht. Hauptmann hat weit mehr als eine Übersetzung geleistet."
+                                        },
+                                        {
+                                            "text":  "Genau 50 %, da es eine echte Co-Autorenschaft war",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        },
+                                        {
+                                            "text":  "Bis zu 80 %",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Theaterhistoriker schätzen Hauptmanns Anteil auf bis zu 80 %, bei einem Tantiemenanteil von nur 12,5 %."
+                                        },
+                                        {
+                                            "text":  "Keinen, sie war nur Lektorin",
+                                            "correct":  false,
+                                            "feedback":  "Falsch. Hauptmann schrieb selbst große Teile des Textes."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Hat sie auch eigene Stücke geschrieben – ohne Brecht?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Ja. Elisabeth Hauptmann schrieb das dreiaktige Songspiel „Happy End\" (1929) weitgehend selbst; über Kämpfe zwischen Heilsarmee und Verbrecherwelt in Chicago. Wegen der freizügigen Szenen und der politischen Brisanz des Stücks veröffentlichte sie es unter dem Pseudonym \"Dorothy Lane\". Brecht inszenierte es am Theater am Schiffbauerdamm. Die Presse zerriss die Aufführung als \"salonkommunistisch\" und \"flache Kopie\". Das Stück wurde zum Skandal. Erst die Nachwelt erkannte, dass Hauptmann die eigentliche Autorin war. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 20.04.2023; Wikipedia: Happy End (Komödie)\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 20.04.2023; Wikipedia: Happy End (Komödie)\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Warum ein Pseudonym? Weil mein Name nicht auf Theaterzetteln stehen konnte. Weil es für Frauen damals kaum eine Chance gab, als Stückautorin ernst genommen zu werden. Brecht war eigentlich der einzige Regisseur, der weibliche Dramatik überhaupt auf die Bühne brachte; er inszenierte meine Stücke und die von Marie Luise Fleißer. Bis 1930 hatte in Deutschland im Grunde nur ein einziges Stück einer Frau die große Bühne erreicht: \"Die Wupper\" von Else Lasker-Schüler. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 20.04.2023; Sabine Kebir, Biografin\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 20.04.2023; Sabine Kebir, Biografin\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "quiz-multi",
+                        "question":  "Welche der folgenden Aussagen über Elisabeth Hauptmann sind korrekt?",
+                        "options":  [
+                                        {
+                                            "text":  "Sie entdeckte die Vorlage für die Dreigroschenoper und übersetzte sie.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Hauptmann fand die \"Beggar\u0027s Opera\" in englischen Zeitungen und begann die Übersetzung auf eigene Initiative."
+                                        },
+                                        {
+                                            "text":  "Sie schrieb keine eigenen Stücke, nur Übersetzungen.",
+                                            "correct":  false,
+                                            "feedback":  "Falsch. \"Happy End\" stammt weitgehend von ihr; auch weitere Szenen und Songs sind ihr zuzuschreiben."
+                                        },
+                                        {
+                                            "text":  "Ihr Songspiel \"Happy End\" erschien unter dem Pseudonym Dorothy Lane.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Sie verbarg ihre Autorenschaft aus persönlichen und politischen Gründen."
+                                        },
+                                        {
+                                            "text":  "Der Alabama Song in Mahagonny stammt vollständig von ihr.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Der Alabama Song ist laut Podcast gänzlich von Hauptmann; er wird bis heute überwiegend Brecht zugeschrieben."
+                                        },
+                                        {
+                                            "text":  "Nach Brechts Tod zog sie sich vollständig aus dem Literaturbetrieb zurück.",
+                                            "correct":  false,
+                                            "feedback":  "Falsch. Sie leitete bis zu ihrem Tod 1973 die Herausgabe von Brechts Gesamtwerk beim Suhrkamp-Verlag."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "1933 musste Elisabeth Hauptmann wegen ihrer Mitgliedschaft in der Kommunistischen Partei aus Deutschland fliehen. Beim Versuch, einen Manuskriptkoffer des bereits ausgereisten Brecht zu sichern, wurde sie von der Gestapo verhaftet. Nur die Intervention des amerikanischen Botschafters rettete sie. Über Paris floh sie zu ihrer Schwester nach St. Louis in den USA, wo sie sich mit Gelegenheitsarbeiten als Übersetzerin, Lehrerin und Pflegerin durchschlug. Brecht war über die verlorenen Unterlagen verstimmt.\u003cbr\u003e\u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 20.04.2023\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 20.04.2023\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Es war auch manchmal zu schwer, sich in der Emigration über Wasser zu halten. Obwohl wir geografisch viele Jahre getrennt waren, schickte er mir doch seine Stücke, viele Gedichte, auch Aufsätze und fragte, was ich dazu meine. Ich habe versucht, selbst zu schreiben. Aber manchmal ging das einfach nicht. 1935 reiste ich nach New York, als Brecht und Eisler dort \"Die Mutter\" inszenierten. Ich diente als Dolmetscherin, denn weder Brecht noch Eisler sprachen genug Englisch. Auf der Rückreise widmete er mir ein Gedicht: \"Die nicht zu vergessende Nacht\". \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 20.04.2023\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 20.04.2023\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Der Himmel über mir in der nicht zu vergessenden Nacht war hell genug. Der Stuhl, auf dem ich saß, war bequem genug. Das Gespräch war leicht genug. Das Getränk war scharf genug und weich genug war dein Arm, Mädchen, in der nicht zu vergessenden Nacht.",
+                        "source":  "Bertolt Brecht, \"Die nicht zu vergessende Nacht\" (1935), gewidmet Elisabeth Hauptmann"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Was wurde nach dem Krieg aus Elisabeth Hauptmann?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Nach dem Zweiten Weltkrieg zog Elisabeth Hauptmann nach Ostberlin, wo Brecht zum zentralen Dramatiker des sozialistischen Theaterprojekts wurde. Sie erhielt eine Anstellung als Dramaturgin am Berliner Ensemble und – noch wichtiger – einen Vertrag beim Suhrkamp-Verlag zur Herausgabe von Brechts Gesamtwerk. Brecht vertraute ihr dabei blind. Ihre Leistung: Sie leitete die Ausgabe kulturpolitisch geschickt in beiden deutschen Staaten; in einem heiklen Spannungsfeld zwischen dem Suhrkamp-Verlag im Westen und den Zensurbestrebungen der DDR-Führung im Osten. Sie behielt diese Doppelfunktion bis zu ihrem Tod am 20. April 1973 in Ostberlin.\u003cbr\u003e\u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 20.04.2023; Wikipedia: Elisabeth Hauptmann\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 20.04.2023; Wikipedia: Elisabeth Hauptmann\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Wenn Brecht A sagt, muss man nicht immer B sagen. Das habe ich auch nicht immer. Dann habe ich doch noch B gesagt und weitergemacht, auch nach 1950. Die Verse, die hat Brecht allein geschrieben – ich glaube, das sieht man ihnen auch an. Bei mir war es auch viel Arbeit; ich arbeitete viele Stunden daran, den Worten den letzten Schliff zu verpassen. \u003cspan class=\"chat-source-ref\" title=\"WDR Zeitzeichen, 20.04.2023\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: WDR Zeitzeichen, 20.04.2023\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "barometer",
+                        "statement":  "Elisabeth Hauptmanns Bescheidenheit ist authentisch und zeigt, wie sie sich selbst sah.",
+                        "min":  "stimme nicht zu",
+                        "max":  "stimme voll zu"
+                    },
+                    {
+                        "type":  "checkpoint",
+                        "question":  "Erkläre in eigenen Worten: Warum gilt Elisabeth Hauptmann als \"unsichtbare Autorin\" der Brecht-Ära?"
+                    },
+                    {
+                        "type":  "self-assessment",
+                        "items":  [
+                                      "Ich kenne die wichtigsten biographischen Stationen Elisabeth Hauptmanns",
+                                      "Ich kann ihren Anteil an der Dreigroschenoper benennen und einordnen",
+                                      "Ich verstehe, wie Geschlechterverhältnisse und Machtstrukturen Autorschaft im Kulturbetrieb prägten",
+                                      "Ich kann das Verhältnis zwischen Hauptmann und Brecht differenziert beschreiben"
+                                  ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Man hat mich lange nicht gefragt. Jetzt wirst du vielleicht fragen. Das ist gut. Eine Schriftstellerin, die sich selbst zu unwichtig nimmt, verschwindet in der Geschichte. Ich bin fast verschwunden. Zum Glück nicht ganz. Mein letztes Testament vermachte meine Bibliothek und Brechts Briefe, Manuskripte und Fotos der Akademie der Künste in Berlin. Damit mein Name bleibt. \u003cspan class=\"chat-source-ref\" title=\"Wikipedia: Elisabeth Hauptmann; Kebir 2006\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Wikipedia: Elisabeth Hauptmann; Kebir 2006\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "finale",
+                        "text":  "Wenn dich mein Leben interessiert, dann recherchiere weiter! Mehr über mich findest du hier:",
+                        "links":  [
+                                      {
+                                          "label":  "WDR Zeitzeichen",
+                                          "url":  "https://www1.wdr.de/radio/wdr5/sendungen/zeitzeichen/zeitzeichen-elisabeth-hauptmann-schriftstellerin-100.html"
+                                      },
+                                      {
+                                          "label":  "Wikipedia",
+                                          "url":  "https://de.wikipedia.org/wiki/Elisabeth_Hauptmann"
+                                      }
+                                  ],
+                        "literature":  [
+                                           "Sabine Kebir: Ich fragte nicht nach meinem Anteil. Elisabeth Hauptmanns Arbeit mit Bertolt Brecht. Aufbau-Verlag, Berlin 2006.",
+                                           "John Fuegi: Brecht and Company. Grove Press, New York 1994."
+                                       ]
+                    }
+                ]
+}

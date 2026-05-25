@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿﻿﻿<!DOCTYPE html>
 <!--
   EpochenChat Editor
   CC-BY-SA 4.0 Sebastian Wolf 2026
@@ -35,7 +35,10 @@
 
     <!-- Favicon (inline SVG) -->
     <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'></text></svg>">
+
+  <!-- WissOS SDK -->
+  <script src="../../sdk/wissos-sdk.js"></script>
 </head>
 
 <body class="editor-body">
@@ -45,28 +48,28 @@
         <!-- ===== Top Bar ===== -->
         <header class="editor-topbar">
             <div class="editor-topbar__brand">
-                <span class="editor-topbar__brand-icon">💬</span>
+                <span class="editor-topbar__brand-icon"></span>
                 <span>EpochenChat</span>
                 <span class="editor-topbar__version">v0.2 MVP</span>
             </div>
             <div class="editor-topbar__actions">
                 <button class="btn btn--secondary btn--sm" id="btnTemplates" title="Vorlagenbibliothek öffnen">
-                    📚 Vorlagen
+                     Vorlagen
                 </button>
                 <button class="btn btn--secondary btn--sm" id="btnImportMd" title="Markdown-Datei importieren">
-                    📂 Import
+                     Import
                 </button>
                 <button class="btn btn--secondary btn--sm" id="btnLoad" title="Projekt laden (Ctrl+O)">
-                    📁 Laden
+                     Laden
                 </button>
                 <button class="btn btn--secondary btn--sm" id="btnSave" title="Projekt speichern (Ctrl+Shift+S)">
-                    💾 Speichern
+                     Speichern
                 </button>
                 <button class="btn btn--export" id="btnExportHtml" title="Als HTML-Datei exportieren (Ctrl+S)">
-                    ⬇ HTML exportieren
+                    ⬇️ HTML exportieren
                 </button>
                 <button class="btn btn--secondary btn--sm" id="btnExportScorm" title="Als SCORM 1.2 ZIP exportieren">
-                    📦 SCORM
+                     SCORM
                 </button>
             </div>
         </header>
@@ -84,7 +87,7 @@
                             alt="Persona-Avatar" title="Klicken zum Ändern des Avatars" />
                         <button class="persona-config__avatar-upload" id="avatarUploadBtn"
                             title="Eigenes Bild hochladen" aria-label="Avatar-Bild hochladen">
-                            ✏
+                            ✏️
                         </button>
                         <input type="file" id="avatarFileInput" class="sr-only"
                             accept="image/jpeg,image/png,image/svg+xml" />
@@ -98,18 +101,18 @@
                         <div class="persona-config__field persona-config__field--epoch">
                             <label class="persona-config__label" for="personaTheme">Epoche / Theme</label>
                             <select class="persona-config__select" id="personaTheme">
-                                <option value="modern_hell" selected>☀ Modern-Hell (Standard)</option>
-                                <option value="mittelalter">⚔ Mittelalter</option>
-                                <option value="renaissance">🌿 Renaissance</option>
-                                <option value="barock">🎭 Barock</option>
-                                <option value="aufklaerung">💡 Aufklärung</option>
-                                <option value="klassik">🏛️ Klassik</option>
-                                <option value="romantik">🌙 Romantik</option>
+                                <option value="modern_hell" selected>☀️ Modern-Hell (Standard)</option>
+                                <option value="mittelalter">⚔️ Mittelalter</option>
+                                <option value="renaissance"> Renaissance</option>
+                                <option value="barock"> Barock</option>
+                                <option value="aufklaerung"> Aufklärung</option>
+                                <option value="klassik"> Klassik</option>
+                                <option value="romantik"> Romantik</option>
                                 <option value="vormaerz">✊ Vormärz</option>
-                                <option value="realismus">🔬 Realismus</option>
-                                <option value="expressionismus">🎨 Expressionismus</option>
-                                <option value="moderne">⚙ Moderne</option>
-                                <option value="postmoderne">🔀 Postmoderne</option>
+                                <option value="realismus"> Realismus</option>
+                                <option value="expressionismus"> Expressionismus</option>
+                                <option value="moderne">⚙️ Moderne</option>
+                                <option value="postmoderne"> Postmoderne</option>
                                 <option value="barrierefrei">♿ Barrierefrei</option>
                             </select>
                         </div>
@@ -206,8 +209,8 @@ Abschlusstext
         aria-modal="true">
         <div class="modal">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-                <h2 class="modal__title">📚 Vorlagenbibliothek</h2>
-                <button class="btn btn--secondary btn--sm" onclick="EpochenEditor.hideTemplateModal()">✕
+                <h2 class="modal__title"> Vorlagenbibliothek</h2>
+                <button class="btn btn--secondary btn--sm" onclick="EpochenEditor.hideTemplateModal()">✖
                     Schließen</button>
             </div>
             <p style="color:#999;font-size:0.85rem;margin-bottom:1rem;">
@@ -222,7 +225,7 @@ Abschlusstext
         <div class="modal" style="max-width:620px;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
                 <h2 class="modal__title">? Chat-Syntax Referenz</h2>
-                <button class="btn btn--secondary btn--sm" id="btnCloseSyntax">✕ Schließen</button>
+                <button class="btn btn--secondary btn--sm" id="btnCloseSyntax">✖ Schließen</button>
             </div>
             <p style="color:#999;font-size:0.85rem;margin-bottom:1rem;">
                 Jedes Modul wird mit einem <code
@@ -354,3 +357,4 @@ Abschlusstext
 </body>
 
 </html>
+

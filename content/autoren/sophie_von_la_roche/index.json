@@ -1,0 +1,244 @@
+﻿{
+    "id":  "sophie_von_la_roche",
+    "name":  "Sophie von La Roche",
+    "short":  "La Roche",
+    "dates":  "1730 – 1807",
+    "epoch":  "Aufklärung · Empfindsamkeit",
+    "epochShort":  "Aufklärung",
+    "color":  "#FBC02D",
+    "highlight":  "#FFEE58",
+    "icon":  "✍️",
+    "quote":  "Güte ist die einzige Überlegenheit, die ich anerkenne.",
+    "timelinePos":  0,
+    "avatar":  "avatar.jpg",
+    "source":  "https://de.wikipedia.org/wiki/Br%C3%BCder_Grimm#/media/Datei:Brothers_Grimm_Blow.jpg",
+    "theme":  "sebastian-wolf",
+    "modules":  [
+                    {
+                        "type":  "framing",
+                        "content":  "Du triffst gleich auf Jacob und Wilhelm Grimm – oder besser: auf eine Konstruktion, die so spricht, wie sie vielleicht geschrieben und gesprochen hätten. Die Brüder Grimm sind längst Geschichte: Wilhelm starb am 16. Januar 1859, Jacob folgte ihm vier Jahre später, am 20. September 1863. Was du hier liest, basiert auf ihren Werken, Briefen und überlieferten Äußerungen, ist aber eine didaktische Interpretation. Lies kritisch!"
+                    },
+                    {
+                        "type":  "timeline",
+                        "epochs":  [
+                                       {
+                                           "name":  "Grimms Leben",
+                                           "start":  1785,
+                                           "end":  1863,
+                                           "active":  true,
+                                           "info":  "Jakob am 4. Jan. 1785 in Hanau, Wilhelm am 24. Feb. 1786 geboren. Tod des Vaters 1796. Gemeinsam bis zuletzt."
+                                       },
+                                       {
+                                           "name":  "Romantik",
+                                           "start":  1795,
+                                           "end":  1835,
+                                           "active":  false,
+                                           "info":  "Volksmärchen, Sagen, Volkslieder als Kulturschatz der Nation."
+                                       },
+                                       {
+                                           "name":  "Restauration/Vormärz",
+                                           "start":  1815,
+                                           "end":  1848,
+                                           "active":  false,
+                                           "info":  "Politische Repression, aber auch bürgerliches Engagement."
+                                       },
+                                       {
+                                           "name":  "Göttinger Sieben",
+                                           "start":  1837,
+                                           "end":  1837,
+                                           "active":  false,
+                                           "info":  "Protest gegen Verfassungsbruch Königs Ernst August."
+                                       },
+                                       {
+                                           "name":  "Berliner Zeit",
+                                           "start":  1841,
+                                           "end":  1863,
+                                           "active":  false,
+                                           "info":  "Berufung nach Berlin. Arbeit am Deutschen Wörterbuch."
+                                       }
+                                   ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Guten Tag. Ich bin Jacob Grimm – und mein Bruder Wilhelm ist stets in meiner Nähe. Man nennt uns immer im Doppelpack, fast als wären wir eineiige Zwillinge. Aber wir waren zwei sehr verschiedene Menschen: ich, klein, zäh, robust und von zornigem Fleiß; er, größer, weicher, mit träumerischen Augen und liebendem Wesen. Das Geheimnis unserer Verbindung war nicht Ähnlichkeit, sondern Polarität. Und doch war er die Hälfte von mir. \u003cspan class=\"chat-source-ref\" title=\"Podcast Bayern 2 RadioWissen, „Die Brüder Grimm – ein Herz und eine Seele\", 2020\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Podcast Bayern 2 RadioWissen, „Die Brüder Grimm – ein Herz und eine Seele\", 2020\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Wie seid ihr eigentlich zu Märchen und Sprachforschung gekommen?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Jacob und Wilhelm Grimm wurden 1785 und 1786 in Hanau geboren. Ihr Vater, Amtmann in Steinau, starb 1796 – die Familie stand vor dem Nichts. Tante Henriette, Kammerfrau am Kasseler Hof, ermöglichte den Brüdern den Besuch der höheren Schule. Sie teilten sich ein Zimmer, studierten gemeinsam am selben Tisch Jura in Marburg – und entdeckten dabei durch ihren Professor Savigny die altdeutsche Dichtung. In der königlichen Bibliothek zu Kassel, die niemand besuchte, brachten sie sich selbst Alt- und Mittelhochdeutsch bei."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "König Jeromes Bibliothek war ein Geschenk des Himmels. Bücher wurden kaum verlangt, niemand kam. Die ganze Zeit war mein – und ich verwandte sie auf das Studium der altdeutschen Poesie und Sprache. Als ich in Savignys Bücherei erstmals Minnelieder las, erfüllte mich das mit ganz eigener Ahnung. Diese Gedichte waren in einem seltsamen, halb unverständlichen Deutsch – und ich hatte die größte Lust, unsere alten Dichter genau zu lesen und zu verstehen. \u003cspan class=\"chat-source-ref\" title=\"Podcast Bayern 2 RadioWissen, „Die Brüder Grimm – ein Herz und eine Seele\", 2020\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Podcast Bayern 2 RadioWissen, „Die Brüder Grimm – ein Herz und eine Seele\", 2020\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Und wie sind die Kinder- und Hausmärchen entstanden?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Sechs Jahre lang sammelten die Brüder Grimm Märchen aus ihrer Umgebung. Eine besonders ergiebige Quelle war die Sonnenapotheke von Rudolf Wild in Kassel: Frau Wild und ihre Töchter Gretchen und Dorothea kannten viele Geschichten. Dortchen Wild – die spätere Frau Wilhelms – lieferte u. a. „Frau Holle\" und „Tischlein, deck dich\". Es gab aber auch männliche Erzähler, etwa den pensionierten Dragonerwachtmeister Krause. 1812 erschien die erste Ausgabe der Kinder- und Hausmärchen, die sofort ein großer Erfolg wurde."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Es war vielleicht gerade Zeit, diese Märchen festzuhalten – denn diejenigen, die sie bewahren sollten, wurden immer seltener. Wir haben nicht einfach abgeschrieben. Wir haben die Märchen, die von den verschiedensten Zuträgern stammten, in einen einheitlichen Erzählton gefasst. Erotische Anspielungen haben wir getilgt, dem Anspruch des „Kinder- und Hausmärchens\" zuliebe. Darüber hinaus haben wir die wissenschaftliche Märchenforschung begründet: Wir unterschieden das Märchen von der Sage. \u003cspan class=\"chat-source-ref\" title=\"Podcast Bayern 2 RadioWissen, „Die Brüder Grimm – ein Herz und eine Seele\", 2020\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Podcast Bayern 2 RadioWissen, „Die Brüder Grimm – ein Herz und eine Seele\", 2020\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Das Märchen ist poetisch, die Sage historisch. Jenes steht nur in sich selbst. Die Sage ist an einen Ort oder einen geschichtlichen Namen gebunden. Sie kann nicht wie das Märchen überall zu Hause sein.",
+                        "prompt":  "Markiere die begrifflichen Unterscheidungen.",
+                        "targets":  [
+                                        {
+                                            "word":  "poetisch",
+                                            "feedback":  "Das Märchen ist frei von Ort und Zeit – es spielt „irgendwo\" und „irgendwann\". Das macht seine universelle Wirkung aus."
+                                        },
+                                        {
+                                            "word":  "historisch",
+                                            "feedback":  "Die Sage verankert sich in konkreter Geschichte – ein Ort, ein Name, eine Überlieferung. Sie beansprucht eine Art Wahrheit."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Welche Aussage über die Entstehung der Kinder- und Hausmärchen ist korrekt?",
+                        "options":  [
+                                        {
+                                            "text":  "Die Brüder sammelten ausschließlich bei Bauern auf dem Land.",
+                                            "correct":  false,
+                                            "feedback":  "Nicht zutreffend. Viele Erzählerinnen stammten aus bürgerlichen Verhältnissen, etwa die Familie Wild in Kassel."
+                                        },
+                                        {
+                                            "text":  "Frauen bewahrten am häufigsten die alten Märchen – aber es gab auch männliche Erzähler.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Im Podcast wird betont, dass Frauen die wichtigsten Trägerinnen der Märchentradition waren, aber z.B. auch der Dragonerwachtmeister Krause Märchen kannte."
+                                        },
+                                        {
+                                            "text":  "Die erste Ausgabe erschien erst 1825 mit Illustrationen von Ludwig Emil.",
+                                            "correct":  false,
+                                            "feedback":  "Nein – die erste Ausgabe erschien 1812. Die populäre illustrierte Ausgabe folgte 1825."
+                                        },
+                                        {
+                                            "text":  "Die Märchen wurden vollständig unverändert übernommen.",
+                                            "correct":  false,
+                                            "feedback":  "Falsch. Die Grimms formten die Märchen sprachlich um und tilgten erotische Anspielungen."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Ihr wart also nicht nur Märchensammler, sondern auch politisch aktiv?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "1830 wurden die Brüder an die Universität Göttingen berufen – Jacob als ordentlicher, Wilhelm als außerordentlicher Professor. 1837 starb König Wilhelm von Hannover. Sein Nachfolger Ernst August erklärte die Verfassung von 1833 für ungültig und forderte von den Beamten eine Ergebenheitsadresse. Sieben Göttinger Professoren – darunter Jacob und Wilhelm Grimm – verweigerten sich und unterzeichneten einen öffentlichen Protest. Die Folge: fristlose Entlassung und Ausweisung aus dem Königreich Hannover. Der preußische König Friedrich Wilhelm IV. berief sie daraufhin nach Berlin."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Die Unterzeichner lehnten es ab, ihren auf die frühere Verfassung geleisteten Eid zu brechen. Wir beharrten auf dem Zusammenhang von Wahrheit und Recht und wollten nicht stillschweigend die Beseitigung des Staatsgrundgesetzes auf dem Wege bloßer Macht geschehen lassen. König Ernst August ließ uns fristlos entlassen. Er soll gesagt haben: „Professoren, Huren und Tänzerinnen kann man überall haben, wo man ihnen einige Taler bietet.\" Wir haben das als Auszeichnung genommen. \u003cspan class=\"chat-source-ref\" title=\"Podcast Bayern 2 RadioWissen, „Die Brüder Grimm – ein Herz und eine Seele\", 2020\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Podcast Bayern 2 RadioWissen, „Die Brüder Grimm – ein Herz und eine Seele\", 2020\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Die Unterzeichner lehnen es ab, ihren auf die frühere Verfassung geleisteten Eid zu brechen und beharren auf dem Zusammenhang von Wahrheit und Recht. Sie wollen nicht stillschweigend die Beseitigung des Staatsgrundgesetzes allein auf dem Wege der Macht geschehen lassen.",
+                        "source":  "Protest der Göttinger Sieben, 1837"
+                    },
+                    {
+                        "type":  "barometer",
+                        "statement":  "Der Protest der Göttinger Sieben war ein mutiger Akt mit echten Konsequenzen.",
+                        "min":  "stimme nicht zu",
+                        "max":  "stimme voll zu"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Was war eigentlich euer größtes wissenschaftliches Werk?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "In der Berliner Zeit begannen die Brüder Grimm ihr ehrgeizigstes Projekt: das Deutsche Wörterbuch. Anders als bisherige Wörterbücher sollte es nicht nur den gegenwärtigen Wortbestand verzeichnen, sondern die historische Entwicklung jedes Wortes zeigen: Wann taucht es zum ersten Mal auf? In welchem Sinn wurde es verwendet? Trotz 80 Mitarbeitern kamen die Brüder selbst nur bis zum Wort „Frucht\". Viele Generationen Germanisten arbeiteten weiter. Abgeschlossen wurde das Wörterbuch erst 1961, mit dem letzten Wort „Zypressenwald\"."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich übernahm den Buchstaben A. „Amt\" heißt im Gotischen antpati, althochdeutsch ampati. Beim mittelalterlichen Dichter Frauenlob findet sich gar das „Amt des Rückenkraules.\" Bei Luther: „Und es begab sich, dass die Zeit seines Amts aus war.\" So zeigt jedes Wort eine ganze Geschichte. Die deutsche Sprache ist ein Lebewesen. Sie wächst, wandelt sich, bewahrt Spuren. Ich habe mit der Deutschen Grammatik auch die Wissenschaft der Germanistik mitbegründet; ein Fach, das du heute im Lehrplan trägst. \u003cspan class=\"chat-source-ref\" title=\"Podcast Bayern 2 RadioWissen, „Die Brüder Grimm – ein Herz und eine Seele\", 2020\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Podcast Bayern 2 RadioWissen, „Die Brüder Grimm – ein Herz und eine Seele\", 2020\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "quiz-multi",
+                        "question":  "Welche der folgenden Aussagen über die Brüder Grimm sind korrekt?",
+                        "options":  [
+                                        {
+                                            "text":  "Jacob und Wilhelm wurden nach dem Protest als „Göttinger Sieben\" fristlos entlassen.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! König Ernst August reagierte mit sofortiger Entlassung und Ausweisung."
+                                        },
+                                        {
+                                            "text":  "Das Deutsche Wörterbuch wurde von den Brüdern selbst abgeschlossen.",
+                                            "correct":  false,
+                                            "feedback":  "Falsch. Es wurde erst 1961 – rund 100 Jahre nach Wilhelms Tod – fertiggestellt."
+                                        },
+                                        {
+                                            "text":  "Wilhelm heiratete Dorothea Wild, die selbst viele Märchen beigesteuert hatte.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Dortchen Wild lieferte u. a. „Frau Holle\" und „Tischlein, deck dich\"."
+                                        },
+                                        {
+                                            "text":  "Die Grimms haben mit ihrer Arbeit das Fach der Germanistik mitbegründet.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Ihre Sprach- und Literaturforschung legte die wissenschaftlichen Grundlagen des Fachs."
+                                        },
+                                        {
+                                            "text":  "Jacob Grimm heiratete ebenfalls und gründete einen eigenen Haushalt.",
+                                            "correct":  false,
+                                            "feedback":  "Falsch. Jacob blieb zeitlebens Junggeselle und lebte im gemeinsamen Haushalt mit Wilhelm und Dortchen."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Am 16. Januar 1859 ist Wilhelm gestorben. Gestern ist Wilhelm, die Hälfte von mir, gestorben. Ich war mit ihm von Kindesbeinen an zusammen. Unser Vermögen, unsere Bücher, unser Haushalt waren stets ungetrennt. Was wir unternahmen und zustande brachten, geschah in stetem Bunde. Man kann den einen nicht ohne den anderen denken. Ich werde ihm über nicht lange nachfolgen und an seiner Seite zu liegen kommen, wie ich ihm im Leben fast immer vereint gewesen bin. \u003cspan class=\"chat-source-ref\" title=\"Jacob Grimm, Brief nach Wilhelms Tod, 1859\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Jacob Grimm, Brief nach Wilhelms Tod, 1859\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Jacob und Wilhelm Grimm werden immer als untrennbares Paar wahrgenommen – und doch waren sie sehr verschieden. Beschreibe die Polarität der beiden Brüder und erkläre, inwiefern gerade diese Verschiedenheit ihre Stärke war."
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Jacob Grimm (1785–1863) und Wilhelm Grimm (1786–1859) gelten als Begründer der deutschen Philologie und Germanistik. Ihr Hauptwerk, die Kinder- und Hausmärchen (ab 1812), wurde zu einem der meistübersetzten Bücher der Welt. Die Deutsche Grammatik Jacobs (ab 1819) und das gemeinsame Deutsche Wörterbuch (ab 1852) zählen zu den Grundlagenwerken der Sprachwissenschaft. Als Mitglieder der „Göttinger Sieben\" (1837) setzten sie ein politisches Zeichen für Verfassungstreue und Zivilcourage."
+                    },
+                    {
+                        "type":  "checkpoint",
+                        "question":  "Erkläre, warum die Brüder Grimm nicht nur als Märchensammler, sondern als Wissenschaftler und politische Akteure bedeutsam sind."
+                    },
+                    {
+                        "type":  "self-assessment",
+                        "items":  [
+                                      "Ich kann den Unterschied zwischen Märchen und Sage erklären",
+                                      "Ich kenne die wichtigsten Werke der Brüder Grimm",
+                                      "Ich verstehe, was die Göttinger Sieben taten und riskierten",
+                                      "Ich kann Jacobs und Wilhelms unterschiedliche Charaktere beschreiben"
+                                  ]
+                    },
+                    {
+                        "type":  "finale",
+                        "text":  "Wenn dich das Werk der Brüder Grimm weiter interessiert, dann forsche selbst nach!",
+                        "links":  [
+                                      {
+                                          "label":  "BR2 RadioWissen – Podcast",
+                                          "url":  "https://www.br.de/radio/bayern2/sendungen/radiowissen/deutsch-und-literatur/brueder-grimm102.html"
+                                      },
+                                      {
+                                          "label":  "Wikipedia",
+                                          "url":  "https://de.wikipedia.org/wiki/Br%C3%BCder_Grimm"
+                                      },
+                                      {
+                                          "label":  "Deutsches Wörterbuch online",
+                                          "url":  "https://www.dwds.de/wb/dwb"
+                                      }
+                                  ],
+                        "literature":  [
+                                           "Heinz Rölleke: Die Märchen der Brüder Grimm. Reclam, Stuttgart 2004.",
+                                           "Hans-Jörg Uther: Handbuch zu den Kinder- und Hausmärchen der Brüder Grimm. De Gruyter, Berlin 2008."
+                                       ]
+                    }
+                ]
+}

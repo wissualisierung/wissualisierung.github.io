@@ -1,0 +1,270 @@
+﻿{
+    "id":  "georg_trakl",
+    "name":  "Georg Trakl",
+    "short":  "Trakl",
+    "dates":  "1887 – 1914",
+    "epoch":  "Expressionismus",
+    "epochShort":  "Expressionismus",
+    "color":  "#4527A0",
+    "highlight":  "#5E35B1",
+    "icon":  "🔮",
+    "quote":  "Es ist ein Stoppelfeld, in das ein schwarzer Regen fällt.",
+    "timelinePos":  66.8,
+    "avatar":  "avatar.jpg",
+    "source":  "https://de.wikipedia.org/wiki/Georg_Trakl#/media/Datei:GeorgTrakl.jpg",
+    "theme":  "sebastian-wolf",
+    "modules":  [
+                    {
+                        "type":  "framing",
+                        "content":  "Du triffst gleich auf Georg Trakl – oder besser: auf eine Konstruktion, die so spricht, wie er vielleicht geschrieben hätte. Trakl selbst ist am 3. November 1914 in Krakau gestorben. Was du hier liest, basiert auf seinen Gedichten, Briefen und biografischen Zeugnissen, ist aber eine didaktische Interpretation. Lies kritisch!"
+                    },
+                    {
+                        "type":  "timeline",
+                        "epochs":  [
+                                       {
+                                           "name":  "Expressionismus",
+                                           "start":  1910,
+                                           "end":  1925,
+                                           "active":  false,
+                                           "info":  "Aufschrei gegen Moderne und Krieg, Farbsymbolik, Ich-Zerfall, Großstadtangst."
+                                       },
+                                       {
+                                           "name":  "Trakls Leben",
+                                           "start":  1887,
+                                           "end":  1914,
+                                           "active":  true,
+                                           "info":  "Geboren in Salzburg. Gestorben in Krakau an Kokainvergiftung. Nur 27 Jahre alt."
+                                       },
+                                       {
+                                           "name":  "Zerfall der Monarchie",
+                                           "start":  1900,
+                                           "end":  1918,
+                                           "active":  false,
+                                           "info":  "Die k. u. k. Monarchie Österreich-Ungarn verfällt politisch und kulturell. Mit dem Krieg kommt der endgültige Untergang."
+                                       },
+                                       {
+                                           "name":  "Erster Weltkrieg",
+                                           "start":  1914,
+                                           "end":  1918,
+                                           "active":  false,
+                                           "info":  "Trakl erlebt die Grausamkeit als Militärapotheker – und überlebt sie nicht."
+                                       }
+                                   ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich bin Georg Trakl, geboren am 3. Februar 1887 in Salzburg. Eine Stadt, die ihre Wunderkinder liebt... spätestens, wenn sie tot sind. Ich war nicht lebenstauglich, wie man so sagt. Tram fahren, umziehen, telefonieren – das alles hat mir wahnsinnige Schwierigkeiten bereitet. Und trotzdem – oder vielleicht genau deswegen – habe ich Gedichte geschrieben, die die Nachwelt nicht loswird. \u003cspan class=\"chat-source-ref\" title=\"vgl. WDR Zeitzeichen, 03.02.2012\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. WDR Zeitzeichen, 03.02.2012\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Trakl aus Salzburg – das klingt erstmal harmlos. Was hat ihn so geprägt, dass er als \"Autor der Extreme\" gilt?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Trakl wuchs äußerlich behütet auf: Der Vater war ein wohlhabender Eisenwarenhändler. Doch die Mutter war eine labile Persönlichkeit, drogengeneigt und tagelang abwesend. Geborgenheit und Liebe kamen von den Eltern kaum. Das Haus Trakl kann man wohl als \"kühl\" beschreiben. Die einzige wirklich innige Beziehung führte Trakl mit seiner jüngeren Schwester Grete: eine Seelenverwandtschaft, die beiden auf absonderlich anmutende Weise Halt gab. Zugleich spürte Trakl früh die Starre und den Verfall der k. u. k. Monarchie und eine dunkle Ahnung, dass eine große Umwälzung bevorstehen würde."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich habe früh versagt: in der Schule, in der Familie, im Alltag. Ich las Dostojewski, Nietzsche, Rimbaud. Ich schloss mich Literaturkreisen an, diskutierte wild und heftig, kleidete mich mit großer Pose. Die Schule interessierte mich nicht mehr. Das war eine Schande für meine Familie. Ohne Matura blieb nur Pharmazie. Und die Apotheke hatte einen praktischen Vorteil: Man kommt leicht an Drogen. \u003cspan class=\"chat-source-ref\" title=\"vgl. WDR Zeitzeichen, 03.02.2012\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. WDR Zeitzeichen, 03.02.2012\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Also haben Drogen bei der Dichtung geholfen?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Das wäre zu weit gegriffen. Trakls Gedichte sind, trotz des Drogenexzesses, streng durchkomponiert: kleine Gebäude mit einer sehr bewussten Architektur, bei denen nichts dem Zufall überlassen ist. Das schließt einen völligen Rausch beim Schreiben aus. Trakl feilte an jedem Wort, rang um seinen Stil. Was auffällt: sein einzigartiger Umgang mit Farben. Schwarz, Blau, Rot; bei ihm sind Farben tragende Bilder für Seelenzustände: \"Schwermut blaut im Schoß der Fraun\"."
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Dunkle Stille der Kindheit. / Unter grünen Eschen weidet die Sanftmut bläulichen Blickes. / Goldene Ruh.",
+                        "prompt":  "Markiere die Farbnutzung in den Versen.",
+                        "targets":  [
+                                        {
+                                            "word":  "grün",
+                                            "feedback":  "Grün steht bei Trakl mehrdeutig für Natur und Jugend, aber auch für Verwesung und das Vergängliche."
+                                        },
+                                        {
+                                            "word":  "bläulich",
+                                            "feedback":  "Blau ist Trakls häufigste Farbe. Sie steht für Transzendenz, Stille, Sehnsucht nach dem Unerreichbaren."
+                                        },
+                                        {
+                                            "word":  "golden",
+                                            "feedback":  "Gold evoziert Stille und eine vergangene Schönheit und wird oft mit einem Unterton von Melancholie verbunden."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Wie verwendet Trakl Farben in seinen Gedichten?",
+                        "options":  [
+                                        {
+                                            "text":  "Als realistische Beschreibung der Natur",
+                                            "correct":  false,
+                                            "feedback":  "Trakl geht weit über Naturbeschreibung hinaus. Bei ihm sind Farben keine Adjektive, sondern eigenständige Träger von Bedeutung."
+                                        },
+                                        {
+                                            "text":  "Als politische Symbole für Revolution und Aufstand",
+                                            "correct":  false,
+                                            "feedback":  "Das ist eher der explizite Expressionismus anderer Autoren. Trakls Politisierung ist verdeckter, abgründiger."
+                                        },
+                                        {
+                                            "text":  "Als eigenständige Metaphern für Seelenzustände und Verfall",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Farben wie Blau, Schwarz und Rot verselbständigen sich bei Trakl zu Bedeutungsträgern, losgelöst von konkreten Gegenständen."
+                                        },
+                                        {
+                                            "text":  "Als dekoratives Stilmittel ohne tiefere Bedeutung",
+                                            "correct":  false,
+                                            "feedback":  "Im Gegenteil: Trakls Farbgebung ist das meistuntersuchte Merkmal seiner Lyrik."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Nach dem Examen wurde ich Militärapotheker; Medikamenten-Akzessist, wie es amtlich hieß. Ich wurde nach Innsbruck versetzt. Todunglücklich. Bis ein Freund dafür sorgte, dass die Zeitschrift Brenner eines meiner Gedichte druckte. Ludwig von Ficker, ihr Herausgeber, wurde so etwas wie ein Vaterfigur für mich. Er hat mir manchmal buchstäblich das Leben gerettet – einen Unterschlupf, etwas Geld, einen Ort zum Schlafen. Ohne den Brennerkreis hätte ich nicht überlebt, bevor der Krieg mich holte. \u003cspan class=\"chat-source-ref\" title=\"vgl. WDR Zeitzeichen, 03.02.2012\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. WDR Zeitzeichen, 03.02.2012\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Der Brenner, eine in Innsbruck erscheinende Avantgarde-Zeitschrift, wurde Trakls wichtigstes Publikationsorgan. Herausgeber Ludwig von Ficker nahm eine Vaterfunktion ein und rettete Trakl immer wieder aus materieller Not. Trakl selbst suchte gleichzeitig Halt bei zwei Extremen: beim Militär einerseits – als Sehnsucht nach dem ganz handfesten Leben –, bei der Religion andererseits. Doch beide Extreme haben ihn nicht gerettet. Der Trost, den er vermeintlich suchte, blieb ihm unerreichbar."
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Trakl sehnte sich gleichzeitig nach dem Militär und der Religion; nach zwei Welten, zu denen er selbst sagte, er könne nie wirklich dazugehören. Was sagt das über seine innere Zerrissenheit aus? Charakterisiere diese Sehnsucht."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Dann kam Sarajevo. Der Thronfolger war tot. Das ganze Land war in Schockstarre – und ich war mittendrin. Im August 1914 zog ich mit einer Sanitätskolonne ins Feld. In Grodek, in Ostgalizien, lag ich in einer Scheune mit sechzig schwerverwundeten Soldaten. Keine Medikamente. Nur Schreien, Bluten, Sterben. Meine Aufgabe war es, Hilfe zu geben, wo es keine Hilfe mehr geben konnte. Bisher war die Finsternis meiner Gedichte Fantasie. Jetzt war sie Wirklichkeit. \u003cspan class=\"chat-source-ref\" title=\"vgl. WDR Zeitzeichen, 03.02.2012\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. WDR Zeitzeichen, 03.02.2012\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Am Abend tönen die herbstlichen Wälder von tödlichen Waffen, die goldnen Ebenen und blauen Seen, darüber die Sonne düstrer hinrollt; umfängt die Nacht sterbende Krieger, die wilde Klage ihrer zerbrochenen Münder.",
+                        "source":  "Georg Trakl, Grodek (1914)"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Alle Straßen münden in schwarze Verwesung.",
+                        "prompt":  "Markiere die komprimierten, eindringlichen Kernbilder dieses Auszugs.",
+                        "targets":  [
+                                        {
+                                            "word":  "Straßen",
+                                            "feedback":  "Straßen sind eigentlich Wege zum Ziel, doch hier führen alle ins Nichts. Die Richtungslosigkeit ist total."
+                                        },
+                                        {
+                                            "word":  "schwarze Verwesung",
+                                            "feedback":  "Schwarz ist Trakls Farbe des Todes; Die \"Verwesung\" macht den biologischen Zerfall konkret und unausweichlich."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-multi",
+                        "question":  "Welche der folgenden Aussagen über Trakl und Grodek sind korrekt?",
+                        "options":  [
+                                        {
+                                            "text":  "Grodek entstand 1914 in der psychiatrischen Klinik in Krakau, wohin Trakl nach einem Zusammenbruch eingewiesen wurde.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Trakl schrieb das Gedicht nach seinen traumatischen Erlebnissen an der Ostfront, während er sich in Krakau unter psychiatrischer Beobachtung befand."
+                                        },
+                                        {
+                                            "text":  "Grodek ist ein Lobgedicht auf den Heldenmut der österreichischen Soldaten.",
+                                            "correct":  false,
+                                            "feedback":  "Im Gegenteil: das Gedicht zeigt den Krieg als sinnloses Sterben, ohne jede Verklärung."
+                                        },
+                                        {
+                                            "text":  "Trakl hatte bei Grodek keine Medikamente und musste Sterbenden zusehen, ohne helfen zu können.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Diese traumatische Ohnmacht gilt als einer der Auslöser seines Zusammenbruchs."
+                                        },
+                                        {
+                                            "text":  "Das Gedicht Grodek gilt als eines der bedeutendsten Antikriegsgedichte der deutschen Literatur.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Es verbindet persönliche Erschütterung mit expressionistischer Bildsprache zu einem zeitlosen Dokument."
+                                        },
+                                        {
+                                            "text":  "Trakl überlebte den Krieg und kehrte nach Salzburg zurück.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Nach Grodek versuchte ich, mich zu erschießen. Man riss mir die Waffe aus der Hand. Man brachte mich zur psychiatrischen Beobachtung nach Krakau. Dort schrieb ich Grodek. Und dort starb ich – in der Nacht auf den 3. November 1914 - an einer Überdosis Kokain. Ich war 27 Jahre alt. Man schrieb: \"Leutnant Trakl konnte trotz aller möglichen ärztlichen Hilfe nicht mehr gerettet werden.\" \u003cspan class=\"chat-source-ref\" title=\"Brief Oberstabsarzt Thoman, Krakau, 15. November 1914\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Brief Oberstabsarzt Thoman, Krakau, 15. November 1914\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "barometer",
+                        "statement":  "Trakls Gedichte, die manifeste Dunkelheit der Worte, wirken auch heute noch.",
+                        "min":  "stimme nicht zu",
+                        "max":  "stimme voll zu"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Georg Trakl starb am 3. November 1914 in Krakau an einer Überdosis Kokain; vermutlich aus der Feldapotheke, in der er als Militärapotheker tätig war. Er wurde 27 Jahre alt. Sein letztes Gedicht Grodek entstand kurz vor seinem Tod und gilt heute als eines der bedeutendsten Antikriegsgedichte der deutschen Literatur. Einsamkeit, Verlust, Zerfall sind keine historischen Raritäten. Trakls Gedichte lassen sich bis heute mit der menschlichen Lebenswirklichkeit füllen und das macht sie zeitlos."
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "In welchem Alter starb Georg Trakl?",
+                        "options":  [
+                                        {
+                                            "text":  "34",
+                                            "correct":  false,
+                                            "feedback":  "Trakl starb deutlich früher. Sein kurzes Leben ist Teil seines Mythos."
+                                        },
+                                        {
+                                            "text":  "19",
+                                            "correct":  false,
+                                            "feedback":  "So früh starb er nicht; er veröffentlichte noch mehrere Jahre Gedichte im Brenner."
+                                        },
+                                        {
+                                            "text":  "27",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Trakl starb mit 27 Jahren. Er gehört damit zum sogenannten \"Club 27\", einer Reihe von Künstlerinnen und Künstlern, die in diesem Alter starben."
+                                        },
+                                        {
+                                            "text":  "42",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "checkpoint",
+                        "question":  "Erkläre in zwei bis drei Sätzen, warum Trakls Erlebnis in Grodek als Wendepunkt gilt. Erkläre, was seine Sichtweise dort von der Dunkelheit seiner früheren Gedichte unterscheidet."
+                    },
+                    {
+                        "type":  "self-assessment",
+                        "items":  [
+                                      "Ich verstehe, wie Trakls Biografie sein Werk geprägt hat",
+                                      "Ich kann Trakls Farbsymbolik an einem Beispiel erklären",
+                                      "Ich kenne den Kontext des Gedichts Grodek",
+                                      "Ich kann Trakl begründet in die Epoche des Expressionismus einordnen"
+                                  ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich war ein großer, massiver Mensch mit einer sehr leisen Stimme. Ich konnte nicht Tram fahren und hatte Angst vor Fremden an der Apothekentheke. Ich war unfähig, im Alltag zu bestehen. Und doch schrieb ich Gedichte, die wie kleine Gebäude stehen, streng gebaut und voller Abgründe. Vielleicht ist mein Leben und Werk kein Widerspruch. Vielleicht braucht man gerade die Unfähigkeit, in der Welt zu wohnen, um beschreiben zu können, wie sie wirklich ist. \u003cspan class=\"chat-source-ref\" title=\"vgl. WDR Zeitzeichen, 03.02.2012\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. WDR Zeitzeichen, 03.02.2012\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Welcher Aspekt von Trakls Leben oder Werk hat dich am meisten überrascht oder beeindruckt?"
+                    },
+                    {
+                        "type":  "finale",
+                        "text":  "Wenn dich mein Leben interessiert, dann recherchiere doch weiter! Mehr über mich findest du im Internet.",
+                        "links":  [
+                                      {
+                                          "label":  "WDR Zeitzeichen",
+                                          "url":  "https://www1.wdr.de/mediathek/audio/zeitzeichen/audio-georg-trakl-oesterreichischer-dichter-geburtstag--100.html"
+                                      },
+                                      {
+                                          "label":  "Wikipedia",
+                                          "url":  "https://de.wikipedia.org/wiki/Georg_Trakl"
+                                      }
+                                  ],
+                        "literature":  [
+                                           "Hans Szklenar / Walter Methlagl (Hrsg.): Georg Trakl – Dichtungen und Briefe. Otto Müller Verlag, Salzburg 1987.",
+                                           "Rüdiger Görner: Georg Trakl. Dichter im Jahrzehnt der Extreme. Zsolnay, Wien 2014."
+                                       ]
+                    }
+                ]
+}

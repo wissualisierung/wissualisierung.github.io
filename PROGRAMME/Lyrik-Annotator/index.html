@@ -1,0 +1,2400 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lyrik-Annotator – Gedichtanalyse Workbench</title>
+  
+  <style>
+    /* ===== 1. Base Variables & Theme-Aware Tokens ===== */
+    :root {
+      --color-primary: #7DFFC2;        /* Neon Mint */
+      --color-secondary: #FF6B9D;      /* Punch Pink */
+      --color-accent: #FFE66D;         /* Cyber Canary Yellow */
+      --color-bg: #EAE6FF;             /* Lavender-Gray */
+      --color-text: #000000;           /* Pure Black */
+      --color-shadow: #000000;
+      --color-window-bg: #FFFFFF;
+      --color-button-face: #FFE66D;
+      --color-button-hover: #FFF1AA;
+      --border-width: 4px;
+      --shadow-offset: 6px;
+      --font-display: 'Outfit', 'Segoe UI', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+
+      --lime: #7DFFC2;
+      --pink: #FF6B9D;
+      --cyan: #00FFEE;
+      --yellow: #FFE66D;
+      --orange: #f97316;
+      --red: #ef4444;
+      --paper: #FAFAF5;
+
+      /* Legacy color variables mapped dynamically */
+      --color-leg-yellow: var(--color-accent);
+      --color-leg-orange: var(--orange);
+      --color-leg-pink: var(--pink);
+      --color-leg-blue: #4DD7FF;
+      --color-leg-green: var(--lime);
+      --color-leg-purple: #9B72CF;
+      --color-leg-red: var(--red);
+    }
+
+    /* --- THEME OVERRIDES FROM HOST OS --- */
+    .theme-neo-dark {
+      --color-primary: #3B82F6;
+      --color-secondary: #EC4899;
+      --color-accent: #10B981;
+      --color-bg: #111827;
+      --color-text: #FFFFFF;
+      --color-shadow: #000000;
+      --color-window-bg: #1F2937;
+      --color-button-face: #374151;
+      --color-button-hover: #4B5563;
+      --paper: #1F2937;
+    }
+
+    /* retro-classic is the WissOS default – maps to :root values */
+    .theme-retro-classic {
+      --color-primary: #7DFFC2;
+      --color-secondary: #FF6B9D;
+      --color-accent: #FFE66D;
+      --color-bg: #EAE6FF;
+      --color-text: #000000;
+      --color-shadow: #000000;
+      --color-window-bg: #FFFFFF;
+      --color-button-face: #FFE66D;
+      --color-button-hover: #FFF1AA;
+      --paper: #FAFAF5;
+    }
+
+    .theme-vaporwave {
+      --color-primary: #FF007F;
+      --color-secondary: #00F0FF;
+      --color-accent: #FFE600;
+      --color-bg: #03001C;
+      --color-text: #00F0FF;
+      --color-shadow: #FF007F;
+      --color-window-bg: #0B001A;
+      --color-button-face: #30005C;
+      --color-button-hover: #5B0E9C;
+      --paper: #0B001A;
+    }
+
+    .theme-schreibstube {
+      --color-primary: #C3B091;
+      --color-secondary: #4A3E3D;
+      --color-accent: #E1D7C6;
+      --color-bg: #F4F1EA;
+      --color-text: #2B2118;
+      --color-shadow: #2B2118;
+      --color-window-bg: #FCFAF6;
+      --color-button-face: #EAE3D2;
+      --color-button-hover: #DFD5C0;
+      --paper: #FCFAF6;
+    }
+
+    .theme-pommes {
+      --color-primary: #FFCC00;
+      --color-secondary: #E50000;
+      --color-accent: #FFFFFF;
+      --color-bg: #FFE5D9;
+      --color-text: #000000;
+      --color-shadow: #E50000;
+      --color-window-bg: #FFFFFF;
+      --color-button-face: #FFCC00;
+      --color-button-hover: #FFE066;
+      --paper: #FFFFFF;
+    }
+
+    /* ===== 2. Reset & Layout ===== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-display);
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      overflow-x: hidden;
+      transition: background-color 0.2s;
+    }
+
+    /* ===== 3. Topbar ===== */
+    .topbar {
+      background: var(--color-primary);
+      border-bottom: var(--border-width) solid var(--color-text);
+      box-shadow: 0 var(--border-width) 0 var(--color-shadow);
+      padding: 0.8rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .theme-neo-dark .topbar {
+      border-bottom-color: #000;
+      box-shadow: 0 var(--border-width) 0 #000;
+    }
+
+    .logo {
+      font-weight: 900;
+      font-size: 1.3rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    /* ===== 4. Modern Neobrutalist Buttons ===== */
+    button, .neo-btn {
+      font-family: var(--font-display);
+      background: var(--color-button-face);
+      color: var(--color-text);
+      border: var(--border-width) solid var(--color-text);
+      box-shadow: 4px 4px 0 var(--color-shadow);
+      font-weight: 800;
+      padding: 0.5rem 1.2rem;
+      cursor: pointer;
+      outline: none;
+      text-transform: uppercase;
+      white-space: nowrap;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    button:hover, .neo-btn:hover {
+      box-shadow: 6px 6px 0 var(--color-shadow);
+      transform: translate(-1px, -1px);
+    }
+
+    button:active, .neo-btn:active {
+      box-shadow: 1px 1px 0 var(--color-shadow);
+      transform: translate(3px, 3px);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+
+    .btn-primary { background: var(--color-accent); }
+    .btn-danger { background: var(--red); color: white; }
+    .btn-success { background: var(--lime); }
+    .btn-ghost { background: var(--color-window-bg); }
+    .btn-icon {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    /* ===== 5. Inputs & Selects ===== */
+    input[type="text"], input[type="number"], select {
+      border: 3px solid var(--color-text);
+      padding: 0.5rem 0.8rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      background: var(--paper);
+      color: var(--color-text);
+      outline: none;
+      border-radius: 0;
+      box-shadow: 3px 3px 0 var(--color-shadow);
+    }
+
+    input:focus, select:focus {
+      border-color: var(--color-primary);
+      box-shadow: 3px 3px 0 var(--color-primary);
+    }
+
+    /* ===== 6. Neobrutalist Panels ===== */
+    .panel {
+      background: var(--color-window-bg);
+      border: var(--border-width) solid var(--color-text);
+      box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--color-shadow);
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ===== 7. Tab-based Workspace ===== */
+
+    /* Mode-Tab bar sits beneath the topbar */
+    .mode-tabs {
+      display: flex;
+      background: var(--color-bg);
+      border-bottom: var(--border-width) solid var(--color-text);
+      padding: 0.5rem 1rem;
+      gap: 0.5rem;
+      position: sticky;
+      top: 70px;   /* height of topbar */
+      z-index: 90;
+    }
+    .mode-tab {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      padding: 0.45rem 1.2rem;
+      background: var(--color-window-bg);
+      border: 3px solid var(--color-text);
+      box-shadow: 3px 3px 0 var(--color-shadow);
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .mode-tab:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 4px 4px 0 var(--color-shadow);
+    }
+    .mode-tab.active {
+      background: var(--color-primary);
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* Single-column workspace */
+    .workspace {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 114px);  /* topbar 70px + tab-bar ~44px */
+      overflow: hidden;
+    }
+
+    .editor-pane {
+      flex: 1;
+      width: 100%;
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+      background-color: var(--color-bg);
+    }
+
+    .preview-pane {
+      flex: 1;
+      width: 100%;
+      padding: 1.5rem 2rem;
+      /* Centering with ample room for left-badges and right-labels */
+      padding-left: calc(50% - 340px);   /* left of poem card */
+      padding-right: calc(50% - 340px);  /* right of poem card */
+      overflow-y: auto;
+      overflow-x: visible;
+      background-color: var(--paper);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-sizing: border-box;
+    }
+
+    @media (max-width: 1300px) {
+      .preview-pane {
+        padding-left: 8rem;
+        padding-right: 14rem;
+      }
+    }
+    @media (max-width: 900px) {
+      .preview-pane { padding-left: 1.5rem; padding-right: 11rem; }
+    }
+    @media (max-width: 600px) {
+      .preview-pane { padding-left: 1rem; padding-right: 7rem; }
+    }
+
+    /* ===== 8. Accordions (Gedichtgruppen) ===== */
+    .accordion { margin-bottom: 1rem; }
+    .accordion-header {
+      background: var(--color-primary);
+      color: var(--color-text);
+      border: var(--border-width) solid var(--color-text);
+      padding: 0.8rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-weight: 900;
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+    }
+    .accordion-header:hover { background: var(--color-accent); }
+    .accordion.open .accordion-header {
+      box-shadow: 4px 4px 0 var(--color-shadow);
+    }
+    .accordion-content {
+      display: none;
+      border: var(--border-width) solid var(--color-text);
+      border-top: none;
+      background: var(--color-window-bg);
+      padding: 1.2rem;
+    }
+    .accordion.open .accordion-content { display: block; }
+
+    /* Metadata Form Grid */
+    .poem-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
+    .poem-meta-full { grid-column: 1 / -1; }
+    .poem-meta-grid label {
+      display: flex;
+      flex-direction: column;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      gap: 4px;
+    }
+    .poem-meta-grid input { width: 100%; }
+
+    .divider {
+      border-top: 4px dashed var(--color-text);
+      margin: 1.5rem 0;
+    }
+
+    /* ===== 9. Verszeilen-Editor ===== */
+    .verse-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .verse-item {
+      border: 3px solid transparent;
+      padding: 0.5rem;
+      transition: background 0.1s;
+    }
+    .verse-item:hover {
+      background: var(--color-bg);
+      border-left: 4px solid var(--color-secondary);
+    }
+    .verse-item.active {
+      background: var(--color-accent);
+      border-left: 4px solid var(--color-text);
+    }
+
+    .verse-row-main {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .verse-nr-badge {
+      background: var(--color-text);
+      color: var(--color-primary);
+      font-weight: 900;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      min-width: 32px;
+      text-align: center;
+    }
+
+    .verse-text-input { flex-grow: 1; }
+    .verse-reim-input { width: 60px; text-align: center; }
+    .verse-kadenz-select { width: 65px; }
+
+    .verse-details {
+      margin-top: 0.8rem;
+      padding-left: 38px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+    
+    .token-container {
+      background: var(--color-window-bg);
+      border: 3px solid var(--color-text);
+      padding: 0.8rem;
+      line-height: 2;
+    }
+
+    .token {
+      display: inline-block;
+      cursor: pointer;
+      padding: 0.05rem 0.25rem;
+      margin: 0 2px;
+      border: 2px solid transparent;
+      font-weight: 700;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    
+    .token.clickable:hover {
+      background: var(--color-bg);
+      border-color: var(--color-text);
+    }
+
+    .token.grouped {
+      border-bottom: 3.5px solid var(--group-color, var(--color-text));
+    }
+    
+    .token.grouped.active {
+      outline: 3px solid var(--group-color, var(--color-text));
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    /* ===== 10. Floating Color Picker Dropdown ===== */
+    .tooltip-dropdown {
+      position: absolute;
+      background: var(--color-window-bg);
+      border: var(--border-width) solid var(--color-text);
+      box-shadow: 6px 6px 0 var(--color-shadow);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      z-index: 1000;
+      min-width: 270px;
+    }
+    .tooltip-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .tooltip-title {
+      font-size: 0.75rem;
+      font-weight: 900;
+      color: var(--color-text);
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+      letter-spacing: 0.05rem;
+      border-bottom: 2.5px solid var(--color-text);
+      padding-bottom: 0.3rem;
+    }
+    .group-selector-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .group-selector-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.4rem 0.6rem;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 800;
+      transition: all 0.1s;
+      border: 2px solid transparent;
+    }
+    .group-selector-item:hover {
+      background: var(--color-bg);
+    }
+    .group-selector-item.active {
+      background: var(--color-primary);
+      border-color: var(--color-text);
+    }
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.5rem;
+    }
+    .color-circle-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 3px solid var(--color-text);
+      cursor: pointer;
+      padding: 0;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .color-circle-btn:hover {
+      transform: scale(1.15);
+      box-shadow: 2px 2px 0 var(--color-text);
+    }
+
+    /* Legende & Wortgruppen-Karten */
+    .legend-item, .group-card {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.6rem;
+    }
+    
+    .legend-color-input {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border: 3px solid var(--color-text);
+      border-radius: 50%;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    .legend-color-input::-webkit-color-swatch-wrapper { padding: 0; }
+    .legend-color-input::-webkit-color-swatch { border: none; border-radius: 50%; }
+
+    .group-card {
+      background: var(--color-window-bg);
+      border: 3px solid var(--color-text);
+      padding: 0.8rem;
+      flex-direction: column;
+      align-items: stretch;
+      margin-bottom: 0.8rem;
+      box-shadow: 4px 4px 0 var(--color-shadow);
+    }
+    .group-members { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+    .group-chip {
+      background: var(--color-text);
+      color: var(--color-window-bg);
+      padding: 0.2rem 0.6rem;
+      font-size: 0.8rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .group-chip .del-chip { cursor: pointer; color: var(--red); font-weight: 900; }
+
+    /* Arrow Cards */
+    .arrow-card {
+      background: var(--color-window-bg);
+      border: 3px solid var(--color-text);
+      padding: 0.8rem;
+      margin-bottom: 0.8rem;
+      box-shadow: 4px 4px 0 var(--color-shadow);
+    }
+    .arrow-card-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    /* ===== 11. Modal Dialogues ===== */
+    .modal {
+      border: none;
+      background: transparent;
+      padding: 0;
+      margin: auto;
+      max-width: 100vw;
+      max-height: 100vh;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal::backdrop {
+      background: rgba(0,0,0,0.5);
+    }
+    .modal:not([open]) { display: none; }
+
+    .modal-box {
+      border: var(--border-width) solid var(--color-text);
+      box-shadow: 8px 8px 0 var(--color-shadow);
+      background: var(--color-window-bg);
+      max-width: 680px;
+      width: 90%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-header {
+      background: var(--color-primary);
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: var(--border-width) solid var(--color-text);
+    }
+    .modal-header h2 { margin: 0; font-weight: 900; font-family: var(--font-mono); text-transform: uppercase; font-size: 1.2rem; }
+    .modal-content { 
+      padding: 1.5rem; 
+      overflow-y: auto;
+      flex-grow: 1;
+      color: var(--color-text);
+    }
+
+    /* ===== 12. Visual Preview Panel ===== */
+    .preview-header {
+      background: var(--color-secondary);
+      color: #000;
+      border: 3px solid var(--color-text);
+      padding: 0.8rem 1.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      width: 100%;
+      max-width: 700px;
+      box-shadow: 4px 4px 0 var(--color-shadow);
+    }
+    .preview-header select {
+      background: #000;
+      color: var(--color-primary);
+      border-color: #000;
+    }
+    .preview-header label {
+      font-weight: 800;
+      font-size: 0.85rem;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+      color: #000;
+    }
+    .preview-header input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 3px solid var(--color-text);
+      background: #fff;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 2px 2px 0 var(--color-shadow);
+      flex-shrink: 0;
+    }
+    .preview-header input[type="checkbox"]:checked {
+      background: var(--color-primary);
+    }
+    .preview-header input[type="checkbox"]:checked::after {
+      content: '✓';
+      font-size: 14px;
+      font-weight: 900;
+      color: #000;
+    }
+
+    /* Prevent double shadows on nested inputs inside panels */
+    .legend-item input[type="text"],
+    .poem-meta-grid input[type="text"],
+    .verse-item input[type="text"],
+    .verse-item select,
+    .arrow-card input[type="text"],
+    .group-card input[type="text"] {
+      box-shadow: none !important;
+    }
+
+    .preview-content-wrapper {
+      background: var(--color-window-bg);
+      border: var(--border-width) solid var(--color-text);
+      box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--color-shadow);
+      padding: 2.2rem;
+      padding-bottom: 3.5rem;
+      position: relative;
+      width: 680px;          /* fixed card width – matches export layout */
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow: visible;
+    }
+
+    .epoch-badge {
+      position: absolute;
+      top: 1rem;
+      left: -1rem;
+      background: var(--color-accent);
+      border: 3px solid var(--color-text);
+      padding: 0.4rem 1rem;
+      font-weight: 900;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      transform: rotate(-4deg);
+      box-shadow: 3px 3px 0 var(--color-shadow);
+      z-index: 10;
+      color: #000;
+    }
+
+    /* High-Fidelity Preview Rendering */
+    .preview-poem { margin-top: 1.5rem; }
+    .preview-title { font-size: 1.6rem; font-weight: 900; margin-bottom: 0.2rem; text-transform: uppercase; }
+    .preview-author { font-size: 1.1rem; font-style: italic; margin-bottom: 1.2rem; opacity: 0.8; }
+    .preview-strophe { margin-bottom: 1.8rem; position: relative; }
+    .preview-randnotiz {
+      position: absolute;
+      left: -7rem;
+      top: 0;
+      background: var(--color-accent);
+      color: #000;
+      border: 3px solid var(--color-text);
+      padding: 0.4rem 0.6rem;
+      font-size: 0.78rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      width: 100px;
+      box-shadow: 2px 2px 0 var(--color-shadow);
+      word-break: normal;
+      overflow-wrap: break-word;
+      white-space: normal;
+    }
+    @media (max-width: 900px) {
+      .preview-randnotiz {
+        position: relative;
+        left: 0;
+        top: 0;
+        margin-bottom: 0.8rem;
+        width: fit-content;
+        max-width: 100%;
+        display: inline-block;
+      }
+    }
+
+    .preview-verse {
+      display: grid;
+      grid-template-columns: 30px 1fr 60px;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.25rem 0;
+      position: relative;
+      border-left: 4px solid transparent;
+    }
+    .preview-verse.active-interactive {
+      background: var(--color-bg);
+      border-left: 4px solid var(--color-secondary);
+    }
+    .preview-verse-nr {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      opacity: 0.7;
+      text-align: right;
+      user-select: none;
+      font-weight: bold;
+    }
+    .preview-verse-text {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      font-weight: 600;
+    }
+    .preview-reim {
+      text-align: left;
+      font-size: 0.82rem;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      opacity: 0.8;
+      display: flex;
+      gap: 0.4rem;
+      white-space: nowrap;
+    }
+    
+    .preview-annotation {
+      grid-column: 2 / -1;
+      margin: 0.3rem 0 0.8rem 0;
+      background: var(--color-window-bg);
+      color: var(--color-text);
+      padding: 0.6rem 1rem;
+      border: 3px solid var(--color-secondary);
+      box-shadow: 3px 3px 0 var(--color-secondary);
+      font-size: 0.88rem;
+      font-weight: 800;
+      line-height: 1.4;
+      display: none;
+      z-index: 10;
+    }
+    .preview-verse.active-interactive .preview-annotation {
+      display: block;
+      animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popIn {
+      0% { opacity: 0; transform: translateY(-4px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    #previewContent { position: relative; z-index: 10; }
+
+    /* SVG Curved Connector Overlay */
+    .arrow-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+      overflow: visible;
+    }
+    .interactive-arrow {
+      opacity: 0.15;
+      transition: opacity 0.3s ease;
+    }
+    .interactive-arrow.active {
+      opacity: 1;
+    }
+    .arrow-path {
+      fill: none;
+      pointer-events: visibleStroke;
+    }
+
+    .section-header {
+      margin-top: 1.8rem;
+      margin-bottom: 0.8rem;
+      display: inline-block;
+      background: var(--color-text);
+      color: var(--color-primary);
+      padding: 0.3rem 0.8rem;
+      font-weight: 900;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .view-tooltip {
+      position: fixed;
+      background: #000;
+      color: var(--color-primary);
+      border: 3px solid #000;
+      box-shadow: 4px 4px 0 var(--color-primary);
+      padding: 0.4rem 0.8rem;
+      font-size: 0.82rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      z-index: 3000;
+      pointer-events: none;
+      transform: translate(-50%, -100%);
+      margin-top: -10px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .view-tooltip::after {
+      content: '';
+      position: absolute;
+      bottom: -7px;
+      left: 50%;
+      margin-left: -6px;
+      border-width: 6px 6px 0;
+      border-style: solid;
+      border-color: #000 transparent transparent transparent;
+    }
+
+    /* HTML Connection Labels */
+    .preview-arrow-label {
+      position: absolute;
+      padding: 0.4rem 0.6rem;
+      font-size: 0.8rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      width: 14rem;
+      max-width: 14rem;
+      line-height: 1.25;
+      pointer-events: none;
+      z-index: 15;
+      word-wrap: break-word;
+      background: var(--color-window-bg);
+      border: 3px solid var(--color-text);
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    @media (max-width: 900px) {
+      .preview-arrow-label { width: 10rem; font-size: 0.75rem; }
+    }
+    @media (max-width: 600px) {
+      .preview-arrow-label { 
+        width: 5.5rem;
+        font-size: 0.65rem; 
+        padding: 0.3rem 0.4rem; 
+        box-shadow: 2px 2px 0 var(--color-text);
+        transform: translateY(-50%);
+      }
+    }
+    .preview-arrow-label.active {
+      opacity: 1;
+      box-shadow: 3px 3px 0 var(--color-shadow);
+      z-index: 25;
+    }
+
+    /* Tabs navigation for switching active poems */
+    .poem-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.2rem;
+    }
+    .poem-tab {
+      background: var(--color-window-bg);
+      border: 3px solid var(--color-text);
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.1s;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+    }
+    .poem-tab:hover {
+      background: var(--color-bg);
+      transform: translateY(-2px);
+      box-shadow: 3px 3px 0 var(--color-shadow);
+    }
+    .poem-tab.active {
+      background: var(--color-primary);
+      box-shadow: 4px 4px 0 var(--color-shadow);
+      transform: translateY(-2px);
+    }
+    .btn-tab-del {
+      width: 20px;
+      height: 20px;
+      font-size: 14px;
+      padding: 0;
+      border: none;
+      box-shadow: none;
+      background: transparent;
+      color: var(--red);
+      opacity: 0.5;
+    }
+    .btn-tab-del:hover {
+      opacity: 1;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .group-highlight {
+      outline: 4px solid var(--group-color, var(--color-text));
+      outline-offset: 2px;
+      z-index: 50;
+      position: relative;
+      background-color: var(--color-window-bg);
+      box-shadow: 4px 4px 0 var(--color-shadow);
+      transform: scale(1.04);
+    }
+
+    .mobile-hint {
+      display: none;
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: bold;
+      opacity: 0.7;
+      padding: 0.5rem;
+      animation: hintPulse 2s ease-in-out infinite;
+    }
+    @media (max-width: 900px) {
+      .mobile-hint { display: block; }
+    }
+    @keyframes hintPulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.9; }
+    }
+  </style>
+
+  <!-- WissOS SDK -->
+  <script src="../../sdk/wissos-sdk.js"></script>
+</head>
+<body>
+  <div id="app">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="logo">✒️ Lyrik-Annotator</div>
+      <div class="topbar-actions">
+        <button id="btnAddPoem" class="btn-primary" aria-label="Neues Gedicht">🎄 + Gedicht</button>
+        <button id="btnShowHelp" class="btn-primary" aria-label="Hilfe">❔ Hilfe</button>
+        <button id="btnExportDialog" class="btn-primary" aria-label="Export">📂 Export</button>
+      </div>
+    </header>
+
+    <!-- Mode-Tab bar -->
+    <div class="mode-tabs" role="tablist" aria-label="Arbeitsbereich">
+      <button class="mode-tab active" id="tabEditor" role="tab" aria-selected="true" onclick="switchMode('editor')">📝 Editor</button>
+      <button class="mode-tab" id="tabPreview" role="tab" aria-selected="false" onclick="switchMode('preview')">👁 Vorschau</button>
+    </div>
+
+    <!-- Single-pane Workspace with tab-switching -->
+    <div class="workspace">
+      <!-- Editor pane (active by default) -->
+      <div class="editor-pane" id="editorPane" role="tabpanel" aria-labelledby="tabEditor">
+        <div id="editorContent"></div>
+      </div>
+
+      <!-- Preview pane (hidden by default) -->
+      <div class="preview-pane" id="previewPane" role="tabpanel" aria-labelledby="tabPreview" style="display:none;">
+        <div class="preview-header">
+          <select id="previewPoemSelect" aria-label="Gedicht wählen"></select>
+          <label><input type="checkbox" id="chkShowAnnotations" checked> Annotationen</label>
+          <label><input type="checkbox" id="chkShowRhymes" checked> Metrik</label>
+          <label><input type="checkbox" id="chkShowArrows" checked> Alle Pfeile</label>
+        </div>
+        
+        <div class="preview-content-wrapper" id="previewContentWrapper">
+          <div class="epoch-badge" id="epochBadgePreview">--</div>
+          <div id="previewContent"></div>
+          <svg id="arrowOverlay" class="arrow-overlay">
+            <defs id="arrowDefs"></defs>
+          </svg>
+          <div class="mobile-hint" aria-hidden="true">💡 Vers anklicken, um Annotationen / Pfeile anzuzeigen</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export Dialog Modal -->
+  <dialog id="exportModal" class="modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>📂 Gedicht exportieren</h2>
+        <button class="btn-icon close-modal" id="closeExportModal">&times;</button>
+      </div>
+      <div class="modal-content">
+        <div class="poem-meta-grid">
+          <label>Titel des Projekts <input type="text" id="exportTitle"></label>
+          <label>Epoche des Projekts <input type="text" id="exportEpoch"></label>
+        </div>
+        
+        <div style="font-weight:900; margin-bottom:0.5rem; text-transform:uppercase; font-family:var(--font-mono); font-size:0.8rem;">Exportoptionen</div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5rem; margin-bottom:1.5rem; background:var(--color-bg); padding:0.8rem; border:3px solid var(--color-text);">
+          <label style="font-weight:bold; font-size:0.85rem; display:flex; align-items:center; gap:6px;"><input type="checkbox" id="expColors" checked> Farben exportieren</label>
+          <label style="font-weight:bold; font-size:0.85rem; display:flex; align-items:center; gap:6px;"><input type="checkbox" id="expRhymes" checked> Metrik &amp; Reim</label>
+          <label style="font-weight:bold; font-size:0.85rem; display:flex; align-items:center; gap:6px;"><input type="checkbox" id="expAnnotations" checked> Interpretationen</label>
+          <label style="font-weight:bold; font-size:0.85rem; display:flex; align-items:center; gap:6px;"><input type="checkbox" id="expArrows" checked> Verweispfeile</label>
+          <label style="font-weight:bold; font-size:0.85rem; display:flex; align-items:center; gap:6px;"><input type="checkbox" id="expGroups" checked> Wortgruppen</label>
+          <label style="font-weight:bold; font-size:0.85rem; display:flex; align-items:center; gap:6px;"><input type="checkbox" id="expLegend" checked> Legendenanzeige</label>
+          <label style="font-weight:bold; font-size:0.85rem; display:flex; align-items:center; gap:6px; grid-column:1/-1;"><input type="checkbox" id="expLearnMode"> Lernmodus (Zuklappbare Notizen)</label>
+        </div>
+        
+        <div style="display:flex; flex-direction:column; gap:0.8rem;">
+          <button id="btnExportHtml" class="btn-primary" style="font-size:1.1rem; padding: 0.8rem;">💾 Eigenständiges HTML5 exportieren</button>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;">
+            <button id="btnExportJson" class="btn-ghost">📂 JSON herunterladen</button>
+            <button id="btnImportJson" class="btn-ghost" onclick="document.getElementById('fileImport').click()">📥 JSON laden</button>
+            <input type="file" id="fileImport" accept=".json" style="display:none">
+          </div>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Help / Instructions Dialogue Modal -->
+  <dialog id="helpModal" class="modal">
+    <div class="modal-box" style="max-width: 760px;">
+      <div class="modal-header">
+        <h2>📖 didaktische Handreichung: Lyrik-Annotator</h2>
+        <button class="btn-icon close-modal" onclick="document.getElementById('helpModal').close()">&times;</button>
+      </div>
+      <div class="modal-content" style="line-height:1.6; font-size:0.95rem;">
+        <p style="margin-bottom:1rem; font-weight:bold;">Dieser neobrutalistische Lyrik-Annotator erlaubt es Schülern und Lehrkräften, Gedichte in Echtzeit feingliedrig zu analysieren und grafisch aufzubereiten.</p>
+        
+        <div style="display:flex; flex-direction:column; gap:1.2rem;">
+          <div>
+            <h3 style="font-family:var(--font-mono); font-size:0.85rem; text-transform:uppercase; background:var(--color-primary); padding:2px 8px; display:inline-block; border:2px solid var(--color-text); margin-bottom:4px;">1. Gedicht &amp; Strophen verwalten</h3>
+            <p>Oben rechts können Sie über <strong>+ Gedicht</strong> neue Texte hinzufügen. Tragen Sie Titel, Autor, Epoche und Metrum direkt im Editor ein. Um Strophen abzugrenzen, wählen Sie in einem Vers die Option <strong>„Strophe trennen“</strong>.</p>
+          </div>
+
+          <div>
+            <h3 style="font-family:var(--font-mono); font-size:0.85rem; text-transform:uppercase; background:var(--color-primary); padding:2px 8px; display:inline-block; border:2px solid var(--color-text); margin-bottom:4px;">2. Interaktives Wort-Markieren</h3>
+            <p>Fokussieren Sie einen Vers, um ihn im Detail zu editieren. Klicken Sie im Detailsystem auf ein <strong>einzelnes Wort</strong> – es öffnet sich ein Tooltip, um das Wort farblich nach Ihrer Legende zu klassifizieren oder es einer <strong>thematischen Wortgruppe</strong> zuzuweisen.</p>
+          </div>
+
+          <div>
+            <h3 style="font-family:var(--font-mono); font-size:0.85rem; text-transform:uppercase; background:var(--color-primary); padding:2px 8px; display:inline-block; border:2px solid var(--color-text); margin-bottom:4px;">3. Verweispfeile (Curved SVGs)</h3>
+            <p>Zeichnen Sie geschwungene Pfeile ein, um <strong>Enjambements</strong>, <strong>Reimbezüge</strong> oder <strong>semantische Kontraste</strong> darzustellen. Geben Sie Start- und Endvers an und schreiben Sie Erläuterungen, die direkt auf der Kurve platziert werden.</p>
+          </div>
+
+          <div>
+            <h3 style="font-family:var(--font-mono); font-size:0.85rem; text-transform:uppercase; background:var(--color-primary); padding:2px 8px; display:inline-block; border:2px solid var(--color-text); margin-bottom:4px;">4. 100% Offline-Export</h3>
+            <p>Über den Export-Dialog können Sie das gesamte Arbeitsergebnis als <strong>eigenständige HTML5-Datei</strong> exportieren. Diese läuft komplett ohne Internet und kann direkt im Unterricht von Schülern geöffnet und präsentiert werden.</p>
+          </div>
+        </div>
+
+        <div style="margin-top: 1.5rem; text-align: center;">
+          <button class="btn-primary" onclick="document.getElementById('helpModal').close()">Verstanden</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Floating color pick tool -->
+  <div id="colorTooltip" class="tooltip-dropdown" style="display:none;"></div>
+
+  <script>
+    // ----------------------------------------------------
+    // 1. DATA STRUCTURES & DEFAULT STATE
+    // ----------------------------------------------------
+    const defaultState = {
+      meta: { 
+        title: "Gedichtanalyse Projekt", 
+        epoch: "Romantik", 
+        version: "2.0" 
+      },
+      legend: [
+        { id: "leg-1", color: "#FF6B9D", label: "Sehnsuchtsmotive" },
+        { id: "leg-2", color: "#FFE66D", label: "Natur- & Waldmotive" },
+        { id: "leg-3", color: "#7DFFC2", label: "Traum / Nacht" },
+        { id: "leg-4", color: "#00FFEE", label: "Spiegel-Metaphorik" },
+        { id: "leg-5", color: "#f97316", label: "Schlüsselbegriff" }
+      ],
+      wordgroups: [
+        { id: "wg-1", label: "Blaue Blume (Natur)", color: "#0080b0", members: [] }
+      ],
+      poems: [
+        {
+          id: "poem-1", 
+          author: "Joseph von Eichendorff", 
+          title: "Wünschelrute", 
+          year: "1835", 
+          meter: "Trochäus", 
+          theme: "Die magische Kraft der Poesie",
+          strophen: [
+            {
+              randnotiz: "Magischer Weckruf",
+              verses: [
+                { nr: 1, text: "Schläft ein Lied in allen Dingen,", reim: "a", kadenz: "♀", marks: [], annotation: "Dinge besitzen eine schlummernde poetische Seele." },
+                { nr: 2, text: "die da träumen fort und fort,", reim: "b", kadenz: "♂", marks: [], annotation: "Zustand des unbewussten Träumens in der Natur." },
+                { nr: 3, text: "und die Welt hebt an zu singen,", reim: "a", kadenz: "♀", marks: [], annotation: "Klangwerdung der Welt als Erlösungsprozess." },
+                { nr: 4, text: "triffst du nur das Zauberwort.", reim: "b", kadenz: "♂", marks: [], annotation: "Der Dichter als Schöpfer, der das aktivierende Zauberwort findet." }
+              ]
+            }
+          ],
+          connections: [
+            { id: "conn-1", from: 1, to: 4, label: "Lied <-> Zauberwort", lineStyle: "dashed", lineColor: "#FF6B9D", lineWidth: 3, markerStart: "none", markerEnd: "arrow", curve: "bezier" }
+          ]
+        }
+      ]
+    };
+
+    // ----------------------------------------------------
+    // 2. GLOBAL STATE Snapshots
+    // ----------------------------------------------------
+    let state = null;
+    let historyStack = [];
+    let historyIndex = -1;
+
+    let currentPoemId = null;
+    let openPoemIds = new Set();
+    let activeVerseId = null;
+    let activePreviewVerse = null;
+    let activeGroupId = null;
+
+    // ----------------------------------------------------
+    // 3. RETRO AUDIO EFFECTS
+    // ----------------------------------------------------
+    function playClickSound() {
+      if (window.WissOS && typeof window.WissOS.playSound === 'function') {
+        window.WissOS.playSound('click');
+      }
+    }
+
+    function playErrorSound() {
+      if (window.WissOS && typeof window.WissOS.playSound === 'function') {
+        window.WissOS.playSound('error');
+      }
+    }
+
+    // ----------------------------------------------------
+    // 4. STORAGE & SYNCHRONIZATION
+    // ----------------------------------------------------
+    function init() {
+      if (window.WissOS && typeof window.WissOS.loadState === 'function') {
+        window.WissOS.loadState('lyrik-editor-v1', (savedData) => {
+          if (savedData && savedData.poems) {
+            state = savedData;
+          } else {
+            state = JSON.parse(JSON.stringify(defaultState));
+          }
+          startApp();
+        });
+      } else {
+        const saved = localStorage.getItem('lyrik-editor-v1');
+        if (saved) {
+          try { 
+            state = JSON.parse(saved); 
+          } catch (e) { 
+            state = JSON.parse(JSON.stringify(defaultState)); 
+          }
+        } else {
+          state = JSON.parse(JSON.stringify(defaultState));
+        }
+        startApp();
+      }
+    }
+
+    function startApp() {
+      if (state.poems.length > 0) {
+        currentPoemId = state.poems[0].id;
+        openPoemIds.add(currentPoemId);
+      }
+      saveSnapshot(true);
+      setupEventListeners();
+      renderAll();
+    }
+
+    function saveSnapshot(skipSdk) {
+      if (historyIndex < historyStack.length - 1) {
+        historyStack = historyStack.slice(0, historyIndex + 1);
+      }
+      historyStack.push(JSON.stringify(state));
+      if (historyStack.length > 30) historyStack.shift();
+      historyIndex = historyStack.length - 1;
+
+      // Persistence
+      localStorage.setItem('lyrik-editor-v1', historyStack[historyIndex]);
+      if (!skipSdk && window.WissOS && typeof window.WissOS.saveState === 'function') {
+        window.WissOS.saveState('lyrik-editor-v1', state);
+      }
+    }
+
+    function undo() {
+      if (historyIndex > 0) {
+        playClickSound();
+        historyIndex--;
+        state = JSON.parse(historyStack[historyIndex]);
+        renderAll();
+        localStorage.setItem('lyrik-editor-v1', historyStack[historyIndex]);
+      }
+    }
+
+    function redo() {
+      if (historyIndex < historyStack.length - 1) {
+        playClickSound();
+        historyIndex++;
+        state = JSON.parse(historyStack[historyIndex]);
+        renderAll();
+        localStorage.setItem('lyrik-editor-v1', historyStack[historyIndex]);
+      }
+    }
+
+    function genId(prefix) { 
+      return prefix + '-' + Math.random().toString(36).slice(2, 11); 
+    }
+
+    function tokenize(text) {
+      if (!text) return [];
+      return text.split(/(\s+|(?=[.,;:!?–—»«"'])|(?<=[.,;:!?–—»«"']))/).filter(Boolean);
+    }
+
+    function escapeHtml(unsafe) {
+      if(!unsafe) return "";
+      return unsafe.toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function getLegendColor(id) {
+      const leg = state.legend.find(l => l.id === id);
+      return leg ? leg.color : 'transparent';
+    }
+
+    function getGroupColor(poemId, verseNr, tokenIndex) {
+      for (let wg of state.wordgroups) {
+        if (wg.members.some(m => m.poemId === poemId && m.verseNr === verseNr && m.tokenIndex === tokenIndex)) {
+          return wg.color;
+        }
+      }
+      return null;
+    }
+
+    // ----------------------------------------------------
+    // 5. RENDERING ENGINE
+    // ----------------------------------------------------
+    let renderTimeout;
+    function requestRender() {
+      clearTimeout(renderTimeout);
+      renderTimeout = setTimeout(() => {
+        saveSnapshot();
+        renderAll();
+      }, 100);
+    }
+
+    function renderOnly() {
+      clearTimeout(renderTimeout);
+      renderTimeout = setTimeout(() => {
+        renderAll();
+      }, 50);
+    }
+
+    // ----------------------------------------------------
+    // MODE SWITCHING (Editor ↔ Vorschau)
+    // ----------------------------------------------------
+    let currentMode = 'editor';
+
+    function switchMode(mode) {
+      currentMode = mode;
+      const editorPane  = document.getElementById('editorPane');
+      const previewPane = document.getElementById('previewPane');
+      const tabEditor   = document.getElementById('tabEditor');
+      const tabPreview  = document.getElementById('tabPreview');
+
+      const showEditor = (mode === 'editor');
+      editorPane.style.display  = showEditor ? '' : 'none';
+      previewPane.style.display = showEditor ? 'none' : '';
+
+      tabEditor.classList.toggle('active', showEditor);
+      tabEditor.setAttribute('aria-selected', showEditor);
+      tabPreview.classList.toggle('active', !showEditor);
+      tabPreview.setAttribute('aria-selected', !showEditor);
+
+      if (mode === 'preview') {
+        // Re-render preview and arrows after layout is visible
+        requestAnimationFrame(() => {
+          renderPreview();
+          renderArrows();
+        });
+      }
+    }
+
+    function renderAll() {
+      try {
+        if (!state) return;
+        if (!currentPoemId && state.poems.length > 0) {
+          currentPoemId = state.poems[0].id;
+        }
+        
+        const focusId = document.activeElement?.id;
+        const focusSelStart = document.activeElement?.selectionStart;
+        const focusSelEnd = document.activeElement?.selectionEnd;
+        
+        renderEditor();
+        renderPreviewOptions();
+        renderPreview();
+        renderArrows();
+        
+        if (focusId) {
+          const el = document.getElementById(focusId);
+          if (el) {
+            el.focus();
+            if (typeof focusSelStart === 'number' && el.setSelectionRange) {
+              try { el.setSelectionRange(focusSelStart, focusSelEnd); } catch(e) {}
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Render Error:", err);
+      }
+    }
+
+    // ----------------------------------------------------
+    // 6. EDITOR INTERFACE GENERATOR
+    // ----------------------------------------------------
+    function renderEditor() {
+      const container = document.getElementById('editorContent');
+      if (!container) return;
+      let html = '';
+      
+      // Farblegende Panel
+      html += `<div class="section-header">🎨 Farbkategorien</div><div class="panel">`;
+      state.legend.forEach((leg, i) => {
+        html += `<div class="legend-item" draggable="true" ondragstart="dragLegend(event, ${i})" ondrop="dropLegend(event, ${i})" ondragover="dragOverLegend(event, ${i})" ondragend="document.querySelectorAll('.legend-item').forEach(el=>el.classList.remove('dragging','drag-over'))">
+          <span style="cursor:grab; font-weight:bold; color:var(--color-text); margin-right:4px;">☰</span>
+          <input type="color" class="legend-color-input" value="${leg.color}" onchange="updateLegendColor('${leg.id}', this.value)">
+          <input type="text" value="${escapeHtml(leg.label)}" onchange="updateLegendLabel('${leg.id}', this.value)" style="flex-grow:1;">
+          <button class="btn-icon btn-ghost" onclick="deleteLegend('${leg.id}')" style="color:var(--red); border-color:transparent; box-shadow:none;">&times;</button>
+        </div>`;
+      });
+      html += `<button class="btn-ghost" onclick="addLegend()" style="width:100%; border-style:dashed; margin-top:8px;">+ Kategorie hinzufügen</button></div>`;
+
+      // Gedichtverwaltung
+      html += `<div class="section-header">📖 Gedichte</div>`;
+      
+      // Tabs Navigation
+      html += `<div class="poem-tabs">`;
+      state.poems.forEach((p) => {
+        const isActive = p.id === currentPoemId;
+        html += `<div class="poem-tab ${isActive ? 'active' : ''}" onclick="switchPoem('${p.id}')">
+          <span>${escapeHtml(p.title || 'Unbenannt')}</span>
+          <button class="btn-icon btn-tab-del" onclick="event.stopPropagation(); deletePoem('${p.id}')">&times;</button>
+        </div>`;
+      });
+      html += `</div>`;
+
+      // Main Poem Panel
+      const poem = state.poems.find(p => p.id === currentPoemId) || state.poems[0];
+      if (poem) {
+        if (!currentPoemId) currentPoemId = poem.id;
+        const pIdx = state.poems.findIndex(p => p.id === poem.id);
+        
+        html += `<div class="editor-main-poem">
+          <div class="panel">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem;">
+              <h2 style="margin:0; font-family:var(--font-mono); text-transform:uppercase; font-size:1.15rem;">✒️ ${escapeHtml(poem.title || 'Gedicht bearbeiten')}</h2>
+              <div style="display:flex; gap:0.5rem;">
+                <button class="btn-icon btn-ghost" onclick="movePoem(${pIdx}, -1)" ${pIdx===0?'disabled':''}>▲</button>
+                <button class="btn-icon btn-ghost" onclick="movePoem(${pIdx}, 1)" ${pIdx===state.poems.length-1?'disabled':''}>▼</button>
+              </div>
+            </div>
+            
+            <div class="poem-meta-grid">
+              <label>Titel des Gedichts <input type="text" id="meta-t-${poem.id}" value="${escapeHtml(poem.title)}" onchange="updatePoem('${poem.id}', 'title', this.value)"></label>
+              <label>Autor <input type="text" id="meta-a-${poem.id}" value="${escapeHtml(poem.author)}" onchange="updatePoem('${poem.id}', 'author', this.value)"></label>
+              <label>Jahr <input type="text" id="meta-y-${poem.id}" value="${escapeHtml(poem.year)}" onchange="updatePoem('${poem.id}', 'year', this.value)"></label>
+              <label>Metrum / Versmaß <input type="text" id="meta-m-${poem.id}" value="${escapeHtml(poem.meter)}" onchange="updatePoem('${poem.id}', 'meter', this.value)"></label>
+              <label class="poem-meta-full">Hauptthema <input type="text" id="meta-th-${poem.id}" value="${escapeHtml(poem.theme)}" onchange="updatePoem('${poem.id}', 'theme', this.value)"></label>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="verse-list">`;
+        
+        poem.strophen.forEach((strophe, sIdx) => {
+          html += `<div style="display:flex; margin-top:1rem; gap:12px;">
+            <div style="width:100px; flex-shrink:0;">
+              <label style="font-family:var(--font-mono); font-size:0.68rem; font-weight:800; text-transform:uppercase;">Strophennote</label>
+              <textarea placeholder="Randnotiz..." onchange="updateStropheRandnotiz('${poem.id}', ${sIdx}, this.value)" 
+                style="width:100%; height:75px; background:var(--color-accent); color:#000; border:3px solid var(--color-text); padding:0.4rem; font-size:0.8rem; font-weight:700; resize:none;">${escapeHtml(strophe.randnotiz)}</textarea>
+            </div>
+            <div style="flex-grow:1" class="verse-list">`;
+            
+          strophe.verses.forEach((verse, vIdx) => {
+            const isVerseActive = activeVerseId === `${poem.id}-${verse.nr}`;
+            html += `<div class="verse-item ${isVerseActive ? 'active' : ''}">
+              <div class="verse-row-main" onclick="setActiveVerse('${poem.id}-${verse.nr}')">
+                <span class="verse-nr-badge">${verse.nr}</span>
+                <input type="text" class="verse-text-input" id="v-text-${poem.id}-${verse.nr}" value="${escapeHtml(verse.text)}" onchange="updateVerseText('${poem.id}', ${sIdx}, ${vIdx}, this.value)" onclick="event.stopPropagation()">
+                <input type="text" class="verse-reim-input" id="v-reim-${poem.id}-${verse.nr}" value="${escapeHtml(verse.reim)}" placeholder="Reim" onchange="updateVerseProp('${poem.id}', ${sIdx}, ${vIdx}, 'reim', this.value)" onclick="event.stopPropagation()">
+                <select class="verse-kadenz-select" onchange="updateVerseProp('${poem.id}', ${sIdx}, ${vIdx}, 'kadenz', this.value)" onclick="event.stopPropagation()">
+                  <option value="" ${verse.kadenz===''?'selected':''}>-</option>
+                  <option value="♀" ${verse.kadenz==='♀'?'selected':''}>♀</option>
+                  <option value="♂" ${verse.kadenz==='♂'?'selected':''}>♂</option>
+                </select>
+                <button class="btn-icon btn-ghost" onclick="event.stopPropagation(); toggleVerseDetails('${poem.id}-${verse.nr}')" style="font-size:0.9rem;">📝</button>
+              </div>`;
+            
+            if (isVerseActive) {
+              html += `<div class="verse-details">`;
+              
+              // Tokenizer layout
+              const tokens = tokenize(verse.text);
+              html += `<div class="token-container">`;
+              tokens.forEach((tok, tIdx) => {
+                const isWhitespace = /^\s+$/.test(tok);
+                if (isWhitespace) {
+                  html += `<span>${escapeHtml(tok)}</span>`;
+                } else {
+                  const mark = verse.marks.find(m => m.tokenIndex === tIdx);
+                  const legColor = mark ? getLegendColor(mark.legendId) : 'transparent';
+                  const groupColor = getGroupColor(poem.id, verse.nr, tIdx);
+                  const borderBottom = groupColor ? `border-bottom: 3.5px solid ${groupColor};` : '';
+                  
+                  html += `<span class="token clickable" style="background-color: ${legColor}; ${borderBottom}" 
+                    data-action="tokenClick" data-poem="${poem.id}" data-verse="${verse.nr}" data-token="${tIdx}">${escapeHtml(tok)}</span>`;
+                }
+              });
+              html += `</div>`;
+              
+              // Wortgruppen Chips
+              const verseGroups = state.wordgroups.filter(wg => wg.members.some(m => m.poemId === poem.id && m.verseNr === verse.nr));
+              if (verseGroups.length > 0) {
+                html += `<div style="display:flex; flex-wrap:wrap; gap:0.4rem;">`;
+                verseGroups.forEach(vg => {
+                  html += `<span class="group-chip" style="border:2.5px solid ${vg.color}; background:var(--color-window-bg); color:var(--color-text); padding:0.15rem 0.4rem; font-size:0.72rem; display:flex; align-items:center; gap:0.3rem;">
+                    <span style="width:8px; height:8px; border-radius:50%; background:${vg.color}"></span>
+                    ${escapeHtml(vg.label)}
+                  </span>`;
+                });
+                html += `</div>`;
+              }
+              
+              // Annotation text field & Strophe Split Options
+              const isSplitStart = (vIdx === 0 && sIdx > 0);
+              const showSplitToggle = !(sIdx === 0 && vIdx === 0);
+              html += `<div style="display:flex; gap:0.5rem; align-items:flex-start;">
+                <textarea placeholder="Interpretation / Annotation für Vers ${verse.nr}..." onchange="updateVerseProp('${poem.id}', ${sIdx}, ${vIdx}, 'annotation', this.value)" 
+                  style="flex-grow:1; height:80px; font-family:inherit; font-size:0.9rem; border:3px solid var(--color-text); padding:0.5rem; resize:vertical; background:var(--paper); color:var(--color-text);">${escapeHtml(verse.annotation)}</textarea>
+                <div style="display:flex; flex-direction:column; gap:0.5rem;">
+                  ${showSplitToggle ? `<label style="font-size:0.72rem; display:flex; align-items:center; gap:0.3rem; white-space:nowrap; font-weight:900; font-family:var(--font-mono); text-transform:uppercase;"><input type="checkbox" ${isSplitStart ? 'checked' : ''} onchange="toggleStropheSplit('${poem.id}', ${sIdx}, ${vIdx})"> Split Strophe</label>` : ''}
+                  <button class="btn-icon btn-danger" onclick="deleteVerse('${poem.id}', ${sIdx}, ${vIdx})" style="width:36px; height:36px;">&times;</button>
+                </div>
+              </div></div>`;
+            }
+            html += `</div>`;
+          });
+          html += `</div></div>`;
+        });
+        
+        html += `<div style="margin-top: 1rem; display:flex; gap:1rem;">
+          <button class="btn-ghost" onclick="addVerse('${poem.id}')" style="width:100%; border-style:dashed;">+ Zeile / Vers hinzufügen</button>
+        </div>
+        
+        <div class="divider"></div>
+        
+        <!-- Verbindungen / Arrows Panel -->
+        <div class="section-header">🔗 Textübergreifende Verknüpfungen (Pfeile)</div>
+        <div class="panel">
+          ${(() => { 
+            const validNrs = new Set(); 
+            poem.strophen.forEach(s => s.verses.forEach(v => validNrs.add(v.nr))); 
+            return poem.connections.map((conn, cIdx) => {
+              const fromValid = validNrs.has(conn.from);
+              const toValid = validNrs.has(conn.to);
+              return `
+              <div class="arrow-card">
+                <div class="arrow-card-row">
+                  <span style="font-family:var(--font-mono); font-size:0.75rem; font-weight:800;">VON VERS</span>
+                  <input type="number" value="${conn.from}" onchange="updateConn('${poem.id}', ${cIdx}, 'from', parseInt(this.value))" style="width:55px; ${!fromValid ? 'border-color:var(--red);' : ''}">
+                  <span style="font-family:var(--font-mono); font-size:0.75rem; font-weight:800;">→ BIS VERS</span>
+                  <input type="number" value="${conn.to}" onchange="updateConn('${poem.id}', ${cIdx}, 'to', parseInt(this.value))" style="width:55px; ${!toValid ? 'border-color:var(--red);' : ''}">
+                  <button class="btn-icon btn-ghost" onclick="deleteConn('${poem.id}', ${cIdx})" style="color:var(--red); margin-left:auto; width:30px; height:30px; border:none; box-shadow:none;">&times;</button>
+                </div>
+                <div class="arrow-card-row">
+                  <textarea placeholder="Verweis-Notiz (z.B. Enjambement, Reimpaar)..." onchange="updateConn('${poem.id}', ${cIdx}, 'label', this.value)" style="flex-grow:1; height:45px; font-family:inherit; font-size:0.85rem; border:3px solid var(--color-text); padding:0.3rem; resize:vertical; background:var(--paper); color:var(--color-text);">${escapeHtml(conn.label)}</textarea>
+                </div>
+                <div class="arrow-card-row" style="font-size:0.8rem; gap:1rem;">
+                  <label style="display:flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:0.72rem; text-transform:uppercase;">Farbe <input type="color" value="${conn.lineColor}" onchange="updateConn('${poem.id}', ${cIdx}, 'lineColor', this.value)" class="legend-color-input" style="width:28px; height:28px;"></label>
+                  <label style="display:flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:0.72rem; text-transform:uppercase;">Stil 
+                    <select onchange="updateConn('${poem.id}', ${cIdx}, 'lineStyle', this.value)" style="padding:2px 4px; font-size:0.78rem;">
+                      <option value="solid" ${conn.lineStyle==='solid'?'selected':''}>Durchgehend</option>
+                      <option value="dashed" ${conn.lineStyle==='dashed'?'selected':''}>Gestrichelt</option>
+                    </select>
+                  </label>
+                  <label style="display:flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:0.72rem; text-transform:uppercase;">Form 
+                    <select onchange="updateConn('${poem.id}', ${cIdx}, 'curve', this.value)" style="padding:2px 4px; font-size:0.78rem;">
+                      <option value="bezier" ${conn.curve==='bezier'?'selected':''}>Kurve</option>
+                      <option value="straight" ${conn.curve==='straight'?'selected':''}>Gerade</option>
+                    </select>
+                  </label>
+                </div>
+              </div>`;
+            }).join('');
+          })()}
+          <button class="btn-ghost" onclick="addConn('${poem.id}')" style="width:100%; border-style:dashed; margin-top:8px;">+ Neuer Pfeilverweis</button>
+        </div>
+        </div>`;
+      }
+      
+      // Wortgruppen Panel
+      html += `<div class="section-header">🔗 Wortgruppen / Motivfelder</div><div>`;
+      state.wordgroups.forEach((wg) => {
+        html += `<div class="group-card">
+          <div style="display:flex; gap:0.5rem; align-items:center;">
+            <input type="color" class="legend-color-input" value="${wg.color}" onchange="updateGroupColor('${wg.id}', this.value)">
+            <input type="text" value="${escapeHtml(wg.label)}" onchange="updateGroupLabel('${wg.id}', this.value)" style="flex-grow:1; font-weight:bold;">
+            <button class="btn-icon btn-ghost" onclick="deleteGroup('${wg.id}')" style="color:var(--red); border:none; box-shadow:none;">&times;</button>
+          </div>
+          <div class="group-members">`;
+        wg.members.forEach((m, mIdx) => {
+          html += `<div class="group-chip">
+            <span>${escapeHtml(m.tokenText)} (V${m.verseNr})</span>
+            <span class="del-chip" onclick="removeGroupMember('${wg.id}', ${mIdx})">&times;</span>
+          </div>`;
+        });
+        html += `</div></div>`;
+      });
+      html += `<button class="btn-ghost" onclick="addGroup()" style="width:100%; border-style:dashed;">+ Neues Motivfeld / Wortgruppe</button></div>`;
+
+      container.innerHTML = html;
+    }
+
+    // ----------------------------------------------------
+    // 7. PREVIEW RENDERING & CONTROLS
+    // ----------------------------------------------------
+    function renderPreviewOptions() {
+      const sel = document.getElementById('previewPoemSelect');
+      if (sel) {
+        sel.innerHTML = state.poems.map(p => `<option value="${p.id}" ${p.id === currentPoemId ? 'selected' : ''}>${escapeHtml(p.title || 'Unbenannt')}</option>`).join('');
+      }
+      const badge = document.getElementById('epochBadgePreview');
+      if (badge) badge.innerText = state.meta.epoch;
+    }
+
+    function renderPreview() {
+      const container = document.getElementById('previewContent');
+      if (!container || !state || !state.poems) return;
+      
+      const poem = state.poems.find(p => p.id === currentPoemId) || state.poems[0];
+      if (!poem) { 
+        container.innerHTML = '<div class="panel">Lege links ein neues Gedicht an.</div>'; 
+        return; 
+      }
+      
+      const showAnno = document.getElementById('chkShowAnnotations')?.checked !== false;
+      const showRhymes = document.getElementById('chkShowRhymes')?.checked !== false;
+
+      let html = `<div class="preview-poem">
+        <div class="preview-title">${escapeHtml(poem.title || 'Unbenannter Titel')}</div>
+        <div class="preview-author">${escapeHtml(poem.author || 'Unbekannter Dichter')} (${escapeHtml(poem.year || 'Jahr')})</div>
+        <div style="margin-bottom:1.5rem; font-family:var(--font-mono); font-size:0.78rem; text-transform:uppercase; font-weight:800; opacity:0.85;">
+          Versmaß: <strong>${escapeHtml(poem.meter || 'unbestimmt')}</strong> &nbsp;|&nbsp; Thema: <strong>${escapeHtml(poem.theme || 'unbestimmt')}</strong>
+        </div>`;
+      
+      poem.strophen.forEach(strophe => {
+        html += `<div class="preview-strophe">`;
+        if (strophe.randnotiz) {
+          html += `<div class="preview-randnotiz">${escapeHtml(strophe.randnotiz).replace(/\n/g, '<br>')}</div>`;
+        }
+        
+        strophe.verses.forEach(verse => {
+          const isVerseActive = activePreviewVerse === verse.nr;
+          html += `<div class="preview-verse ${isVerseActive ? 'active-interactive' : ''}" id="prev-v-${verse.nr}" onclick="togglePreviewVerse(${verse.nr})" style="cursor: pointer;">
+            <div class="preview-verse-nr">${verse.nr}</div>
+            <div class="preview-verse-text">`;
+          
+          const tokens = tokenize(verse.text);
+          tokens.forEach((tok, tIdx) => {
+            if (/^\s+$/.test(tok)) {
+              html += `<span>${escapeHtml(tok)}</span>`;
+            } else {
+              const mark = verse.marks.find(m => m.tokenIndex === tIdx);
+              const legColor = mark ? getLegendColor(mark.legendId) : 'transparent';
+              
+              let viewLabels = [];
+              if (mark) {
+                const leg = state.legend.find(l => l.id === mark.legendId);
+                if (leg) viewLabels.push(leg.label);
+              }
+              
+              let foundGroupId = null;
+              let groupColor = null;
+              state.wordgroups.forEach(wg => {
+                if (wg.members.some(m => m.poemId === poem.id && m.verseNr === verse.nr && m.tokenIndex === tIdx)) {
+                  viewLabels.push(wg.label);
+                  foundGroupId = wg.id;
+                  groupColor = wg.color;
+                }
+              });
+              
+              const isGroupActive = foundGroupId && foundGroupId === activeGroupId;
+              const groupHighlightClass = isGroupActive ? 'group-highlight active-group' : '';
+              const groupClass = foundGroupId ? 'grouped' : '';
+              const borderBottom = groupColor ? `border-bottom: 3.5px solid ${groupColor};` : '';
+              const groupVar = groupColor ? `--group-color: ${groupColor};` : '';
+              
+              const tooltipData = viewLabels.length > 0 ? `data-viewlabel="${escapeHtml(viewLabels.join(' | '))}" data-action="viewTooltip"` : '';
+              
+              html += `<span class="token ${groupClass} ${groupHighlightClass}" style="background-color: ${legColor}; ${borderBottom} ${groupVar}" ${tooltipData} data-groupid="${foundGroupId || ''}">${escapeHtml(tok)}</span>`;
+            }
+          });
+          
+          html += `</div>`;
+          
+          html += `<div class="preview-reim">`;
+          if (showRhymes && verse.reim) {
+            html += `<span style="border:2px solid var(--color-text); padding:1px 4px; background:var(--color-bg);">${escapeHtml(verse.reim)}</span><span style="opacity:0.6">${escapeHtml(verse.kadenz)}</span>`;
+          }
+          html += `</div>`;
+          
+          if (showAnno && verse.annotation) {
+            html += `<div class="preview-annotation">${escapeHtml(verse.annotation)}</div>`;
+          }
+          
+          html += `</div>`;
+        });
+        html += `</div>`;
+      });
+      
+      html += `</div>`;
+      
+      if (!document.getElementById('viewTooltip')) {
+        const vt = document.createElement('div');
+        vt.id = 'viewTooltip';
+        vt.className = 'view-tooltip';
+        vt.style.display = 'none';
+        document.body.appendChild(vt);
+      }
+      
+      container.innerHTML = html;
+    }
+
+    // ----------------------------------------------------
+    // 8. SVG CURVED ARROW RENDERING
+    // ----------------------------------------------------
+    function renderArrows() {
+      const showArrows = document.getElementById('chkShowArrows')?.checked ?? true;
+      const overlay = document.getElementById('arrowOverlay');
+      const defs = document.getElementById('arrowDefs');
+      if (!overlay || !defs) return;
+
+      const poem = state.poems.find(p => p.id === currentPoemId);
+      
+      const toRemove = [];
+      for(let child of overlay.children) {
+        if(child.tagName !== 'defs') toRemove.push(child);
+      }
+      toRemove.forEach(c => overlay.removeChild(c));
+      defs.innerHTML = '';
+
+      const wrapper = document.getElementById('previewContentWrapper');
+      if (wrapper) {
+        wrapper.querySelectorAll('.preview-arrow-label').forEach(el => el.remove());
+      }
+      
+      if (!showArrows || !poem || !wrapper) return;
+      
+      const wrapRect = wrapper.getBoundingClientRect();
+      const usedColors = new Set();
+      poem.connections.forEach(c => usedColors.add(c.lineColor));
+      
+      usedColors.forEach(color => {
+        const hex = color.replace('#', '');
+        defs.innerHTML += `
+          <marker id="mk-arrow-${hex}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="${color}" />
+          </marker>
+        `;
+      });
+
+      poem.connections.forEach(conn => {
+        const fromEl = document.getElementById(`prev-v-${conn.from}`);
+        const toEl = document.getElementById(`prev-v-${conn.to}`);
+        if(!fromEl || !toEl) return;
+        
+        const fRect = fromEl.getBoundingClientRect();
+        const tRect = toEl.getBoundingClientRect();
+        
+        const xStart = fRect.right - wrapRect.left + 8;
+        const xEnd = tRect.right - wrapRect.left + 8;
+        const yStart = fRect.top + fRect.height/2 - wrapRect.top + wrapper.scrollTop;
+        const yEnd = tRect.top + tRect.height/2 - wrapRect.top + wrapper.scrollTop;
+        
+        let pathD = '';
+        if (conn.curve === 'bezier') {
+          const dy = Math.abs(yEnd - yStart);
+          const maxBulge = window.innerWidth <= 600 ? 20 : 100;
+          const bulge = Math.min(dy * 0.5, maxBulge); 
+          pathD = `M ${xStart} ${yStart} C ${xStart + bulge} ${yStart}, ${xEnd + bulge} ${yEnd}, ${xEnd} ${yEnd}`;
+        } else {
+          pathD = `M ${xStart} ${yStart} L ${xEnd} ${yEnd}`;
+        }
+        
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        const isActiveArrow = conn.from === activePreviewVerse || conn.to === activePreviewVerse;
+        const arrowClass = isActiveArrow ? 'interactive-arrow active' : 'interactive-arrow';
+        
+        path.setAttribute("class", `arrow-path ${arrowClass}`);
+        path.setAttribute("d", pathD);
+        path.setAttribute("stroke", conn.lineColor);
+        path.setAttribute("stroke-width", conn.lineWidth || 3);
+        path.setAttribute("fill", "none");
+        
+        if (conn.lineStyle === 'dashed') path.setAttribute("stroke-dasharray", "6,6");
+        
+        const hex = conn.lineColor.replace('#','');
+        path.setAttribute("marker-end", `url(#mk-arrow-${hex})`);
+        
+        if (conn.label) {
+          const labelDiv = document.createElement("div");
+          const midY = (yStart + yEnd) / 2;
+          
+          const maxBulge = window.innerWidth <= 600 ? 20 : 100;
+          const peakX = Math.max(xStart, xEnd) + (conn.curve === 'bezier' ? Math.min(Math.abs(yEnd - yStart)*0.25, maxBulge) : 0);
+          const midX = peakX + (window.innerWidth <= 600 ? 0 : 20); 
+          
+          labelDiv.className = `preview-arrow-label ${isActiveArrow ? 'active' : ''}`;
+          labelDiv.style.left = `${midX}px`;
+          labelDiv.style.top = `${midY}px`;
+          labelDiv.style.borderColor = conn.lineColor;
+          labelDiv.style.color = 'var(--color-text)';
+          
+          if (window.innerWidth <= 600) {
+            labelDiv.style.transform = "translate(-50%, -50%)";
+          } else {
+            labelDiv.style.transform = "translateY(-50%)";
+          }
+          
+          labelDiv.textContent = conn.label;
+          wrapper.appendChild(labelDiv);
+        }
+        
+        overlay.appendChild(path);
+      });
+    }
+
+    // ----------------------------------------------------
+    // 9. EVENTS DELEGATION
+    // ----------------------------------------------------
+    function setupEventListeners() {
+      const sel = document.getElementById('previewPoemSelect');
+      if (sel) {
+        sel.onchange = (e) => {
+          playClickSound();
+          currentPoemId = e.target.value;
+          renderPreview();
+          renderArrows();
+        };
+      }
+      
+      ['chkShowAnnotations', 'chkShowRhymes'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.onchange = () => { playClickSound(); renderPreview(); renderArrows(); };
+      });
+      
+      const chkArrows = document.getElementById('chkShowArrows');
+      if (chkArrows) chkArrows.onchange = () => { playClickSound(); renderArrows(); };
+
+      document.getElementById('btnAddPoem').onclick = () => { playClickSound(); addNewPoem(); };
+      document.getElementById('btnShowHelp').onclick = () => { playClickSound(); document.getElementById('helpModal').showModal(); };
+      
+      document.getElementById('btnExportDialog').onclick = () => {
+        playClickSound();
+        document.getElementById('exportTitle').value = state.meta.title;
+        document.getElementById('exportEpoch').value = state.meta.epoch;
+        document.getElementById('exportModal').showModal();
+      };
+      
+      document.getElementById('closeExportModal').onclick = () => {
+        playClickSound();
+        document.getElementById('exportModal').close();
+      };
+      
+      document.getElementById('btnExportJson').onclick = () => { playClickSound(); exportJson(); };
+      document.getElementById('fileImport').onchange = (e) => { playClickSound(); importJson(e); };
+      document.getElementById('btnExportHtml').onclick = () => { playClickSound(); exportHtml(); };
+
+      // Undo/Redo Shortcuts
+      document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === 'z') { e.preventDefault(); undo(); }
+        if (e.ctrlKey && e.key === 'y') { e.preventDefault(); redo(); }
+      });
+
+      // Token click editor delegation
+      document.getElementById('editorContent').addEventListener('click', (e) => {
+        const tokenEl = e.target.closest('[data-action="tokenClick"]');
+        if (tokenEl) {
+          e.stopPropagation();
+          playClickSound();
+          handleTokenClick(e, tokenEl.dataset.poem, parseInt(tokenEl.dataset.verse), parseInt(tokenEl.dataset.token));
+          return;
+        }
+      });
+
+      // Preview tooltip click delegation
+      document.getElementById('previewPane').addEventListener('click', (e) => {
+        const tooltipEl = e.target.closest('[data-action="viewTooltip"]');
+        if (tooltipEl) {
+          playClickSound();
+          showViewTooltip(e, tooltipEl);
+          return;
+        }
+      });
+    }
+
+    function switchPoem(id) {
+      playClickSound();
+      currentPoemId = id;
+      openPoemIds.add(id);
+      renderAll();
+    }
+
+    function setActiveVerse(id) {
+      activeVerseId = (activeVerseId === id) ? null : id;
+      renderEditor();
+    }
+
+    function togglePreviewVerse(nr) {
+      playClickSound();
+      activePreviewVerse = (activePreviewVerse === nr) ? null : nr;
+      renderAll();
+    }
+
+    function handleTokenClick(event, poemId, verseNr, tokenIndex) {
+      const tooltip = document.getElementById('colorTooltip');
+      const rect = event.target.getBoundingClientRect();
+      const left = Math.min(rect.left, window.innerWidth - 290);
+      const top = Math.min(rect.bottom + 5, window.innerHeight - 300);
+      
+      tooltip.style.left = Math.max(0, left) + 'px';
+      tooltip.style.top = top + 'px';
+      
+      const poem = state.poems.find(p => p.id === poemId);
+      if (!poem) return;
+      let verse = null;
+      poem.strophen.forEach(s => { const v = s.verses.find(vv => vv.nr === verseNr); if(v) verse = v; });
+      if (!verse) return;
+      const currentMark = verse.marks.find(m => m.tokenIndex === tokenIndex);
+      
+      const tokens = tokenize(verse.text);
+      
+      let html = `<div class="tooltip-section">
+        <div class="tooltip-title">Kategorie markieren</div>
+        <div class="color-grid">
+          <button class="color-circle-btn ${!currentMark ? 'active' : ''}" style="background:#fff; color:#999; font-weight:bold; font-size:12px;" data-action="markToken" data-legend="" data-poem="${poemId}" data-verse="${verseNr}" data-token="${tokenIndex}">X</button>`;
+      
+      state.legend.forEach(leg => {
+        const isActive = currentMark && currentMark.legendId === leg.id;
+        html += `<button class="color-circle-btn" style="background:${leg.color}; ${isActive ? 'border-color:var(--orange); border-width:4px;' : ''}" data-action="markToken" data-legend="${leg.id}" data-poem="${poemId}" data-verse="${verseNr}" data-token="${tokenIndex}"></button>`;
+      });
+      html += `</div></div>`;
+      
+      html += `<div class="tooltip-section">
+        <div class="tooltip-title">Wortgruppe / Motiv</div>
+        <div class="group-selector-list">`;
+      
+      state.wordgroups.forEach(wg => {
+        const isInGroup = wg.members.some(m => m.poemId === poemId && m.verseNr === verseNr && m.tokenIndex === tokenIndex);
+        html += `<div class="group-selector-item ${isInGroup ? 'active' : ''}" data-action="addToGroup" data-group="${wg.id}" data-poem="${poemId}" data-verse="${verseNr}" data-token="${tokenIndex}">
+          <span style="display:inline-block; width:14px; height:14px; background:${wg.color}; border:2px solid var(--color-text); border-radius:50%;"></span>
+          <span style="flex-grow:1">${escapeHtml(wg.label)}</span>
+          ${isInGroup ? '<span>✓</span>' : ''}
+        </div>`;
+      });
+      
+      html += `<button class="btn-ghost" style="width:100%; font-size:0.75rem; padding:0.4rem; margin-top:0.3rem; border:2.5px dashed var(--color-text);" onclick="addGroup()">+ Neue Gruppe</button>
+      </div>`;
+      
+      tooltip.innerHTML = html;
+      tooltip.style.display = 'block';
+      
+      tooltip.onclick = (te) => {
+        te.stopPropagation();
+        const markBtn = te.target.closest('[data-action="markToken"]');
+        if (markBtn) {
+          playClickSound();
+          markToken(markBtn.dataset.legend || null, markBtn.dataset.poem, parseInt(markBtn.dataset.verse), parseInt(markBtn.dataset.token));
+          tooltip.style.display = 'none';
+          return;
+        }
+        const groupBtn = te.target.closest('[data-action="addToGroup"]');
+        if (groupBtn) {
+          playClickSound();
+          const p = state.poems.find(pp => pp.id === groupBtn.dataset.poem);
+          let v = null;
+          if (p) p.strophen.forEach(s => { const vv = s.verses.find(x => x.nr === parseInt(groupBtn.dataset.verse)); if(vv) v = vv; });
+          const toks = v ? tokenize(v.text) : [];
+          const txt = toks[parseInt(groupBtn.dataset.token)] || '';
+          addToGroup(groupBtn.dataset.group, groupBtn.dataset.poem, parseInt(groupBtn.dataset.verse), parseInt(groupBtn.dataset.token), txt);
+          tooltip.style.display = 'none';
+          return;
+        }
+      };
+      
+      event.stopPropagation();
+      document.addEventListener('click', () => { tooltip.style.display = 'none'; }, {once: true});
+    }
+
+    // ----------------------------------------------------
+    // 10. STATE MUTATORS
+    // ----------------------------------------------------
+    function updatePoem(poemId, prop, value) {
+      const poem = state.poems.find(p => p.id === poemId);
+      if (poem) poem[prop] = value;
+      requestRender();
+    }
+
+    function updateStropheRandnotiz(poemId, sIdx, value) {
+      const poem = state.poems.find(p => p.id === poemId);
+      if (poem) poem.strophen[sIdx].randnotiz = value;
+      requestRender();
+    }
+
+    function updateVerseText(poemId, sIdx, vIdx, text) {
+      const poem = state.poems.find(p => p.id === poemId);
+      if (!poem?.strophen?.[sIdx]?.verses?.[vIdx]) return;
+      poem.strophen[sIdx].verses[vIdx].text = text;
+      requestRender();
+    }
+
+    function updateVerseProp(poemId, sIdx, vIdx, prop, val) {
+      const poem = state.poems.find(p => p.id === poemId);
+      if (!poem?.strophen?.[sIdx]?.verses?.[vIdx]) return;
+      poem.strophen[sIdx].verses[vIdx][prop] = val;
+      requestRender();
+    }
+
+    function addVerse(poemId) {
+      playClickSound();
+      const poem = state.poems.find(p => p.id === poemId);
+      if (!poem) return;
+      let lastStrophe = poem.strophen[poem.strophen.length-1];
+      if (!lastStrophe) { lastStrophe = { randnotiz:"", verses:[] }; poem.strophen.push(lastStrophe); }
+      let maxNr = 0;
+      poem.strophen.forEach(s => s.verses.forEach(v => { if(v.nr > maxNr) maxNr = v.nr; }));
+      lastStrophe.verses.push({ nr: maxNr + 1, text: "Neuer Vers", reim: "", kadenz: "", marks: [], annotation: "" });
+      requestRender();
+    }
+
+    function deleteVerse(poemId, sIdx, vIdx) {
+      playClickSound();
+      if (confirm("Möchten Sie diesen Vers wirklich löschen?")) {
+        const poem = state.poems.find(p => p.id === poemId);
+        if (!poem?.strophen?.[sIdx]?.verses?.[vIdx]) return;
+        poem.strophen[sIdx].verses.splice(vIdx, 1);
+        if (poem.strophen[sIdx].verses.length === 0) poem.strophen.splice(sIdx, 1);
+        renumberVerses(poem);
+        requestRender();
+      }
+    }
+
+    function renumberVerses(poem) {
+      const oldToNew = {};
+      let nr = 1;
+      poem.strophen.forEach(s => s.verses.forEach(v => {
+        oldToNew[v.nr] = nr;
+        v.nr = nr++;
+      }));
+      poem.connections.forEach(c => {
+        if (oldToNew[c.from] !== undefined) c.from = oldToNew[c.from];
+        if (oldToNew[c.to] !== undefined) c.to = oldToNew[c.to];
+      });
+      state.wordgroups.forEach(wg => {
+        wg.members.forEach(m => {
+          if (m.poemId === poem.id && oldToNew[m.verseNr] !== undefined) {
+            m.verseNr = oldToNew[m.verseNr];
+          }
+        });
+      });
+    }
+
+    function toggleStropheSplit(poemId, sIdx, vIdx) {
+      playClickSound();
+      const poem = state.poems.find(p => p.id === poemId);
+      if (!poem) return;
+
+      const isSplitStart = (vIdx === 0 && sIdx > 0);
+
+      if (isSplitStart) {
+        const prevStrophe = poem.strophen[sIdx - 1];
+        const currentStrophe = poem.strophen[sIdx];
+        prevStrophe.verses = prevStrophe.verses.concat(currentStrophe.verses);
+        poem.strophen.splice(sIdx, 1);
+      } else {
+        const versesToMove = poem.strophen[sIdx].verses.splice(vIdx);
+        poem.strophen.splice(sIdx + 1, 0, { randnotiz: "", verses: versesToMove });
+      }
+      requestRender();
+    }
+
+    function updateLegendColor(id, color) {
+      const leg = state.legend.find(l => l.id === id);
+      if (leg) leg.color = color;
+      requestRender();
+    }
+
+    function updateLegendLabel(id, label) {
+      const leg = state.legend.find(l => l.id === id);
+      if (leg) leg.label = label;
+      requestRender();
+    }
+
+    function addLegend() {
+      playClickSound();
+      state.legend.push({ id: genId('leg'), color: "#CCCCCC", label: "Kategorie" });
+      requestRender();
+    }
+
+    function deleteLegend(id) {
+      playClickSound();
+      if (confirm("Kategorie löschen?")) {
+        state.legend = state.legend.filter(l => l.id !== id);
+        state.poems.forEach(p => p.strophen.forEach(s => s.verses.forEach(v => {
+          v.marks = v.marks.filter(m => m.legendId !== id);
+        })));
+        requestRender();
+      }
+    }
+
+    function updateGroupColor(id, color) {
+      const wg = state.wordgroups.find(g => g.id === id);
+      if (wg) wg.color = color;
+      requestRender();
+    }
+
+    function updateGroupLabel(id, label) {
+      const wg = state.wordgroups.find(g => g.id === id);
+      if (wg) wg.label = label;
+      requestRender();
+    }
+
+    function addGroup() {
+      playClickSound();
+      state.wordgroups.push({ id: genId('wg'), label: "Wortfeld", color: "#FF6B9D", members: [] });
+      requestRender();
+    }
+
+    function deleteGroup(id) {
+      playClickSound();
+      if (confirm("Motivfeld löschen?")) {
+        state.wordgroups = state.wordgroups.filter(g => g.id !== id);
+        requestRender();
+      }
+    }
+
+    function removeGroupMember(groupId, mIdx) {
+      playClickSound();
+      const wg = state.wordgroups.find(g => g.id === groupId);
+      if (wg) wg.members.splice(mIdx, 1);
+      requestRender();
+    }
+
+    function markToken(legendId, poemId, verseNr, tokenIndex) {
+      const poem = state.poems.find(p => p.id === poemId);
+      if (!poem) return;
+      let targetVerse = null;
+      poem.strophen.forEach(s => {
+        const v = s.verses.find(vv => vv.nr === verseNr);
+        if (v) targetVerse = v;
+      });
+      if (!targetVerse) return;
+      targetVerse.marks = targetVerse.marks.filter(m => m.tokenIndex !== tokenIndex);
+      if (legendId) targetVerse.marks.push({ tokenIndex, legendId });
+      saveSnapshot();
+      renderAll();
+    }
+
+    function addToGroup(groupId, poemId, verseNr, tokenIndex, tokenText) {
+      const wg = state.wordgroups.find(g => g.id === groupId);
+      if (!wg) return;
+      const exists = wg.members.findIndex(m => m.poemId === poemId && m.verseNr === verseNr && m.tokenIndex === tokenIndex);
+      if (exists > -1) wg.members.splice(exists, 1);
+      else wg.members.push({ poemId, verseNr, tokenIndex, tokenText });
+      saveSnapshot();
+      renderAll();
+    }
+
+    function updateConn(poemId, cIdx, prop, val) {
+      const poem = state.poems.find(p => p.id === poemId);
+      if (!poem || !poem.connections[cIdx]) return;
+      poem.connections[cIdx][prop] = val;
+      requestRender();
+    }
+
+    function addConn(poemId) {
+      playClickSound();
+      const poem = state.poems.find(p => p.id === poemId);
+      if (poem) {
+        poem.connections.push({ id: genId('conn'), from: 1, to: 2, label: "Verbindung", lineStyle: "solid", lineColor: "#FF6B9D", lineWidth: 3, markerStart: "none", markerEnd: "arrow", curve: "bezier" });
+        requestRender();
+      }
+    }
+
+    function deleteConn(poemId, cIdx) {
+      playClickSound();
+      const poem = state.poems.find(p => p.id === poemId);
+      if (poem) poem.connections.splice(cIdx, 1);
+      requestRender();
+    }
+
+    function deletePoem(id) {
+      playClickSound();
+      if (confirm("Gedicht unwiderruflich löschen?")) {
+        state.poems = state.poems.filter(p => p.id !== id);
+        if (currentPoemId === id) currentPoemId = state.poems[0]?.id || null;
+        requestRender();
+      }
+    }
+
+    function addNewPoem() {
+      const newId = genId('poem');
+      state.poems.unshift({ id: newId, author: "Dichter Name", title: "Neues Gedicht", year: "Jahr", meter: "Metrum", theme: "Thema", strophen: [ { randnotiz: "", verses: [{ nr: 1, text: "Erste Verszeile hier...", reim: "", kadenz: "", marks: [], annotation: "" }] } ], connections: [] });
+      currentPoemId = newId;
+      requestRender();
+    }
+
+    function movePoem(idx, dir) {
+      playClickSound();
+      const newIdx = idx + dir;
+      if (newIdx < 0 || newIdx >= state.poems.length) return;
+      const item = state.poems.splice(idx, 1)[0];
+      state.poems.splice(newIdx, 0, item);
+      requestRender();
+    }
+
+    function showViewTooltip(event, element) {
+      const vt = document.getElementById('viewTooltip');
+      const label = element.getAttribute('data-viewlabel');
+      const gid = element.getAttribute('data-groupid');
+      
+      if (gid) {
+        activeGroupId = gid;
+        renderOnly();
+        const dismiss = (e) => {
+          if (!e.target.closest('.token.grouped')) {
+            activeGroupId = null;
+            renderOnly();
+            document.removeEventListener('click', dismiss);
+          }
+        };
+        setTimeout(() => document.addEventListener('click', dismiss), 10);
+      }
+
+      if (!label) return;
+      vt.innerHTML = label;
+      vt.style.display = 'block';
+      const rect = element.getBoundingClientRect();
+      vt.style.left = Math.min(rect.left + rect.width / 2, window.innerWidth - 100) + 'px';
+      vt.style.top = Math.max(rect.top - 5, 10) + 'px';
+      document.addEventListener('click', () => { vt.style.display = 'none'; }, {once: true});
+    }
+
+    // ----------------------------------------------------
+    // 11. EXPORT GENERATION
+    // ----------------------------------------------------
+    function exportJson() {
+      state.meta.title = document.getElementById('exportTitle').value;
+      state.meta.epoch = document.getElementById('exportEpoch').value;
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${state.meta.title.replace(/\s+/g, '_')}_daten.json`;
+      a.click();
+    }
+
+    function importJson(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          state = JSON.parse(ev.target.result);
+          saveSnapshot();
+          renderAll();
+          document.getElementById('exportModal').close();
+        } catch(err) {
+          playErrorSound();
+          alert("Konnte JSON-Projektdatei nicht dekodieren.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function exportHtml() {
+      state.meta.title = document.getElementById('exportTitle').value;
+      state.meta.epoch = document.getElementById('exportEpoch').value;
+      
+      const opts = {
+        colors: document.getElementById('expColors').checked,
+        rhymes: document.getElementById('expRhymes').checked,
+        annotations: document.getElementById('expAnnotations').checked,
+        arrows: document.getElementById('expArrows').checked,
+        groups: document.getElementById('expGroups').checked,
+        legend: document.getElementById('expLegend').checked,
+        learnMode: document.getElementById('expLearnMode').checked
+      };
+      
+      const exportState = JSON.parse(JSON.stringify(state));
+      exportState.poems.forEach(p => {
+        p.strophen.forEach(s => s.verses.forEach(v => {
+          if (!opts.colors) v.marks = [];
+          if (!opts.annotations) v.annotation = '';
+        }));
+        if (!opts.arrows) p.connections = [];
+      });
+      if (!opts.groups) exportState.wordgroups.forEach(wg => { wg.members = []; });
+      
+      const css = Array.from(document.styleSheets)
+        .map(s => { try { return Array.from(s.cssRules).map(r => r.cssText).join(''); } catch(e){return '';} })
+        .join('');
+      
+      const learnModeCSS = opts.learnMode ? `
+        .preview-annotation { display: none !important; }
+        .preview-verse.active-interactive .preview-annotation { display: none !important; }
+        .learn-mode-revealed .preview-annotation { display: block !important; }
+        .learn-mode-revealed .preview-verse.active-interactive .preview-annotation { display: block !important; }
+        .learn-toggle { position:fixed; bottom:1rem; right:1rem; z-index:999; }
+      ` : '';
+      const learnModeBtn = opts.learnMode ? `<button class="btn-primary learn-toggle" onclick="document.getElementById('previewContentWrapper').classList.toggle('learn-mode-revealed')">💡 Annotationen umschalten</button>` : '';
+      
+      let legendHtml = '';
+      if (opts.legend && exportState.legend.length > 0) {
+        legendHtml = '<div style="margin-top:2rem; padding:1.2rem; border:3px solid var(--color-text,#000); border-radius:0px; background:var(--color-window-bg,#fff); box-shadow:4px 4px 0 var(--color-shadow,#000);">';
+        legendHtml += '<div style="font-weight:900; margin-bottom:0.8rem; text-transform:uppercase; font-family:var(--font-mono, monospace); font-size:0.8rem;">Legende</div>';
+        exportState.legend.forEach(leg => {
+          legendHtml += `<div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.3rem;"><span style="width:20px; height:20px; border-radius:50%; background:${leg.color}; border:2px solid var(--color-text,#000); display:inline-block;"></span><span style="font-weight:700; font-size:0.9rem;">${escapeHtml(leg.label)}</span></div>`;
+        });
+        if (opts.groups) {
+          exportState.wordgroups.forEach(wg => {
+            legendHtml += `<div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.3rem;"><span style="width:20px; height:6px; background:${wg.color}; border:2px solid var(--color-text,#000); display:inline-block;"></span><span style="font-weight:700; font-size:0.9rem;">${escapeHtml(wg.label)}</span></div>`;
+          });
+        }
+        legendHtml += '</div>';
+      }
+        
+      const readOnlyHtml = `<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${escapeHtml(exportState.meta.title)}</title>
+  <style>${css}</style>
+  <style>
+    body { background: var(--color-bg); margin: 0; padding: 2rem 0; overflow-x: hidden; }
+    .preview-pane { display: flex; justify-content: center; width: 100%; box-sizing: border-box; padding: 0 1rem; padding-right: ${opts.arrows ? '16rem' : '1rem'}; overflow: visible; }
+    .preview-content-wrapper-export { width: 100%; max-width: 700px; position: relative; box-sizing: border-box; padding: 2rem; padding-bottom: 3rem; background: var(--color-window-bg, #fff); border: var(--border-width) solid var(--color-text, #000); box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--color-shadow, #000); overflow: visible; }
+    #previewContent { position: relative; z-index: 10; }
+    @media (max-width: 900px) { .preview-pane { padding-right: ${opts.arrows ? '11rem' : '1rem'}; } .preview-arrow-label { width: 10rem; font-size: 0.8rem; } }
+    @media (max-width: 600px) { body { padding: 0.5rem 0; } .preview-pane { padding: 0 0.3rem; padding-right: ${opts.arrows ? '7rem' : '0.3rem'}; } .preview-content-wrapper-export { padding: 1rem 0.5rem; padding-bottom: 2rem; border-radius: 0; } .preview-verse { grid-template-columns: 20px 1fr 35px; gap: 0.4rem; } .preview-verse-nr { font-size: 0.65rem; } .preview-verse-text { font-size: 0.95rem; line-height: 1.5; } .preview-reim { font-size: 0.7rem; } .preview-title { font-size: 1.2rem; } .preview-author { font-size: 0.95rem; } .epoch-badge { font-size: 0.75rem; top: 0.2rem; left: -0.2rem; position: relative; display: inline-block; margin-bottom: 0.5rem; } .preview-arrow-label { width: 5.5rem; font-size: 0.65rem; padding: 0.3rem 0.4rem; line-height: 1.3; box-shadow: 2px 2px 0 var(--color-text, #000); border: 2px solid var(--color-text, #000); } .preview-annotation { font-size: 0.8rem; padding: 0.4rem 0.6rem; } .token { padding: 0.05rem 0.1rem; margin: 0; } }
+    ${learnModeCSS}
+  </style>
+</head>
+<body>
+  ${learnModeBtn}
+  <div class="preview-pane">
+    <div class="preview-content-wrapper preview-content-wrapper-export" id="previewContentWrapper">
+      <div class="epoch-badge">${escapeHtml(exportState.meta.epoch)}</div>
+      <div id="previewContent"></div>
+      ${legendHtml}
+      <svg id="arrowOverlay" class="arrow-overlay"><defs id="arrowDefs"></defs></svg>
+    </div>
+  </div>
+  <script>
+    const state = ${JSON.stringify(exportState)};
+    const exportOpts = ${JSON.stringify(opts)};
+    let currentPoemId = "${currentPoemId}";
+    let activePreviewVerse = null;
+    let activeGroupId = null;
+    let renderTimeout = null;
+    
+    ${escapeHtml.toString()}
+    ${tokenize.toString()}
+    ${getLegendColor.toString()}
+    ${getGroupColor.toString()}
+    
+    function requestRender() { 
+      clearTimeout(renderTimeout); 
+      renderTimeout = setTimeout(() => { renderPreview(); if(exportOpts.arrows) renderArrows(); }, 50); 
+    }
+    
+    ${togglePreviewVerse.toString()}
+    ${renderPreview.toString()}
+    ${renderArrows.toString()}
+    ${showViewTooltip.toString()}
+    
+    window.onload = () => { renderPreview(); if(exportOpts.arrows) renderArrows(); };
+    let resizeTimer;
+    window.onresize = () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { if(exportOpts.arrows) renderArrows(); }, 100); };
+  <\/script>
+</body>
+</html>`.replace(/<\\\/script>/g, '</' + 'script>');
+
+      const blob = new Blob([readOnlyHtml], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${state.meta.title.replace(/\s+/g, '_')}_lyrik.html`;
+      a.click();
+    }
+
+    // ----------------------------------------------------
+    // 12. Drag & Drop Legend
+    // ----------------------------------------------------
+    let draggedLegendIdx = null;
+    function dragLegend(e, idx) {
+      draggedLegendIdx = idx;
+      e.target.closest('.legend-item')?.classList.add('dragging');
+    }
+    function dropLegend(e, targetIdx) {
+      e.preventDefault();
+      document.querySelectorAll('.legend-item').forEach(el => {
+        el.classList.remove('dragging', 'drag-over');
+      });
+      if (draggedLegendIdx !== null && draggedLegendIdx !== targetIdx) {
+        const item = state.legend.splice(draggedLegendIdx, 1)[0];
+        state.legend.splice(targetIdx, 0, item);
+        requestRender();
+      }
+      draggedLegendIdx = null;
+    }
+    function dragOverLegend(e, idx) {
+      e.preventDefault();
+      document.querySelectorAll('.legend-item').forEach((el, i) => {
+        el.classList.toggle('drag-over', i === idx && idx !== draggedLegendIdx);
+      });
+    }
+
+    window.onload = init;
+    window.onresize = () => {
+      renderArrows();
+    };
+  </script>
+
+  <!-- WissOS SDK: Theme & Sound Bridge -->
+  <script src="../../sdk/wissos-sdk.js"></script>
+  <script>
+    // Connect to WissOS OS host for theme propagation
+    WissOS.sdk.ready();
+  </script>
+</body>
+</html>

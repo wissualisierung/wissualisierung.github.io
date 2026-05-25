@@ -1,0 +1,250 @@
+﻿{
+    "id":  "theodor_fontane",
+    "name":  "Theodor Fontane",
+    "short":  "Fontane",
+    "dates":  "1819 – 1898",
+    "epoch":  "Realismus",
+    "epochShort":  "Realismus",
+    "color":  "#4E342E",
+    "highlight":  "#6D4C41",
+    "icon":  "🍐",
+    "quote":  "Gegen ein ganzes Volk lässt sich nicht regieren.",
+    "timelinePos":  36,
+    "avatar":  "avatar.jpg",
+    "source":  "https://de.wikipedia.org/wiki/Theodor_Fontane#/media/Datei:Theodor_Fontane_Breitbach.jpg",
+    "theme":  "sebastian-wolf",
+    "modules":  [
+                    {
+                        "type":  "framing",
+                        "content":  "Du triffst gleich auf Theodor Fontane – oder besser: auf eine Konstruktion, die so spricht, wie er vielleicht geschrieben hätte. Fontane selbst ist 1898 in Berlin gestorben. Was du hier liest, basiert auf seinen Romanen, Balladen, Essays und Briefen, ist aber eine didaktische Interpretation. Lies kritisch!"
+                    },
+                    {
+                        "type":  "timeline",
+                        "epochs":  [
+                                       {
+                                           "name":  "Fontanes Leben",
+                                           "start":  1819,
+                                           "end":  1898,
+                                           "active":  true,
+                                           "info":  "Geboren am 30. Dezember 1819 in Neuruppin. Gestorben am 20. September 1898 in Berlin."
+                                       },
+                                       {
+                                           "name":  "Vormärz",
+                                           "start":  1815,
+                                           "end":  1848,
+                                           "active":  false,
+                                           "info":  "Politisch aufgewühlte Zeit vor der Revolution von 1848."
+                                       },
+                                       {
+                                           "name":  "Poetischer Realismus",
+                                           "start":  1848,
+                                           "end":  1890,
+                                           "active":  false,
+                                           "info":  "Literatur als \"Widerspieglung alles wirklichen Lebens\" im Medium der Kunst."
+                                       },
+                                       {
+                                           "name":  "Gründerzeit",
+                                           "start":  1871,
+                                           "end":  1890,
+                                           "active":  false,
+                                           "info":  "Kaiserreich, Industrialisierung, Bürgertum als neue Leitkultur."
+                                       },
+                                       {
+                                           "name":  "Spätes Werk",
+                                           "start":  1876,
+                                           "end":  1898,
+                                           "active":  false,
+                                           "info":  "Erst mit 57 Jahren beginnt Fontane Romane zu schreiben. Die große Ernte."
+                                       }
+                                   ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Guten Tag. Ja, ich bin Theodor Fontane – Apotheker, Journalist, Kriegsberichterstatter, Wanderer und, wenn man so will, ein ziemlich später Romancier. Ich wurde am 30. Dezember 1819 in Neuruppin geboren, über einer Apotheke, die meinem Vater gehörte. Der war ein Fantast und Humorist – und Apotheker nur, wenn es nicht zu umständlich war. Eine Apotheke nach der anderen hat er veräußert. Ich selbst bin dann denselben Weg gegangen, bis ich beschloss: Das Glück liegt woanders als in aufgetürmten Fünftalerscheinen. \u003cspan class=\"chat-source-ref\" title=\"vgl. WDR Zeitzeichen, 30.12.2019\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. WDR Zeitzeichen, 30.12.2019\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Fontane als Apotheker – das klingt etwas unpassend für einen der größten deutschen Schriftsteller. Wie hat er den Sprung zur Literatur geschafft?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Theodor Fontane wurde am 30. Dezember 1819 in Neuruppin als Sohn eines Apothekers hugenottischer Abstammung geboren. Ohne Abitur kam er auf die Berliner Gewerbeschule und erlernte wie sein Vater den Apothekerberuf. Erste Manuskripte schickte er ungefragt an Verlage und bekam sie ungelesen zurück. Erst im literarischen Sonntagsverein \"Tunnel über der Spree\" fand er ein erstes Publikum und wichtige Kontakte. Seinen Lebensunterhalt verdiente er jahrzehntelang als Journalist, für die konservative Kreuzzeitung ebenso wie als Theaterkritiker für die liberale Vossische Zeitung. Erst mit 57 Jahren, nach der Kündigung eines gut bezahlten Verwaltungspostens als Erster Sekretär der Akademie der Künste, beschloss er, Romane zu schreiben."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Mit mir also war es nichts im Literatentum; so dachte ich selbst lange Zeit. Aber dann kam der \"Tunnel über der Spree\", dieser literarische Sonntagsverein, und langsam das Schreiben als Beruf. Ich habe für die Kreuzzeitung geschrieben, die konservativste Zeitung Preußens – und gleichzeitig als Theaterkritiker für die liberale Vossische. Das klingt widersprüchlich? Es war widersprüchlich. Ich selbst stand 1848 auf den Barrikaden. Ich war ein Mann, der sich ein neues Preußen wünschte. Und dann schrieb ich für jene, die das alte verteidigten. Unanfechtbare Wahrheiten gibt es überhaupt nicht und wenn es welche gibt, so sind sie langweilig. \u003cspan class=\"chat-source-ref\" title=\"vgl. WDR Zeitzeichen, 30.12.2019; Fontane-Gesellschaft / Roland Berbig\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. WDR Zeitzeichen, 30.12.2019; Fontane-Gesellschaft / Roland Berbig\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Widersprüchlich klingt auch die hugenottische Herkunft. Was bedeutete das für Fontane?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Die Vorfahren beider Elternteile Fontanes waren Hugenotten, französische Protestanten, die nach der Aufhebung des Edikts von Nantes (1685) nach Preußen eingewandert waren. Fontane empfand diese Herkunft als prägendes Merkmal seiner Identität. Er schrieb, er habe von Jugend auf das Gefühl gehabt, \"als etwas nicht ganz Alltägliches angesehen zu werden\". Diese Außenperspektive – der leicht Fremde im eigenen Land – sollte sein Schreiben grundlegend beeinflussen: Fontane beobachtet die preußische Gesellschaft stets mit einem Blick von innen und außen zugleich."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Von Jugend auf bin ich daran gewöhnt, als etwas nicht ganz Alltägliches angesehen zu werden. Das schärft den Blick. Wer immer ein bisschen daneben steht, sieht mehr. Und vielleicht erklärt das auch meine Wanderungen – durch die Mark Brandenburg, durch England, durch Preußens Geschichte und durch die Gesellschaft meiner Zeit. Ich war ein Wanderer, das hat mir sogar mein Vorgesetzter bescheinigt: Fontane habe nicht die Energie, dauerhaft auf einen Zweck hinzuarbeiten. Er ist halt ein Wanderer. Nun, ich nehme das als Kompliment. \u003cspan class=\"chat-source-ref\" title=\"vgl. WDR Zeitzeichen, 30.12.2019\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. WDR Zeitzeichen, 30.12.2019\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Das beinahe inselförmige Stück Land, um das die Havel ihr blaues Band zieht.",
+                        "prompt":  "Markiere auffällige sprachliche Bilder.",
+                        "targets":  [
+                                        {
+                                            "word":  "blaues Band",
+                                            "feedback":  "Metapher für den Fluss; die Farbe verleiht der Landschaft eine romantisch-malerische Qualität, die typisch für Fontanes Naturbeschreibungen ist."
+                                        },
+                                        {
+                                            "word":  "inselförmig",
+                                            "feedback":  "Das Bild der Insel isoliert und hebt den Ort hervor – Fontane schreibt der Mark Brandenburg eine besondere, fast mythische Eigenständigkeit zu."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Welches ist das umfangreichste Werk Theodor Fontanes?",
+                        "options":  [
+                                        {
+                                            "text":  "Effi Briest",
+                                            "correct":  false,
+                                            "feedback":  "Effi Briest ist Fontanes bekanntester Roman, aber nicht sein umfangreichstes Werk."
+                                        },
+                                        {
+                                            "text":  "Wanderungen durch die Mark Brandenburg",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Das fünfbändige Reise- und Geschichtswerk über die märkische Landschaft ist Fontanes umfangreichstes Werk."
+                                        },
+                                        {
+                                            "text":  "Der Stechlin",
+                                            "correct":  false,
+                                            "feedback":  "Der Stechlin ist Fontanes letzter Roman, erschienen kurz vor seinem Tod 1898."
+                                        },
+                                        {
+                                            "text":  "Vor dem Sturm",
+                                            "correct":  false,
+                                            "feedback":  "Vor dem Sturm war Fontanes erster Roman, erschienen 1878."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Mit 57 Jahren, mittellos und nach nur drei Monaten als Erster Sekretär der Akademie der Künste, habe ich gekündigt. Mir ist die Freiheit Nachtigall, den anderen Leuten das Gehalt. Meine Frau Emilie war nicht begeistert; sie hatte sich einen ruhigen Lebensabend vorgestellt. Aber sie hat alle meine Romane abgeschrieben, manche sogar zweimal, und war meine erste Kritikerin. Was wäre ich ohne sie geworden? Dann kamen die Romane: Vor dem Sturm, Irrungen Wirrungen, Frau Jenny Treibel, Effi Briest, Der Stechlin. Ich fange erst an, nichts liegt hinter mir, alles vor mir – das sagte ich mit 57. \u003cspan class=\"chat-source-ref\" title=\"vgl. WDR Zeitzeichen, 30.12.2019\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. WDR Zeitzeichen, 30.12.2019\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "„Ich fange erst an, nichts liegt hinter mir, alles vor mir.",
+                        "source":  "Theodor Fontane, mit 57 Jahren nach Kündigung seines Akademiepostens"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Und was macht Effi Briest so besonders? Warum lesen wir den Roman noch heute?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Effi Briest (1894/95 als Fortsetzungsroman, 1896 als Buch) gilt als Fontanes bedeutendster Roman und als Hauptwerk des poetischen Realismus. Er erzählt von der jungen Effi, die mit 17 Jahren den wesentlich älteren Baron von Innstetten heiratet und in einem gesellschaftlichen System gefangen ist, das ihr kaum Handlungsspielraum lässt. Fontane selbst beschrieb Realismus nicht als \"das nackte Wiedergeben alltäglichen Lebens, am wenigsten seines Elends und seiner Schattenseiten\", sondern als \"die Widerspieglung alles wirklichen Lebens, aller wahren Kräfte und Interessen im Elemente der Kunst\". Fontane urteilt nicht über seine Figuren, er zeigt sie. Der Leser muss selbst Position beziehen."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Effi Briest; ja, die kleine Effi. Sie schaukelt, springt, lacht, und dann heiratet sie einen Mann, den sie kaum kennt, weil das eben so war. Ich habe nicht erfunden, was ich schrieb. Der Fall, auf dem der Roman beruht, ereignete sich so ähnlich. Ich habe ihn natürlich künstlerisch geformt. Was mich beschäftigt hat war nicht das Urteil, sondern diese Frage: wie kann es so weit kommen? Was macht diese Gesellschaft mit einem Menschen? Ich urteile nicht über Innstetten, nicht über Effi. Ich zeige. Schlechtes schlecht und es muss gesagt werden, aber wie man es sagt, das ist die Kunst. \u003cspan class=\"chat-source-ref\" title=\"vgl. Fontane, Aufsatz über Realismus; Effi Briest, 1896\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. Fontane, Aufsatz über Realismus; Effi Briest, 1896\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Realismus ist nicht das nackte Wiedergeben alltäglichen Lebens, am wenigsten seines Elends und seiner Schattenseiten – die Widerspieglung alles wirklichen Lebens, aller wahren Kräfte und Interessen im Elemente der Kunst.",
+                        "source":  "Theodor Fontane, Essay über den Realismus"
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Kann ein Schriftsteller erzählen, ohne zu werten?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Der poetische Realismus (ca. 1848–1890) ist die dominante Strömung der deutschsprachigen Literatur nach der gescheiterten Revolution von 1848. Wichtige Vertreter sind neben Fontane u. a. Gottfried Keller und Adalbert Stifter. Kennzeichen sind: Darstellung des bürgerlichen Alltags, Zurücknahme des Erzähler-Ichs, Verwendung von Symbolen und Leitmotiven, gesellschaftskritischer Blick ohne offene Polemik. Von einem einfachen \"Abbild der Wirklichkeit\" unterscheidet sich der poetische Realismus durch die künstlerische Formung und Stilisierung des Stoffes."
+                    },
+                    {
+                        "type":  "quiz-multi",
+                        "question":  "Welche der folgenden Merkmale kennzeichnen den poetischen Realismus?",
+                        "options":  [
+                                        {
+                                            "text":  "Darstellung des bürgerlichen Alltags als zentrales Sujet",
+                                            "correct":  true,
+                                            "feedback":  "Korrekt! Das Bürgertum und seine sozialen Normen stehen im Mittelpunkt."
+                                        },
+                                        {
+                                            "text":  "Offene politische Agitation und Gesellschaftskritik",
+                                            "correct":  false,
+                                            "feedback":  "Das unterscheidet den Realismus vom Naturalismus und Vormärz. Kritik wird eher indirekt eingebaut."
+                                        },
+                                        {
+                                            "text":  "Zurückhaltender, nicht-wertender Erzähler",
+                                            "correct":  true,
+                                            "feedback":  "Korrekt! Der Erzähler zeigt, urteilt aber nicht offen."
+                                        },
+                                        {
+                                            "text":  "Verwendung von Symbolen und Leitmotiven",
+                                            "correct":  true,
+                                            "feedback":  "Korrekt! In Effi Briest z. B. das Schaukel-Motiv oder der Strand als Freiheitssymbol."
+                                        },
+                                        {
+                                            "text":  "Rückzug ins Innerliche und religiöse Mystik",
+                                            "correct":  false,
+                                            "feedback":  "Das ist eher ein Merkmal der Romantik, nicht des Realismus."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Glück, das ist ein Wort, das sich in meinem Gesamtwerk am häufigsten findet. Man hat das nachgezählt. Glück, wer will sagen, was du bist und wo du bist? Bei Lichte besehen sind Ruhe und Glück überhaupt dasselbe. Ich bin kein unglücklicher Mensch gewesen, aber ich habe das Glück nie für selbstverständlich gehalten. Mit 78 plagten mich Husten, Asthma und die Nerven. Gott, was ist Glück? Eine Grießsuppe, eine Schlafstelle, keine körperlichen Schmerzen. Das ist schon viel. Und doch: Geschrieben habe ich bis zum Schluss. \u003cspan class=\"chat-source-ref\" title=\"vgl. WDR Zeitzeichen, 30.12.2019\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. WDR Zeitzeichen, 30.12.2019\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "barometer",
+                        "statement":  "Fontanes Aussage \"Bei Lichte besehen sind Ruhe und Glück überhaupt dasselbe\" wirkt auch heute noch überzeugend.",
+                        "min":  "stimme nicht zu",
+                        "max":  "stimme voll zu"
+                    },
+                    {
+                        "type":  "checkpoint",
+                        "question":  "Erkläre, was Fontane meint, wenn er sagt, Realismus sei nicht \"das nackte Wiedergeben\" der Wirklichkeit."
+                    },
+                    {
+                        "type":  "self-assessment",
+                        "items":  [
+                                      "Ich kenne die wichtigsten Stationen in Fontanes Leben und seinen Weg zur Literatur.",
+                                      "Ich kann Fontane der Epoche des poetischen Realismus zuordnen und Merkmale nennen.",
+                                      "Ich verstehe, was mit Fontanes beobachtendem, nicht urteilen Erzählstil gemeint ist.",
+                                      "Ich kenne mindestens drei Werke Fontanes und ihre Bedeutung."
+                                  ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Man wird Mühe haben, wenn man mich für eine Richtung festmachen will. Ich habe für Konservative geschrieben und bin auf Barrikaden gestanden. Ich habe über Preußens Junker geschrieben und gleichzeitig gesagt, die Zukunft liege beim vierten Stand. Ich bin ein Wanderer geblieben; in der Landschaft, in der Politik, in der Literatur. \u003cspan class=\"chat-source-ref\" title=\"vgl. Roland Berbig, Fontane-Gesellschaft; WDR Zeitzeichen, 30.12.2019\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. Roland Berbig, Fontane-Gesellschaft; WDR Zeitzeichen, 30.12.2019\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Welcher Aspekt von Fontanes Leben oder Werk hat dich am meisten überrascht oder beeindruckt? Begründe deine Antwort."
+                    },
+                    {
+                        "type":  "finale",
+                        "text":  "Wenn dich mein Leben interessiert, dann recherchiere doch weiter! Mehr über mich findest du hier:",
+                        "links":  [
+                                      {
+                                          "label":  "WDR Zeitzeichen",
+                                          "url":  "https://www1.wdr.de/mediathek/audio/zeitzeichen/audio-theodor-fontane-schriftsteller-geburtstag--100.html"
+                                      },
+                                      {
+                                          "label":  "Wikipedia",
+                                          "url":  "https://de.wikipedia.org/wiki/Theodor_Fontane"
+                                      },
+                                      {
+                                          "label":  "Bibliographie",
+                                          "url":  "https://www.fontanearchiv.de/digitale-dienste/fontane-bibliographie"
+                                      }
+                                  ],
+                        "literature":  [
+                                           "Helmuth Nürnberger: Fontane. Rowohlt Monographien, Reinbek 2002, ISBN 3-499-50341-0.",
+                                           "Roland Berbig: Theodor Fontane im literarischen Leben. De Gruyter, Berlin 2000.",
+                                           "Wolfgang Rasch: Theodor Fontane Bibliographie online. Auf der Grundlage der Theodor Fontane Bibliographie (3 Bde., Berlin, 2006) hrsg. vom Theodor-Fontane-Archiv. Potsdam 2019ff. (Aktualisierte und ergänzte Fassung der Druckausgabe.)"
+                                       ]
+                    }
+                ]
+}

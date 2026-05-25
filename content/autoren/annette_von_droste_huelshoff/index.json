@@ -1,0 +1,257 @@
+﻿{
+    "id":  "annette_von_droste_huelshoff",
+    "name":  "Annette von Droste-Hülshoff",
+    "short":  "Droste",
+    "dates":  "1797 – 1848",
+    "epoch":  "Biedermeier",
+    "epochShort":  "Biedermeier",
+    "color":  "#9E9E9E",
+    "highlight":  "#FF9800",
+    "icon":  "🌿",
+    "quote":  "Und dennoch – welch ein Glück, geliebt zu werden!",
+    "timelinePos":  25.9,
+    "avatar":  "avatar.jpg",
+    "source":  "https://de.wikipedia.org/wiki/Annette_von_Droste-H%C3%BClshoff#/media/Datei:Droste-H%C3%BClshoff_2.jpg",
+    "theme":  "sebastian-wolf",
+    "modules":  [
+                    {
+                        "type":  "framing",
+                        "content":  "Du triffst gleich auf Annette von Droste-Hülshoff – oder besser: auf eine Konstruktion, die so spricht, wie sie geschrieben hat. Droste selbst ist am 24. Mai 1848 auf der Meersburg am Bodensee gestorben. Was du hier liest, basiert auf ihren Gedichten, Briefen und biografischen Zeugnissen, ist aber eine didaktische Interpretation. Lies kritisch!"
+                    },
+                    {
+                        "type":  "timeline",
+                        "epochs":  [
+                                       {
+                                           "name":  "Drostes Leben",
+                                           "start":  1797,
+                                           "end":  1848,
+                                           "active":  true,
+                                           "info":  "Geboren auf Burg Hülshoff im Münsterland. Gestorben auf der Meersburg am Bodensee. Sie wurde nur 51 Jahre alt."
+                                       },
+                                       {
+                                           "name":  "Romantik",
+                                           "start":  1795,
+                                           "end":  1835,
+                                           "active":  false,
+                                           "info":  "Prägende Epoche mit Volkslieddichtung und Natursehnsucht; \"Die Droste\" geht indes weit darüber hinaus."
+                                       },
+                                       {
+                                           "name":  "Biedermeier",
+                                           "start":  1815,
+                                           "end":  1848,
+                                           "active":  false,
+                                           "info":  "Rückzug ins Private, Naturliebe, religiöse Tiefe, aber auch latente Unzufriedenheit mit den Verhältnissen."
+                                       },
+                                       {
+                                           "name":  "Vormärz",
+                                           "start":  1835,
+                                           "end":  1848,
+                                           "active":  false,
+                                           "info":  "Politisch aufgeladene Zeit; Droste thematisiert soziale Ungerechtigkeit, Antisemitismus und Umweltzerstörung."
+                                       }
+                                   ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich bin Annette von Droste-Hülshoff, geboren am 10. Januar 1797 auf Burg Hülshoff im Münsterland. Alle nannten mich Nette. Ich bin mit sieben Monaten auf die Welt gekommen, zu früh, wie man immer wieder betonte, und das hat mich mein ganzes Leben begleitet. Ich habe seit meinem siebten Lebensjahr Gedichte geschrieben. Ich habe Cicero im Original gelesen, Bibliotheken verschlungen und ein Trauerspiel verfasst, bevor ich erwachsen war. Das hat manchen Männern große Angst gemacht. \u003cspan class=\"chat-source-ref\" title=\"vgl. WDR Zeitzeichen, 10.01.2022\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. WDR Zeitzeichen, 10.01.2022\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Angst? Warum sollte ein junges Mädchen aus adliger Familie den Männern Angst machen?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Als Annette von Droste-Hülshoff 1813 auf dem Bökerhof, dem Gut ihrer Großeltern, auf Wilhelm Grimm traf, bescherte ihr die Begegnung einen unrühmlichen Ruf: \"Es ist schade, dass sie etwas Vordringliches und Unangenehmes in ihrem Wesen hat\", notierte der Märchensammler. Nachts träumte er von ihr als furchteinflößender Gestalt in Purpurflammen. Droste war hellblond, blauäugig, ganz klein und wenn eine junge Frau dieser Art einen Mann an die Wand argumentiert, mit Wissen, Witz und Eloquenz, dann macht das Angst. Wilhelm Grimm war damit nicht der Einzige."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich habe mich nie damit abgefunden, dass ich nicht sein darf, was ich bin. Als ich mit 45 Jahren das Gedicht Am Turme schrieb, waren meine Träume noch genauso ungestüm wie in der Jugend. Im Korallenwald ein Walross jagen wollte ich, das Steuerruder im Sturm halten, wie eine Möwe über das Riff segeln. Und dann musste ich weiterschreiben: Wär ich ein Mann doch mindestens nur, so würde der Himmel mir raten. Nun muss ich sitzen so fein und klar, gleich einem artigen Kinde. \u003cspan class=\"chat-source-ref\" title=\"Annette von Droste-Hülshoff, Am Turme, 1841/42\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Annette von Droste-Hülshoff, Am Turme, 1841/42\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Wär ich ein Jäger auf freier Flur, / ein Stück nur von einem Soldaten. / Wär ich ein Mann doch mindestens nur, / so würde der Himmel mir raten.",
+                        "prompt":  "Markiere Aspekte, die auf die gesellschaftliche Realität zur Zeit Drostes verweisen.",
+                        "targets":  [
+                                        {
+                                            "word":  "Jäger, Soldat",
+                                            "feedback":  "Beide Rollen stehen für Bewegungsfreiheit und Handlungsmacht; Domänen der Männer. Droste benennt genau das, was ihr strukturell verwehrt ist."
+                                        },
+                                        {
+                                            "word":  "mindestens nur",
+                                            "feedback":  "Das \"mindestens\" ist ein bitteres Understatement, denn nicht Gleichheit, nur das Minimum würde schon reichen."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Was lässt sich als Kern von Drostes \"frühem Feminismus\" beschreiben?",
+                        "options":  [
+                                        {
+                                            "text":  "Sie forderte offen das Frauenwahlrecht in politischen Pamphleten.",
+                                            "correct":  false,
+                                            "feedback":  "Das tat sie nicht. Drostes Kritik ist literarisch und indirekt, aber daher nicht weniger grundsätzlich."
+                                        },
+                                        {
+                                            "text":  "Sie wies immer wieder auf die strukturelle Benachteiligung von Mädchen und Frauen hin.",
+                                            "correct":  true,
+                                            "feedback":  "Genau! Den Begriff Feminismus gab es noch nicht, aber das Muster weist Parallelen auf: Droste macht sichtbar, was Frauen durch Gesellschaft und Familie auferlegt wurde."
+                                        },
+                                        {
+                                            "text":  "Sie lebte als freie Schriftstellerin ohne familiäre Verpflichtungen.",
+                                            "correct":  false,
+                                            "feedback":  "Im Gegenteil: als unverheiratete Tochter war sie der Mutter gegenüber in vielfältige Pflegepflichten eingebunden, die sie jahrelang vom Schreiben abhielten."
+                                        },
+                                        {
+                                            "text":  "Sie unterstützte die Revolution von 1848 aktiv.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Droste wuchs auf Burg Hülshoff in einer wohlhabenden westfälischen Adelsfamilie auf. Ihr sanfter Vater führte sie in Botanik, Ornithologie und Naturwissenschaften ein und besaß sogar ein Mikroskop; eine für die Zeit ungewöhnlich hohe Bildung. Die dominante Mutter dagegen lehnte jede Veröffentlichung der frühen Gedichte ihrer Tochter ab. Nach dem Tod des Vaters bewohnte Droste eine kleine Wohnung im Rüschhaus, dem Witwensitz der Mutter, kontrolliert und eingebunden in Pflege und Haushaltspflichten, die sie jahrelang vom kontinuierlichen Schreiben abhielten."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich hatte Pläne, Träume, Sehnsüchte. Mein Plage-Dämon heißt Sehnsucht in die Ferne, schrieb ich als Dreiundzwanzigjährige. Entfernte Länder, große interessante Menschen, entfernte Kunstwerke – all das hatte eine traurige Gewalt über mich. Nach Afrika oder Amerika wollte ich reisen. Geblieben bin ich fast immer in Westfalen oder am Bodensee. Und doch – oder vielleicht gerade deswegen – sind meine Gedichte so weit gelangt, wie ich es nie durfte. \u003cspan class=\"chat-source-ref\" title=\"Droste-Hülshoff, Briefe\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Droste-Hülshoff, Briefe\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Was hat Droste dann überhaupt veröffentlicht? War sie zu Lebzeiten erfolgreich?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Droste war 41, als 1838 ihr erster Gedichtband erschien. Die Resonanz war mäßig. Größere Aufmerksamkeit erlangte jedoch kurz darauf ihre Kriminalnovelle \u003cem\u003eDie Judenbuche\u003c/em\u003e (1842): eine raffinierte psychologisch-soziologische Studie über Schuld, soziale Ungerechtigkeit und Antisemitismus im westfälischen Landleben, die mehr Fragen aufwirft als beantwortet und ihrer Zeit weit voraus ist. Den eigentlichen Durchbruch als Lyrikerin brachte der zweite Gedichtband (1844), entstanden in ihrer glücklichsten Phase am Bodensee. Diese Gedichte begründeten ihren Ruhm als Lyrikerin. Die ästhetisch bedeutende Gestaltung der Heide zeigt eine Bewegung zwischen den Polen detaillierter Wahrnehmung einzelner Gegenstände und phantasievoller Überformung der Landschaft durch eine bewegliche Einbildungs- und Reflexionskraft. Droste zeigt mitunter auch ein geradezu modern anmutendes Umweltbewusstsein."
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Oh schaurig ist\u0027s übers Moor zu gehen, wenn es wimmelt vom Heiderauche, sich wie Phantome die Dünste drehen und die Ranke hägelt am Strauche. Unter jedem Tritte ein Quellchen springt, wenn aus der Spalte es zischt und singt, oh schaurig ist\u0027s übers Moor zu gehen, wenn das Röhricht knistert im Hauche.",
+                        "source":  "Annette von Droste-Hülshoff, Der Knabe im Moor (1844)"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Tief ab im Tobel liegt ein Haus, / zerfallen nach des Försters Tode. / Dort ruhe ich manche Stunde aus, / vergraben unter Rank und Lode.",
+                        "prompt":  "Zeige in den Versen aus \u003cem\u003eDas öde Haus\u003c/em\u003e durch Markieren, in welcher Eigenschaft sich Haus und lyrisches Ich begegnen.",
+                        "targets":  [
+                                        {
+                                            "word":  "zerfallen",
+                                            "feedback":  "Verfall und Vergänglichkeit sind keine romantischen Kulissen. Bei Droste werden sie mit mikroskopischer Genauigkeit beschrieben, fast naturwissenschaftlich."
+                                        },
+                                        {
+                                            "word":  "vergraben",
+                                            "feedback":  "Das lyrische Ich sucht keinen Ausblick, sondern Versenkung; eine antiromantische Haltung: keine Sehnsucht nach dem Fernen, sondern Aufmerksamkeit für das Nahe und Verfallende."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Droste schreibt: \"Ich mag und will jetzt nicht berühmt werden, aber nach 100 Jahren möchte ich gelesen werden.\" Erkläre, was dieser Satz über ihr Selbstbewusstsein als Schriftstellerin aussagt und über ihre Erwartungen an ihre eigene Zeit?"
+                    },
+                    {
+                        "type":  "quiz-multi",
+                        "question":  "Welche der folgenden Aussagen über Droste-Hülshoff sind korrekt?",
+                        "options":  [
+                                        {
+                                            "text":  "Droste veröffentlichte ihren ersten Gedichtband erst mit 41 Jahren.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Familiäre Pflichten, der Widerstand der Mutter und gesellschaftliche Konventionen verzögerten ihre Publikationskarriere erheblich."
+                                        },
+                                        {
+                                            "text":  "Die Judenbuche erschien 1844 und war Drostes bekanntestes Gedicht.",
+                                            "correct":  false,
+                                            "feedback":  "Die Judenbuche ist eine Novelle, keine Lyrik, und erschien bereits 1842."
+                                        },
+                                        {
+                                            "text":  "Die Judenbuche gilt als raffinierte psychologisch-soziologische Studie, die ihrer Zeit voraus war.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Sie thematisiert Schuld, soziale Ungleichheit und Antisemitismus auf eine Weise, die auch heute noch als modern gilt."
+                                        },
+                                        {
+                                            "text":  "Droste thematisiert in ihren Texten auch Umweltzerstörung und nimmt damit Debatten des Anthropozäns vorweg.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Droste beschreibt die Grenzen zwischen Mensch, Tier und Pflanze als durchlässig."
+                                        },
+                                        {
+                                            "text":  "Droste lebte die letzten Jahre als freie Schriftstellerin in Wien.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Als Levin Schücking den Bodensee verließ, um eine Stelle als Prinzenerzieher anzutreten – und dann heiratete –, brach ich endgültig mit ihm. Die glücklichste Zeit meines Lebens war vorbei. In den nächsten Jahren wurde ich immer mehr von Krankheiten gequält. Gestorben bin ich am 24. Mai 1848 auf der Meersburg, mit 51 Jahren. Was bleibt, sind die Gedichte. Ich wusste das. Meine Lieder werden leben, wenn ich längst entschwand. \u003cspan class=\"chat-source-ref\" title=\"Droste-Hülshoff, Gedichte\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Droste-Hülshoff, Gedichte\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "barometer",
+                        "statement":  "Drostes Kritik an der gesellschafltichen Benachteiligung von Frauen ist auch heute noch relevant.",
+                        "min":  "stimme nicht zu",
+                        "max":  "stimme voll zu"
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Welche Aussage beschreibt Drostes Stellung in der deutschen Literaturgeschichte am treffendsten?",
+                        "options":  [
+                                        {
+                                            "text":  "Sie wurde schon zu Lebzeiten als größte Dichterin Deutschlands gefeiert.",
+                                            "correct":  false,
+                                            "feedback":  "Nicht ganz: der große Erfolg blieb zu Lebzeiten aus. Erst Ende des 19. Jahrhunderts wurde sie zur bedeutendsten Dichterin Deutschlands gekürt."
+                                        },
+                                        {
+                                            "text":  "Sie wurde erst nach ihrem Tod als bedeutendste Dichterin Deutschlands anerkannt; genau wie sie es selbst vorhergesagt hatte.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Ihr Satz \"nach 100 Jahren möchte ich gelesen werden\" ist ein besonderes Zeugnis literarischen Selbstbewusstseins."
+                                        },
+                                        {
+                                            "text":  "Sie galt schon zu ihrer Zeit als Vorreiterin des Realismus und wurde entsprechend rezipiert.",
+                                            "correct":  false,
+                                            "feedback":  "Ihr Werk hat realistische Züge, aber die zeitgenössische Rezeption war verhalten. Die Einordnung in literarische Strömungen erfolgte erst posthum. Sie gilt als Vertreterin des Bidermeier."
+                                        },
+                                        {
+                                            "text":  "Sie veröffentlichte ausschließlich Prosa und keine Lyrik.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "checkpoint",
+                        "question":  "Erkläre in zwei bis drei Sätzen, warum Droste-Hülshoff trotz ihres adeligen, behüteten Umfelds als \"frühe Feministin\" bezeichnet werden kann. Gib ein konkretes Beispiel aus ihrem Werk oder Leben an."
+                    },
+                    {
+                        "type":  "self-assessment",
+                        "items":  [
+                                      "Ich verstehe, wie Drostes gesellschaftliche Einschränkungen ihr Schreiben geprägt haben",
+                                      "Ich kann an einem Beispiel zeigen, wie Droste Natur mikroskopisch genau beobachtet",
+                                      "Ich kenne wichtige Werke Drostes und ihre Entstehungskontexte"
+                                  ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich habe mein Leben lang mit \"deine gehorsame Tochter Nette\" unterschrieben. Und gleichzeitig habe ich meinen eigenen Weg gemacht, zeigte mich unerschütterlich. Ich war keine Revolutionärin. Ich habe nicht auf Barrikaden gestanden. Aber ich habe geschrieben, was ich schreiben wollte, schrieb streng, genau, ohne Pfauenfedern in meinem Krähenpelz. Das, finde ich, ist Würde. \u003cspan class=\"chat-source-ref\" title=\"Droste-Hülshoff, Briefe\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Droste-Hülshoff, Briefe\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Welcher Aspekt von Drostes Leben oder Werk hat dich am meisten überrascht oder beeindruckt?"
+                    },
+                    {
+                        "type":  "finale",
+                        "text":  "Wenn dich mein Leben interessiert, dann recherchiere doch weiter! Mehr über mich findest du im Internet.",
+                        "links":  [
+                                      {
+                                          "label":  "WDR Zeitzeichen",
+                                          "url":  "https://www1.wdr.de/radio/wdr5/sendungen/zeitzeichen/zeitzeichen-annette-von-droste-huelshoff-104.html"
+                                      },
+                                      {
+                                          "label":  "Wikipedia",
+                                          "url":  "https://de.wikipedia.org/wiki/Annette_von_Droste-H%C3%BClshoff"
+                                      }
+                                  ],
+                        "literature":  [
+                                           "Winfried Woesler (Hrsg.): Annette von Droste-Hülshoff. Historisch-kritische Ausgabe. Niemeyer, Tübingen 1978 ff.",
+                                           "Anke Kramer / Günter Häntzschel: Annette von Droste-Hülshoff. Reclam, Stuttgart 2022."
+                                       ]
+                    }
+                ]
+}

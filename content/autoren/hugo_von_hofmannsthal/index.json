@@ -1,0 +1,254 @@
+﻿{
+    "id":  "hugo_von_hofmannsthal",
+    "name":  "Hugo von Hofmannsthal",
+    "short":  "Hofmannsthal",
+    "dates":  "1874 – 1929",
+    "epoch":  "Wiener Moderne · Symbolismus",
+    "epochShort":  "Moderne",
+    "color":  "#6A1B9A",
+    "highlight":  "#8E24AA",
+    "icon":  "🥀",
+    "quote":  "Das Wort ist die Tat.",
+    "timelinePos":  61,
+    "avatar":  "avatar.jpg",
+    "source":  "https://de.wikipedia.org/wiki/Hugo_von_Hofmannsthal#/media/Datei:Hofmannsthal_1893.jpg",
+    "theme":  "sebastian-wolf",
+    "modules":  [
+                    {
+                        "type":  "framing",
+                        "content":  "Du triffst gleich auf Hugo von Hofmannsthal – oder besser: auf eine Konstruktion, die so spricht, wie er vielleicht geschrieben hätte. Hofmannsthal selbst ist am 15. Juli 1929 in Rodaun bei Wien gestorben. Was du hier liest, basiert auf seinen Texten, Briefen und biografischen Zeugnissen, ist aber eine didaktische Interpretation. Lies kritisch!"
+                    },
+                    {
+                        "type":  "timeline",
+                        "epochs":  [
+                                       {
+                                           "name":  "Hofmannsthals Leben",
+                                           "start":  1874,
+                                           "end":  1929,
+                                           "active":  true,
+                                           "info":  "Geboren in Wien. Gestorben in Rodaun. Nur 55 Jahre alt."
+                                       },
+                                       {
+                                           "name":  "Wiener Moderne / Jugendstil",
+                                           "start":  1890,
+                                           "end":  1910,
+                                           "active":  false,
+                                           "info":  "Ästhetizismus, Sprachskepsis, Subjektkrise, Verfall der k. u. k. Monarchie."
+                                       },
+                                       {
+                                           "name":  "Jahrhundertwende",
+                                           "start":  1900,
+                                           "end":  1910,
+                                           "active":  false,
+                                           "info":  "Sprache, Identität und Wirklichkeit geraten in die Krise – der Chandos-Brief als literarisches Dokument."
+                                       },
+                                       {
+                                           "name":  "Erster Weltkrieg und Zwischenkriegszeit",
+                                           "start":  1914,
+                                           "end":  1929,
+                                           "active":  false,
+                                           "info":  "Zerfall Österreich-Ungarns als traumatische Zäsur – Hofmannsthal antwortet mit den Salzburger Festspielen."
+                                       }
+                                   ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich bin Hugo von Hofmannsthal, geboren am 1. Februar 1874 in Wien – in der prächtigen Hauptstadt eines großen Reiches, das man schon damals von innen ausbluten sehen konnte. Meine Familie lebte stilvoll, liebte Musik, umgab sich mit schönen kostbaren Dingen. Ich wuchs belesen und vielsprachig auf. Mit 16 saß ich im Café Griensteidl unter Wiener Schriftstellern – und sie staunten, dass dieser Gymnasiast jener Autor Loris sein sollte, dessen Gedichte ganz Wien begeisterten. \u003cspan class=\"chat-source-ref\" title=\"vgl. WDR Zeitzeichen, 01.02.2019; Stefan Zweig, Erinnerungen\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. WDR Zeitzeichen, 01.02.2019; Stefan Zweig, Erinnerungen\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "learner",
+                        "content":  "Mit 16 Jahren schon berühmt – das klingt traumhaft. War das nicht ein Vorteil?"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Stefan Zweig, der die Begegnung überliefert, nannte Hofmannsthals frühe Vollendung \"ein Phänomen, wie es sich innerhalb einer Generation kaum ein zweites Mal ereignet\". Doch wer als \"früh Vollendeter\" gilt, steht für immer in der Schuld gegenüber dem eigenen fulminanten Anfang. Das spätere Werk wird stets an diesem Maßstab gemessen – und das hat Hofmannsthal nicht selten unter Druck gesetzt. Von seinen frühen Arbeiten nahm er nur wenige in die Ausgaben seiner Werke auf, darunter ein einziges Gedicht, das er selbst auf Schallplatte gesprochen hat."
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Schön ist mein Garten mit den goldenen Bäumen, den Blättern, die mit Silbersäuseln zittern, den Diamantentau, den Wappengittern, dem Klang des Gong, bei dem die Löwen träumen. So schrieb ich damals. Perfekte Verse – und doch getränkt von jener tiefen Melancholie, die mein ganzes Werk durchziehen sollte. So etwas schreibt nur einer, dem Vergänglichkeit und Tod vertrauter Alltag sind. Wien war dafür der richtige Ort: herzzerreißend schön und leise sterbend. \u003cspan class=\"chat-source-ref\" title=\"Hofmannsthal, Gedichte\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Hofmannsthal, Gedichte\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Und Kinder wachsen auf mit tiefen Augen, / die von nichts wissen, wachsen auf und sterben / und alle Menschen gehen ihre Wege.",
+                        "prompt":  "Markiere die Weltsicht, die sich in der Ballade des äußeren Lebens (1894) zeigt.",
+                        "targets":  [
+                                        {
+                                            "word":  "tiefen Augen, die von nichts wissen",
+                                            "feedback":  "Tiefe Augen gelten als Zeichen von Weisheit, aber hier ist es unwissendes Tiefschauen. Kindheit als Metapher für die Ahnungslosigkeit des Menschen gegenüber dem Tod."
+                                        },
+                                        {
+                                            "word":  "wachsen auf und sterben",
+                                            "feedback":  "Kein Höhepunkt, kein Wendepunkt; das Leben reduziert sich auf Werden und Vergehen. Dazwischen liegt kein erkennbarer Sinn: Vergänglichkeit als Grundbedingung."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Welcher literarischen Strömung wird Hofmannsthals Frühwerk zugeordnet?",
+                        "options":  [
+                                        {
+                                            "text":  "Expressionismus",
+                                            "correct":  false,
+                                            "feedback":  "Der Expressionismus schreit und verzerrt – Hofmannsthals Jugendlyrik ist das genaue Gegenteil: verfeinert, melancholisch, ästhetisch vollkommen."
+                                        },
+                                        {
+                                            "text":  "Naturalismus",
+                                            "correct":  false,
+                                            "feedback":  "Der Naturalismus beschreibt soziale Missstände mit wissenschaftlicher Nüchternheit. Hofmannsthal interessiert sich für das Innenleben und die Sprache der Schönheit."
+                                        },
+                                        {
+                                            "text":  "Wiener Moderne / Ästhetizismus",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Hofmannsthal gehört zum \"Jungen Wien\" um 1890, das Schönheit als Wert an sich betrachtete und die Krise des modernen Subjekts ästhetisch verarbeitete."
+                                        },
+                                        {
+                                            "text":  "Biedermeier",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Ende der 1890er Jahre – Hofmannsthal ist Mitte 20 – vollzieht sich eine entscheidende Zäsur: Er schreibt keine Lyrik mehr. Stattdessen denkt er über die Grenzen von Sprache nach, über die scheinbar verlorene Sicherheit, Dinge und Gedanken überhaupt benennen zu können. Das Ergebnis ist der Chandos-Brief von 1902: ein fiktives Schreiben des Lord Chandos an den Philosophen Francis Bacon, in dem Chandos erklärt, warum er aufgehört hat zu schreiben. Die Sprache selbst ist ihm unbrauchbar geworden. Worte sind leer, Begriffe versperren den Zugang zur Wirklichkeit. Der Chandos-Brief ist ein virtuoses Dokument, das die Möglichkeiten der Literatur testet und in ihrer Begrenztheit sichtbar macht."
+                    },
+                    {
+                        "type":  "quote",
+                        "text":  "Es ist mir völlig die Fähigkeit abhanden gekommen, über irgendetwas zusammenhängend zu denken oder zu sprechen. Es zerfiel mir alles in Teile, die Teile wieder in Teile und nichts mehr ließ sich mit einem Begriff umspannen. Die einzelnen Worte schwammen um mich; sie wurden zu Wirbeln, durch die hindurch man ins Leere kommt.",
+                        "source":  "Hugo von Hofmannsthal, Ein Brief (Chandos-Brief), 1902"
+                    },
+                    {
+                        "type":  "annotation",
+                        "text":  "Es zerfiel mir alles in Teile, die Teile wieder in Teile.",
+                        "prompt":  "Markiere, worin sich hier die Sprachkrise zeigt.",
+                        "targets":  [
+                                        {
+                                            "word":  "zerfiel",
+                                            "feedback":  "Das Zerfallen ist kein aktiver Akt; die Sprache zerbricht von selbst. Das Subjekt ist passiv, ausgeliefert. Eine moderne Krise."
+                                        },
+                                        {
+                                            "word":  "ins Leere",
+                                            "feedback":  "Eine kommunikationslose Sprache, die nicht zu den Dingen führt, sondern an ihnen vorbei, ist die Urangst der Moderne: dass unsere Zeichen nichts bezeichnen."
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Sammle, in welchen Situationen du selbst das Gefühl hast, dass Worte versagen."
+                    },
+                    {
+                        "type":  "quiz-multi",
+                        "question":  "Welche der folgenden Aussagen über den Chandos-Brief sind korrekt?",
+                        "options":  [
+                                        {
+                                            "text":  "Der Chandos-Brief erschien 1902 und markiert Hofmannsthals Abkehr von der Lyrik.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Nach diesem Text schrieb Hofmannsthal keine Gedichte mehr."
+                                        },
+                                        {
+                                            "text":  "Lord Chandos ist eine fiktive Figur, die an den realen Philosophen Francis Bacon schreibt.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Hofmannsthal verschleiert den autobiografischen Bezug durch die historische Fiktion, macht ihn aber für aufmerksame Leser transparent."
+                                        },
+                                        {
+                                            "text":  "Im Chandos-Brief findet Chandos am Ende eine neue Sprache und schreibt wieder.",
+                                            "correct":  false,
+                                            "feedback":  "Nein; die Konsequenz für Chandos ist, das Schreiben ganz aufzugeben und auf eine neue, stumme Sprache zu hoffen."
+                                        },
+                                        {
+                                            "text":  "Der Brief gilt als eines der wichtigsten Dokumente der Sprachkrise um 1900.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Er bündelt die Verunsicherung der Moderne gegenüber Sprache, Subjekt und Wirklichkeit auf engem Raum."
+                                        },
+                                        {
+                                            "text":  "Hofmannsthal schrieb den Chandos-Brief als politische Reaktion auf den Ersten Weltkrieg.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Nach dem Chandos-Brief wandte ich mich dem Theater zu. Ich arbeitete unaufhörlich, wie getrieben. Dutzende Projekte liefen parallel. Ich war kein guter Erfinder, sondern ein großer und unendlich gebildeter Leser in sehr vielen Sprachen und Kulturen. Ich nahm mir Sophokles, Calderón, mittelalterliche Mysterienspiele vor und machte daraus etwas Neues. Als Richard Strauss meine Elektra auf der Bühne sah, wusste er: Vieles, was ich in aller Einsamkeit der Jugend hervorgebracht hatte, waren fantastische kleine Opern und Singspiele ohne Musik; durch seine Wünsche war nun ein Ziel gegeben. \u003cspan class=\"chat-source-ref\" title=\"Hofmannsthal\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Hofmannsthal\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "context",
+                        "content":  "Die Zusammenarbeit mit dem Komponisten Richard Strauss und dem Regisseur Max Reinhardt wurde zu einer der fruchtbarsten Künstlerpartnerschaften der Epoche. Aus dem Dialog mit Strauss entstanden Libretti, die zum Vollkommensten der Opernliteratur zählen: Elektra (1909), Der Rosenkavalier (1911), Ariadne auf Naxos (1912), Die Frau ohne Schatten (1919), Arabella (posthum 1933). Mit Reinhardt gründete Hofmannsthal 1920 die Salzburger Festspiele als kulturelle Antwort auf den Zusammenbruch Österreich-Ungarns und den Hass des Nationalismus. Im Zentrum: der Jedermann, seit 1920 alljährlich auf dem Salzburger Domplatz aufgeführt."
+                    },
+                    {
+                        "type":  "quiz-single",
+                        "question":  "Warum gründeten Hofmannsthal, Strauss und Reinhardt 1920 die Salzburger Festspiele?",
+                        "options":  [
+                                        {
+                                            "text":  "Um Wien als Hauptstadt der deutschsprachigen Oper zu stärken.",
+                                            "correct":  false,
+                                            "feedback":  "Die Festspiele waren bewusst nicht in Wien angesiedelt und ihre Intention war weiter gefasst als Opernpflege."
+                                        },
+                                        {
+                                            "text":  "Als kommerzielles Touristikprojekt für die Nachkriegszeit.",
+                                            "correct":  false,
+                                            "feedback":  "Im Gegenteil: Hofmannsthal sah die Festspiele als kulturelles Gegenprogramm zu Nationalismus und Zerstörung."
+                                        },
+                                        {
+                                            "text":  "Als Rückbesinnung auf gemeinsame europäische Wurzeln und ein menschenverbindendes Ethos nach dem Ersten Weltkrieg.",
+                                            "correct":  true,
+                                            "feedback":  "Richtig! Für Hofmannsthal war der Vielvölkerstaat Österreich-Ungarn eine Blaupause für ein geeintes Europa gewesen, die Festspiele sollten diesen Geist retten."
+                                        },
+                                        {
+                                            "text":  "Weil der Jedermann in Berlin verboten worden war.",
+                                            "correct":  false,
+                                            "feedback":  null
+                                        }
+                                    ]
+                    },
+                    {
+                        "type":  "barometer",
+                        "statement":  "Hofmannsthals Frage, ob Sprache die Wirklichkeit überhaupt erfassen kann, ist heute aktueller denn je.",
+                        "min":  "stimme nicht zu",
+                        "max":  "stimme voll zu"
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Der Erste Weltkrieg hat mich vernichtet – innerlich. Das grausame Schlachten, dann der Zusammenbruch der Donaumonarchie. Ich wusste, dass die Welt, die mich geprägt hatte, unwiderruflich verloren war. Ich schrieb dagegen an, mit zunehmender Melancholie. Was frommt das alles uns und diese Spiele, die wir doch groß und ewig einsam sind und wandernd nimmer suchen irgend Ziele. Am 13. Juli 1929 erschoss sich mein ältester Sohn Franz. Zwei Tage später, als die Familie sich für die Beisetzung fertig machte, brach ich zusammen. Schlaganfall. Wenige Stunden später war auch ich tot. \u003cspan class=\"chat-source-ref\" title=\"vgl. WDR Zeitzeichen, 01.02.2019\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. WDR Zeitzeichen, 01.02.2019\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "checkpoint",
+                        "question":  "Erkläre die These, Hofmannsthal habe in seinem Werk den Krisen Gehör verschafft."
+                    },
+                    {
+                        "type":  "self-assessment",
+                        "items":  [
+                                      "Ich verstehe, was mit der \"Sprachkrise um 1900\" gemeint ist",
+                                      "Ich kann Hofmannsthals Entwicklung von der Lyrik zum Theater erklären",
+                                      "Ich kenne den Chandos-Brief und seine zentrale Aussage",
+                                      "Ich kann Hofmannsthal im Kontext der Wiener Moderne und des Zerfalls Österreich-Ungarns einordnen"
+                                  ]
+                    },
+                    {
+                        "type":  "persona",
+                        "content":  "Ich war ein großer und unendlich gebildeter Leser. Kein guter Erfinder vielleicht. Aber ich hatte Antennen für die feinsten Verästelungen der zeitgenössischen Wahrnehmungen. Für diese Erosionen, diese Verstörungen, diese Brüche. Und ich habe daraus Texte gemacht, die mitunter Fragment blieben, weil die Wirklichkeit ja auch selbst Fragment blieb. \u003cspan class=\"chat-source-ref\" title=\"vgl. WDR Zeitzeichen, 01.02.2019\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. WDR Zeitzeichen, 01.02.2019\"\u003eQ\u003c/span\u003e"
+                    },
+                    {
+                        "type":  "freetext",
+                        "prompt":  "Welcher Aspekt von Hofmannsthals Leben oder Werk hat dich am meisten überrascht oder beeindruckt?"
+                    },
+                    {
+                        "type":  "finale",
+                        "text":  "Wenn dich mein Leben interessiert, dann recherchiere doch weiter! Mehr über mich findest du im Internet.",
+                        "links":  [
+                                      {
+                                          "label":  "WDR Zeitzeichen",
+                                          "url":  "https://www1.wdr.de/radio/wdr5/sendungen/zeitzeichen/von-hofmannsthal-100.html"
+                                      },
+                                      {
+                                          "label":  "Wikipedia",
+                                          "url":  "https://de.wikipedia.org/wiki/Hugo_von_Hofmannsthal"
+                                      }
+                                  ],
+                        "literature":  [
+                                           "Matthias Mayer: Hugo von Hofmannsthal. Metzler, Stuttgart 1993.",
+                                           "Ursula Renner / G. Bärbel Schmid (Hrsg.): Hugo von Hofmannsthal. Freundschaften und Begegnungen. Königshausen \u0026 Neumann, Würzburg 1991."
+                                       ]
+                    }
+                ]
+}
