@@ -149,8 +149,8 @@ function buildTickerSegments(){
   TICKER.forEach(item=>{
     segs.push({text:'  ['+item.g+'] ', col:item.gc});
     segs.push({text:item.t, col:C.WH});
-    segs.push({text:'  ['+item.y+']', col:C.DG});
-    segs.push({text:'   ?', col:C.CY});
+    segs.push({text:' ['+item.y+']', col:C.DG});
+    segs.push({text:'  ', col:C.BK});
   });
   return segs;
 }

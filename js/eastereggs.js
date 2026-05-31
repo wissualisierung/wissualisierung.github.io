@@ -40,11 +40,11 @@
       }
     });
 
-    var probability = (bsConfig.probability != null) ? bsConfig.probability : 0.002;
-    if (probability > 0 && Math.random() < probability) {
-      setTimeout(function () {
+    // Listen for terminal-triggered bluescreen
+    if (_bus) {
+      _bus.on('easteregg:bluescreen', function () {
         showBluescreen();
-      }, 30000 + Math.random() * 60000);
+      });
     }
   }
 

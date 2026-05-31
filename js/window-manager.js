@@ -621,6 +621,9 @@
         } else if (cmd === 'kaffee' || cmd === 'coffee') {
           output.textContent += 'Screensaver gestartet.\n';
           _bus.emit('system:action', { action: 'screensaver' });
+        } else if (cmd === 'bluescreen') {
+          output.textContent += 'SYSTEMFEHLER wird simuliert ...\n';
+          _bus.emit('easteregg:bluescreen');
         } else if (cmd === 'exit') {
           destroyWindow(winId);
         } else if (cmd !== '') {

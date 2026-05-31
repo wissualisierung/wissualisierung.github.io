@@ -678,7 +678,7 @@
       background: var(--color-bg-darker);
       border: 2px solid #000;
       position: relative;
-      margin: 48px 8px 40px 8px;
+      margin: 48px 24px 40px 24px;
     }
 
     .chat-timeline__node {
@@ -705,9 +705,7 @@
       transform: translateX(-50%);
       font-size: 9px;
       font-weight: 900;
-      white-space: normal;
-      word-break: break-word;
-      max-width: 100px;
+      white-space: nowrap;
       text-align: center;
       line-height: 1.2;
     }
@@ -716,6 +714,12 @@
     }
     .chat-timeline__node-label--below {
       top: 16px;
+    }
+    .chat-timeline__node-label--first {
+      transform: translateX(-15%) !important;
+    }
+    .chat-timeline__node-label--last {
+      transform: translateX(-85%) !important;
     }
 
     .chat-timeline__info-box {
@@ -1835,10 +1839,11 @@
 
     // Markdown Parser Hook
     function parseMarkdownText(md) {
+      if (!md) return '';
       if (window.marked && window.marked.parse) {
-        return marked.parse(md);
+        return marked.parse(md, { breaks: true });
       }
-      return md;
+      return md.replace(/\n/g, '<br>');
     }
 
     // Decoupled didactical slide components
@@ -1954,7 +1959,13 @@
           const escapedName = (ep.name || '').replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;');
           const escapedInfo = (ep.info || '').replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;');
           
-          const labelClass = idx % 2 === 0 ? 'chat-timeline__node-label--below' : 'chat-timeline__node-label--above';
+          let extraClass = '';
+          if (idx === 0) {
+            extraClass = ' chat-timeline__node-label--first';
+          } else if (idx === mod.epochs.length - 1) {
+            extraClass = ' chat-timeline__node-label--last';
+          }
+          const labelClass = (idx % 2 === 0 ? 'chat-timeline__node-label--below' : 'chat-timeline__node-label--above') + extraClass;
           const yearsStr = ep.start ? ` (${ep.start}${ep.end ? '–' + ep.end : ''})` : '';
 
           nodesMarkup += `
