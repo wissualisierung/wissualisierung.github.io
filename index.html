@@ -3,84 +3,81 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="WissOS 2.0 – Dein neobrutalistisches digitales Klassenzimmer. Retro-Betriebssystem für Deutsch- und Didaktikprojekte.">
+  <meta name="description" content="WissualisierungOS – Dein digitales Klassenzimmer. Retro-Betriebssystem für interaktive Deutschunterrichts-Projekte.">
   <meta name="author" content="Wolf Sebastian">
   <meta name="license" content="CC-BY-SA 4.0">
-  <title>WissOS 2.0 – Das neobrutalistische Didaktik-OS</title>
+  <title>WissualisierungOS</title>
 
-  <!-- Central Neobrutalist Stylesheets -->
+  <!-- Google Fonts -->
+  <link href="css/fonts.css" rel="stylesheet">
+
+  <!-- Stylesheets -->
   <link rel="stylesheet" href="css/os-core.css">
+  <link rel="stylesheet" href="css/boot.css">
   <link rel="stylesheet" id="theme-stylesheet" href="css/themes/retro-classic.css">
 </head>
-<body class="theme-retro-classic">
+<body>
 
-  <!-- ===== Boot-Screen (BIOS Post Sequence) ===== -->
+  <!-- ===== Boot-Screen (wird vor dem Desktop angezeigt) ===== -->
   <div id="boot-screen" hidden>
-    <div class="boot-header">
-      <span class="boot-logo">★ WissOS 2.0 ★</span>
-      <span class="boot-bios">BIOS Version 2.0.26 - Wolf Sebastian</span>
-    </div>
-    <div class="boot-output" role="log" aria-live="polite"></div>
+    <div class="boot-output"></div>
     <div class="boot-progress-wrap">
-      <div class="boot-progress-label">Systemkomponenten werden initialisiert …</div>
+      <div class="boot-progress-label">System wird geladen …</div>
       <div class="boot-progress-track">
         <div class="boot-progress-fill"></div>
       </div>
     </div>
-    <button class="boot-skip os-button" aria-label="Ladevorgang überspringen">BIOS überspringen >></button>
+    <button class="boot-skip" aria-label="Boot überspringen">Überspringen >></button>
   </div>
 
-  <!-- ===== Desktop Area ===== -->
-  <main id="desktop" role="main" aria-label="Desktop Arbeitsfläche">
-    <div id="icon-container" role="list" aria-label="Desktop-Schnellzugriffe"></div>
+  <!-- ===== Desktop ===== -->
+  <main id="desktop" role="main" aria-label="Desktop">
+    <div id="icon-container" role="list" aria-label="Desktop-Programme"></div>
   </main>
 
-  <!-- ===== Global Tooltip ===== -->
+  <!-- ===== Tooltip ===== -->
   <div id="tooltip" class="os-tooltip" role="tooltip" aria-hidden="true"></div>
 
-  <!-- ===== Systems Loader Status Bar ===== -->
+  <!-- ===== Loading Bar ===== -->
   <div id="loading-bar" class="loading-bar" aria-hidden="true">
-    <div class="loading-bar__label">Anwendung wird gestartet …</div>
+    <div class="loading-bar__label">Wird geöffnet …</div>
     <div class="loading-bar__track">
       <div class="loading-bar__fill"></div>
     </div>
   </div>
 
-  <!-- ===== Neobrutalist Start Menu ===== -->
+  <!-- ===== Start Menu ===== -->
   <nav id="start-menu" role="navigation" aria-label="Startmenü">
     <div class="start-menu__header">
-      <div class="menu-icon" id="start-menu-icon"></div>
-      <h2>WissOS 2.0</h2>
+      <img class="menu-icon" src="" alt="" id="start-menu-icon">
+      <h2>WissualisierungOS</h2>
     </div>
     <div class="start-menu__body" id="start-menu-body">
-      <!-- Dynamic categories generated from config-data.js -->
+      <!-- Generated from config.json -->
     </div>
     <div class="start-menu__system" id="start-menu-system">
-      <!-- System configurations generated from config-data.js -->
+      <!-- System entries generated from config.json -->
     </div>
   </nav>
 
-  <!-- ===== Bottom OS Taskbar ===== -->
+  <!-- ===== Taskbar ===== -->
   <footer id="taskbar" role="toolbar" aria-label="Taskleiste">
-    <button id="start-button" class="os-button start-btn-active" aria-haspopup="true" aria-expanded="false" aria-controls="start-menu">
+    <button id="start-button" class="bevel-btn" aria-haspopup="true" aria-expanded="false" aria-controls="start-menu">
       <span aria-hidden="true">⚡</span> Start
     </button>
     <div id="taskbar-divider" class="taskbar-divider"></div>
-    <div id="taskbar-programs" aria-label="Aktive offene Programmfenster"></div>
-    <div id="taskbar-tray" aria-label="System Tray">
-      <button id="cookie-icon" class="os-button tray-icon" aria-label="Datenschutz" tabindex="0">🍪</button>
-      <button id="volume-icon" class="os-button tray-icon" aria-label="Lautstärke stummschalten" tabindex="0">🔊</button>
+    <div id="taskbar-programs" aria-label="Geöffnete Programme"></div>
+    <div id="taskbar-tray" aria-label="System-Tray">
+      <span id="cookie-icon" role="button" aria-label="Datenschutz" tabindex="0">🍪</span>
+      <span id="volume-icon" role="button" aria-label="Lautstärke" tabindex="0">🔇</span>
       <span id="taskbar-clock" role="timer" aria-label="Uhrzeit">--:--</span>
     </div>
   </footer>
 
-  <!-- ===== Floating Window Container ===== -->
+  <!-- ===== Window Container ===== -->
   <div id="window-container" aria-live="polite"></div>
 
-  <!-- ===== System Toaster Notifications ===== -->
-  <div id="notification-container"></div>
-
-  <!-- ===== JavaScript Modules ===== -->
+  <!-- ===== JavaScript (Classic Scripts – no module, works on file://) ===== -->
   <script src="js/config-data.js"></script>
   <script src="js/os-core.js"></script>
   <script src="js/boot-sequence.js"></script>
@@ -91,51 +88,18 @@
   <script src="js/screensaver.js"></script>
   <script src="js/eastereggs.js"></script>
 
-  <!-- ===== file:// Protocol Guard ===== -->
-  <script>
-    (function() {
-      if (window.location.protocol !== 'file:') return;
-      // Inject a full-screen warning overlay immediately
-      var overlay = document.createElement('div');
-      overlay.id = 'file-protocol-warning';
-      overlay.style.cssText = [
-        'position:fixed', 'inset:0', 'z-index:99999',
-        'background:#000', 'color:#7DFFC2',
-        'font-family:\'Courier New\',monospace',
-        'display:flex', 'flex-direction:column',
-        'align-items:center', 'justify-content:center',
-        'padding:40px', 'text-align:center', 'gap:20px'
-      ].join(';');
+  <!--
+  ======================================================================
+  Lizenz & Urheberrecht:
+  WissualisierungOS
+  Lizenziert unter Creative Commons Namensnennung – Weitergabe unter gleichen Bedingungen 4.0 International (CC-BY-SA 4.0)
+  Autor: Sebastian Wolf (2026)
+  https://creativecommons.org/licenses/by-sa/4.0/deed.de
 
-      overlay.innerHTML = [
-        '<div style="font-size:48px;">⚡</div>',
-        '<h1 style="font-size:28px;font-weight:900;color:#FFE66D;margin:0;">',
-          'WissOS 2.0',
-        '</h1>',
-        '<p style="font-size:16px;font-weight:bold;color:#FF6B9D;margin:0;">',
-          'Server erforderlich',
-        '</p>',
-        '<div style="border:3px solid #7DFFC2;padding:24px;max-width:540px;text-align:left;line-height:1.9;font-size:14px;">',
-          '<strong style="color:#FFE66D;">Warum siehst du das?</strong><br>',
-          'WissOS 2.0 wurde direkt aus dem Dateisystem geöffnet.<br>',
-          'Der Browser blockiert aus Sicherheitsgründen den Dateilesezugriff,<br>',
-          'den die Lernprogramme benötigen.<br><br>',
-          '<strong style="color:#FFE66D;">Lösung – starte den lokalen Webserver:</strong><br>',
-          '<code style="display:block;background:#111;color:#7DFFC2;padding:10px 16px;margin:10px 0;border:2px solid #7DFFC2;">',
-            'powershell -ExecutionPolicy Bypass -File "WissOS 2.0\\start_server.ps1"',
-          '</code>',
-          'Dann diesen Link im Browser öffnen:<br>',
-          '<a href="http://localhost:8000" style="color:#FFE66D;font-weight:bold;font-size:16px;">',
-            'http://localhost:8000',
-          '</a>',
-        '</div>',
-        '<p style="font-size:12px;color:#555;margin:0;">',
-          'Dieser Hinweis erscheint nur bei direktem Öffnen der Datei.',
-        '</p>'
-      ].join('');
-
-      document.body.appendChild(overlay);
-    })();
-  </script>
+  Transparenzhinweis:
+  Erstellt mit Hilfe von Claude Opus 5.5 und Gemini 3.8 Flash
+  ======================================================================
+  -->
 </body>
 </html>
+

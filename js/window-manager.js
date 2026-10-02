@@ -1,5 +1,6 @@
 /**
- * WissOS 2.0 – Window Manager Module
+ * WissualisierungOS – Window Manager Module
+ * Creates, drags, focuses, and closes windows
  * CC-BY-SA 4.0 Wolf Sebastian (2026)
  */
 
@@ -7,72 +8,63 @@
   'use strict';
 
   var _config, _bus, _storage;
-  var _zCounter = 100;
-  var _windowCount = 0;
-  var _windows = {};
+  var _zCounter = 100; // Steuert die Stapelreihenfolge (z-index)
+  var _windowCount = 0; // Eindeutige ID-Generierung
+  var _windows = {};    // Hält Referenzen auf alle aktiven Fenster-Objekte
 
   var module = {
+    /**
+     * Initialisiert den Manager mit den System-Instanzen
+     */
     init: function(config, bus, storage) {
       _config = config;
       _bus = bus;
       _storage = storage;
 
+      // Listen for window creation requests
       bus.on('window:create', function(opts) {
         createWindow(opts);
       });
 
+      // Listen for system actions
       bus.on('system:action', function(data) {
         handleSystemAction(data);
       });
 
+      // Fullscreen change listener: update menu label dynamically
       document.addEventListener('fullscreenchange', function() {
         var label = document.getElementById('menu-fullscreen-label');
         if (label) {
-          label.textContent = document.fullscreenElement ? 'Normalbild-OS' : 'Vollbild-OS';
+          if (document.fullscreenElement) {
+            label.textContent = 'Normalbild-OS';
+          } else {
+            label.textContent = 'Vollbild-OS';
+          }
         }
       });
-    },
-
-    createWindow: createWindow,
-
-    focusByUrl: function(url) {
-      var foundId = null;
-      Object.keys(_windows).forEach(function(wid) {
-        if (_windows[wid].opts && _windows[wid].opts.url === url) {
-          foundId = wid;
-        }
-      });
-      if (foundId) {
-        focusWindow(foundId);
-        return true;
-      }
-      return false;
     }
   };
 
+  /**
+   * Erstellt ein neues Fenster auf dem Desktop
+   * @param {Object} opts - { title, icon, content, width, height, x, y }
+   * @returns {string} window id
+   */
   function createWindow(opts) {
     var id = 'win-' + (++_windowCount);
     var container = document.getElementById('window-container');
 
+    // DOM-Element für das Fenster erstellen
     var win = document.createElement('div');
     win.className = 'os-window';
     win.id = id;
-    win.style.zIndex = ++_zCounter;
-    win.style.width = (opts.width || 480) + 'px';
-    win.style.height = (opts.height || 360) + 'px';
+    win.style.zIndex = ++_zCounter; // Direkt nach oben bringen
+    win.style.width = (opts.width || 400) + 'px';
+    win.style.height = (opts.height || 300) + 'px';
 
-    var taskbar = document.getElementById('taskbar');
-    var minY = 0;
-    if (taskbar) {
-      var rect = taskbar.getBoundingClientRect();
-      if (rect.top < window.innerHeight / 2 && rect.bottom > 0) {
-        minY = rect.height || rect.bottom;
-      }
-    }
-
-    var x = opts.x != null ? opts.x : Math.max(40, Math.random() * (window.innerWidth - (opts.width || 480) - 100) + 40);
-    var rangeY = window.innerHeight - (opts.height || 360) - 100 - minY;
-    var y = opts.y != null ? opts.y : Math.max(minY + 30, Math.random() * Math.max(10, rangeY) + minY + 30);
+    // Center if no position given
+    var x = opts.x != null ? opts.x : Math.max(40, Math.random() * (window.innerWidth - (opts.width || 400) - 100) + 40);
+    var y = opts.y != null ? opts.y : Math.max(30, Math.random() * (window.innerHeight - (opts.height || 300) - 100) + 30);
     win.style.left = x + 'px';
     win.style.top = y + 'px';
 
@@ -81,9 +73,10 @@
     titlebar.className = 'os-window__titlebar';
 
     if (opts.icon) {
-      var tbIcon = document.createElement('span');
-      tbIcon.className = 'os-window__titlebar-icon-wrap';
-      tbIcon.innerHTML = WissOS.ICONS[opts.icon] || WissOS.ICONS['help'];
+      var tbIcon = document.createElement('img');
+      tbIcon.className = 'os-window__titlebar-icon';
+      tbIcon.src = WissOS.getIconDataUrl(opts.icon);
+      tbIcon.alt = '';
       titlebar.appendChild(tbIcon);
     }
 
@@ -92,7 +85,7 @@
     titleText.textContent = opts.title || 'Fenster';
     titlebar.appendChild(titleText);
 
-    // Group of buttons
+    // Window buttons (minimize placeholder + maximize + close)
     var btnGroup = document.createElement('div');
     btnGroup.className = 'os-window__btn-group';
 
@@ -108,19 +101,21 @@
     var closeBtn = document.createElement('button');
     closeBtn.className = 'os-window__btn os-window__btn--close';
     closeBtn.textContent = '×';
-    closeBtn.setAttribute('aria-label', 'Schließen');
+    closeBtn.setAttribute('aria-label', 'Fenster schließen');
     closeBtn.addEventListener('click', function() {
       destroyWindow(id);
     });
     btnGroup.appendChild(closeBtn);
     titlebar.appendChild(btnGroup);
 
+    // Double-click on titlebar also toggles maximize
     titlebar.addEventListener('dblclick', function(e) {
       if (e.target === titlebar || e.target === titleText) {
         toggleMaximize(id);
       }
     });
 
+    // Content area
     var content = document.createElement('div');
     content.className = 'os-window__content';
     if (typeof opts.content === 'string') {
@@ -132,21 +127,25 @@
     win.appendChild(titlebar);
     win.appendChild(content);
 
+    // Window open animation
     win.classList.add('os-window--opening');
     container.appendChild(win);
     requestAnimationFrame(function() {
       win.classList.remove('os-window--opening');
     });
 
+    // Focus on click
     win.addEventListener('mousedown', function() {
       focusWindow(id);
     });
 
+    // Drag via titlebar
     initDrag(win, titlebar);
 
     _windows[id] = { el: win, opts: opts };
     focusWindow(id);
 
+    // Event emittieren (für Sound-System u.a.)
     _bus.emit('window:created', { id: id, title: opts.title });
 
     return id;
@@ -168,53 +167,41 @@
     if (!entry) return;
 
     var win = entry.el;
-    var maxBtn = win.querySelector('.os-window__btn--maximize');
-    
-    var taskbar = document.getElementById('taskbar');
-    var minY = 0;
-    if (taskbar) {
-      var rect = taskbar.getBoundingClientRect();
-      if (rect.top < window.innerHeight / 2 && rect.bottom > 0) {
-        minY = rect.height || rect.bottom;
-      }
-    }
-
     if (win.classList.contains('maximized')) {
+      // Restore
       win.classList.remove('maximized');
-      win.style.removeProperty('top');
-      win.style.removeProperty('height');
       win.style.left = entry.oldPos.x + 'px';
       win.style.top = entry.oldPos.y + 'px';
       win.style.width = entry.oldSize.w + 'px';
       win.style.height = entry.oldSize.h + 'px';
-      if (maxBtn) maxBtn.textContent = '□';
+      win.querySelector('.os-window__btn--maximize').textContent = '□';
     } else {
+      // Maximize
       entry.oldPos = { x: win.offsetLeft, y: win.offsetTop };
       entry.oldSize = { w: win.offsetWidth, h: win.offsetHeight };
       win.classList.add('maximized');
-      if (minY > 0) {
-        win.style.setProperty('top', minY + 'px', 'important');
-        win.style.setProperty('height', 'calc(100vh - ' + minY + 'px)', 'important');
-      }
-      if (maxBtn) maxBtn.textContent = '❐';
+      win.querySelector('.os-window__btn--maximize').textContent = '❐';
     }
   }
 
   function focusWindow(id) {
+    // Deactivate all titlebars
     Object.keys(_windows).forEach(function(wid) {
       var w = _windows[wid];
       if (w && w.el) {
-        w.el.classList.add('inactive');
+        var tb = w.el.querySelector('.os-window__titlebar');
+        if (tb) tb.classList.add('inactive');
       }
     });
+    // Activate this one
     var entry = _windows[id];
     if (!entry) return;
-    entry.el.classList.remove('inactive');
     entry.el.style.zIndex = ++_zCounter;
-    _bus.emit('window:focused', { id: id, title: entry.opts.title });
+    var tb = entry.el.querySelector('.os-window__titlebar');
+    if (tb) tb.classList.remove('inactive');
   }
 
-  // ===== Window Drag System =====
+  // ===== Window Drag =====
   function initDrag(win, titlebar) {
     var dragging = false;
     var offsetX = 0, offsetY = 0;
@@ -231,23 +218,15 @@
     document.addEventListener('mousemove', function(e) {
       if (!dragging) return;
       
-      var taskbar = document.getElementById('taskbar');
-      var minY = 0;
-      if (taskbar) {
-        var rect = taskbar.getBoundingClientRect();
-        if (rect.top < window.innerHeight / 2 && rect.bottom > 0) {
-          minY = rect.height || rect.bottom;
-        }
-      }
-
       var x = e.clientX - offsetX;
       var y = e.clientY - offsetY;
 
+      // Bounds checking (prevent titlebar from going off-screen)
       var maxX = window.innerWidth - 40;
       var maxY = window.innerHeight - 40;
       
       x = Math.max(-win.offsetWidth + 60, Math.min(x, maxX));
-      y = Math.max(minY, Math.min(y, maxY));
+      y = Math.max(0, Math.min(y, maxY));
 
       win.style.left = x + 'px';
       win.style.top = y + 'px';
@@ -258,12 +237,15 @@
         dragging = false;
         titlebar.style.cursor = 'grab';
         
+        // If window was maximized, restore on drag? 
+        // Classic OS behavior: dragging a maximized window restores it.
         if (win.classList.contains('maximized')) {
            toggleMaximize(win.id);
         }
       }
     });
 
+    // Touch support for window drag
     titlebar.addEventListener('touchstart', function(e) {
       if (e.target.closest('.os-window__btn')) return;
       var touch = e.touches[0];
@@ -275,27 +257,8 @@
     document.addEventListener('touchmove', function(e) {
       if (!dragging) return;
       var touch = e.touches[0];
-      
-      var taskbar = document.getElementById('taskbar');
-      var minY = 0;
-      if (taskbar) {
-        var rect = taskbar.getBoundingClientRect();
-        if (rect.top < window.innerHeight / 2 && rect.bottom > 0) {
-          minY = rect.height || rect.bottom;
-        }
-      }
-
-      var x = touch.clientX - offsetX;
-      var y = touch.clientY - offsetY;
-
-      var maxX = window.innerWidth - 40;
-      var maxY = window.innerHeight - 40;
-
-      x = Math.max(-win.offsetWidth + 60, Math.min(x, maxX));
-      y = Math.max(minY, Math.min(y, maxY));
-
-      win.style.left = x + 'px';
-      win.style.top = y + 'px';
+      win.style.left = (touch.clientX - offsetX) + 'px';
+      win.style.top = (touch.clientY - offsetY) + 'px';
     }, { passive: true });
 
     document.addEventListener('touchend', function() {
@@ -303,7 +266,9 @@
     });
   }
 
-  // ===== System Actions Router =====
+  // ===== System Action Handler =====
+  // Zentrale Stelle für System-interne Funktionen, die über das Startmenü 
+  // oder Desktop-Icons ausgelöst werden (z.B. Papierkorb, Terminal).
   function handleSystemAction(data) {
     switch (data.action) {
       case 'about':
@@ -324,13 +289,17 @@
       case 'editor-folder':
         showWissOSFolder();
         break;
+      case 'strophen-editor-folder':
+        showStrophenEditorFolder();
+        break;
       case 'paed-helper':
         showPaedHelper();
         break;
       case 'clock-click':
         showClockInfo();
         break;
-      case 'screensaver':
+      case 'screensaver':  // Wird von screensaver.js verarbeitet
+      case 'volume-click': // Wird von os-core.js verarbeitet
         break;
       case 'fullscreen':
         if (document.fullscreenElement) {
@@ -339,14 +308,12 @@
           showFullscreenWarning();
         }
         break;
-      case 'volume-click':
-      case 'focus-click':
-        break;
       default:
+        // Unknown action – show placeholder
         createWindow({
           title: data.action,
           icon: 'gear',
-          content: '<p style="padding:20px;text-align:center;font-weight:bold;">Aktion „' + data.action + '“ wird in Phase 3 bereitgestellt.</p>',
+          content: '<p style="padding:20px;text-align:center;">Funktion „' + data.action + '" wird in einer späteren Phase implementiert.</p>',
           width: 340,
           height: 180
         });
@@ -355,43 +322,64 @@
 
   function showFullscreenWarning() {
     var contentEl = document.createElement('div');
-    contentEl.style.cssText = 'padding:20px;display:flex;flex-direction:column;height:100%;';
+    contentEl.style.cssText = 'padding:24px;';
 
-    contentEl.innerHTML = `
-      <div style="font-size:36px;text-align:center;margin-bottom:8px;">🖥️</div>
-      <h4 style="font-family:var(--font-system);font-size:16px;text-align:center;margin-bottom:12px;font-weight:900;">Vollbildmodus aktivieren</h4>
-      <div style="font-family:var(--font-body);font-size:12px;line-height:1.6;padding:12px;background:var(--color-accent);border:3px solid #000;margin-bottom:16px;font-weight:600;">
-        ⚠️ <strong>Hinweis:</strong><br>
-        WissOS 2.0 wechselt in das rahmenlose Vollbild.<br><br>
-        Sie können den Vollbildmodus jederzeit über folgende Tasten verlassen:<br>
-        &nbsp;&nbsp;• <strong>Taste ESC</strong> – Vollbild verlassen<br>
-        &nbsp;&nbsp;• <strong>Taste F11</strong> – Umschalten
-      </div>
-      <div style="display:flex;gap:12px;justify-content:center;margin-top:auto;">
-        <button class="os-button" id="btn-fs-ok" style="font-weight:900;">Aktivieren</button>
-        <button class="os-button" id="btn-fs-cancel">Abbrechen</button>
-      </div>
-    `;
+    var icon = document.createElement('div');
+    icon.style.cssText = 'font-size:36px;text-align:center;margin-bottom:12px;';
+    icon.textContent = '🖥️';
 
-    var winId = createWindow({
+    var heading = document.createElement('h4');
+    heading.style.cssText = 'font-family:var(--font-system);font-size:16px;text-align:center;margin-bottom:16px;color:var(--color-text);';
+    heading.textContent = 'Vollbildmodus aktivieren';
+
+    var warningBox = document.createElement('div');
+    warningBox.style.cssText = 'font-family:var(--font-body);font-size:13px;line-height:1.8;padding:14px;background:var(--color-accent,#FFF8DC);border:2px solid var(--color-text);margin-bottom:20px;';
+    warningBox.innerHTML =
+      '⚠️ <strong>Hinweis:</strong><br>' +
+      'WissualisierungOS wird im Vollbildmodus bildschirmfüllend angezeigt.<br><br>' +
+      'Der Vollbildmodus kann jederzeit über folgende Tasten verlassen werden:<br>' +
+      '&nbsp;&nbsp;• Taste <kbd style="padding:2px 6px;background:#eee;border:1px solid #aaa;border-radius:3px;font-family:var(--font-system);font-size:12px;">ESC</kbd> – Vollbild beenden<br>' +
+      '&nbsp;&nbsp;• Taste <kbd style="padding:2px 6px;background:#eee;border:1px solid #aaa;border-radius:3px;font-family:var(--font-system);font-size:12px;">F11</kbd> – Vollbild umschalten';
+
+    var btnRow = document.createElement('div');
+    btnRow.style.cssText = 'display:flex;gap:12px;justify-content:center;';
+
+    var okBtn = document.createElement('button');
+    okBtn.className = 'bevel-btn';
+    okBtn.textContent = '✅ Aktivieren';
+    okBtn.style.cssText = 'min-width:120px;';
+    okBtn.addEventListener('click', function() {
+      var winEl = contentEl.closest('.os-window');
+      if (winEl) destroyWindow(winEl.id);
+      document.documentElement.requestFullscreen().catch(function(err) {
+        console.warn('Fullscreen request failed:', err);
+      });
+    });
+
+    var cancelBtn = document.createElement('button');
+    cancelBtn.className = 'bevel-btn';
+    cancelBtn.textContent = '❌ Abbrechen';
+    cancelBtn.style.cssText = 'min-width:120px;';
+    cancelBtn.addEventListener('click', function() {
+      var winEl = contentEl.closest('.os-window');
+      if (winEl) destroyWindow(winEl.id);
+    });
+
+    btnRow.appendChild(okBtn);
+    btnRow.appendChild(cancelBtn);
+
+    contentEl.appendChild(icon);
+    contentEl.appendChild(heading);
+    contentEl.appendChild(warningBox);
+    contentEl.appendChild(btnRow);
+
+    createWindow({
       title: 'Vollbildmodus',
       icon: 'fullscreen',
       content: contentEl,
-      width: 400,
-      height: 320
+      width: 440,
+      height: 340
     });
-
-    setTimeout(function() {
-      var ok = document.getElementById('btn-fs-ok');
-      var cancel = document.getElementById('btn-fs-cancel');
-      if (ok) ok.addEventListener('click', function() {
-        destroyWindow(winId);
-        document.documentElement.requestFullscreen().catch(() => {});
-      });
-      if (cancel) cancel.addEventListener('click', function() {
-        destroyWindow(winId);
-      });
-    }, 50);
   }
 
   function showAbout() {
@@ -399,7 +387,8 @@
     contentEl.style.cssText = 'padding:20px; font-family:var(--font-mono), monospace; font-size:13px; line-height:1.7; overflow-y:auto; height:100%; color:#000; background:#fdfdfd;';
 
     contentEl.innerHTML = `
-      <div style="text-align:center; color:#777; font-size:11px; margin-bottom:12px;">CC-BY-SA 4.0 Wolf Sebastian (2026)</div>
+      <div style="text-align:center; color:#333; font-size:12px; font-weight:bold; margin-bottom:4px;">CC-BY-SA 4.0 Sebastian Wolf (2026)</div>
+      <div style="text-align:center; color:#777; font-size:11px; margin-bottom:12px;">Erstellt mit Hilfe von Claude Opus 5.5 und Gemini 3.8 Flash</div>
       <hr style="border:none; border-top:1px solid #ccc; margin-bottom:16px;">
       <h3 style="font-family:var(--font-system), monospace; font-size:18px; font-weight:bold; margin-bottom:8px; margin-top:0; color:#000; text-align:left;">Impressum</h3>
       <hr style="border:none; border-top:1px solid #ccc; margin-bottom:16px;">
@@ -452,182 +441,205 @@
 
   function showHelp() {
     var tips = _config.tips || [];
-    var randomTip = tips[Math.floor(Math.random() * tips.length)] || 'Didaktische Ziele aktivieren.';
+    var randomTip = tips[Math.floor(Math.random() * tips.length)] || 'Kein Tipp verfügbar.';
 
     var contentEl = document.createElement('div');
-    contentEl.style.cssText = 'padding:16px;display:flex;flex-direction:column;height:100%;';
+    contentEl.style.cssText = 'padding:20px;';
 
-    contentEl.innerHTML = `
-      <div style="font-size:36px;text-align:center;margin-bottom:8px;">💡</div>
-      <h4 style="font-family:var(--font-system);font-size:15px;text-align:center;margin-bottom:8px;font-weight:900;">Didaktischer Impuls</h4>
-      <div id="help-tip-box" style="font-family:var(--font-body);font-size:13px;line-height:1.6;padding:12px;background:var(--color-accent);border:3px solid #000;box-shadow:4px 4px 0 #000;margin-bottom:16px;font-weight:600;">
-        ${randomTip}
-      </div>
-      <button class="os-button" id="btn-next-tip" style="margin:auto auto 0 auto;font-weight:900;display:block;">💡 Nächster Tipp</button>
-    `;
+    var icon = document.createElement('div');
+    icon.style.cssText = 'font-size:36px;text-align:center;margin-bottom:16px;';
+    icon.textContent = '💡';
 
-    createWindow({
-      title: 'Systemhilfe & Didaktik',
-      icon: 'help',
-      content: contentEl,
-      width: 400,
-      height: 300
+    var heading = document.createElement('h4');
+    heading.style.cssText = 'font-family:var(--font-system);font-size:16px;text-align:center;margin-bottom:12px;color:var(--color-text);';
+    heading.textContent = 'Didaktischer Tipp';
+
+    var tipText = document.createElement('p');
+    tipText.style.cssText = 'font-family:var(--font-body);font-size:13px;line-height:1.7;margin-bottom:20px;padding:12px;background:var(--color-accent);border:2px solid var(--color-text);';
+    tipText.textContent = randomTip;
+
+    var nextBtn = document.createElement('button');
+    nextBtn.className = 'bevel-btn';
+    nextBtn.textContent = '💡 Nächster Tipp';
+    nextBtn.style.cssText = 'margin:0 auto;display:block;';
+    nextBtn.addEventListener('click', function() {
+      var newTip = tips[Math.floor(Math.random() * tips.length)] || 'Kein Tipp verfügbar.';
+      tipText.textContent = newTip;
     });
 
-    setTimeout(function() {
-      var btn = document.getElementById('btn-next-tip');
-      var box = document.getElementById('help-tip-box');
-      if (btn && box) {
-        btn.addEventListener('click', function() {
-          WissOS.sound.play('click');
-          var t = tips[Math.floor(Math.random() * tips.length)];
-          box.textContent = t;
-        });
-      }
-    }, 50);
+    contentEl.appendChild(icon);
+    contentEl.appendChild(heading);
+    contentEl.appendChild(tipText);
+    contentEl.appendChild(nextBtn);
+
+    createWindow({
+      title: 'Hilfe – Didaktischer Tipp',
+      icon: 'help',
+      content: contentEl,
+      width: 420,
+      height: 340
+    });
   }
 
   function showPaedHelper() {
-    var prog = _config.programs.find(p => p.id === 'paed-navigator');
-    if (prog) WissOS.launchProgram(prog);
+    var prog = null;
+    for (var i = 0; i < _config.programs.length; i++) {
+      if (_config.programs[i].id === 'paed-navigator') {
+        prog = _config.programs[i];
+        break;
+      }
+    }
+    if (prog) {
+      WissOS.launchProgram(prog);
+    }
   }
 
   function showTrash() {
     var jokes = _config.trashJokes || [];
-    var randomJoke = jokes[Math.floor(Math.random() * jokes.length)] || 'Papierkorb ist leer.';
+    var randomJoke = jokes[Math.floor(Math.random() * jokes.length)] || 'Der Papierkorb ist leer.';
 
     var contentEl = document.createElement('div');
-    contentEl.style.cssText = 'padding:16px;display:flex;flex-direction:column;height:100%;';
+    contentEl.style.cssText = 'padding:20px;';
 
-    contentEl.innerHTML = `
-      <div style="font-size:36px;text-align:center;margin-bottom:8px;">🗑️</div>
-      <div id="trash-joke-box" style="font-family:var(--font-body);font-size:12px;line-height:1.6;padding:12px;background:#fff0f5;border:3px solid #000;box-shadow:4px 4px 0 #000;margin-bottom:16px;font-weight:600;text-align:center;">
-        ${randomJoke}
-      </div>
-      <button class="os-button" id="btn-next-joke" style="margin:auto auto 0 auto;font-weight:900;display:block;">🎭 Nächster Witz</button>
-    `;
+    var icon = document.createElement('div');
+    icon.style.cssText = 'font-size:36px;text-align:center;margin-bottom:16px;';
+    icon.textContent = '🗑️';
+
+    var jokeText = document.createElement('p');
+    jokeText.style.cssText = 'font-family:var(--font-body);font-size:13px;line-height:1.7;margin-bottom:20px;text-align:center;padding:12px;background:#fff0f5;border:2px solid var(--color-text);';
+    jokeText.textContent = randomJoke;
+
+    var nextBtn = document.createElement('button');
+    nextBtn.className = 'bevel-btn';
+    nextBtn.textContent = '🎭 Nächster Witz';
+    nextBtn.style.cssText = 'margin:0 auto;display:block;';
+    nextBtn.addEventListener('click', function() {
+      var newJoke = jokes[Math.floor(Math.random() * jokes.length)] || 'Der Papierkorb ist leer.';
+      jokeText.textContent = newJoke;
+    });
+
+    contentEl.appendChild(icon);
+    contentEl.appendChild(jokeText);
+    contentEl.appendChild(nextBtn);
 
     createWindow({
       title: 'Papierkorb',
       icon: 'trash',
       content: contentEl,
-      width: 400,
-      height: 280
+      width: 420,
+      height: 300
     });
-
-    setTimeout(function() {
-      var btn = document.getElementById('btn-next-joke');
-      var box = document.getElementById('trash-joke-box');
-      if (btn && box) {
-        btn.addEventListener('click', function() {
-          WissOS.sound.play('click');
-          var j = jokes[Math.floor(Math.random() * jokes.length)];
-          box.textContent = j;
-        });
-      }
-    }, 50);
   }
 
-  // ===== Interactive Neobrutalist Terminal CLI =====
   function showTerminal() {
     var term = _config.terminal || {};
-    var prompt = term.prompt || 'wissos>';
+    var commands = term.commands || {};
+    var prompt = term.prompt || '>';
 
     var contentEl = document.createElement('div');
     contentEl.className = 'terminal-content';
-    contentEl.style.cssText = 'background:#111;color:#7DFFC2;font-family:var(--font-mono);font-size:11px;padding:12px;height:100%;display:flex;flex-direction:column;';
 
     var output = document.createElement('div');
     output.className = 'terminal-output';
-    output.style.cssText = 'flex:1;overflow-y:auto;white-space:pre-wrap;margin-bottom:8px;line-height:1.4;';
     output.textContent = term.welcomeMessage || '';
 
     var inputRow = document.createElement('div');
-    inputRow.style.cssText = 'display:flex;align-items:center;background:#222;padding:4px 8px;border:2px solid #7DFFC2;';
+    inputRow.className = 'terminal-input-row';
 
     var promptLabel = document.createElement('span');
-    promptLabel.style.cssText = 'font-weight:bold;margin-right:8px;color:#FF6B9D;';
-    promptLabel.textContent = prompt;
+    promptLabel.className = 'terminal-prompt';
+    promptLabel.textContent = prompt + ' ';
 
     var input = document.createElement('input');
     input.type = 'text';
-    input.style.cssText = 'flex:1;background:transparent;border:none;outline:none;color:#7DFFC2;font-family:var(--font-mono);font-size:11px;';
-    input.setAttribute('aria-label', 'Kommandozeileneingabe');
+    input.className = 'terminal-input';
+    input.setAttribute('aria-label', 'Terminal-Eingabe');
     input.autocomplete = 'off';
     input.spellcheck = false;
-
-    inputRow.appendChild(promptLabel);
-    inputRow.appendChild(input);
-    contentEl.appendChild(output);
-    contentEl.appendChild(inputRow);
-
-    var winId = createWindow({
-      title: 'Terminal / CLI',
-      icon: 'terminal',
-      content: contentEl,
-      width: 520,
-      height: 350
-    });
-
-    setTimeout(() => input.focus(), 100);
 
     var history = [];
     var historyIndex = -1;
 
     input.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') {
-        var rawInput = input.value;
-        var cmdLine = rawInput.trim();
-        var parts = cmdLine.split(' ');
-        var cmd = parts[0].toLowerCase();
-        var arg = parts[1];
-
-        output.textContent += '\n' + prompt + ' ' + rawInput + '\n';
-        history.unshift(rawInput);
+        var cmd = input.value.trim().toLowerCase();
+        output.textContent += '\n' + prompt + ' ' + input.value + '\n';
+        history.unshift(input.value);
         historyIndex = -1;
         input.value = '';
 
         if (cmd === 'clear') {
           output.textContent = '';
-        } else if (cmd === 'hilfe') {
-          output.textContent += term.commands.hilfe + '\n';
-        } else if (cmd === 'version') {
-          output.textContent += term.commands.version + '\n';
-        } else if (cmd === 'credits') {
-          output.textContent += term.commands.credits + '\n';
         } else if (cmd === 'witz') {
           var jokes = _config.trashJokes || [];
-          output.textContent += (jokes[Math.floor(Math.random() * jokes.length)] || 'Kein Witz.') + '\n';
+          var joke = jokes[Math.floor(Math.random() * jokes.length)] || 'Kein Witz verfügbar.';
+          output.textContent += joke + '\n';
         } else if (cmd === 'tipp') {
           var tips = _config.tips || [];
-          output.textContent += (tips[Math.floor(Math.random() * tips.length)] || 'Kein Tipp.') + '\n';
-        } else if (cmd === 'theme') {
-          if (arg) {
-            if (WissOS.theme.set(arg.toLowerCase())) {
-              output.textContent += 'System-Theme geändert zu: ' + arg + '\n';
-            } else {
-              output.textContent += 'Fehler: Theme "' + arg + '" ist ungültig.\nVerfügbar: ' + WissOS.theme.available.join(', ') + '\n';
-            }
+          var tip = tips[Math.floor(Math.random() * tips.length)] || 'Kein Tipp verfügbar.';
+          output.textContent += tip + '\n';
+        } else if (cmd === 'matrix') {
+          output.textContent += 'Die Matrix hat dich... Nein, hier gibt es keine rote Pille.\n';
+        } else if (cmd.startsWith('theme ')) {
+          // Dynamischer Theme-Wechsel: "theme vaporwave", "theme retro-classic"
+          var themeName = cmd.split(' ')[1];
+          if (WissOS.theme && WissOS.theme.set(themeName)) {
+            output.textContent += 'Theme gewechselt zu: ' + themeName + '\n';
           } else {
-            output.textContent += 'Aktuelles Theme: ' + WissOS.theme.current() + '\nVerfügbare Themes: ' + WissOS.theme.available.join(', ') + '\n';
+            output.textContent += 'Unbekanntes Theme: ' + themeName + '\n';
+            output.textContent += 'Verfügbar: ' + (WissOS.theme ? WissOS.theme.available.join(', ') : '?') + '\n';
           }
-        } else if (cmd === 'hintergrund') {
-          output.textContent += 'Wallpaper-Picker geöffnet.\n';
-          WissOS.wallpaper.showPicker();
+        } else if (cmd === 'theme') {
+          output.textContent += 'Aktuelles Theme: ' + (WissOS.theme ? WissOS.theme.current() : '?') + '\n';
+          output.textContent += 'Verfügbar: ' + (WissOS.theme ? WissOS.theme.available.join(', ') : '?') + '\n';
         } else if (cmd === 'reset') {
-          output.textContent += 'System wird auf Werkseinstellungen zurückgesetzt ...\n';
+          // localStorage zurücksetzen (Boot-Flag, Icon-Positionen, etc.)
           localStorage.clear();
-          setTimeout(() => location.reload(), 800);
-        } else if (cmd === 'kaffee' || cmd === 'coffee') {
-          output.textContent += 'Screensaver gestartet.\n';
-          _bus.emit('system:action', { action: 'screensaver' });
-        } else if (cmd === 'bluescreen') {
-          output.textContent += 'SYSTEMFEHLER wird simuliert ...\n';
-          _bus.emit('easteregg:bluescreen');
-        } else if (cmd === 'exit') {
-          destroyWindow(winId);
+          output.textContent += 'localStorage gelöscht. Seite wird neu geladen …\n';
+          setTimeout(function() { location.reload(); }, 1000);
+        } else if (cmd === 'coffee' || cmd === 'kaffee') {
+          // Screensaver starten (Kaffee)
+          output.textContent += 'Kaffeepause wird eingeleitet …\n';
+          setTimeout(function() {
+            _bus.emit('system:action', { action: 'screensaver', type: 'kaffee' });
+          }, 500);
+        } else if (cmd === 'wanderer') {
+          // Screensaver starten (Wanderer)
+          output.textContent += 'Wanderer-Modus wird aktiviert …\n';
+          setTimeout(function() {
+            _bus.emit('system:action', { action: 'screensaver', type: 'wanderer' });
+          }, 500);
+        } else if (cmd === 'klassik' || cmd === 'weimarer') {
+          // Screensaver starten (Weimarer Klassik)
+          output.textContent += 'Weimarer Klassik wird geladen …\n';
+          setTimeout(function() {
+            _bus.emit('system:action', { action: 'screensaver', type: 'weimarer-klassik' });
+          }, 500);
+        } else if (cmd === 'legacy') {
+          // Alte Version öffnen
+          output.textContent += 'Legacy-Version wird in neuem Tab geöffnet …\n';
+          setTimeout(function() {
+            window.open('https://wissualisierung.github.io/eduwolf.github.io/', '_blank');
+          }, 500);
+        } else if (cmd === 'screensaver') {
+          output.textContent += 'Bildschirmschoner wird gestartet (Zufallswahl) …\n';
+          setTimeout(function() {
+            _bus.emit('system:action', { action: 'screensaver' });
+          }, 500);
+        } else if (cmd === 'hintergrund' || cmd === 'wallpaper') {
+          output.textContent += 'Hintergrundauswahl wird geöffnet …\n';
+          setTimeout(function() {
+            if (WissOS.wallpaper) WissOS.wallpaper.showPicker();
+          }, 300);
+        } else if (commands[cmd]) {
+          if (commands[cmd] === '__EXIT__') {
+            var winEl = contentEl.closest('.os-window');
+            if (winEl) destroyWindow(winEl.id);
+            return;
+          }
+          output.textContent += commands[cmd] + '\n';
         } else if (cmd !== '') {
-          output.textContent += `Unbekannter Befehl: '${cmd}'. Tippen Sie 'hilfe' für Steuerungsbefehle.\n`;
+          output.textContent += 'Unbekannter Befehl: ' + cmd + '\nGeben Sie \'hilfe\' ein für verfügbare Befehle.\n';
         }
 
         output.scrollTop = output.scrollHeight;
@@ -648,9 +660,24 @@
         }
       }
     });
+
+    inputRow.appendChild(promptLabel);
+    inputRow.appendChild(input);
+    contentEl.appendChild(output);
+    contentEl.appendChild(inputRow);
+
+    createWindow({
+      title: 'Terminal',
+      icon: 'terminal',
+      content: contentEl,
+      width: 520,
+      height: 360
+    });
+
+    // Auto-focus input
+    setTimeout(function() { input.focus(); }, 100);
   }
 
-  // ===== Hourly retro calculator =====
   function showClockInfo() {
     var now = new Date();
     var timeStr = now.toLocaleTimeString('de-DE');
@@ -658,81 +685,158 @@
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     });
 
+    // Stundenrechner
     var contentEl = document.createElement('div');
-    contentEl.style.cssText = 'padding:16px;text-align:center;display:flex;flex-direction:column;height:100%;';
+    contentEl.style.cssText = 'padding:20px;text-align:center;';
 
-    contentEl.innerHTML = `
-      <div id="clock-live-time" style="font-size:32px;font-family:var(--font-system);font-weight:900;margin-bottom:4px;">${timeStr}</div>
-      <div style="font-size:12px;color:#555;font-weight:bold;margin-bottom:12px;">${dateStr}</div>
-      <hr style="margin:8px 0;border:2px solid #000;">
-      <h4 style="font-family:var(--font-system);font-size:14px;margin-bottom:8px;font-weight:900;">📏 Unterrichtsstunden-Rechner</h4>
-      <p style="font-size:11px;font-weight:bold;margin-bottom:8px;color:#333;">Konvertiert Schulstunden (45 Min) in Echtzeit-Minuten:</p>
-      <div style="display:flex;gap:8px;align-items:center;justify-content:center;background:var(--color-bg);padding:10px;border:3px solid #000;box-shadow:3px 3px 0 #000;">
-        <input type="number" id="calc-ustd-input" min="0" placeholder="Std" style="width:70px;padding:4px;font-family:var(--font-system);font-size:14px;border:3px solid #000;text-align:center;font-weight:900;">
-        <span style="font-family:var(--font-system);font-size:13px;font-weight:900;">UStd =</span>
-        <span id="calc-ustd-result" style="font-family:var(--font-system);font-size:15px;font-weight:900;color:#000;">0 Minuten</span>
-      </div>
-    `;
+    var timeDisplay = document.createElement('div');
+    timeDisplay.style.cssText = 'font-size:36px;font-family:var(--font-system);margin-bottom:8px;';
+    timeDisplay.textContent = timeStr;
+
+    var dateDisplay = document.createElement('div');
+    dateDisplay.style.cssText = 'font-size:14px;color:#808080;font-family:var(--font-body);margin-bottom:20px;';
+    dateDisplay.textContent = dateStr;
+
+    // Update time every second
+    var clockInterval = setInterval(function() {
+      var n = new Date();
+      timeDisplay.textContent = n.toLocaleTimeString('de-DE');
+    }, 1000);
+
+    var hr = document.createElement('hr');
+    hr.style.cssText = 'margin:16px 0;border:1px solid var(--color-button-shadow);';
+
+    var calcTitle = document.createElement('h4');
+    calcTitle.style.cssText = 'font-family:var(--font-system);font-size:15px;margin-bottom:12px;';
+    calcTitle.textContent = '📏 Stundenrechner (45 min)';
+
+    var calcRow = document.createElement('div');
+    calcRow.style.cssText = 'display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;';
+
+    var calcInput = document.createElement('input');
+    calcInput.type = 'number';
+    calcInput.min = '0';
+    calcInput.placeholder = 'Stunden';
+    calcInput.style.cssText = 'width:80px;padding:4px 8px;font-family:var(--font-system);font-size:16px;border:2px inset var(--color-button-shadow);background:var(--color-window-bg);text-align:center;';
+
+    var calcLabel = document.createElement('span');
+    calcLabel.style.cssText = 'font-family:var(--font-system);font-size:14px;';
+    calcLabel.textContent = 'UStd =';
+
+    var calcResult = document.createElement('span');
+    calcResult.style.cssText = 'font-family:var(--font-system);font-size:18px;font-weight:bold;min-width:60px;';
+    calcResult.textContent = '0 min';
+
+    calcInput.addEventListener('input', function() {
+      var val = parseFloat(calcInput.value) || 0;
+      calcResult.textContent = (val * 45) + ' min';
+    });
+
+    calcRow.appendChild(calcInput);
+    calcRow.appendChild(calcLabel);
+    calcRow.appendChild(calcResult);
+
+    contentEl.appendChild(timeDisplay);
+    contentEl.appendChild(dateDisplay);
+    contentEl.appendChild(hr);
+    contentEl.appendChild(calcTitle);
+    contentEl.appendChild(calcRow);
 
     var winId = createWindow({
       title: 'Uhrzeit & Stundenrechner',
       icon: 'gear',
       content: contentEl,
-      width: 350,
-      height: 290
+      width: 360,
+      height: 320
     });
 
-    var timer = setInterval(function() {
-      var live = document.getElementById('clock-live-time');
-      if (live) {
-        live.textContent = new Date().toLocaleTimeString('de-DE');
-      } else {
-        clearInterval(timer);
-      }
-    }, 1000);
-
-    setTimeout(function() {
-      var input = document.getElementById('calc-ustd-input');
-      var result = document.getElementById('calc-ustd-result');
-      if (input && result) {
-        input.addEventListener('input', function() {
-          var val = parseFloat(input.value) || 0;
-          result.textContent = (val * 45) + ' Minuten';
-        });
-      }
-    }, 50);
+    // Clean up interval when window closes (optional future enhancement)
   }
 
-  // ===== WissOS folders =====
   function showWissOSFolder() {
     var contentEl = document.createElement('div');
-    contentEl.style.cssText = 'padding:16px; display:grid; grid-template-columns: repeat(auto-fill, 82px); gap:12px; justify-content: start;';
+    contentEl.style.cssText = 'padding:16px; display:grid; grid-template-columns: repeat(auto-fill, 80px); gap:16px; justify-content: start;';
 
     var files = [
       { name: 'config-editor.html', icon: 'browser', url: 'editor/config-editor.html' },
-      { name: 'config.json', icon: 'document', url: '../config.json' },
+      { name: 'config.json', icon: 'document', url: 'config.json' },
       { name: 'config-data.js', icon: 'document', url: 'js/config-data.js' }
     ];
 
     files.forEach(function(file) {
       var item = document.createElement('div');
-      item.className = 'desktop-icon';
-      item.style.cssText = 'display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; width:80px; padding:6px; border:2px solid transparent;';
+      item.style.cssText = 'display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; width:80px; padding:8px;';
       
-      var img = document.createElement('div');
+      var img = document.createElement('img');
+      img.src = WissOS.getIconDataUrl(file.icon);
       img.style.width = '32px';
       img.style.height = '32px';
-      img.innerHTML = WissOS.ICONS[file.icon] || WissOS.ICONS['help'];
       
       var label = document.createElement('span');
       label.textContent = file.name;
-      label.style.cssText = 'font-family:var(--font-system); font-size:10px; font-weight:bold; text-align:center; word-break: break-word; color:#000;';
+      label.style.cssText = 'font-family:var(--font-system); font-size:11px; text-align:center; word-break: break-word;';
 
       item.appendChild(img);
       item.appendChild(label);
 
       item.addEventListener('click', function() {
-        WissOS.sound.play('click');
+        if (file.name.endsWith('.html')) {
+          WissOS.launchProgram({
+            name: file.name,
+            osName: file.name,
+            icon: file.icon,
+            url: file.url,
+            openInWindow: true
+          });
+        } else {
+           // Direct link for non-HTML files
+           window.open(file.url, '_blank');
+        }
+      });
+
+      // Hover effect
+      item.addEventListener('mouseenter', function() { item.style.backgroundColor = 'var(--color-selection)'; });
+      item.addEventListener('mouseleave', function() { item.style.backgroundColor = 'transparent'; });
+
+      contentEl.appendChild(item);
+    });
+
+    createWindow({
+      title: 'Ordner: WissOS',
+      icon: 'folder',
+      content: contentEl,
+      width: 320,
+      height: 240
+    });
+  }
+
+  function showStrophenEditorFolder() {
+    var contentEl = document.createElement('div');
+    contentEl.style.cssText = 'padding:16px; display:grid; grid-template-columns: repeat(auto-fill, 80px); gap:16px; justify-content: start;';
+
+    var files = [
+      { name: 'strophen_editor.html', icon: 'browser', url: 'PROGRAMME/Strophen-Navigator/Editor/strophen_editor.html' },
+      { name: 'index_roh.html', icon: 'browser', url: 'PROGRAMME/Strophen-Navigator/Editor/index_roh.html' },
+      { name: 'daten.xlsx', icon: 'document', url: 'PROGRAMME/Strophen-Navigator/Editor/774396e9 (1).xlsx' }
+    ];
+
+    files.forEach(function(file) {
+      var item = document.createElement('div');
+      item.style.cssText = 'display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; width:80px; padding:8px;';
+      
+      var img = document.createElement('img');
+      img.src = WissOS.getIconDataUrl(file.icon);
+      img.style.width = '32px';
+      img.style.height = '32px';
+      
+      var label = document.createElement('span');
+      label.textContent = file.name;
+      label.style.cssText = 'font-family:var(--font-system); font-size:11px; text-align:center; word-break: break-word;';
+
+      item.appendChild(img);
+      item.appendChild(label);
+
+      item.addEventListener('click', function() {
         if (file.name.endsWith('.html')) {
           WissOS.launchProgram({
             name: file.name,
@@ -746,26 +850,24 @@
         }
       });
 
-      item.addEventListener('mouseenter', function() {
-        item.style.borderColor = '#000';
-        item.style.backgroundColor = 'var(--color-selection)';
-      });
-      item.addEventListener('mouseleave', function() {
-        item.style.borderColor = 'transparent';
-        item.style.backgroundColor = 'transparent';
-      });
+      // Hover effect
+      item.addEventListener('mouseenter', function() { item.style.backgroundColor = 'var(--color-selection)'; });
+      item.addEventListener('mouseleave', function() { item.style.backgroundColor = 'transparent'; });
 
       contentEl.appendChild(item);
     });
 
     createWindow({
-      title: 'Ordner: System-Config',
+      title: 'Ordner: Strophen-Editor',
       icon: 'folder',
       content: contentEl,
-      width: 320,
-      height: 220
+      width: 340,
+      height: 240
     });
   }
 
+  // Expose module
   WissOS.WindowManager = module;
+  WissOS.WindowManager.createWindow = createWindow;
+  WissOS.WindowManager.destroyWindow = destroyWindow;
 })();

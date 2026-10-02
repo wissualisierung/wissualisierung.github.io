@@ -1,6 +1,6 @@
 /**
- * WissOS 2.0 – Start Menu Module
- * Generates the categorized neobrutalist menu from system config
+ * WissualisierungOS – Start Menu Module
+ * Generates menu from config, folder structure, program links
  * CC-BY-SA 4.0 Wolf Sebastian (2026)
  */
 
@@ -25,39 +25,35 @@
     var system = document.getElementById('start-menu-system');
     var menuIcon = document.getElementById('start-menu-icon');
 
-    if (!body || !system) return;
-
-    // Set header icon (brain icon SVG representation)
-    if (menuIcon) {
-      menuIcon.innerHTML = WissOS.ICONS['brain'];
-    }
+    // Set header icon (brain icon)
+    menuIcon.src = _getIconUrl('brain');
 
     body.innerHTML = '';
     system.innerHTML = '';
 
-    // Program map lookup builder
+    // Build program lookup
     var programMap = {};
     _config.programs.forEach(function(p) { programMap[p.id] = p; });
     (_config.systemPrograms || []).forEach(function(p) { programMap[p.id] = p; });
 
-    // Render program category folders
+    // Render folders
     _config.menu.folders.forEach(function(folder) {
       var folderEl = document.createElement('div');
       folderEl.className = 'start-menu__folder';
 
+      // Folder header
       var header = document.createElement('div');
       header.className = 'start-menu__folder-header';
       header.innerHTML =
-        '<span class="menu-icon">' + (WissOS.ICONS[folder.icon] || WissOS.ICONS['folder']) + '</span>' +
+        '<img class="menu-icon" src="' + _getIconUrl(folder.icon || 'folder') + '" alt="">' +
         '<span>' + folder.name + '</span>' +
         '<span class="folder-arrow" aria-hidden="true">▶</span>';
-      
       header.addEventListener('click', function(e) {
         e.stopPropagation();
-        WissOS.sound.play('click');
         folderEl.classList.toggle('open');
       });
 
+      // Folder items
       var items = document.createElement('div');
       items.className = 'start-menu__folder-items';
 
@@ -69,16 +65,17 @@
         item.className = 'start-menu__item';
         item.href = prog.url || '#';
 
+        // Fullscreen toggle: tag span with id for dynamic label updates
         var labelId = (pid === 'fullscreen-toggle') ? ' id="menu-fullscreen-label"' : '';
         var labelText = (prog.osName || prog.name);
+        // Show correct initial label based on current fullscreen state
         if (pid === 'fullscreen-toggle' && document.fullscreenElement) {
           labelText = 'Normalbild-OS';
         }
 
         item.innerHTML =
-          '<span class="menu-icon">' + (WissOS.ICONS[prog.icon] || WissOS.ICONS['help']) + '</span>' +
+          '<img class="menu-icon" src="' + _getIconUrl(prog.icon) + '" alt="">' +
           '<span' + labelId + '>' + labelText + '</span>';
-        
         item.addEventListener('click', function(e) {
           e.preventDefault();
           closeMenu();
@@ -93,7 +90,7 @@
       body.appendChild(folderEl);
     });
 
-    // Render system actions (privacy declarations, clock, settings resets)
+    // Render system entries
     var divider = document.createElement('div');
     divider.className = 'start-menu__divider';
     system.appendChild(divider);
@@ -102,9 +99,8 @@
       var item = document.createElement('div');
       item.className = 'start-menu__item';
       item.innerHTML =
-        '<span class="menu-icon">' + (WissOS.ICONS[entry.icon] || WissOS.ICONS['help']) + '</span>' +
+        '<img class="menu-icon" src="' + _getIconUrl(entry.icon) + '" alt="">' +
         '<span>' + entry.name + '</span>';
-      
       item.addEventListener('click', function(e) {
         e.stopPropagation();
         closeMenu();
@@ -117,12 +113,11 @@
   function closeMenu() {
     var menu = document.getElementById('start-menu');
     var btn = document.getElementById('start-button');
-    if (menu && btn) {
-      menu.classList.remove('open');
-      btn.classList.remove('active');
-      btn.setAttribute('aria-expanded', 'false');
-    }
+    menu.classList.remove('open');
+    btn.classList.remove('active');
+    btn.setAttribute('aria-expanded', 'false');
   }
 
+  // Register module
   WissOS.StartMenu = module;
 })();

@@ -1,4 +1,4 @@
-{
+﻿{
     "id":  "heinrich_heine",
     "name":  "Heinrich Heine",
     "short":  "Heine",
@@ -16,7 +16,7 @@
     "modules":  [
                     {
                         "type":  "framing",
-                        "content":  "Du triffst gleich auf Heinrich Heine – oder besser: auf eine Konstruktion, die so spricht, wie er geschrieben hat. Heine selbst ist 1856 in Paris gestorben. Was du hier liest, basiert auf seinen Texten, Gedichten und Briefen, ist aber eine didaktische Interpretation. Lies kritisch!"
+                        "content":  "Du triffst gleich auf Heinrich Heine – oder besser: auf eine\u003cbr\u003eKonstruktion, die so spricht, wie er geschrieben hat. Heine selbst\u003cbr\u003eist 1856 in Paris gestorben. Was du hier liest, basiert auf seinen\u003cbr\u003eTexten, Gedichten und Briefen, ist aber eine didaktische\u003cbr\u003eInterpretation. Lies kritisch!"
                     },
                     {
                         "type":  "timeline",
@@ -53,7 +53,7 @@
                     },
                     {
                         "type":  "persona",
-                        "content":  "Bonjour – oder, wenn Dir das lieber ist: Guten Tag! Ich bin Harry Heine aus Düsseldorf. Harry war mein Geburtsname, wobei ich mich selbst gern als „ersten Mann des Jahrhunderts\" bezeichnet habe – denn ich behauptete scherzhaft, in der Neujahrsnacht 1800 geboren worden zu sein. Du liest meine Texte in der Schule? Das amüsiert mich. Man hat mich zu Lebzeiten verboten, verfolgt und verspottet. Und jetzt sitze ich im Lehrplan. \u003cspan class=\"chat-source-ref\" title=\"vgl. Frankfurter Bundestagsbeschluss 1835\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. Frankfurter Bundestagsbeschluss 1835\"\u003eQ\u003c/span\u003e"
+                        "content":  "Bonjour – oder, wenn Dir das lieber ist: Guten Tag! Ich bin Harry Heine aus Düsseldorf. Harry war mein Geburtsname, wobei ich mich selbst gern als „ersten Mann des Jahrhunderts\" bezeichnet habe – denn ich behauptete scherzhaft, in der Neujahrsnacht 1800 geboren worden zu sein. Du liest meine Texte in der Schule? Das amüsiert mich. Man hat mich zu Lebzeiten verboten, verfolgt und verspottet. Und jetzt sitze ich im Lehrplan.\u003cbr\u003e\u003cspan class=\"chat-source-ref\" title=\"vgl. Frankfurter Bundestagsbeschluss 1835\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: vgl. Frankfurter Bundestagsbeschluss 1835\"\u003eQ\u003c/span\u003e"
                     },
                     {
                         "type":  "learner",
@@ -74,7 +74,7 @@
                     },
                     {
                         "type":  "learner",
-                        "content":  "Aber du hast doch auch romantische Gedichte geschrieben? Die Loreley zum Beispiel?"
+                        "content":  "Aber du hast doch auch romantische Gedichte geschrieben?\u003cbr\u003eDie Loreley zum Beispiel?"
                     },
                     {
                         "type":  "persona",
@@ -131,7 +131,7 @@
                     },
                     {
                         "type":  "persona",
-                        "content":  "Mein Leben war alles andere als einfach. Ich bin als Jude in einer christlichen Gesellschaft aufgewachsen, die mir trotz Napoleons Emanzipationsgesetzen immer wieder die Türen vor der Nase zumachte. Ich ließ mich taufen, um mir eine Karriere als Jurist zu ermöglichen. Religiös völlig gleichgültig sah ich in der Taufe „nichts als eine bloße Nützlichkeitstatsache\" und im Taufschein nur das „Entre Billet zur Europäischen Kultur\". Aber schon im Januar 1826 schrieb ich meinem Freund Moses Moser: „Ich bereue sehr daß ich mich getauft hab; ich seh noch gar nicht ein, daß es mir seitdem besser gegangen sey.\" \u003cspan class=\"chat-source-ref\" title=\"Brief an Moses Moser, 9. Januar 1826\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Brief an Moses Moser, 9. Januar 1826\"\u003eQ\u003c/span\u003e"
+                        "content":  "Mein Leben war alles andere als einfach. Ich bin als Jude in einer christlichen Gesellschaft aufgewachsen, die mir trotz Napoleons Emanzipationsgesetzen immer wieder die Türen vor der Nase zumachte.\u003cbr\u003eIch ließ mich taufen, um mir eine Karriere als Jurist zu ermöglichen. Religiös völlig gleichgültig sah ich in der Taufe „nichts als eine bloße Nützlichkeitstatsache\" und im Taufschein nur das „Entre Billet zur Europäischen Kultur\". Aber schon im Januar 1826 schrieb ich meinem Freund Moses Moser: „Ich bereue sehr daß ich mich getauft hab; ich seh noch gar nicht ein, daß es mir seitdem besser gegangen sey.\" \u003cspan class=\"chat-source-ref\" title=\"Brief an Moses Moser, 9. Januar 1826\" tabindex=\"0\" role=\"button\" aria-label=\"Quelle: Brief an Moses Moser, 9. Januar 1826\"\u003eQ\u003c/span\u003e"
                     },
                     {
                         "type":  "freetext",
