@@ -107,6 +107,15 @@ WissOS.ICONS = {
     <circle cx="34" cy="36" r="3" fill="#7DFFC2" stroke="#000" stroke-width="2"/>
   </svg>`,
 
+  target: `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="24" cy="24" r="18" fill="#FF6B9D" stroke="#000" stroke-width="3"/>
+    <circle cx="24" cy="24" r="12" fill="#FAFAF5" stroke="#000" stroke-width="2"/>
+    <circle cx="24" cy="24" r="6" fill="#FFE66D" stroke="#000" stroke-width="2"/>
+    <circle cx="24" cy="24" r="2" fill="#000"/>
+    <line x1="24" y1="2" x2="24" y2="46" stroke="#000" stroke-width="2"/>
+    <line x1="2" y1="24" x2="46" y2="24" stroke="#000" stroke-width="2"/>
+  </svg>`,
+
   paintbrush: `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect x="20" y="28" width="8" height="16" fill="#EAE6FF" stroke="#000" stroke-width="3"/>
     <polygon points="16,28 24,4 32,28" fill="#FFE66D" stroke="#000" stroke-width="3"/>
@@ -529,13 +538,19 @@ WissOS.theme = {
     return true;
   },
 
+  // Standard-Theme: config.settings.theme, sonst 'retro-classic'
+  defaultTheme: function () {
+    var s = (WissOS.config || {}).settings || {};
+    return WissOS.theme.available.indexOf(s.theme) !== -1 ? s.theme : 'retro-classic';
+  },
+
   restore: function () {
-    var saved = WissOS.storage.get('theme', 'retro-classic');
-    WissOS.theme.set(saved);
+    var saved = WissOS.storage.get('theme', WissOS.theme.defaultTheme());
+    if (!WissOS.theme.set(saved)) WissOS.theme.set(WissOS.theme.defaultTheme());
   },
 
   current: function () {
-    return WissOS.storage.get('theme', 'retro-classic');
+    return WissOS.storage.get('theme', WissOS.theme.defaultTheme());
   }
 };
 
@@ -752,6 +767,7 @@ WissOS.init = async function () {
   if (WissOS.WindowManager) WissOS.WindowManager.init(config, bus, storage);
   if (WissOS.DesktopIcons) WissOS.DesktopIcons.init(config, bus, storage, WissOS.getIconDataUrl);
   if (WissOS.Taskbar) WissOS.Taskbar.init(config, bus, storage);
+  if (WissOS.Assistant) WissOS.Assistant.init(config, bus, storage);
   if (WissOS.StartMenu) WissOS.StartMenu.init(config, bus, storage, WissOS.getIconDataUrl);
   if (WissOS.Screensaver) WissOS.Screensaver.init(bus);
   if (WissOS.EasterEggs) WissOS.EasterEggs.init(config, bus, storage);

@@ -62,6 +62,10 @@
       items.className = 'start-menu__folder-items';
 
       folder.programIds.forEach(function(pid) {
+        if (pid === 'assistant-toggle') {
+          items.appendChild(buildAssistantToggle());
+          return;
+        }
         var prog = programMap[pid];
         if (!prog) return;
 
@@ -122,6 +126,65 @@
       btn.classList.remove('active');
       btn.setAttribute('aria-expanded', 'false');
     }
+  }
+
+  // ===== Assistent-Schalter (im Ordner „Werkzeuge“) =====
+  var ASSISTANT_ICON =
+    '<svg viewBox="0 0 16 16" width="20" height="20" shape-rendering="crispEdges" aria-hidden="true">' +
+      '<rect x="1" y="3" width="14" height="10" fill="#FF6B9D" stroke="#1A1A1A"/>' +
+      '<rect x="8" y="4" width="6" height="8" fill="#FFFDF5"/>' +
+      '<rect x="7" y="3" width="1" height="10" fill="#1A1A1A"/>' +
+      '<rect x="9" y="6" width="1" height="2" fill="#1A1A1A"/>' +
+      '<rect x="12" y="6" width="1" height="2" fill="#1A1A1A"/>' +
+      '<rect x="10" y="9" width="2" height="1" fill="#1A1A1A"/>' +
+    '</svg>';
+
+  var _assistantListenerAttached = false;
+
+  function updateAssistantToggle(state) {
+    var item = document.getElementById('menu-toggle-assistant');
+    var pill = document.getElementById('menu-assistant-pill');
+    if (pill) {
+      pill.textContent = state ? 'AN' : 'AUS';
+      pill.classList.toggle('active', state);
+    }
+    if (item) item.setAttribute('aria-checked', String(state));
+  }
+
+  function buildAssistantToggle() {
+    var isOn = (WissOS.Assistant && WissOS.Assistant.isEnabled) ? WissOS.Assistant.isEnabled() : false;
+    var item = document.createElement('div');
+    item.className = 'start-menu__item start-menu__item--toggle';
+    item.id = 'menu-toggle-assistant';
+    item.setAttribute('role', 'switch');
+    item.setAttribute('tabindex', '0');
+    item.setAttribute('aria-checked', String(isOn));
+    item.title = 'Zeigt nach einer Minute Inaktivität Befunde aus der Lehr-Lern-Forschung';
+    item.innerHTML =
+      '<span class="menu-icon">' + ASSISTANT_ICON + '</span>' +
+      '<span style="flex:1;">Assistent</span>' +
+      '<span class="os-toggle-pill' + (isOn ? ' active' : '') + '" id="menu-assistant-pill">' + (isOn ? 'AN' : 'AUS') + '</span>';
+
+    function toggle(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (WissOS.sound && WissOS.sound.play) WissOS.sound.play('click');
+      if (!WissOS.Assistant) return;
+      var state = WissOS.Assistant.toggle(true);
+      updateAssistantToggle(state);
+    }
+    item.addEventListener('click', toggle);
+    item.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') toggle(e);
+    });
+
+    if (_bus && !_assistantListenerAttached) {
+      _bus.on('assistant:state', function(data) {
+        updateAssistantToggle(!!(data && data.enabled));
+      });
+      _assistantListenerAttached = true;
+    }
+    return item;
   }
 
   WissOS.StartMenu = module;

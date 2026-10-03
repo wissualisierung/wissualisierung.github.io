@@ -186,6 +186,20 @@ window.WissOS._configData = {
       "height": 720,
       "showOnDesktop": true,
       "desktopPosition": { "col": 0, "row": 3 }
+    },
+    {
+      "id": "wortwurfbude",
+      "name": "Wortwurfbude",
+      "osName": "Wortwurfbude",
+      "description": "Wortarten-Wurfspiel",
+      "icon": "target",
+      "category": "Spiele",
+      "url": "PROGRAMME/Wortwurfbude/Die-Wortwurfbude-offline.html",
+      "openInWindow": true,
+      "width": 950,
+      "height": 680,
+      "showOnDesktop": true,
+      "desktopPosition": { "col": 2, "row": 3 }
     }
   ],
   "systemPrograms": [
@@ -232,7 +246,7 @@ window.WissOS._configData = {
       {
         "name": "Werkzeuge",
         "icon": "gear",
-        "programIds": ["stilmittel-navigator", "strophen-navigator", "bewertungsschluessel", "paed-navigator", "qr-generator", "fullscreen-toggle"]
+        "programIds": ["stilmittel-navigator", "strophen-navigator", "bewertungsschluessel", "paed-navigator", "qr-generator", "fullscreen-toggle", "assistant-toggle"]
       },
       {
         "name": "Kreativ",
@@ -242,26 +256,17 @@ window.WissOS._configData = {
       {
         "name": "Spiele",
         "icon": "joystick",
-        "programIds": ["blockkaskade", "spiele-generator"]
+        "programIds": ["blockkaskade", "spiele-generator", "wortwurfbude"]
       }
     ],
     "systemEntries": [
+      { "name": "System-Einstellungen", "icon": "gear", "action": "settings" },
       { "name": "Pädagogische Hattie-Hilfe", "icon": "help", "action": "paed-helper" },
       { "name": "Bildschirmschoner", "icon": "gear", "action": "screensaver" },
       { "name": "Impressum", "icon": "help", "action": "about" },
       { "name": "Datenschutz", "icon": "cookie", "action": "datenschutz" }
     ]
   },
-  "tips": [
-    "Vorwissen aktivieren verkürzt die Ladezeit des Schüler-Arbeitsgedächtnisses enorm.",
-    "Klassen mit einer positiven Fehlerkultur kompilieren neue Erkenntnisse 5x schneller.",
-    "Differenzierung erhöht die CPU-Last der Lehrkraft. Externe Zufuhr von Kaffee empfohlen.",
-    "Transparente Lernziele reduzieren das Hintergrundrauschen im Unterrichts-RAM.",
-    "Metakognition ist das Betriebssystem über dem didaktischen Fachwissen der Schüler.",
-    "Regelmäßige Feedbackschleifen laufen bidirektional – Einwegverbindungen dämpfen die Effektstärke.",
-    "Routinen im Klassenzimmer entlasten den Arbeitsspeicher aller beteiligten Akteure.",
-    "Störungen entstehen oft in Phasenübergängen. Ein stabiler Übergangs-Cache verringert Systemabstürze."
-  ],
   "trashJokes": [
     "Zwei Fische treffen sich im Teich. Sagt der eine: „Hai!“ – Sagt der andere: „Wo??!“",
     "Lehrerin: „Was ist die Zukunftsform von ‚ich stehle‘?“ – Schüler: „Ich wandere aus!“",
@@ -273,7 +278,7 @@ window.WissOS._configData = {
     "prompt": "wissos2.0>",
     "welcomeMessage": "★ WissOS 2.0 – Neobrutalist Command Line Interface ★\nGeben Sie 'hilfe' ein, um alle Steuerbefehle aufzulisten.\n",
     "commands": {
-      "hilfe": "Verfügbare Befehle:\n  hilfe       – Zeigt dieses Hilfemenü\n  version     – Zeigt Systemname und Versionsnummer\n  tipp        – Zeigt einen didaktischen Systemtipp\n  witz        – Erzählt einen Papierkorb-Witz\n  theme       – Zeigt das aktuelle Theme oder wechselt es (z.B. 'theme pommes')\n  hintergrund – Zeigt das Hintergrundbild-Menü\n  clear       – Leert die Terminalanzeige\n  credits     – Zeigt Danksagungen und Lizenzen\n  exit        – Schließt dieses Terminalfenster",
+      "hilfe": "Verfügbare Befehle:\n  hilfe       – Zeigt dieses Hilfemenü\n  version     – Zeigt Systemname und Versionsnummer\n  tipp        – Zeigt einen Befund aus der Unterrichtsforschung\n  witz        – Erzählt einen Papierkorb-Witz\n  theme       – Zeigt das aktuelle Theme oder wechselt es (z.B. 'theme pommes')\n  hintergrund – Zeigt das Hintergrundbild-Menü\n  clear       – Leert die Terminalanzeige\n  credits     – Zeigt Danksagungen und Lizenzen\n  exit        – Schließt dieses Terminalfenster",
       "version": "WissOS 2.0 – Das neobrutalistische Didaktik-OS\nKonzipiert und modernisiert von Wolf Sebastian (2026)\nLizenz: CC-BY-SA 4.0",
       "credits": "WissOS 2.0\nKonzept, UI Design & Modernisierung: Wolf Sebastian (2026)\nFrameworks: Neobrutalismus CSS-Tokens, marked.js (Offline)\nBDS-Kompakt und Didaktische Flashcards modernisiert.",
       "exit": "__EXIT__"
@@ -317,10 +322,10 @@ window.WissOS._configData = {
     "bluescreen": {
       "enabled": true,
       "probability": 0.005
-    },
-    "bookworm": {
-      "enabled": false
     }
+  },
+  "assistant": {
+    "idleSeconds": 60
   },
   "settings": {
     "soundEnabled": false,

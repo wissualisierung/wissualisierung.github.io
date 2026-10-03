@@ -63,16 +63,20 @@
 
     var taskbar = document.getElementById('taskbar');
     var minY = 0;
+    var maxY = window.innerHeight - 40;
     if (taskbar) {
       var rect = taskbar.getBoundingClientRect();
       if (rect.top < window.innerHeight / 2 && rect.bottom > 0) {
         minY = rect.height || rect.bottom;
+      } else {
+        maxY = rect.top - 40;
       }
     }
 
     var x = opts.x != null ? opts.x : Math.max(40, Math.random() * (window.innerWidth - (opts.width || 480) - 100) + 40);
-    var rangeY = window.innerHeight - (opts.height || 360) - 100 - minY;
+    var rangeY = maxY - (opts.height || 360) - 60 - minY;
     var y = opts.y != null ? opts.y : Math.max(minY + 30, Math.random() * Math.max(10, rangeY) + minY + 30);
+    y = Math.max(Math.max(0, minY), Math.min(y, maxY));
     win.style.left = x + 'px';
     win.style.top = y + 'px';
 
@@ -172,10 +176,13 @@
     
     var taskbar = document.getElementById('taskbar');
     var minY = 0;
+    var maxY = window.innerHeight - 40;
     if (taskbar) {
       var rect = taskbar.getBoundingClientRect();
       if (rect.top < window.innerHeight / 2 && rect.bottom > 0) {
         minY = rect.height || rect.bottom;
+      } else {
+        maxY = rect.top - 40;
       }
     }
 
@@ -183,8 +190,10 @@
       win.classList.remove('maximized');
       win.style.removeProperty('top');
       win.style.removeProperty('height');
+      win.style.removeProperty('left');
+      win.style.removeProperty('width');
       win.style.left = entry.oldPos.x + 'px';
-      win.style.top = entry.oldPos.y + 'px';
+      win.style.top = Math.max(Math.max(0, minY), Math.min(entry.oldPos.y, maxY)) + 'px';
       win.style.width = entry.oldSize.w + 'px';
       win.style.height = entry.oldSize.h + 'px';
       if (maxBtn) maxBtn.textContent = '□';
@@ -192,10 +201,12 @@
       entry.oldPos = { x: win.offsetLeft, y: win.offsetTop };
       entry.oldSize = { w: win.offsetWidth, h: win.offsetHeight };
       win.classList.add('maximized');
-      if (minY > 0) {
-        win.style.setProperty('top', minY + 'px', 'important');
-        win.style.setProperty('height', 'calc(100vh - ' + minY + 'px)', 'important');
-      }
+      var tbH = taskbar ? (window.innerHeight - taskbar.offsetTop) : 48;
+      if (tbH < 0 || tbH > window.innerHeight) tbH = 48;
+      win.style.setProperty('top', minY + 'px', 'important');
+      win.style.setProperty('left', '0px', 'important');
+      win.style.setProperty('width', '100%', 'important');
+      win.style.setProperty('height', 'calc(100% - ' + (minY > 0 ? minY : tbH) + 'px)', 'important');
       if (maxBtn) maxBtn.textContent = '❐';
     }
   }
@@ -233,10 +244,13 @@
       
       var taskbar = document.getElementById('taskbar');
       var minY = 0;
+      var maxY = window.innerHeight - 40;
       if (taskbar) {
         var rect = taskbar.getBoundingClientRect();
         if (rect.top < window.innerHeight / 2 && rect.bottom > 0) {
           minY = rect.height || rect.bottom;
+        } else {
+          maxY = rect.top - 40;
         }
       }
 
@@ -244,10 +258,9 @@
       var y = e.clientY - offsetY;
 
       var maxX = window.innerWidth - 40;
-      var maxY = window.innerHeight - 40;
       
       x = Math.max(-win.offsetWidth + 60, Math.min(x, maxX));
-      y = Math.max(minY, Math.min(y, maxY));
+      y = Math.max(Math.max(0, minY), Math.min(y, maxY));
 
       win.style.left = x + 'px';
       win.style.top = y + 'px';
@@ -278,10 +291,13 @@
       
       var taskbar = document.getElementById('taskbar');
       var minY = 0;
+      var maxY = window.innerHeight - 40;
       if (taskbar) {
         var rect = taskbar.getBoundingClientRect();
         if (rect.top < window.innerHeight / 2 && rect.bottom > 0) {
           minY = rect.height || rect.bottom;
+        } else {
+          maxY = rect.top - 40;
         }
       }
 
@@ -289,10 +305,9 @@
       var y = touch.clientY - offsetY;
 
       var maxX = window.innerWidth - 40;
-      var maxY = window.innerHeight - 40;
 
       x = Math.max(-win.offsetWidth + 60, Math.min(x, maxX));
-      y = Math.max(minY, Math.min(y, maxY));
+      y = Math.max(Math.max(0, minY), Math.min(y, maxY));
 
       win.style.left = x + 'px';
       win.style.top = y + 'px';
@@ -306,6 +321,10 @@
   // ===== System Actions Router =====
   function handleSystemAction(data) {
     switch (data.action) {
+      case 'settings':
+      case 'options':
+        showSettings();
+        break;
       case 'about':
         showAbout();
         break;
@@ -331,6 +350,7 @@
         showClockInfo();
         break;
       case 'screensaver':
+      case 'toggle-assistant': // Wird von assistant.js verarbeitet
         break;
       case 'fullscreen':
         if (document.fullscreenElement) {
@@ -399,7 +419,8 @@
     contentEl.style.cssText = 'padding:20px; font-family:var(--font-mono), monospace; font-size:13px; line-height:1.7; overflow-y:auto; height:100%; color:#000; background:#fdfdfd;';
 
     contentEl.innerHTML = `
-      <div style="text-align:center; color:#777; font-size:11px; margin-bottom:12px;">CC-BY-SA 4.0 Wolf Sebastian (2026)</div>
+      <div style="text-align:center; color:#333; font-size:12px; font-weight:bold; margin-bottom:4px;">CC-BY-SA 4.0 Sebastian Wolf (2026)</div>
+      <div style="text-align:center; color:#777; font-size:11px; margin-bottom:12px;">Erstellt mit Hilfe von Claude Opus 5.5 und Gemini 3.8 Flash</div>
       <hr style="border:none; border-top:1px solid #ccc; margin-bottom:16px;">
       <h3 style="font-family:var(--font-system), monospace; font-size:18px; font-weight:bold; margin-bottom:8px; margin-top:0; color:#000; text-align:left;">Impressum</h3>
       <hr style="border:none; border-top:1px solid #ccc; margin-bottom:16px;">
@@ -450,41 +471,48 @@
     });
   }
 
-  function showHelp() {
-    var tips = _config.tips || [];
-    var randomTip = tips[Math.floor(Math.random() * tips.length)] || 'Didaktische Ziele aktivieren.';
+  // Befund aus der Forschung (gleiche Quelle wie der Assistent)
+  function researchTip() {
+    if (WissOS.Assistant && WissOS.Assistant.randomTip) {
+      return WissOS.Assistant.randomTip() || { text: 'Kein Befund verfügbar.', source: '' };
+    }
+    return { text: 'Kein Befund verfügbar.', source: '' };
+  }
 
+  function showHelp() {
     var contentEl = document.createElement('div');
     contentEl.style.cssText = 'padding:16px;display:flex;flex-direction:column;height:100%;';
 
     contentEl.innerHTML = `
-      <div style="font-size:36px;text-align:center;margin-bottom:8px;">💡</div>
-      <h4 style="font-family:var(--font-system);font-size:15px;text-align:center;margin-bottom:8px;font-weight:900;">Didaktischer Impuls</h4>
-      <div id="help-tip-box" style="font-family:var(--font-body);font-size:13px;line-height:1.6;padding:12px;background:var(--color-accent);border:3px solid #000;box-shadow:4px 4px 0 #000;margin-bottom:16px;font-weight:600;">
-        ${randomTip}
+      <h4 style="font-family:var(--font-system);font-size:15px;text-align:center;margin-bottom:8px;font-weight:900;">Aus der Forschung</h4>
+      <div style="font-family:var(--font-body);font-size:13px;line-height:1.6;padding:12px;background:var(--color-accent);border:3px solid #000;box-shadow:4px 4px 0 #000;margin-bottom:16px;">
+        <p id="help-tip-text" style="font-weight:600;"></p>
+        <p id="help-tip-source" style="margin-top:8px;font-size:11px;font-style:italic;"></p>
       </div>
-      <button class="os-button" id="btn-next-tip" style="margin:auto auto 0 auto;font-weight:900;display:block;">💡 Nächster Tipp</button>
+      <button class="os-button" id="btn-next-tip" style="margin:auto auto 0 auto;font-weight:900;display:block;">Nächster Befund</button>
     `;
 
+    var textEl = contentEl.querySelector('#help-tip-text');
+    var sourceEl = contentEl.querySelector('#help-tip-source');
+    function renderTip() {
+      var t = researchTip();
+      textEl.textContent = t.text;
+      sourceEl.textContent = t.source ? 'Quelle: ' + t.source : '';
+    }
+    renderTip();
+
+    contentEl.querySelector('#btn-next-tip').addEventListener('click', function() {
+      WissOS.sound.play('click');
+      renderTip();
+    });
+
     createWindow({
-      title: 'Systemhilfe & Didaktik',
+      title: 'Hilfe – Aus der Forschung',
       icon: 'help',
       content: contentEl,
       width: 400,
-      height: 300
+      height: 320
     });
-
-    setTimeout(function() {
-      var btn = document.getElementById('btn-next-tip');
-      var box = document.getElementById('help-tip-box');
-      if (btn && box) {
-        btn.addEventListener('click', function() {
-          WissOS.sound.play('click');
-          var t = tips[Math.floor(Math.random() * tips.length)];
-          box.textContent = t;
-        });
-      }
-    }, 50);
   }
 
   function showPaedHelper() {
@@ -599,8 +627,8 @@
           var jokes = _config.trashJokes || [];
           output.textContent += (jokes[Math.floor(Math.random() * jokes.length)] || 'Kein Witz.') + '\n';
         } else if (cmd === 'tipp') {
-          var tips = _config.tips || [];
-          output.textContent += (tips[Math.floor(Math.random() * tips.length)] || 'Kein Tipp.') + '\n';
+          var t = researchTip();
+          output.textContent += t.text + (t.source ? '\n  Quelle: ' + t.source : '') + '\n';
         } else if (cmd === 'theme') {
           if (arg) {
             if (WissOS.theme.set(arg.toLowerCase())) {
@@ -765,6 +793,94 @@
       width: 320,
       height: 220
     });
+  }
+
+  // ===== System Settings Window =====
+  function showSettings() {
+    var contentEl = document.createElement('div');
+    contentEl.style.cssText = 'padding:16px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;height:100%;background:#fdfdfd;';
+
+    var isMuted = WissOS.sound && WissOS.sound.isMuted ? WissOS.sound.isMuted() : false;
+    var currentTheme = WissOS.theme && WissOS.theme.current ? WissOS.theme.current() : 'retro-classic';
+
+    contentEl.innerHTML = `
+      <div style="background:var(--color-bg);border:3px solid #000;box-shadow:3px 3px 0 #000;padding:12px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:24px;">🔊</span>
+            <div>
+              <strong style="font-family:var(--font-system);font-size:13px;display:block;">Systemklänge & Audio</strong>
+              <span style="font-size:11px;color:#555;">Klicksounds und Benachrichtigungstöne.</span>
+            </div>
+          </div>
+          <button class="os-button" id="btn-toggle-audio" style="font-weight:900;min-width:65px;background:${!isMuted ? 'var(--color-primary)' : '#eee'};">
+            ${!isMuted ? 'AN' : 'AUS'}
+          </button>
+        </div>
+      </div>
+
+      <div style="background:var(--color-bg);border:3px solid #000;box-shadow:3px 3px 0 #000;padding:12px;">
+        <strong style="font-family:var(--font-system);font-size:13px;display:block;margin-bottom:8px;">🎨 Design-Theme</strong>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;" id="settings-theme-list">
+          <button class="os-button" data-theme="retro-classic" style="font-size:12px;font-weight:bold;${currentTheme === 'retro-classic' ? 'background:var(--color-primary);' : ''}">Retro Classic</button>
+          <button class="os-button" data-theme="vaporwave" style="font-size:12px;font-weight:bold;${currentTheme === 'vaporwave' ? 'background:var(--color-primary);' : ''}">Vaporwave</button>
+          <button class="os-button" data-theme="schreibstube" style="font-size:12px;font-weight:bold;${currentTheme === 'schreibstube' ? 'background:var(--color-primary);' : ''}">Schreibstube</button>
+          <button class="os-button" data-theme="pommes" style="font-size:12px;font-weight:bold;${currentTheme === 'pommes' ? 'background:var(--color-primary);' : ''}">Pommes</button>
+        </div>
+      </div>
+
+      <div style="background:var(--color-bg);border:3px solid #000;box-shadow:3px 3px 0 #000;padding:12px;display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <strong style="font-family:var(--font-system);font-size:13px;display:block;">🖥️ Bildschirmschoner</strong>
+          <span style="font-size:11px;color:#555;">Kaffeepause oder poetische Gemälde.</span>
+        </div>
+        <button class="os-button" id="btn-start-screensaver" style="font-weight:900;">Starten</button>
+      </div>
+    `;
+
+    var winId = createWindow({
+      title: 'System-Einstellungen',
+      icon: 'gear',
+      content: contentEl,
+      width: 440,
+      height: 480
+    });
+
+    setTimeout(function() {
+      var audioBtn = document.getElementById('btn-toggle-audio');
+      var ssBtn = document.getElementById('btn-start-screensaver');
+      var themeList = document.getElementById('settings-theme-list');
+
+      if (audioBtn) {
+        audioBtn.addEventListener('click', function() {
+          if (WissOS.sound && WissOS.sound.toggle) {
+            var active = WissOS.sound.toggle();
+            audioBtn.textContent = active ? 'AN' : 'AUS';
+            audioBtn.style.background = active ? 'var(--color-primary)' : '#eee';
+          }
+        });
+      }
+
+      if (ssBtn) {
+        ssBtn.addEventListener('click', function() {
+          WissOS.sound.play('click');
+          _bus.emit('system:action', { action: 'screensaver' });
+        });
+      }
+
+      if (themeList) {
+        themeList.querySelectorAll('button[data-theme]').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var th = btn.getAttribute('data-theme');
+            if (WissOS.theme && WissOS.theme.set) {
+              WissOS.theme.set(th);
+              themeList.querySelectorAll('button[data-theme]').forEach(b => b.style.background = '');
+              btn.style.background = 'var(--color-primary)';
+            }
+          });
+        });
+      }
+    }, 50);
   }
 
   WissOS.WindowManager = module;
