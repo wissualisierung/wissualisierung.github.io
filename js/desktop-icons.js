@@ -1,6 +1,6 @@
 /**
- * WissualisierungOS – Desktop Icons Module
- * Renders icons, handles selection, drag & drop, double-click
+ * WissOS 2.0 – Desktop Icons Module
+ * Renders icons, handles selection, drag & drop, double-click, and persistent positions
  * CC-BY-SA 4.0 Wolf Sebastian (2026)
  */
 
@@ -26,19 +26,17 @@
         deselectAll();
       });
 
-      // Listen for window resize to reposition icons on mobile/desktop switch
+      // Handle resize dynamics
       var _wasMobile = _isMobile();
       window.addEventListener('resize', function() {
         var isMobileNow = _isMobile();
         var icons = document.querySelectorAll('.desktop-icon');
         if (isMobileNow) {
-          // Switching to mobile: clear absolute positions (CSS grid takes over)
           icons.forEach(function(el) {
             el.style.left = '';
             el.style.top = '';
           });
         } else if (_wasMobile || !icons[0] || !icons[0].style.left) {
-          // Switching back to desktop OR positions were lost: re-apply positions
           var allPrograms = _config.programs.filter(function(p) { return p.showOnDesktop; });
           var allSysProgs = (_config.systemPrograms || []).filter(function(p) { return p.showOnDesktop; });
           var allItems = allPrograms.map(function(p) { return { id: p.id, pos: p.desktopPosition }; })
@@ -60,16 +58,16 @@
 
   function renderIcons() {
     var container = document.getElementById('icon-container');
+    if (!container) return;
     container.innerHTML = '';
 
-    // Render program icons
+    // 1. Render learning applications
     var programs = _config.programs.filter(function(p) { return p.showOnDesktop; });
     programs.forEach(function(prog) {
       var el = createIconElement(prog.id, prog.osName || prog.name, prog.icon, prog.description);
       positionIcon(el, prog.id, prog.desktopPosition);
       container.appendChild(el);
 
-      // Double-click → open program
       el.addEventListener('dblclick', function(e) {
         e.preventDefault();
         _bus.emit('icon:dblclick', { id: prog.id });
@@ -77,7 +75,7 @@
       });
     });
 
-    // Render system program icons
+    // 2. Render system tools (Papierkorb, Terminal, etc.)
     var sysprogs = (_config.systemPrograms || []).filter(function(p) { return p.showOnDesktop; });
     sysprogs.forEach(function(prog) {
       var el = createIconElement(prog.id, prog.name, prog.icon, prog.description);
@@ -102,25 +100,23 @@
     div.dataset.iconId = id;
     div.dataset.description = description || '';
 
-    var img = document.createElement('img');
-    img.className = 'desktop-icon__img';
-    img.src = _getIconUrl(iconName);
-    img.alt = label;
-    img.draggable = false;
+    // Direct SVG inline injection instead of <img> to make it neobrutalist crisp
+    var imgWrapper = document.createElement('div');
+    imgWrapper.className = 'desktop-icon__img-wrap';
+    imgWrapper.innerHTML = WissOS.ICONS[iconName] || WissOS.ICONS['help'];
 
     var span = document.createElement('span');
     span.className = 'desktop-icon__label';
     span.textContent = label;
 
-    div.appendChild(img);
+    div.appendChild(imgWrapper);
     div.appendChild(span);
 
-    // Single click → select
+    // Click -> Select
     div.addEventListener('mousedown', function(e) {
       if (e.button !== 0) return;
       selectIcon(div);
 
-      // Start drag tracking (desktop only)
       if (!_isMobile()) {
         var rect = div.getBoundingClientRect();
         _dragState = {
@@ -135,12 +131,11 @@
       }
     });
 
-    // Touch support for mobile: single tap = select, double tap = action
+    // Tap handling for touch displays (tablets/phones)
     var lastTap = 0;
     div.addEventListener('touchend', function(e) {
       var now = Date.now();
       if (now - lastTap < 350) {
-        // Double tap
         e.preventDefault();
         div.dispatchEvent(new Event('dblclick'));
       } else {
@@ -149,7 +144,7 @@
       lastTap = now;
     });
 
-    // Tooltip on hover
+    // Custom neobrutalist system tooltips on hover
     div.addEventListener('mouseenter', function(e) {
       if (description) showTooltip(e, description);
     });
@@ -158,7 +153,6 @@
       if (description && (!_dragState || !_dragState.moved)) moveTooltip(e);
     });
 
-    // Keyboard: Enter = double-click
     div.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') {
         div.dispatchEvent(new Event('dblclick'));
@@ -169,9 +163,8 @@
   }
 
   function positionIcon(el, iconId, defaultPos) {
-    if (_isMobile()) return; // Grid layout on mobile
+    if (_isMobile()) return;
 
-    // Check localStorage first
     var saved = _storage.get('icon_pos_' + iconId);
     if (saved) {
       el.style.left = saved.x + 'px';
@@ -201,11 +194,7 @@
     _selectedIcon = null;
   }
 
-  function openProgram(prog) {
-    WissOS.launchProgram(prog);
-  }
-
-  // ===== Drag & Drop (mouse) =====
+  // ===== Drag system listener (desktop mouse) =====
   document.addEventListener('mousemove', function(e) {
     if (!_dragState) return;
     var dx = Math.abs(e.clientX - _dragState.startX);
@@ -218,8 +207,9 @@
     }
 
     if (_dragState.moved) {
-      var x = e.clientX - _dragState.offsetX;
-      var y = e.clientY - _dragState.offsetY;
+      var containerRect = document.getElementById('icon-container').getBoundingClientRect();
+      var x = e.clientX - _dragState.offsetX - containerRect.left;
+      var y = e.clientY - _dragState.offsetY - containerRect.top;
       _dragState.el.style.left = x + 'px';
       _dragState.el.style.top = y + 'px';
     }
@@ -229,7 +219,6 @@
     if (!_dragState) return;
     if (_dragState.moved) {
       _dragState.el.classList.remove('dragging');
-      // Save position
       _storage.set('icon_pos_' + _dragState.iconId, {
         x: parseInt(_dragState.el.style.left),
         y: parseInt(_dragState.el.style.top)
@@ -238,9 +227,10 @@
     _dragState = null;
   });
 
-  // ===== Tooltip =====
+  // ===== Tooltip Rendering =====
   function showTooltip(e, text) {
     var tip = document.getElementById('tooltip');
+    if (!tip) return;
     tip.textContent = text;
     tip.style.display = 'block';
     moveTooltip(e);
@@ -248,6 +238,7 @@
 
   function moveTooltip(e) {
     var tip = document.getElementById('tooltip');
+    if (!tip) return;
     tip.style.left = (e.clientX + 16) + 'px';
     tip.style.top = (e.clientY + 16) + 'px';
   }
@@ -257,6 +248,5 @@
     if (tip) tip.style.display = 'none';
   }
 
-  // Register module
   WissOS.DesktopIcons = module;
 })();
