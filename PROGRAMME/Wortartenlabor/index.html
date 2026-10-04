@@ -1,0 +1,2903 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wortarten-Labor</title>
+  <!-- WissOS 2.0 SDK -->
+  <script src="../../sdk/wissos-sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:wght@400;700&family=Pixelify+Sans:wght@400;600;700&display=swap">
+  <style>
+/* Layout: Laborbank links (Prüfband oben, Maschinen darunter, in Reichweite am Smartboard),
+   Laborplan rechts (Baum oben nur zum Ansehen, Schubladen unten zum Tippen).
+   Bewusst ein einziger heller Pastell-Look ohne Dunkelmodus. */
+:root{
+  color-scheme: light;
+  --ink:#2c2a4a; --ink-soft:#625e8c;
+  --ground:#e8e4f5; --grid:#ddd7ef;
+  --panel:#fdfcff; --bench:#fbf0e3;
+  --metal:#e3dff1; --metal-2:#cbc5e2; --metal-hover:#ece9f7;
+  --belt:#9a93c4; --belt-2:#bdb7de;
+  --accent:#ff8fb3; --accent-soft:#ffd6e3;
+  --ja:#2fb873; --ja-soft:#d5f5e3; --nein:#f2596b; --nein-soft:#ffe1e5; --off:#d4cfe6;
+  --verb:#ffe36e; --adjektiv:#a6e6a0; --nomen:#9dd4f1; --pronomen:#9eacf2; --artikel:#86d9c9; --adverb:#d6b0f0; --praeposition:#ffc08c; --konjunktion:#6ed691; --partikel:#cdd3e0; --satzaequivalent:#ff9e9e;
+  --f-ui:"Pixelify Sans","Courier New",monospace;
+  --f-term:"Courier Prime","Courier New",Courier,monospace;
+  --f-read:"Atkinson Hyperlegible",Verdana,"Segoe UI",system-ui,sans-serif;
+  --b:3px; --sh:4px 4px 0 var(--ink); --sh-s:2px 2px 0 var(--ink);
+}
+html{font-size:clamp(14px, .55vw + 8px, 20px);height:100%}
+body{
+  min-height:100%;color:var(--ink);font-family:var(--f-read);
+  background-color:var(--ground);
+  background-image:linear-gradient(var(--grid) 2px,transparent 2px),linear-gradient(90deg,var(--grid) 2px,transparent 2px);
+  background-size:32px 32px;
+}
+[hidden]{display:none!important}
+canvas{image-rendering:pixelated;image-rendering:crisp-edges}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px dashed var(--ink);outline-offset:3px}
+
+.app{max-width:1900px;margin:0 auto;padding-inline:16px;padding-block:12px 24px;display:grid;gap:14px}
+
+/* Kopfzeile */
+.topbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;background:var(--panel);border:var(--b) solid var(--ink);box-shadow:var(--sh);padding:8px 12px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--f-ui);font-weight:700;font-size:1.3rem;letter-spacing:.05em;text-transform:uppercase}
+.brand canvas{width:38px;height:38px}
+.roundinfo{display:flex;align-items:center;gap:8px 12px;flex:1 1 300px;min-width:0;flex-wrap:wrap;font-family:var(--f-ui)}
+.floor{font-size:.78rem;font-weight:600;background:var(--metal);border:2px solid var(--ink);padding:2px 8px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.maerchen-title{font-size:1.1rem;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pips{display:flex;gap:5px}
+.pip{width:14px;height:14px;border:2px solid var(--ink);background:var(--panel)}
+.pip.done{background:var(--ink)}
+.pip.now{background:var(--accent)}
+.tools{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap}
+
+/* Knöpfe */
+.btn{font-family:var(--f-ui);font-weight:600;font-size:1rem;background:var(--panel);border:var(--b) solid var(--ink);box-shadow:var(--sh-s);padding:.4em .8em;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.5em;min-height:46px;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.btn:active:not(:disabled){transform:translate(2px,2px);box-shadow:none}
+.btn.primary{background:var(--accent)}
+.btn.big{font-size:1.25rem;padding:.5em 1.1em;box-shadow:var(--sh);min-height:58px}
+.btn:disabled{opacity:.45;cursor:default;box-shadow:none}
+.btn .ico{width:22px;height:22px;flex:none}
+.btn .kbd{font-size:.75em;opacity:.7}
+.gear{position:relative;-webkit-touch-callout:none}
+.gear .hold{position:absolute;left:0;bottom:-3px;height:5px;width:0;background:var(--accent)}
+.gear.holding .hold{animation:hold 2s linear forwards}
+@keyframes hold{to{width:100%}}
+
+/* Arbeitsfläche */
+.labor{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:16px;align-items:start}
+.bench,.plan{display:grid;gap:16px;min-width:0}
+.panel{background:var(--panel);border:var(--b) solid var(--ink);box-shadow:var(--sh);min-width:0}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:var(--f-ui);font-weight:600;text-transform:uppercase;letter-spacing:.07em;font-size:.82rem;padding:6px 12px;border-bottom:var(--b) solid var(--ink);background:var(--metal)}
+.panel-head .sub{text-transform:none;letter-spacing:0;font-weight:400;color:var(--ink-soft)}
+.tag{background:var(--accent-soft);border:2px solid var(--ink);padding:0 .5em;text-transform:none;letter-spacing:0}
+
+/* Prüfband */
+.station{background:var(--bench);padding:14px 16px 16px;display:grid;gap:12px}
+.guide{display:flex;gap:14px;align-items:flex-start}
+.guide canvas{width:76px;height:76px;flex:none}
+.bubble{position:relative;margin:0;flex:1;min-width:0;background:var(--panel);border:var(--b) solid var(--ink);padding:.55em .9em;font-size:1.08rem;line-height:1.42;min-height:3.3em}
+.bubble::before,.bubble::after{content:"";position:absolute;background:var(--ink)}
+.bubble::before{left:-11px;top:16px;width:8px;height:8px}
+.bubble::after{left:-19px;top:26px;width:5px;height:5px}
+.bubble .term,.term{font-family:var(--f-term);font-weight:700}
+.bubble .w{font-weight:700}
+.sentence{font-size:clamp(1.3rem, 1rem + 1.05vw, 2.15rem);line-height:1.55;text-align:center;padding:.25em .2em 0;text-wrap:balance}
+.wordcard{display:inline-block;font-weight:700;background:var(--panel);border:var(--b) solid var(--ink);box-shadow:var(--sh-s);padding:0 .35em;margin:0 .08em;line-height:1.35}
+.wordcard.ghost{visibility:hidden}
+.wordcard.verb{background:var(--verb)}
+.wordcard.adjektiv{background:var(--adjektiv)}
+.wordcard.nomen{background:var(--nomen)}
+.wordcard.pronomen{background:var(--pronomen)}
+.wordcard.artikel{background:var(--artikel)}
+.wordcard.adverb{background:var(--adverb)}
+.wordcard.praeposition{background:var(--praeposition)}
+.wordcard.konjunktion{background:var(--konjunktion)}
+.wordcard.partikel{background:var(--partikel)}
+.wordcard.satzaequivalent{background:var(--satzaequivalent)}
+.flyer{position:fixed;z-index:40;pointer-events:none;margin:0;font-family:var(--f-read);box-sizing:border-box}
+.belt{height:16px;border:var(--b) solid var(--ink);background:repeating-linear-gradient(90deg,var(--belt) 0 16px,var(--belt-2) 16px 32px)}
+.belt.run{animation:belt .5s steps(4) infinite}
+@keyframes belt{to{background-position:32px 0}}
+.result{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:.45em .6em;min-height:2.7em;font-size:1.15rem}
+.result .mtag{font-family:var(--f-term);font-weight:700;font-size:.9rem;background:var(--metal);border:2px solid var(--ink);padding:.1em .5em}
+.form{padding:.12em .5em;border:2px dashed var(--ink-soft);background:var(--panel)}
+.form.base{border-style:solid;border-color:var(--ink-soft)}
+.form.ok{border:2px solid var(--ja);background:var(--ja-soft)}
+.form.bad{border:2px solid var(--nein);background:var(--nein-soft);text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:var(--nein)}
+.sep{color:var(--ink-soft);font-family:var(--f-ui)}
+.actions{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:12px;min-height:58px}
+.thumb{min-width:9.5em}
+.thumb.yes{background:var(--ja-soft)}
+.thumb.no{background:var(--nein-soft)}
+.thumb .ico{width:28px;height:28px}
+.hint-line{font-family:var(--f-ui);font-size:1.05rem;color:var(--ink-soft);text-align:center}
+
+/* Prüfmaschinen */
+.machines{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:14px}
+.machine{position:relative;display:grid;grid-template-rows:auto 1fr;text-align:center;background:var(--metal);border:var(--b) solid var(--ink);box-shadow:var(--sh);cursor:pointer;min-height:11.2em;padding:0;overflow:hidden;touch-action:manipulation}
+.machines.one{grid-template-columns:minmax(0,24em);justify-content:center}
+.machines.six{grid-template-columns:repeat(3,minmax(0,1fr))}
+.machines.switched .machine{animation:appear .45s steps(5)}
+@keyframes appear{from{transform:translateY(14px);opacity:.2}}
+.machines.four{grid-template-columns:repeat(2,minmax(0,1fr))}
+.machines.five{grid-template-columns:repeat(6,minmax(0,1fr))}
+.machines.five .machine{grid-column:span 2}
+.machines.five .machine:nth-child(n+4){grid-column:span 3}
+.machine:hover:not(:disabled){background:var(--metal-hover)}
+.machine:active:not(:disabled){transform:translate(2px,2px);box-shadow:var(--sh-s)}
+.machine:disabled{cursor:default}
+.machine.waiting{opacity:.62}
+.machine.active{background:var(--accent-soft);box-shadow:4px 4px 0 var(--accent)}
+.mhead{display:flex;align-items:center;gap:8px;padding:5px 8px;border-bottom:var(--b) solid var(--ink);background:var(--metal-2)}
+.key{font-family:var(--f-ui);font-weight:700;background:var(--ink);color:var(--panel);min-width:1.6em;padding:0 .3em;font-size:.85rem}
+.dots{display:flex;gap:4px;margin-left:auto}
+.dots i{width:8px;height:8px;border:2px solid var(--ink);background:var(--panel)}
+.lamp{width:26px;height:26px;border:var(--b) solid var(--ink);background:var(--off);display:grid;place-items:center;font-family:var(--f-ui);font-weight:700;font-size:.85rem;color:var(--panel)}
+.lamp.ja{background:var(--ja)}
+.lamp.nein{background:var(--nein)}
+.lamp.partizip{background:var(--verb);color:var(--ink)}
+.mbody{position:relative;display:grid;justify-items:center;align-content:center;gap:.35em;padding:10px 10px 14px}
+.iconbox{position:relative;width:52px;height:52px}
+.iconbox canvas{width:52px;height:52px}
+.das{position:absolute;right:-16px;bottom:-4px;font-family:var(--f-read);font-weight:700;font-size:.72rem;background:var(--panel);border:2px solid var(--ink);padding:0 .3em;line-height:1.3}
+.machine .term{font-size:1.25rem}
+.question{font-size:.95rem;line-height:1.3;max-width:18em}
+.shutter{position:absolute;inset:0;transform-origin:top;transition:transform .5s steps(6);background:repeating-linear-gradient(0deg,var(--metal-2) 0 12px,var(--ink-soft) 12px 15px)}
+.machine:not(.locked) .shutter{transform:scaleY(0)}
+.machine.shake,.drawer.wrong{animation:shake .3s steps(4)}
+@keyframes shake{25%{transform:translate(-4px,0)}50%{transform:translate(4px,-2px)}75%{transform:translate(-3px,2px)}}
+
+/* Laborplan */
+.btn.mini{min-height:34px;padding:.15em .6em;font-size:.8rem;box-shadow:none;text-transform:none;letter-spacing:0}
+.plan-full{padding:0;overflow-x:auto}
+.plan-full .treesvg{min-width:720px}
+.plan-note{margin:0;color:var(--ink-soft);line-height:1.4}
+.head-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.legend{display:flex;gap:10px;text-transform:none;letter-spacing:0;font-weight:400}
+.legend span{display:inline-flex;align-items:center;gap:4px}
+.legend i{display:inline-block;width:12px;height:12px;border:2px solid var(--ink)}
+.tree-wrap{padding:10px 12px 12px;overflow-x:auto}
+.treesvg{display:block;width:100%;height:auto;min-width:300px}
+.treesvg .edge{stroke:var(--ink);stroke-width:2.5;fill:none}
+.treesvg .edge.ja{stroke:var(--ja);stroke-width:5}
+.treesvg .edge.nein{stroke-dasharray:6 6;opacity:.45}
+.treesvg .pebble{fill:var(--panel);stroke:var(--ink);stroke-width:1.5}
+.treesvg .node rect{fill:var(--panel);stroke:var(--ink);stroke-width:2.5}
+.treesvg .node text,.treesvg .leaf text{font-family:var(--f-term);font-weight:700;font-size:20px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.treesvg .node.root rect{fill:var(--metal)}
+.treesvg .node.ja rect{fill:var(--ja-soft);stroke:var(--ja);stroke-width:3.5}
+.treesvg .node.nein{opacity:.45}
+.treesvg .node.nein text{text-decoration:line-through}
+.treesvg .node.partizip rect{fill:#fff6c7;stroke-dasharray:7 5}
+.treesvg .leaf rect{fill:var(--panel);stroke:var(--ink);stroke-width:2.5}
+.treesvg .leaf.verb rect{fill:var(--verb)}
+.treesvg .leaf.adjektiv rect{fill:var(--adjektiv)}
+.treesvg .leaf.nomen rect{fill:var(--nomen)}
+.treesvg .leaf.pronomen rect{fill:var(--pronomen)}
+.treesvg .leaf.artikel rect{fill:var(--artikel)}
+.treesvg .leaf.adverb rect{fill:var(--adverb)}
+.treesvg .leaf.praeposition rect{fill:var(--praeposition)}
+.treesvg .leaf.konjunktion rect{fill:var(--konjunktion)}
+.treesvg .leaf.partikel rect{fill:var(--partikel)}
+.treesvg .leaf.satzaequivalent rect{fill:var(--satzaequivalent)}
+.treesvg .leaf text.small{font-size:16px}
+.treesvg .leaf .handle{fill:var(--panel);stroke:var(--ink);stroke-width:2}
+.treesvg .leaf.reached rect.box{stroke:var(--accent);stroke-width:6;animation:blink 1s steps(2) infinite}
+.treesvg .future{fill:var(--off);stroke:none}
+.treesvg .future-edge{stroke:var(--off);stroke-width:2.5;stroke-dasharray:3 7;fill:none}
+@keyframes blink{50%{stroke:var(--ink)}}
+
+/* Schubladen */
+.cabinet{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:14px;background:var(--metal)}
+.drawer{font-family:var(--f-ui);font-weight:700;font-size:1.25rem;border:var(--b) solid var(--ink);box-shadow:var(--sh);padding:12px 8px 10px;display:grid;justify-items:center;gap:7px;cursor:pointer;min-height:6.2em;touch-action:manipulation;transition:transform .15s steps(2)}
+.drawer.verb{background:var(--verb)}
+.drawer.adjektiv{background:var(--adjektiv)}
+.drawer.nomen{background:var(--nomen)}
+.drawer.pronomen{background:var(--pronomen)}
+.drawer.artikel{background:var(--artikel)}
+.drawer.adverb{background:var(--adverb)}
+.drawer.praeposition{background:var(--praeposition)}
+.drawer.konjunktion{background:var(--konjunktion)}
+.drawer.partikel{background:var(--partikel)}
+.drawer.satzaequivalent{background:var(--satzaequivalent)}
+.cabinet.five{grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.cabinet.ten{grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.cabinet.ten .drawer{font-size:.95rem;padding:8px 3px;min-height:4.8em}
+.cab-row{grid-column:1/-1;margin:2px 0 -2px;font-family:var(--f-term);font-weight:700;font-size:.85rem;color:var(--ink-soft)}
+.drawer.long{font-size:.92rem;hyphens:manual}
+.machines.six .machine{min-height:9.2em}
+.machines.six .iconbox,.machines.six .iconbox canvas{width:44px;height:44px}
+.cabinet.ten .drawer.long{font-size:.78rem}
+.cabinet.five .drawer{font-size:1.02rem;padding-inline:4px;min-height:5.6em}
+.drawer .handle{width:46px;height:11px;border:var(--b) solid var(--ink);background:var(--panel)}
+.drawer .count{font-size:.8rem;font-weight:600;background:var(--panel);border:2px solid var(--ink);padding:0 .5em;font-variant-numeric:tabular-nums}
+.drawer:disabled{cursor:default}
+.cabinet:not(.active) .drawer{box-shadow:var(--sh-s)}
+.cabinet.active .drawer{transform:translateY(-4px)}
+.drawer.bump{animation:bump .4s steps(4)}
+@keyframes bump{40%{transform:translateY(-10px)}}
+
+/* Dialoge */
+.overlay{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:rgba(44,42,74,.55)}
+.dialog{width:min(780px,100%);max-height:calc(100% - 8px);overflow:auto;background:var(--panel);border:var(--b) solid var(--ink);box-shadow:6px 6px 0 var(--ink)}
+.dialog.wide{width:min(980px,100%)}
+.dialog-head{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:var(--b) solid var(--ink);background:var(--metal);font-family:var(--f-ui);font-weight:700;font-size:1.1rem}
+.dialog-head .dots{margin-left:auto}
+.dialog-body{padding:16px;display:grid;gap:14px}
+.scene{display:block;width:100%;height:auto;aspect-ratio:16/9;border:var(--b) solid var(--ink);background:var(--metal)}
+.story-text{margin:0;font-size:1.3rem;line-height:1.45;text-align:center;text-wrap:balance}
+.story-text .say{display:block;font-weight:700;margin-bottom:.3em}
+.dialog-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.dialog-actions .right{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
+.retell{display:grid;gap:.35em;background:var(--bench);border:var(--b) solid var(--ink);padding:12px 16px}
+.retell p{margin:0;font-size:1.15rem;line-height:1.55}
+.retell mark{color:var(--ink);padding:0 .25em;border:2px solid var(--ink)}
+.retell mark.verb{background:var(--verb)}
+.retell mark.adjektiv{background:var(--adjektiv)}
+.retell mark.nomen{background:var(--nomen)}
+.retell mark.pronomen{background:var(--pronomen)}
+.retell mark.artikel{background:var(--artikel)}
+.retell mark.adverb{background:var(--adverb)}
+.retell mark.praeposition{background:var(--praeposition)}
+.retell mark.konjunktion{background:var(--konjunktion)}
+.retell mark.partikel{background:var(--partikel)}
+.retell mark.satzaequivalent{background:var(--satzaequivalent)}
+.legend-box{background:var(--panel);padding:8px 16px}
+.reveal{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.reveal canvas{width:112px;height:112px;background:var(--panel);border:var(--b) solid var(--ink);box-shadow:var(--sh);padding:6px}
+.reveal p{margin:0;font-size:1.1rem;flex:1;min-width:12em}
+.big-title{font-family:var(--f-ui);font-weight:700;font-size:1.6rem;margin:0;text-wrap:balance}
+.album-floor{display:grid;gap:10px}
+.album-floor h3{margin:0;font-family:var(--f-ui);font-size:1.05rem;font-weight:600}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.slot{display:grid;justify-items:center;align-content:center;gap:6px;border:3px dashed var(--ink-soft);padding:10px;min-height:150px;text-align:center;font-size:.9rem}
+.slot canvas{width:80px;height:80px}
+.slot.filled{border-style:solid;border-color:var(--ink);background:var(--bench);box-shadow:var(--sh-s)}
+.slot.new{animation:bump .5s steps(4) 2}
+.slot .empty{width:80px;height:80px;display:grid;place-items:center;font-family:var(--f-ui);font-size:2rem;color:var(--ink-soft)}
+.floor-locked{font-family:var(--f-ui);color:var(--ink-soft);border:2px dashed var(--ink-soft);padding:8px 12px}
+
+/* Lehrkraft-Bereich */
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab[aria-selected="true"]{background:var(--accent)}
+.setting{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:10px 0;border-bottom:2px dashed var(--metal-2)}
+.setting:last-child{border-bottom:0}
+.setting label,.setting .lbl{font-size:1.02rem;line-height:1.35}
+.setting small{display:block;color:var(--ink-soft);font-size:.85rem}
+.switch{appearance:none;-webkit-appearance:none;width:58px;height:30px;flex:none;border:var(--b) solid var(--ink);background:var(--off);position:relative;cursor:pointer;margin:0}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;background:var(--panel);border:2px solid var(--ink);transition:left .15s steps(3)}
+.switch:checked{background:var(--ja)}
+.switch:checked::after{left:29px}
+.checks{display:flex;gap:10px;flex-wrap:wrap}
+.check{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-ui);font-weight:600;border:2px solid var(--ink);padding:4px 10px;cursor:pointer}
+.check input{width:20px;height:20px;accent-color:var(--ink)}
+.check.verb{background:var(--verb)}
+.check.adjektiv{background:var(--adjektiv)}
+.check.nomen{background:var(--nomen)}
+.check.pronomen{background:var(--pronomen)}
+.check.artikel{background:var(--artikel)}
+.check.adverb{background:var(--adverb)}
+.check.praeposition{background:var(--praeposition)}
+.check.konjunktion{background:var(--konjunktion)}
+.check.partikel{background:var(--partikel)}
+.check.satzaequivalent{background:var(--satzaequivalent)}
+select.sel{font:inherit;font-size:1rem;border:var(--b) solid var(--ink);background:var(--panel);padding:.35em .5em;min-height:46px;max-width:100%}
+.preset{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.preset code{font-family:var(--f-term);font-weight:700;background:var(--bench);border:2px solid var(--ink);padding:.3em .6em;word-break:break-all}
+.werkstatt{display:grid;gap:12px}
+.guide-text{display:grid;gap:6px;line-height:1.45}
+.guide-text h3{margin:10px 0 0;font-family:var(--f-ui);font-size:1.05rem}
+.guide-text p,.guide-text ul,.guide-text ol{margin:0}
+.guide-text ul,.guide-text ol{padding-left:1.3em}
+.werkstatt textarea{width:100%;min-height:20em;resize:vertical;font-family:var(--f-term);font-size:.95rem;line-height:1.45;border:var(--b) solid var(--ink);padding:10px;background:#fffef8;color:var(--ink);box-sizing:border-box}
+.werkstatt p{margin:0;line-height:1.45}
+.msg{margin:0;font-weight:700}
+.msg.err{color:#b3263a}
+.msg.ok{color:#17794a}
+.msg ul{margin:.3em 0 0;padding-left:1.2em;font-weight:400}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:60;background:var(--ink);color:var(--panel);font-family:var(--f-ui);padding:10px 16px;border:var(--b) solid var(--panel);max-width:calc(100% - 32px);text-align:center}
+
+@media (min-width:1500px){
+  html:not(.staged) .machines.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+  html:not(.staged) .machines.four .term{font-size:1.1rem}
+}
+@media (min-width:1600px){
+  html:not(.staged) .machines.five{grid-template-columns:repeat(5,minmax(0,1fr))}
+  html:not(.staged) .machines.five .machine,html:not(.staged) .machines.five .machine:nth-child(n+4){grid-column:auto}
+  html:not(.staged) .machines.five .term{font-size:1.1rem}
+  html:not(.staged) .machines.five .question{font-size:.88rem}
+}
+/* Tablet hochkant und Handy */
+@media (max-width:1000px){
+  html:not(.staged) .labor{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:640px){
+  html:not(.staged) .machines,html:not(.staged) .machines.five,html:not(.staged) .machines.four,html:not(.staged) .machines.six,html:not(.staged) .machines.one{grid-template-columns:minmax(0,1fr)}
+  html:not(.staged) .cabinet.ten{grid-template-columns:repeat(3,minmax(0,1fr))}
+  html:not(.staged) .machines.five .machine,html:not(.staged) .machines.five .machine:nth-child(n+4){grid-column:auto}
+  html:not(.staged) .cabinet.five{grid-template-columns:repeat(6,minmax(0,1fr))}
+  html:not(.staged) .cabinet.five .drawer{grid-column:span 2}
+  html:not(.staged) .cabinet.five .drawer:nth-child(n+4){grid-column:span 3}
+  html:not(.staged) .machine{min-height:0}
+  html:not(.staged) .mbody{grid-template-columns:auto minmax(0,1fr);justify-items:start;text-align:left;column-gap:14px}
+  html:not(.staged) .iconbox{grid-row:span 2}
+  html:not(.staged) .guide canvas{width:54px;height:54px}
+  html:not(.staged) .drawer{font-size:1rem;min-height:5.4em}
+  html:not(.staged) .brand span{font-size:1.05rem}
+  html:not(.staged) .keys-hint{display:none}
+  html:not(.staged) .thumb{min-width:0;flex:1}
+}
+
+/* ---------- Phasenfokus (dezent): aktiver Bereich hervorgehoben, nichts verschiebt sich ---------- */
+.panel{transition:opacity .25s,filter .25s,box-shadow .25s}
+.panel.focus{box-shadow:6px 6px 0 var(--accent)}
+.panel.focus>.panel-head{background:var(--accent-soft)}
+.panel.calm{opacity:.7;filter:saturate(.55)}
+
+/* ---------- Bühne: Das ganze Labor passt immer auf einen Bildschirm (quer 1280×800, hoch 800×1140) ---------- */
+html.staged{font-size:15px;height:100%;overflow:hidden}
+html.staged body{height:100%;overflow:hidden;margin:0}
+html.staged .stage{position:absolute;left:0;top:0;transform-origin:0 0;overflow:hidden}
+html.staged.land .stage{width:1280px;height:800px}
+html.staged.port .stage{width:800px;height:1140px}
+html.staged .app{box-sizing:border-box;width:100%;height:100%;max-width:none;margin:0;padding:10px 14px 12px;grid-template-rows:auto minmax(0,1fr);gap:10px}
+html.staged .topbar{padding:5px 10px;gap:6px 12px}
+html.staged .brand{font-size:1.1rem}
+html.staged .brand canvas{width:30px;height:30px}
+html.staged .topbar .btn{min-height:40px;padding:.3em .7em}
+html.staged .labor{height:100%;min-height:0;align-items:stretch;gap:12px}
+html.staged .bench,html.staged .plan{min-height:0;gap:12px;grid-template-rows:minmax(0,1fr) auto}
+html.staged .bench{grid-template-rows:minmax(0,1fr) var(--mach-h,200px)}
+html.staged .bench[data-rows="2"]{--mach-h:300px}
+html.staged .panel{display:flex;flex-direction:column;min-height:0}
+/* Prüfband */
+html.staged .station{flex:1;min-height:0;overflow:hidden;padding:10px 14px 12px;gap:8px;align-content:space-evenly}
+html.staged .guide canvas{width:64px;height:64px}
+html.staged .bubble{font-size:var(--fs-bub,1.08rem);min-height:0}
+html.staged .sentence{font-size:var(--fs-sent,2.1rem);line-height:1.45;padding-top:.1em}
+html.staged .result{font-size:var(--fs-res,1.15rem);min-height:2.4em}
+html.staged .actions{min-height:58px}
+/* Maschinen: flache Karten, Symbol links, Nummer oben und Ergebnislampe unten */
+html.staged .machines{flex:1;min-height:0;padding:12px;gap:12px;grid-auto-rows:minmax(0,1fr);align-content:stretch}
+html.staged .machines.four{grid-template-columns:repeat(2,minmax(0,1fr))}
+html.staged .machines.one{grid-template-columns:minmax(0,24em);justify-content:center;grid-auto-rows:auto;align-content:center}
+html.staged .machines .machine{min-height:0}
+html.staged .machine{min-height:0;grid-template-columns:52px minmax(0,1fr);grid-template-rows:auto auto;align-content:center;align-items:center;column-gap:10px;row-gap:3px;text-align:left;padding:8px 12px 8px 6px}
+html.staged .mhead{position:absolute;top:6px;left:6px;display:flex;flex-direction:row;gap:4px;align-items:center;padding:0;border:0;background:none;pointer-events:none;z-index:1}
+html.staged .mhead .dots{display:none}
+html.staged .lamp{width:22px;height:22px;font-size:.8rem}
+html.staged .key{font-size:.78rem}
+html.staged .mbody{display:contents}
+html.staged .iconbox{grid-column:1;grid-row:1/span 2;justify-self:center;align-self:center;width:42px;height:42px;margin-top:22px}
+html.staged .iconbox canvas{width:42px;height:42px}
+html.staged .das{right:-8px;bottom:-6px;font-size:.66rem}
+html.staged .machine .term{grid-column:2;grid-row:1;align-self:end;font-size:1.05rem;line-height:1.15;overflow-wrap:anywhere}
+html.staged .question{grid-column:2;grid-row:2;align-self:start;font-size:.84rem;line-height:1.25;max-width:none}
+html.staged .shutter{z-index:2}
+html.staged #machinePanel[data-rows="1"] .iconbox,html.staged #machinePanel[data-rows="1"] .iconbox canvas{width:52px;height:52px}
+html.staged #machinePanel[data-rows="1"] .machine .term{font-size:1.2rem}
+html.staged #machinePanel[data-rows="1"] .question{font-size:.92rem}
+/* Laborplan und Schubladen */
+html.staged #planPanel{flex:1}
+html.staged .tree-wrap{flex:1;min-height:0;display:flex;padding:8px 10px;overflow:hidden}
+html.staged .tree-wrap .treesvg{width:100%;height:100%;min-width:0}
+html.staged .cabinet{padding:12px}
+html.staged .drawer{min-height:5.2em;padding:9px 6px 8px;gap:6px}
+html.staged .cabinet.ten .drawer{min-height:4.3em;padding:6px 3px}
+html.staged .cabinet.five .drawer{min-height:5em}
+
+/* Hochformat: Prüfband und Maschinen oben, Laborplan und Schubladen unten nebeneinander */
+html.staged.port .brand span{display:none}
+html.staged.port .labor{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) 340px}
+html.staged.port .plan{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+html.staged.port #cabinetPanel{min-height:0}
+html.staged.port .cabinet{flex:1;min-height:0;grid-template-columns:minmax(0,1fr)!important;grid-auto-rows:minmax(0,1fr);align-content:stretch;gap:8px;padding:10px}
+html.staged.port .cabinet.ten{grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:auto repeat(5,minmax(0,1fr));grid-auto-flow:column;gap:6px 8px}
+html.staged.port .cab-row{grid-column:auto;margin:0}
+html.staged.port .drawer{min-height:0;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 10px;font-size:1.05rem;text-align:left}
+html.staged.port .drawer .handle{display:none}
+html.staged.port .cabinet.ten .drawer{font-size:.84rem;padding:3px 6px;min-height:0}
+html.staged.port .cabinet.ten .drawer .count{font-size:.7rem;padding:0 .3em}
+html.staged.port .drawer.long{font-size:.95rem}
+html.staged.port .cabinet.ten .drawer.long{font-size:.78rem}
+html.staged.port .cabinet.active .drawer{transform:translateX(-3px)}
+.album-grid{display:grid;gap:12px 18px}
+html.staged.land .album-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+html.staged .slots{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
+html.staged .slot{min-height:108px;padding:6px;font-size:.8rem;gap:4px}
+html.staged .slot canvas,html.staged .slot .empty{width:56px;height:56px}
+html.staged .drawer .count{white-space:nowrap}
+html.staged.port .cabinet .drawer,html.staged.port .cabinet.five .drawer,html.staged.port .cabinet.ten .drawer{min-height:0}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><canvas id="brandIcon" width="16" height="16" aria-hidden="true"></canvas><span>Wortarten-Labor</span></div>
+    <div class="roundinfo">
+      <span class="floor" id="floorLabel">Erdgeschoss · Labor 1</span>
+      <span class="maerchen-title" id="maerchenTitle"></span>
+      <span class="pips" id="pips" aria-hidden="true"></span>
+    </div>
+    <div class="tools">
+      <button class="btn" id="albumBtn" type="button"><canvas class="ico" data-sprite="album" aria-hidden="true"></canvas>Album</button>
+      <button class="btn" id="soundBtn" type="button" aria-pressed="false"><canvas class="ico" id="soundIco" aria-hidden="true"></canvas><span id="soundLbl">Ton aus</span></button>
+      <button class="btn" id="fsBtn" type="button" aria-pressed="false" hidden><canvas class="ico" id="fsIco" aria-hidden="true"></canvas><span id="fsLbl">Vollbild</span></button>
+      <button class="btn gear" id="gearBtn" type="button" aria-label="Lehrkraft-Bereich, 2 Sekunden gedrückt halten" title="Lehrkraft: 2 Sekunden gedrückt halten"><canvas class="ico" data-sprite="gear" aria-hidden="true"></canvas><span class="hold"></span></button>
+    </div>
+  </header>
+
+  <main class="labor">
+    <section class="bench" id="bench" aria-label="Laborbank">
+      <div class="panel" id="bandPanel">
+        <div class="panel-head"><span>Prüfband</span><span class="sub keys-hint" id="keysHint">Tasten 1–3 · J / N · Enter</span></div>
+        <div class="station">
+          <div class="guide">
+            <canvas id="mascot" width="16" height="16" aria-hidden="true"></canvas>
+            <p class="bubble" id="bubble" aria-live="polite"></p>
+          </div>
+          <div class="sentence" id="sentence"></div>
+          <div class="belt" id="belt" aria-hidden="true"></div>
+          <div class="result" id="result" aria-live="polite"></div>
+          <div class="actions" id="actions"></div>
+        </div>
+      </div>
+      <div class="panel" id="machinePanel">
+        <div class="panel-head"><span>Prüfmaschinen</span><span id="modeTag"></span></div>
+        <div class="machines" id="machines"></div>
+      </div>
+    </section>
+
+    <section class="plan" aria-label="Laborplan und Schubladen">
+      <div class="panel" id="planPanel">
+        <div class="panel-head">
+          <span>Laborplan</span>
+          <span class="head-right"><span class="legend"><span><i style="background:var(--ja-soft);border-color:var(--ja)"></i>ja</span><span><i style="background:var(--panel);opacity:.5"></i><s>nein</s></span><span><i style="background:var(--panel)"></i>offen</span></span><button class="btn mini" type="button" id="planBtn">Ganzer Plan</button></span>
+        </div>
+        <div class="tree-wrap"><svg id="tree" class="treesvg" viewBox="0 0 700 500" role="img" aria-label="Laborplan: Bestimmungsbaum für flektierbare Wörter"></svg></div>
+      </div>
+      <div class="panel" id="cabinetPanel">
+        <div class="panel-head"><span>Schubladen der Märchenmaschine</span></div>
+        <div class="cabinet" id="cabinet"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="dialog" id="dialog" role="dialog" aria-modal="true" aria-labelledby="dlgTitle">
+    <div class="dialog-head"><span id="dlgTitle"></span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+    <div class="dialog-body" id="dlgBody"></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+</div>
+
+<!--
+  WORTLISTEN (Markdown) – eine Liste je Labor: "wortliste-1" (Erdgeschoss), "wortliste-2" (1. Stock), "wortliste-3" (2. Stock),
+                       "wortliste-4" (Dachboden), "wortliste-5" (Turmspitze, Abschlusslabor)
+  Dauerhaft ändern: den passenden Block unten in einem Texteditor bearbeiten und speichern.
+  Für eine einzelne Stunde geht es auch im Spiel: Zahnrad 2 Sekunden halten → Werkstatt.
+
+  # Titel            → ein Märchen = eine Runde (Sätze in Erzählreihenfolge)
+  ## Wort            → ein Eintrag
+  - Satz:            Pflicht. Das Prüfwort mit **Sternchen** markieren.
+  - Wortart:         Pflicht. Labor 1: Verb, Adjektiv, Nomen · Labor 2 zusätzlich Pronomen, Artikel
+  - Grundform:       optional (z. B. weinen, tief). Daraus baut das Spiel die Fehlversuche.
+  - konjugierbar:    Formen, z. B. ich weine · du weinst · sie weinte
+  - komparierbar:    Formen, z. B. tief → tiefer → am tiefsten
+  - deklinierbar:    Labor 2, Pflicht außer bei Verben, z. B. der Esel → des Esels → dem Esel
+  - artikelfähig:    Formen, z. B. der Frosch · die Frösche
+  - Satzglied:       Labor 2, Pflicht bei Pronomen und Artikel: der Satz mit dem Wort allein vor dem Verb
+                     Possessivpronomen (mein, dein, ihr …) zählen als Pronomen: hier den Satz ohne Nomen angeben,
+                     z. B. Ihre schüttelte das Mädchen jeden Tag.
+  - Kasusforderung:  Labor 3, Pflicht bei Präpositionen, z. B. mit wem? → mit dem Wolf → Dativ
+  - Fügteil:         Labor 3, Pflicht bei Konjunktionen: die zwei getrennten Teile, z. B. Satz 1 · Satz 2
+  - Attribut:        Labor 3, optional bei Adverbien, z. B. das Haus dort
+  In Labor 3 steht bei Adverbien unter "Satzglied:" der Satz mit dem Adverb allein vor dem Verb.
+  - isoliert:        Labor 4, optional bei Satzäquivalenten: die Kurzform, z. B. Ach!
+  Abschlusslabor: Zwei gleiche Wörter direkt hintereinander erscheinen als Wortzwillinge.
+  - Partizip:        optional bei Verben, die als Partizip vor einem Nomen stehen: die Partizipform, z. B. verzaubert.
+                     Dann zeigen Steigern und Deklinieren echte Formen ("klappt"), und die Maschine erklärt:
+                     Das Wort ist eine Verbform, die attributiv (ähnlich wie ein Adjektiv) gebraucht wird.
+  - Hinweis:         optional. Erscheint nach dem Einsortieren.
+  Steht eine Probe bei einer Maschine, die "nein" ergibt, ersetzt sie den automatischen Fehlversuch.
+-->
+<script type="text/markdown" id="wortliste-1">
+# Der Froschkönig
+
+## Brunnen
+- Satz: Eine Königstochter spielte am **Brunnen**.
+- Wortart: Nomen
+- artikelfähig: der Brunnen · die Brunnen
+
+## tiefen
+- Satz: Ihre goldene Kugel fiel in den **tiefen** Brunnen.
+- Wortart: Adjektiv
+- Grundform: tief
+- komparierbar: tief → tiefer → am tiefsten
+
+## weinte
+- Satz: Da **weinte** die Königstochter laut.
+- Wortart: Verb
+- Grundform: weinen
+- konjugierbar: ich weine · du weinst · sie weinte
+
+## Frosch
+- Satz: Ein **Frosch** holte die Kugel herauf.
+- Wortart: Nomen
+- artikelfähig: der Frosch · die Frösche
+
+## stolz
+- Satz: Doch die Königstochter war sehr **stolz**.
+- Wortart: Adjektiv
+- komparierbar: stolz → stolzer → am stolzesten
+- artikelfähig: das stolz · die stolz
+
+## verzauberter
+- Satz: Der Frosch war ein **verzauberter** Prinz.
+- Wortart: Verb
+- Grundform: verzaubern
+- konjugierbar: ich verzaubere · du verzauberst · sie verzauberte
+- Partizip: verzaubert
+- komparierbar: verzaubert → verzauberter → am verzaubertsten
+- Hinweis: Das ist ein Partizip, also eine Verbform. Hier wird es attributiv gebraucht, ähnlich wie ein Adjektiv. Es bleibt aber ein Verb.
+
+# Rotkäppchen
+
+## brachte
+- Satz: Rotkäppchen **brachte** der Großmutter Kuchen.
+- Wortart: Verb
+- Grundform: bringen
+- konjugierbar: ich bringe · du bringst · sie brachte
+
+## Korb
+- Satz: Im **Korb** lag auch eine Flasche Wein.
+- Wortart: Nomen
+- artikelfähig: der Korb · die Körbe
+
+## großen
+- Satz: Der Weg führte durch den **großen** Wald.
+- Wortart: Adjektiv
+- Grundform: groß
+- komparierbar: groß → größer → am größten
+
+## Wolf
+- Satz: Dort wartete schon der **Wolf**.
+- Wortart: Nomen
+- artikelfähig: der Wolf · die Wölfe
+
+## pflückte
+- Satz: Rotkäppchen **pflückte** bunte Blumen.
+- Wortart: Verb
+- Grundform: pflücken
+- konjugierbar: ich pflücke · du pflückst · sie pflückte
+
+## mutige
+- Satz: Der **mutige** Jäger rettete alle.
+- Wortart: Adjektiv
+- Grundform: mutig
+- komparierbar: mutig → mutiger → am mutigsten
+
+# Hänsel und Gretel
+
+## verirrten
+- Satz: Hänsel und Gretel **verirrten** sich im Wald.
+- Wortart: Verb
+- Grundform: verirren
+- konjugierbar: ich verirre mich · du verirrst dich · sie verirrten sich
+
+## hungrig
+- Satz: Sie waren müde und **hungrig**.
+- Wortart: Adjektiv
+- komparierbar: hungrig → hungriger → am hungrigsten
+
+## Häuschen
+- Satz: Im Wald stand ein **Häuschen** aus Lebkuchen.
+- Wortart: Nomen
+- artikelfähig: das Häuschen · die Häuschen
+
+## knabberten
+- Satz: Die Kinder **knabberten** am Dach.
+- Wortart: Verb
+- Grundform: knabbern
+- konjugierbar: ich knabbere · du knabberst · sie knabberten
+
+## alte
+- Satz: Eine **alte** Frau öffnete die Tür.
+- Wortart: Adjektiv
+- Grundform: alt
+- komparierbar: alt → älter → am ältesten
+
+## Käfig
+- Satz: Die Hexe sperrte Hänsel in einen **Käfig**.
+- Wortart: Nomen
+- artikelfähig: der Käfig · die Käfige
+
+# Schneewittchen
+
+## Königin
+- Satz: Die **Königin** fragte ihren Zauberspiegel.
+- Wortart: Nomen
+- artikelfähig: die Königin · die Königinnen
+
+## schöner
+- Satz: Doch Schneewittchen war **schöner** als sie.
+- Wortart: Adjektiv
+- Grundform: schön
+- komparierbar: schön → schöner → am schönsten
+
+## floh
+- Satz: Schneewittchen **floh** in den Wald.
+- Wortart: Verb
+- Grundform: fliehen
+- konjugierbar: ich fliehe · du fliehst · sie floh
+
+## wohnten
+- Satz: Dort **wohnten** sieben Zwerge.
+- Wortart: Verb
+- Grundform: wohnen
+- konjugierbar: ich wohne · du wohnst · sie wohnten
+
+## gemütlich
+- Satz: Ihr Haus war klein und **gemütlich**.
+- Wortart: Adjektiv
+- komparierbar: gemütlich → gemütlicher → am gemütlichsten
+
+## Apfel
+- Satz: Die Königin brachte einen giftigen **Apfel**.
+- Wortart: Nomen
+- artikelfähig: der Apfel · die Äpfel
+</script>
+
+<script type="text/markdown" id="wortliste-2">
+# Frau Holle
+
+## Das
+- Satz: **Das** Mädchen spann am Brunnen.
+- Wortart: Artikel
+- deklinierbar: das Mädchen → des Mädchens → dem Mädchen
+- Satzglied: Das spann Mädchen am Brunnen.
+
+## sie
+- Satz: Da sprang **sie** in den Brunnen.
+- Wortart: Pronomen
+- deklinierbar: sie → ihr → sie
+- Satzglied: Sie sprang da in den Brunnen.
+
+## bunte
+- Satz: Unten lag eine **bunte** Wiese.
+- Wortart: Adjektiv
+- Grundform: bunt
+- komparierbar: bunt → bunter → am buntesten
+- deklinierbar: eine bunte Wiese → einer bunten Wiese
+
+## die
+- Satz: Dort wohnte **die** alte Frau Holle.
+- Wortart: Artikel
+- deklinierbar: die Frau → der Frau → den Frauen
+- Satzglied: Die wohnte dort alte Frau Holle.
+
+## mir
+- Satz: „Du kannst **mir** helfen“, sagte Frau Holle.
+- Wortart: Pronomen
+- deklinierbar: ich → mir → mich
+- Satzglied: „Mir kannst du helfen“, sagte Frau Holle.
+
+## ihre
+- Satz: Das Mädchen schüttelte **ihre** Betten.
+- Wortart: Pronomen
+- deklinierbar: ihre Betten → ihrer Betten → ihren Betten
+- Satzglied: Ihre schüttelte das Mädchen jeden Tag.
+- Hinweis: „ihre“ ist ein Possessivpronomen. Es kann auch ohne sein Nomen stehen.
+
+## Kissen
+- Satz: Die Federn flogen aus dem **Kissen**.
+- Wortart: Nomen
+- artikelfähig: das Kissen · die Kissen
+- deklinierbar: das Kissen → des Kissens → dem Kissen
+
+# Die Bremer Stadtmusikanten
+
+## Der
+- Satz: **Der** Esel wollte nach Bremen.
+- Wortart: Artikel
+- deklinierbar: der Esel → des Esels → dem Esel
+- Satzglied: Der wollte Esel nach Bremen.
+
+## er
+- Satz: Unterwegs traf **er** einen Hund.
+- Wortart: Pronomen
+- konjugierbar: ich ere · du erest · sie erte
+- komparierbar: er → erer → am eresten
+- deklinierbar: er → ihm → ihn
+- Satzglied: Er traf unterwegs einen Hund.
+
+## klug
+- Satz: Die Katze war besonders **klug**.
+- Wortart: Adjektiv
+- komparierbar: klug → klüger → am klügsten
+- deklinierbar: die kluge Katze → der klugen Katze
+
+## Unsere
+- Satz: „**Unsere** Musik ist die beste!“, riefen die Tiere.
+- Wortart: Pronomen
+- deklinierbar: unsere Musik → unserer Musik → unsere Musik
+- Satzglied: „Unsere ist die beste!“, riefen die Tiere.
+- Hinweis: „unsere“ ist ein Possessivpronomen. Es kann auch ohne sein Nomen stehen.
+
+## das
+- Satz: Die Tiere fanden **das** Haus der Räuber.
+- Wortart: Artikel
+- deklinierbar: das Haus → des Hauses → dem Haus
+- Satzglied: Das fanden die Tiere Haus der Räuber.
+
+## flüchteten
+- Satz: Die Räuber **flüchteten** in den Wald.
+- Wortart: Verb
+- Grundform: flüchten
+- konjugierbar: ich flüchte · du flüchtest · sie flüchteten
+
+## ihnen
+- Satz: Das Haus gefiel **ihnen** sehr.
+- Wortart: Pronomen
+- deklinierbar: sie → ihnen → sie
+- Satzglied: Ihnen gefiel das Haus sehr.
+
+# Rumpelstilzchen
+
+## die
+- Satz: Der König sperrte **die** Müllerstochter ein.
+- Wortart: Artikel
+- deklinierbar: die Tochter → der Tochter → den Töchtern
+- Satzglied: Die sperrte der König Müllerstochter ein.
+
+## Spinnrad
+- Satz: In der Kammer stand ein **Spinnrad**.
+- Wortart: Nomen
+- artikelfähig: das Spinnrad · die Spinnräder
+- deklinierbar: das Spinnrad → des Spinnrads → dem Spinnrad
+
+## kleines
+- Satz: Da kam ein **kleines** Männchen herein.
+- Wortart: Adjektiv
+- Grundform: klein
+- komparierbar: klein → kleiner → am kleinsten
+- deklinierbar: ein kleines Männchen → eines kleinen Männchens
+
+## ihr
+- Satz: Das Männchen half **ihr** dreimal.
+- Wortart: Pronomen
+- konjugierbar: ich ihrse · du ihrst · sie ihrte
+- komparierbar: ihr → ihrerer → am ihrsten
+- deklinierbar: sie → ihr → sie
+- Satzglied: Ihr half das Männchen dreimal.
+
+## ihr
+- Satz: Dann wollte das Männchen **ihr** Kind haben.
+- Wortart: Pronomen
+- konjugierbar: ich ihrse · du ihrst · sie ihrte
+- komparierbar: ihr → ihrerer → am ihrsten
+- deklinierbar: ihr Kind → ihres Kindes → ihrem Kind
+- Satzglied: Ihres wollte das Männchen haben.
+- Hinweis: Hier ist „ihr“ ein Possessivpronomen (Wessen Kind? Ihr Kind). Ohne Nomen heißt es „ihres“.
+
+## erriet
+- Satz: Endlich **erriet** die Königin den Namen.
+- Wortart: Verb
+- Grundform: erraten
+- konjugierbar: ich errate · du errätst · sie erriet
+
+## er
+- Satz: Wütend stampfte **er** auf den Boden.
+- Wortart: Pronomen
+- konjugierbar: ich ere · du erest · sie erte
+- komparierbar: er → erer → am eresten
+- deklinierbar: er → ihm → ihn
+- Satzglied: Er stampfte wütend auf den Boden.
+</script>
+
+<script type="text/markdown" id="wortliste-3">
+# Der Wolf und die sieben Geißlein
+
+## heute
+- Satz: Die alte Geiß ging **heute** in den Wald.
+- Wortart: Adverb
+- Satzglied: Heute ging die alte Geiß in den Wald.
+- Attribut: der Ausflug heute
+
+## mit
+- Satz: Die Mutter sprach **mit** ihren Kindern.
+- Wortart: Präposition
+- Kasusforderung: mit wem? → mit ihren Kindern → Dativ
+- Satzglied: Mit sprach die Mutter ihren Kindern.
+
+## denn
+- Satz: Die Geißlein öffneten nicht, **denn** der Wolf hatte eine raue Stimme.
+- Wortart: Konjunktion
+- Fügteil: Die Geißlein öffneten nicht. · Der Wolf hatte eine raue Stimme.
+- Satzglied: Denn hatte der Wolf eine raue Stimme.
+
+## dann
+- Satz: Der Wolf fraß **dann** ein Stück Kreide.
+- Wortart: Adverb
+- Satzglied: Dann fraß der Wolf ein Stück Kreide.
+
+## durch
+- Satz: Der Wolf schlich **durch** den Garten.
+- Wortart: Präposition
+- Kasusforderung: durch wen oder was? → durch den Garten → Akkusativ
+- Satzglied: Durch schlich der Wolf den Garten.
+
+## und
+- Satz: Die Geißlein versteckten sich **und** zitterten.
+- Wortart: Konjunktion
+- Fügteil: Die Geißlein versteckten sich. · Sie zitterten.
+- Satzglied: Und zitterten die Geißlein.
+
+# Die Sterntaler
+
+## draußen
+- Satz: Das Mädchen fror **draußen** sehr.
+- Wortart: Adverb
+- Satzglied: Draußen fror das Mädchen sehr.
+- Attribut: die Kälte draußen
+
+## an
+- Satz: Es gab seine Mütze **an** ein frierendes Kind.
+- Wortart: Präposition
+- Kasusforderung: an wen? → an ein frierendes Kind → Akkusativ
+- Satzglied: An gab es seine Mütze ein frierendes Kind.
+
+## obwohl
+- Satz: Es gab sein Hemd her, **obwohl** es selbst fror.
+- Wortart: Konjunktion
+- Fügteil: Es gab sein Hemd her. · Es fror selbst.
+- Satzglied: Obwohl fror es selbst.
+
+## nun
+- Satz: Die Sterne fielen **nun** vom Himmel.
+- Wortart: Adverb
+- Satzglied: Nun fielen die Sterne vom Himmel.
+
+## zu
+- Satz: Die Sterne wurden **zu** blanken Talern.
+- Wortart: Präposition
+- Kasusforderung: zu wem oder was? → zu blanken Talern → Dativ
+- Satzglied: Zu wurden die Sterne blanken Talern.
+
+## aber
+- Satz: Das Mädchen war arm, **aber** jetzt war es reich.
+- Wortart: Konjunktion
+- Fügteil: Das Mädchen war arm. · Jetzt war es reich.
+- Satzglied: Aber war es jetzt reich.
+
+# Der Hase und der Igel
+
+## morgens
+- Satz: Der Igel ging **morgens** spazieren.
+- Wortart: Adverb
+- Satzglied: Morgens ging der Igel spazieren.
+
+## über
+- Satz: Der Hase lachte **über** seine krummen Beine.
+- Wortart: Präposition
+- Kasusforderung: über wen oder was? → über seine krummen Beine → Akkusativ
+- Satzglied: Über lachte der Hase seine krummen Beine.
+
+## Als
+- Satz: **Als** der Hase ankam, war der Igel schon da.
+- Wortart: Konjunktion
+- Fügteil: Der Hase kam an. · Der Igel war schon da.
+- Satzglied: Als kam der Hase an.
+
+## unten
+- Satz: Die Igelfrau wartete **unten** am Feld.
+- Wortart: Adverb
+- Satzglied: Unten wartete die Igelfrau am Feld.
+- Attribut: das Feld unten
+
+## gegen
+- Satz: Der Hase lief **gegen** den Igel um die Wette.
+- Wortart: Präposition
+- Kasusforderung: gegen wen? → gegen den Igel → Akkusativ
+- Satzglied: Gegen lief der Hase den Igel um die Wette.
+
+## sondern
+- Satz: Am Ende gewann nicht der Hase, **sondern** der Igel.
+- Wortart: Konjunktion
+- Fügteil: Der Hase gewann nicht. · Der Igel gewann.
+- Satzglied: Sondern gewann der Igel.
+</script>
+
+<script type="text/markdown" id="wortliste-4">
+# Dornröschen
+
+## Ach
+- Satz: „**Ach**, wie schön ist das Kind!“, rief der König.
+- Wortart: Satzäquivalent
+
+## sehr
+- Satz: Die dreizehnte Fee war **sehr** wütend.
+- Wortart: Partikel
+- Satzglied: Sehr war die dreizehnte Fee wütend.
+
+## Nein
+- Satz: „**Nein**, sie soll nur schlafen!“, sagte die zwölfte Fee.
+- Wortart: Satzäquivalent
+
+## sogar
+- Satz: Am Ende schlief **sogar** der Koch ein.
+- Wortart: Partikel
+- Satzglied: Sogar schlief am Ende der Koch ein.
+
+## Pst
+- Satz: „**Pst**, das ganze Schloss schläft!“, flüsterte der Prinz.
+- Wortart: Satzäquivalent
+
+## etwa
+- Satz: Der Prinz kam nach **etwa** hundert Jahren.
+- Wortart: Partikel
+- Satzglied: Etwa kam der Prinz nach hundert Jahren.
+
+# Aschenputtel
+
+## sogar
+- Satz: Die Tauben halfen **sogar** beim Linsenlesen.
+- Wortart: Partikel
+- Satzglied: Sogar halfen die Tauben beim Linsenlesen.
+
+## Hurra
+- Satz: „**Hurra**, ein Kleid für das Fest!“, rief Aschenputtel.
+- Wortart: Satzäquivalent
+
+## sehr
+- Satz: Die Stiefschwestern waren **sehr** neidisch.
+- Wortart: Partikel
+- Satzglied: Sehr waren die Stiefschwestern neidisch.
+
+## Au
+- Satz: „**Au**, mein Fuß!“, jammerte die Stiefschwester.
+- Wortart: Satzäquivalent
+
+## allzu
+- Satz: Der Schuh war ihr **allzu** klein.
+- Wortart: Partikel
+- Satzglied: Allzu war der Schuh ihr klein.
+
+## Ja
+- Satz: „**Ja**, der Schuh passt!“, rief der Prinz.
+- Wortart: Satzäquivalent
+</script>
+
+<script type="text/markdown" id="wortliste-5">
+# Die Wortzwillinge der Fee
+
+## Das
+- Satz: **Das** Schloss schlief hundert Jahre.
+- Wortart: Artikel
+- deklinierbar: das Schloss → des Schlosses → dem Schloss
+- Satzglied: Das schlief Schloss hundert Jahre.
+
+## Das
+- Satz: „**Das** ist der Wolf!“, riefen die Geißlein.
+- Wortart: Pronomen
+- deklinierbar: das → dessen → dem
+- Satzglied: „Das ist der Wolf!“, riefen die Geißlein.
+- Hinweis: Hier steht „das“ ohne Nomen. Es ist ein Pronomen (Demonstrativpronomen).
+
+## zu
+- Satz: Rotkäppchen ging **zu** der Großmutter.
+- Wortart: Präposition
+- Kasusforderung: zu wem? → zu der Großmutter → Dativ
+- Satzglied: Zu ging Rotkäppchen der Großmutter.
+
+## zu
+- Satz: Der Schuh war **zu** klein.
+- Wortart: Partikel
+- Kasusforderung: zu wem? → zu klein
+- Satzglied: Zu war der Schuh klein.
+- Hinweis: Hier verstärkt „zu“ nur das Wort „klein“. Nach „zu klein“ kann man nicht „zu wem?“ fragen.
+
+## denn
+- Satz: Die Geißlein öffneten nicht, **denn** der Wolf war draußen.
+- Wortart: Konjunktion
+- Fügteil: Die Geißlein öffneten nicht. · Der Wolf war draußen.
+- Satzglied: Denn war der Wolf draußen.
+
+## denn
+- Satz: „Wo ist **denn** das kleinste Geißlein?“, fragte die Mutter.
+- Wortart: Partikel
+- Satzglied: „Denn ist wo das kleinste Geißlein?“, fragte die Mutter.
+- Fügteil: „Wo ist?“ · „Das kleinste Geißlein?“
+- Hinweis: Diese Partikel macht die Frage freundlicher. Sie verbindet nichts.
+
+## aber
+- Satz: Die Fee war wütend, **aber** sie lachte am Ende.
+- Wortart: Konjunktion
+- Fügteil: Die Fee war wütend. · Sie lachte am Ende.
+- Satzglied: Aber lachte sie am Ende.
+
+## aber
+- Satz: Das ist **aber** ein schönes Fest!
+- Wortart: Partikel
+- Satzglied: Aber ist das ein schönes Fest!
+- Hinweis: Hier zeigt „aber“ nur Staunen. Es verbindet keine zwei Teile.
+
+# Die Meisterprüfung
+
+## verzauberte
+- Satz: Der **verzauberte** Frosch wurde ein Prinz.
+- Wortart: Verb
+- Grundform: verzaubern
+- konjugierbar: ich verzaubere · du verzauberst · sie verzauberte
+- Partizip: verzaubert
+- komparierbar: verzaubert → verzauberter → am verzaubertsten
+- deklinierbar: der verzauberte → des verzauberten → dem verzauberten
+- Hinweis: Das ist ein Partizip, also eine Verbform. Hier wird es attributiv gebraucht, ähnlich wie ein Adjektiv. Es bleibt aber ein Verb.
+
+## schnell
+- Satz: Der Hase lief **schnell** über das Feld.
+- Wortart: Adjektiv
+- komparierbar: schnell → schneller → am schnellsten
+- deklinierbar: der schnelle Hase → des schnellen Hasen
+- Hinweis: Viele halten „schnell“ hier für ein Adverb. Aber man kann es steigern – also ist es ein Adjektiv.
+
+## Rotkäppchen
+- Satz: **Rotkäppchen** traf den Wolf im Wald.
+- Wortart: Nomen
+- artikelfähig: das Rotkäppchen · ein Rotkäppchen
+- deklinierbar: das Rotkäppchen → des Rotkäppchens → dem Rotkäppchen
+- Hinweis: Eigenname – eine besondere Form des Nomens.
+
+## ihre
+- Satz: Die Hexe zählte **ihre** Goldstücke.
+- Wortart: Pronomen
+- deklinierbar: ihre Goldstücke → ihrer Goldstücke → ihren Goldstücken
+- Satzglied: Ihre zählte die Hexe.
+- Hinweis: Possessivpronomen – es kann auch ohne sein Nomen stehen.
+
+## Der
+- Satz: **Der** Prinz suchte Aschenputtel.
+- Wortart: Artikel
+- deklinierbar: der Prinz → des Prinzen → dem Prinzen
+- Satzglied: Der suchte Prinz Aschenputtel.
+
+## drinnen
+- Satz: Die Großmutter lag **drinnen** im Bett.
+- Wortart: Adverb
+- Satzglied: Drinnen lag die Großmutter im Bett.
+
+## mit
+- Satz: Rotkäppchen ging **mit** dem Korb los.
+- Wortart: Präposition
+- Kasusforderung: mit wem oder was? → mit dem Korb → Dativ
+- Satzglied: Mit ging Rotkäppchen dem Korb los.
+
+## Wenn
+- Satz: **Wenn** es dunkel wird, kommt der Wolf.
+- Wortart: Konjunktion
+- Fügteil: Es wird dunkel. · Der Wolf kommt.
+- Satzglied: Wenn kommt der Wolf.
+
+## sehr
+- Satz: Der Wolf war **sehr** hungrig.
+- Wortart: Partikel
+- Satzglied: Sehr war der Wolf hungrig.
+
+## Hurra
+- Satz: „**Hurra**, der Wolf ist weg!“, riefen die Geißlein.
+- Wortart: Satzäquivalent
+</script>
+<script>
+"use strict";
+/* ---------- Pixel-Sprites ---------- */
+const PAL = {
+  K:'#2c2a4a', W:'#ffffff', L:'#e3dff1', M:'#cbc5e2', D:'#8f88b8', S:'#c8f2dc',
+  G:'#3cc77f', g:'#a6e6a0', Y:'#ffe36e', O:'#ffb36b', R:'#f2596b', r:'#b8364a',
+  P:'#ff8fb3', p:'#ffd6e3', B:'#9dd4f1', V:'#9a7fd1', v:'#5b4791', N:'#c08655',
+  n:'#7a4f33', C:'#ffe2c4', E:'#bdb7de'
+};
+function fairySprite(happy){
+  const rows = SPR.fairy.slice();
+  if (happy){ rows[5] = '.....CCCCCC...Y.'; rows[8] = '.....CKKKKCK....'; }
+  return rows;
+}
+const FACES = {
+  normal: ['SKSSKS','SSSSSS','SSKKSS','SSSSSS'],
+  happy:  ['SKSSKS','PSSSSP','SKSSKS','SSKKSS'],
+  think:  ['KSSKSS','SSSSSS','SSSKKS','SSSSSS'],
+  stutter:['SKSSKS','SSSSSS','KSKSKS','SSSSSS']
+};
+function machineSprite(mood){
+  const f = FACES[mood] || FACES.normal;
+  return [
+    '.......Y........',
+    '......YYY.......',
+    '.......Y........',
+    '.......K........',
+    '..KKKKKKKKKKKK..',
+    '..KLLLLLLLLLLK..',
+    '..KLKKKKKKKKLK..',
+    '..KLKSSSSSSKLK..',
+    '..KLK'+f[0]+'KLK..',
+    '..KLK'+f[1]+'KLK..',
+    '..KLK'+f[2]+'KLK..',
+    '..KLK'+f[3]+'KLK..',
+    '..KLKKKKKKKKLK..',
+    '..KLPPPPPPPPLK..',
+    '..KLPPPKKPPPLK..',
+    '..KKKKKKKKKKKK..'
+  ];
+}
+const SPR = {
+  fairy: [
+    '........v.......','.......vV.......','......vVVv......','.....vVVVVv....Y',
+    '....vvvvvvvv..YW','.....KCCCCK...Y.','.....CKCCKC..K..','.....CCCCCC.K...',
+    '.....CCKKCCK....','..pp.vVVVVvK....','.ppp.vVVVVv.....','..pp.vVVVVv.....',
+    '....vVVVVVVv....','...vVVVVVVVVv...','...vvvvvvvvvv...','.....KK..KK.....'
+  ],
+  clock: [
+    '...KKKKKK...','..KWWWWWWK..','.KWWWWKWWWK.','KWWWWWKWWWWK','KWWWWWKWWWWK','KWWWWWKKKWWK',
+    'KWWWWWWWWWWK','KWWWWWWWWWWK','.KWWWWWWWWK.','..KWWWWWWK..','...KKKKKK...','............'
+  ],
+  stairs: [
+    '............','.........KKK','.........KWK','......KKKKWK','......KWWWWK','...KKKKWWWWK',
+    '...KWWWWWWWK','KKKKWWWWWWWK','KWWWWWWWWWWK','KKKKKKKKKKKK','............','............'
+  ],
+  gear: [
+    '.....KK.....','..K.KWWK.K..','.KWKWWWWKWK.','..KWWWWWWK..','.KWWWKKWWWK.','KWWWK..KWWWK',
+    'KWWWK..KWWWK','.KWWWKKWWWK.','..KWWWWWWK..','.KWKWWWWKWK.','..K.KWWK.K..','.....KK.....'
+  ],
+  thumb: [
+    '....KK......','...KWK......','...KWK......','..KWWK......','.KWWWKKKKKK.','KKWWWWWWWWWK',
+    'KWKWWWWKKKK.','KWKWWWWWWWWK','KWKWWWWKKKK.','KWKWWWWWWWWK','KKKWWWWKKKK.','...KKKKK....'
+  ],
+  album: [
+    '............','.KKKKKKKKKK.','.KPPPPPPPPK.','.KPWWWWWWPK.','.KPWYYWWWPK.','.KPWYYWWWPK.',
+    '.KPWWWWWWPK.','.KPWWWWWWPK.','.KPPPPPPPPK.','.KKKKKKKKKK.','............','............'
+  ],
+  speakerOn: [
+    '............','.....K......','....KK...K..','.KKKWK....K.','.KWWWK.K..K.','.KWWWK..K.K.',
+    '.KWWWK.K..K.','.KKKWK....K.','....KK...K..','.....K......','............','............'
+  ],
+  fullscreen: [
+    'KKKK....KKKK','KWWK....KWWK','KWK......KWK','KK........KK','............','............',
+    '............','............','KK........KK','KWK......KWK','KWWK....KWWK','KKKK....KKKK'
+  ],
+  fullscreenExit: [
+    '............','...K....K...','...K....K...','KKKK....KKKK','............','............',
+    '............','............','KKKK....KKKK','...K....K...','...K....K...','............'
+  ],
+  speakerOff: [
+    '............','.....K......','....KK......','.KKKWK.K..K.','.KWWWK..KK..','.KWWWK..KK..',
+    '.KWWWK.K..K.','.KKKWK......','....KK......','.....K......','............','............'
+  ],
+  frog: [
+    '......Y.Y.Y.....','......YYYYY.....','...KK.KKKKK.KK..','..KWWKGGGGGKWWK.',
+    '..KWKKGGGGGKKWK.','..KGGGGGGGGGGGK.','.KGGGGGGGGGGGGGK','.KGRGGGGGGGGGRGK',
+    '.KGGGKKKKKKKGGGK','.KGGGGGGGGGGGGGK','..KgggggggggggK.','.KGKgggggggggKGK',
+    '.KGGKgggggggKGGK','..KKKKKKKKKKKK..','................','................'
+  ],
+  hood: [
+    '......RRRR......','.....RRRRRR.....','....RRRRRRRR....','....RRCCCCRR....',
+    '...RRCKCCKCRR...','...RRCCCCCCRR...','...RRCCRRCCRR...','..RRRRCCCCRRRR..',
+    '..RRRRRRRRRRRR..','.RRRRRRRRRRRRRR.','.RRRRRRRRRRRNNN.','RRRRRRRRRRRRNYNN',
+    '.RRRRRRRRRRRNNN.','...KK....KK.....','................','................'
+  ],
+  house: [
+    '................','.......KK.......','......KPPK......','.....KPPPPK.....',
+    '....KPPWPPPK....','...KPPPPPPWPK...','..KWWWWWWWWWWK..','..KNNNNNNNNNNK..',
+    '..KNYYNNNNYYNK..','..KNYYNNNNYYNK..','..KNNNNKKNNNNK..','..KNRNNKnKNNGK..',
+    '..KNNNNKnKNNNK..','..KKKKKKKKKKKK..','................','................'
+  ],
+  apple: [
+    '........n.......','.......n.gg.....','.......ngg......','....KKKnKKK.....',
+    '...KRRRRRRRK....','..KRRWRRRRRRK...','..KRWRRRRRRRK...','..KRRRRRRRRRK...',
+    '..KRRRRRRRRRK...','..KRRRRRRRRrK...','...KRRRRRRrK....','....KKRRRKK.....',
+    '......KKK.......','................','................','................'
+  ],
+  star: [
+    '.......K........','......KYK.......','......KYK.......','.....KYYYK......',
+    'KKKKKKYYYKKKKKK.','.KYYYYYYYYYYYK..','..KYYYYYYYYYK...','...KYYYYYYYK....',
+    '...KYYYKYYYK....','..KYYYK.KYYYK...','..KYYK...KYYK...','.KYK.......KYK..',
+    '.KK.........KK..','................','................','................'
+  ],
+  qmark: ['.KKK.','K...K','....K','...K.','..K..','.....','..K..'],
+  cases: [
+    'KKKKKKKKKKKK','KWWWWWWWWWWK','KWKKWKKKKKWK','KWWWWWWWWWWK','KWKKWKKKKKWK','KWWWWWWWWWWK',
+    'KWKKWKKKKKWK','KWWWWWWWWWWK','KWKKWKKKKKWK','KWWWWWWWWWWK','KKKKKKKKKKKK','............'
+  ],
+  front: [
+    '............','.K..........','.K....K.....','.K...KK.....','.K..KWKKKKKK','.K.KWWWWWWWK',
+    '.K..KWKKKKKK','.K...KK.....','.K....K.....','.K..........','............','............'
+  ],
+  pillow: [
+    '....B......B....','.B.....B......B.','......B....B....','...KKKKKKKKKK...',
+    '..KWWWWWWWWWWK..','.KWWWWWWWWWWWWK.','.KWppWWWWWWppWK.','.KWWWWWWWWWWWWK.',
+    '.KWWWWppppWWWWK.','.KWWWWWWWWWWWWK.','..KWWWWWWWWWWK..','...KKKKKKKKKK...',
+    '................','................','................','................'
+  ],
+  rooster: [
+    '....RR.R........','....RRRR........','...KKKKK........','..KYYYYYK.......',
+    '..KYKYYYKOO.....','..KYYYYYKO......','...KRYYK........','...KYYYYK...GG..',
+    '..KOOOOOOK.GGG..','.KOOOOOOOOKGG...','.KOOOOOOOOOK....','..KOOOOOOOK.....',
+    '...KKKKKKK......','.....O..O.......','....OO.OO.......','................'
+  ],
+  morph: [
+    '....KKKK....','..KK....K...','.K.......K..','.K......KKK.','K........K..','K...........',
+    '...........K','..K........K','.KKK......K.','..K.......K.','...K....KK..','....KKKK....'
+  ],
+  magnet: [
+    '.KKK....KKK.','.KWK....KWK.','.KWK....KWK.','.KRK....KRK.','.KRK....KRK.','.KRK....KRK.',
+    '.KRRK..KRRK.','..KRRKKRRK..','...KRRRRK...','....KKKK....','............','............'
+  ],
+  link: [
+    '............','............','.KKKKKK.....','.K....K.....','.K..KKKKKK..','.K..K.K..K..',
+    '.KKKKKK..K..','....K....K..','....KKKKKK..','............','............','............'
+  ],
+  goat: [
+    '................','..n..........n..','..nn........nn..','...nKKKKKKKKn...',
+    '.KKKWWWWWWWWKKK.','KWWKWWWWWWWWKWWK','.KKKWKWWWWKWKKK.','....KWWWWWWK....',
+    '....KWWWWWWK....','....KWWppWWK....','.....KWWWWK.....','.....KWKKWK.....',
+    '......KWWK......','......KWWK......','.......KK.......','................'
+  ],
+  hedgehog: [
+    '................','................','.....n.n.n......','....nnnnnnn.....',
+    '...nNnNnNnNn....','..nNNNNNNNNNn...','.nNNNNNNNNNNCC..','.nNNNNNNNNNCKCC.',
+    'nNNNNNNNNNNCCCCK','.nNNNNNNNNNCCC..','..nnnnnnnnnCC...','...KK....KK.....',
+    '................','................','................','................'
+  ],
+  taler: [
+    '..Y.........Y...','.YYY.......YYY..','..Y....Y....Y...','......YYY.......',
+    '...KK...Y...KK..','..KYYK.....KYYK.','..KYYK.....KYYK.','...KK...KK..KK..',
+    '.......KYYK.....','.......KYYK.....','...KK...KK......','..KYYK..........',
+    '..KYYK.....KK...','...KK.....KYYK..','..........KYYK..','...........KK...'
+  ],
+  bubble: [
+    '............','.KKKKKKKKKK.','KWWWWWWWWWWK','KWWWWKKWWWWK','KWWWWKKWWWWK','KWWWWKKWWWWK',
+    'KWWWWWWWWWWK','KWWWWKKWWWWK','.KKKWWKKKKK.','...KWK......','...KK.......','............'
+  ],
+  rose: [
+    '.....RRRR.......','....RrRRRR......','...RRRrrRRR.....','...RRrRRrRR.....',
+    '...RRRrrRRR.....','....RRRRRR......','.....RRRR.......','.......G........',
+    '..GG...G...GG...','..GGG..G..GGG...','...GG..G.GG.....','.......G........',
+    '.....G.G........','......GG........','.......G........','................'
+  ],
+  shoe: [
+    '................','................','................','..........BB....',
+    '.........BWWB...','........BWWWB...','.......BWWWWB...','.....BBWWWWWB...',
+    '...BBWWWWWWWB...','..BWWWWWWWWWB...','.BWWWWWWWWWWWB..','.BBBBBBBBBBBBB..',
+    '.B..........B...','................','................','................'
+  ],
+  twins: [
+    '................','.KKKKKK..KKKKKK.','.KYYYYK..KBBBBK.','.KYKKYK..KBKKBK.',
+    '.KYYYYK..KBBBBK.','.KYKKYK..KBKKBK.','.KYYYYK..KBBBBK.','.KKKKKK..KKKKKK.',
+    '................','..K.K......K.K..','...K........K...','..K.K......K.K..',
+    '................','.....KKKKKK.....','................','................'
+  ],
+  crown: [
+    '................','................','..Y....Y....Y...','..YY..YYY..YY...',
+    '..YYY.YYY.YYY...','..YYYYYYYYYYY...','..YRYYYBYYYRY...','..YYYYYYYYYYY...',
+    '..KKKKKKKKKKK...','................','................','................',
+    '................','................','................','................'
+  ],
+  gold: [
+    '................','................','.....KKKKKK.....','....KYYYYYYK....',
+    '....KYWYYYYK....','....KYYYYYYK....','.....KKKKKK.....','...KKKKKKKKKK...',
+    '..KYYWYYYYYYYK..','..KYYYYYYYYYYK..','...KKKKKKKKKK...','..KYYYYYYYYYYK..',
+    '..KYYYYYYYYYYK..','...KKKKKKKKKK...','................','................'
+  ]
+};
+
+function drawSprite(ctx, rows, x, y, s, flipY){
+  for (let r = 0; r < rows.length; r++){
+    const row = flipY ? rows[rows.length - 1 - r] : rows[r];
+    for (let c = 0; c < row.length; c++){
+      const col = PAL[row[c]];
+      if (!col) continue;
+      ctx.fillStyle = col;
+      ctx.fillRect(x + c * s, y + r * s, s, s);
+    }
+  }
+}
+function paintCanvas(cv, rows, flipY){
+  if (!cv) return;
+  cv.width = rows[0].length; cv.height = rows.length;
+  const ctx = cv.getContext('2d');
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  drawSprite(ctx, rows, 0, 0, 1, flipY);
+}
+function spriteByName(name){
+  if (name === 'machine') return machineSprite('normal');
+  return SPR[name];
+}
+function paintAllIcons(root){
+  (root || document).querySelectorAll('canvas[data-sprite]').forEach(cv => {
+    const rows = spriteByName(cv.dataset.sprite);
+    if (rows) paintCanvas(cv, rows, cv.dataset.flip === '1');
+  });
+}
+
+/* ---------- Szenen für die Geschichte (128 x 72 Pixel) ---------- */
+function seeded(n){ let x = n; return () => (x = (x * 9301 + 49297) % 233280) / 233280; }
+function rect(ctx, c, x, y, w, h){ ctx.fillStyle = c; ctx.fillRect(x, y, w, h); }
+function card(ctx, x, y){ rect(ctx, PAL.K, x, y, 8, 6); rect(ctx, PAL.W, x + 1, y + 1, 6, 4); rect(ctx, PAL.D, x + 2, y + 2, 4, 1); }
+function bricks(ctx, base, line){
+  rect(ctx, base, 0, 0, 128, 72);
+  ctx.fillStyle = line;
+  for (let y = 4; y < 60; y += 7){
+    ctx.fillRect(0, y, 128, 1);
+    const off = (y / 7) % 2 ? 0 : 8;
+    for (let x = off; x < 128; x += 16) ctx.fillRect(x, y - 6, 1, 6);
+  }
+}
+function drawScene(cv, which){
+  cv.width = 128; cv.height = 72;
+  const ctx = cv.getContext('2d');
+  const rnd = seeded(7);
+  if (which === 'turm'){
+    const sky = ['#5b5490', '#665fa0', '#7268ae', '#7f75bb', '#8d83c6'];
+    sky.forEach((c, i) => rect(ctx, c, 0, i * 12, 128, 12));
+    for (let i = 0; i < 26; i++) rect(ctx, i % 4 ? '#fffbe8' : PAL.Y, Math.floor(rnd() * 128), Math.floor(rnd() * 44), 1, 1);
+    rect(ctx, '#fff6c9', 100, 8, 8, 8); rect(ctx, '#7268ae', 104, 8, 4, 5);
+    rect(ctx, '#6fbf7a', 0, 60, 128, 12); rect(ctx, '#8fd39a', 0, 60, 128, 2);
+    rect(ctx, '#9d93c9', 10, 50, 30, 10); rect(ctx, '#9d93c9', 86, 52, 34, 8);
+    rect(ctx, PAL.K, 49, 22, 30, 39); rect(ctx, '#d9d2ee', 50, 23, 28, 37);
+    ctx.fillStyle = '#bcb3dc';
+    for (let y = 27; y < 60; y += 5) ctx.fillRect(50, y, 28, 1);
+    for (let i = 0; i < 16; i++){ rect(ctx, PAL.K, 48 + i, 22 - i, 1, 1); rect(ctx, PAL.K, 79 - i, 22 - i, 1, 1); }
+    for (let i = 0; i < 15; i++) rect(ctx, PAL.P, 50 + i, 22 - i, 28 - 2 * i, 1);
+    rect(ctx, PAL.Y, 63, 3, 2, 2);
+    rect(ctx, PAL.K, 58, 30, 12, 12); rect(ctx, PAL.Y, 59, 31, 10, 10);
+    drawSprite(ctx, machineSprite('normal').slice(4), 60, 32, 0.5);
+    rect(ctx, PAL.K, 59, 50, 10, 11); rect(ctx, PAL.N, 60, 51, 8, 10); rect(ctx, PAL.Y, 66, 56, 1, 1);
+  } else if (which === 'fee'){
+    bricks(ctx, '#e6e1f4', '#d3cbea');
+    rect(ctx, '#d9b98f', 0, 60, 128, 12); rect(ctx, '#c49f74', 0, 60, 128, 1);
+    for (let x = 0; x < 128; x += 12) rect(ctx, '#c49f74', x, 61, 1, 11);
+    drawSprite(ctx, machineSprite('stutter'), 76, 12, 3);
+    drawSprite(ctx, SPR.fairy, 6, 14, 3);
+    [[60, 10], [52, 22], [64, 30], [44, 8], [58, 44], [38, 32], [70, 50], [30, 52]].forEach(([x, y]) => card(ctx, x, y));
+    for (let i = 0; i < 14; i++) rect(ctx, i % 2 ? PAL.Y : PAL.W, 40 + Math.floor(rnd() * 40), 4 + Math.floor(rnd() * 50), 1, 1);
+  } else if (which === 'chaos'){
+    bricks(ctx, '#e6e1f4', '#d3cbea');
+    rect(ctx, '#d9b98f', 0, 60, 128, 12); rect(ctx, '#c49f74', 0, 60, 128, 1);
+    drawSprite(ctx, machineSprite('stutter'), 40, 0, 3);
+    drawSprite(ctx, SPR.qmark, 20, 10, 2); drawSprite(ctx, SPR.qmark, 98, 6, 2); drawSprite(ctx, SPR.qmark, 104, 30, 1);
+    [[10, 62], [22, 64], [36, 63], [84, 62], [98, 64], [112, 63], [60, 65]].forEach(([x, y]) => card(ctx, x, y));
+  } else if (which === 'turmspitze' || which === 'fest'){
+    const fest = which === 'fest';
+    const sky = fest ? ['#7d73b8', '#8a80c2', '#978dcc', '#a49ad6'] : ['#5b5490', '#665fa0', '#7268ae', '#7f75bb'];
+    sky.forEach((c, i) => rect(ctx, c, 0, i * 15, 128, 15));
+    for (let i = 0; i < 22; i++) rect(ctx, i % 3 ? '#fffbe8' : PAL.Y, Math.floor(rnd() * 128), Math.floor(rnd() * 40), 1, 1);
+    rect(ctx, '#d9b98f', 0, 60, 128, 12); rect(ctx, '#c49f74', 0, 60, 128, 1);
+    for (let i = 0; i < 64; i++){ rect(ctx, PAL.K, i, 59 - Math.floor(i / 4), 1, 1); rect(ctx, PAL.K, 127 - i, 59 - Math.floor(i / 4), 1, 1); }
+    drawSprite(ctx, machineSprite(fest ? 'happy' : 'normal'), 74, 12, 3);
+    drawSprite(ctx, fairySprite(fest), 10, 12, 3);
+    if (fest){
+      for (let x = 0; x < 128; x += 8){ rect(ctx, [PAL.Y, PAL.P, PAL.B, PAL.g][(x / 8) % 4], x + 2, 4 + ((x / 8) % 2) * 2, 4, 4); }
+      for (let i = 0; i < 26; i++) rect(ctx, [PAL.Y, PAL.P, PAL.B, PAL.g, PAL.O][i % 5], Math.floor(rnd() * 128), 10 + Math.floor(rnd() * 46), 2, 2);
+    }
+  } else if (which === 'fertig'){
+    bricks(ctx, '#e6e1f4', '#d3cbea');
+    rect(ctx, '#d9b98f', 0, 60, 128, 12); rect(ctx, '#c49f74', 0, 60, 128, 1);
+    drawSprite(ctx, machineSprite('happy'), 40, 0, 3);
+    for (let i = 0; i < 20; i++) rect(ctx, [PAL.Y, PAL.P, PAL.B, PAL.g][i % 4], Math.floor(rnd() * 128), Math.floor(rnd() * 58), 2, 2);
+    [[8, 'verb'], [92, 'adjektiv'], [106, 'nomen']].forEach(([x, w], i) => {
+      const c = { verb: '#ffe36e', adjektiv: '#a6e6a0', nomen: '#9dd4f1' }[w];
+      rect(ctx, PAL.K, i ? x : 18, 44, 14, 12); rect(ctx, c, (i ? x : 18) + 1, 45, 12, 10); rect(ctx, PAL.K, (i ? x : 18) + 5, 49, 4, 2);
+    });
+  }
+}
+
+/* ---------- Ton (standardmäßig aus) ---------- */
+let actx = null;
+function tone(freq, dur, type, vol, when){
+  if (!settings.sound) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const t = actx.currentTime + (when || 0);
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = type || 'square';
+    o.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(vol || .05, t);
+    g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g).connect(actx.destination);
+    o.start(t); o.stop(t + dur + .02);
+  } catch (e) { /* kein Ton verfügbar */ }
+}
+const sfx = {
+  machine(){ tone(170, .22, 'sawtooth', .035); tone(230, .2, 'sawtooth', .03, .14); },
+  ja(){ tone(660, .1, 'square', .05); tone(880, .16, 'square', .05, .09); },
+  nein(){ tone(190, .24, 'square', .045); },
+  drawer(){ tone(520, .07, 'square', .05); tone(390, .12, 'triangle', .06, .06); },
+  sticker(){ [523, 659, 784, 1047].forEach((f, i) => tone(f, .13, 'square', .045, i * .09)); },
+  shutter(){ for (let i = 0; i < 5; i++) tone(300 + i * 40, .05, 'square', .03, i * .07); }
+};
+
+/* ---------- Proben, Wortarten, Labore ---------- */
+const TESTS = {
+  konj:  { term: 'konjugierbar', frage: 'Kann ich das Wort nach Person und Zeit verändern?', sprite: 'clock', sep: '·' },
+  komp:  { term: 'komparierbar', frage: 'Kann ich das Wort steigern?', sprite: 'stairs', sep: '→' },
+  dekl:  { term: 'deklinierbar', frage: 'Verändert sich das Wort in den vier Fällen?', sprite: 'cases', sep: '→' },
+  art:   { term: 'artikelfähig', frage: 'Kann ich der, die oder das davorsetzen?', sprite: 'gear', sep: '·' },
+  sg:    { term: 'kann SG sein', frage: 'Kann das Wort allein vor dem Verb stehen?', sprite: 'front', sep: '' },
+  flex:  { term: 'flektierbar', frage: 'Verändert das Wort seine Form?', sprite: 'morph', sep: '·' },
+  sgatt: { term: 'kann SG oder Attribut sein', frage: 'Kann das Wort allein vor dem Verb stehen?', sprite: 'front', sep: '·' },
+  kasus: { term: 'Kasusforderung', frage: 'Kann ich mit dem Wort nach einem Fall fragen (mit wem? für wen?)?', sprite: 'magnet', sep: '→' },
+  fueg:  { term: 'Fügteil', frage: 'Verbindet das Wort zwei Teile, die auch allein stehen können?', sprite: 'link', sep: '+' },
+  isol:  { term: 'syntaktisch isoliert', frage: 'Kann das Wort hier ganz allein stehen, ohne den Rest des Satzes?', sprite: 'bubble', sep: '→' }
+};
+const LEFT_TESTS = ['konj', 'komp', 'dekl', 'art', 'sg'];
+const RIGHT_TESTS = ['isol', 'sgatt', 'kasus', 'fueg'];
+function frageOf(t){
+  if (t === 'sgatt' && settings.attribut) return 'Kann das Wort allein vor dem Verb stehen oder ein Nomen näher beschreiben?';
+  return TESTS[t].frage;
+}
+const FLEKTIERBAR = ['Verb', 'Adjektiv', 'Nomen', 'Pronomen', 'Artikel'];
+const TRUTH = {
+  konj:  wa => wa === 'Verb',
+  komp:  wa => wa === 'Adjektiv',
+  dekl:  wa => ['Nomen', 'Adjektiv', 'Pronomen', 'Artikel'].includes(wa),
+  art:   wa => wa === 'Nomen',
+  sg:    wa => wa === 'Pronomen' || wa === 'Nomen' || wa === 'Adjektiv',
+  flex:  wa => FLEKTIERBAR.includes(wa),
+  sgatt: wa => wa === 'Adverb',
+  kasus: wa => wa === 'Präposition',
+  fueg:  wa => wa === 'Konjunktion',
+  isol:  wa => wa === 'Satzäquivalent'
+};
+const WA = {
+  Verb:     { cls: 'verb', ein: 'ein', prop: () => `ist ${termOf('konj')}`,
+              hilfe: 'Welche Wortart kann man nach Person und Zeit verändern?', merksatz: 'Wörter, die man konjugieren kann, sind Verben.',
+              frage: () => `Welche Schublade passt zu ${termOf('konj')}en Wörtern?` },
+  Adjektiv: { cls: 'adjektiv', ein: 'ein', prop: () => `ist ${termOf('komp')}`,
+              hilfe: 'Welche Wortart kann man steigern?', merksatz: 'Wörter, die man steigern kann, sind Adjektive.',
+              frage: () => `Welche Schublade passt zu ${termOf('komp')}en Wörtern?` },
+  Nomen:    { cls: 'nomen', ein: 'ein', prop: () => `ist ${termOf('art')}`,
+              hilfe: 'Vor welche Wortart passt ein Artikel?', merksatz: 'Wörter, vor die ein Artikel passt, sind Nomen.',
+              frage: () => `Welche Schublade passt zu ${termOf('art')}en Wörtern?` },
+  Pronomen: { cls: 'pronomen', ein: 'ein', prop: () => `ist ${termOf('dekl')} und kann allein vor dem Verb stehen`,
+              hilfe: 'Welche deklinierbare Wortart kann allein vor dem Verb stehen?', merksatz: 'Deklinierbare Wörter, die allein vor dem Verb stehen können, sind Pronomen.',
+              frage: () => `Welche Schublade passt zu ${termOf('dekl')}en Wörtern, die allein vor dem Verb stehen können?` },
+  Artikel:  { cls: 'artikel', ein: 'ein', prop: () => `ist ${termOf('dekl')}, kann aber nicht allein vor dem Verb stehen`,
+              hilfe: 'Welche deklinierbare Wortart kann nicht allein vor dem Verb stehen?', merksatz: 'Deklinierbare Wörter, die nicht allein vor dem Verb stehen können, sind Artikel.',
+              frage: () => `Welche Schublade passt zu ${termOf('dekl')}en Wörtern, die nicht allein vor dem Verb stehen können?` },
+  Adverb:   { cls: 'adverb', ein: 'ein', prop: () => `ist nicht ${termOf('flex')} und kann allein vor dem Verb stehen`,
+              hilfe: 'Welche Wortart verändert sich nie und kann allein vor dem Verb stehen?', merksatz: 'Wörter, die sich nie verändern und allein vor dem Verb stehen können, sind Adverbien.',
+              frage: () => 'Welche Schublade passt zu Wörtern, die sich nie verändern und allein vor dem Verb stehen können?' },
+  'Präposition': { cls: 'praeposition', ein: 'eine', prop: () => 'verlangt einen bestimmten Fall',
+              hilfe: 'Welche Wortart verlangt einen bestimmten Fall?', merksatz: 'Wörter, die einen bestimmten Fall verlangen, sind Präpositionen.',
+              frage: () => `Welche Schublade passt zu Wörtern mit ${termOf('kasus')}?` },
+  Konjunktion: { cls: 'konjunktion', ein: 'eine', prop: () => 'verbindet zwei Teile',
+              hilfe: 'Welche Wortart verbindet Wörter, Wortgruppen oder Sätze?', merksatz: 'Wörter, die zwei Teile verbinden, sind Konjunktionen.',
+              frage: () => 'Welche Schublade passt zu Wörtern, die zwei Teile verbinden?' },
+  Partikel: { cls: 'partikel', ein: 'eine', prop: () => 'verändert sich nie, und keine Maschine sagt ja',
+              hilfe: 'Welche Wortart bleibt übrig, wenn keine Maschine ja sagt?', merksatz: 'Wörter, die sich nie verändern und bei denen keine Maschine ja sagt, sind Partikeln.',
+              frage: () => 'Keine Maschine sagt ja. Welche Schublade bleibt übrig?' },
+  'Satzäquivalent': { cls: 'satzaequivalent', ein: 'ein', prop: () => `ist ${termOf('isol')}: es kann ganz allein stehen`,
+              hilfe: 'Welche Wortart kann ganz allein eine Äußerung sein?', merksatz: 'Wörter, die ganz allein eine Äußerung sein können, sind Satzäquivalente.',
+              frage: () => 'Welche Schublade passt zu Wörtern, die ganz allein stehen können?' }
+};
+const WA_ALL = ['Verb', 'Adjektiv', 'Nomen', 'Pronomen', 'Artikel', 'Adverb', 'Präposition', 'Konjunktion', 'Partikel', 'Satzäquivalent'];
+const LATER = [];
+const LABS = {
+  1: { floor: 'Erdgeschoss', half: 'left',  tests: ['konj', 'komp', 'art'], wa: ['Verb', 'Adjektiv', 'Nomen'], md: 'wortliste-1' },
+  2: { floor: '1. Stock',    half: 'left',  tests: ['konj', 'komp', 'dekl', 'art', 'sg'], wa: ['Verb', 'Adjektiv', 'Nomen', 'Pronomen', 'Artikel'], md: 'wortliste-2' },
+  3: { floor: '2. Stock',    half: 'right', tests: ['flex', 'sgatt', 'kasus', 'fueg'], wa: ['Adverb', 'Präposition', 'Konjunktion'], md: 'wortliste-3' },
+  4: { floor: 'Dachboden',   half: 'right', tests: ['flex', 'isol', 'sgatt', 'kasus', 'fueg'], wa: ['Partikel', 'Satzäquivalent'], md: 'wortliste-4' },
+  5: { floor: 'Turmspitze',  half: 'both', name: 'Abschlusslabor', tests: ['flex'].concat(LEFT_TESTS, RIGHT_TESTS), wa: WA_ALL, md: 'wortliste-5' }
+};
+const LAB_IDS = [1, 2, 3, 4, 5];
+const LATER_FLOORS = [];
+const labName = n => LABS[n].name || `Labor ${n}`;
+
+function saysYes(t, w, R){
+  if (t === 'sg' || t === 'sgatt') return `${w} kann allein vor dem Verb stehen.`;
+  if (t === 'kasus') return `${w} verlangt einen bestimmten Fall${R && R.fall ? `, hier den <b>${R.fall}</b>` : ''}.`;
+  if (t === 'fueg') return `${w} verbindet zwei Teile.`;
+  if (t === 'isol') return `${w} kann hier ganz allein stehen.`;
+  return `${w} ist ${termOf(t)}.`;
+}
+function saysNo(t, w){
+  if (t === 'sg' || t === 'sgatt') return `${w} kann nicht allein vor dem Verb stehen.`;
+  if (t === 'kasus') return `${w} verlangt keinen Fall.`;
+  if (t === 'fueg') return `${w} verbindet keine zwei Teile.`;
+  if (t === 'isol') return `${w} kann hier nicht allein stehen.`;
+  return `${w} ist nicht ${termOf(t)}.`;
+}
+
+const settings = {
+  lab: 1, kidJudge: true, expert: false, sound: false, demo: true, story: true, startRound: 0, attribut: false,
+  enabled: {}
+};
+WA_ALL.forEach(w => { settings.enabled[w] = true; });
+
+/* ---------- Markdown-Wortlisten ---------- */
+const KEYMAP = {
+  satz: 'satz', wortart: 'wortart', grundform: 'grundform', hinweis: 'hinweis', attribut: 'attribut',
+  konjugierbar: 'konj', komparierbar: 'komp', steigerbar: 'komp', deklinierbar: 'dekl',
+  artikelfaehig: 'art', artikelfahig: 'art', artikel: 'art',
+  kannsgsein: 'sg', satzglied: 'sg', umstellprobe: 'sg', satzgliedprobe: 'sg',
+  flektierbar: 'flex', formwandler: 'flex',
+  kasusforderung: 'kasus', kasus: 'kasus', fall: 'kasus',
+  fuegteil: 'fueg', fugteil: 'fueg', trennprobe: 'fueg',
+  syntaktischisoliert: 'isol', isoliert: 'isol', allein: 'isol',
+  partizip: 'partizip'
+};
+function normKey(k){
+  return k.trim().toLowerCase().replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss').replace(/[^a-z]/g, '');
+}
+function normWortart(w){
+  const t = normKey(w || '');
+  if (t === 'verb' || t === 'partizip' || t === 'verbpartizip') return 'Verb';
+  if (t === 'adjektiv') return 'Adjektiv';
+  if (t === 'nomen' || t === 'substantiv' || t === 'eigenname') return 'Nomen';
+  if (t === 'pronomen' || /^(personal|possessiv|demonstrativ|reflexiv|interrogativ|relativ|indefinit)(pronomen|artikel)$/.test(t)) return 'Pronomen';
+  if (t === 'artikel') return 'Artikel';
+  if (t === 'adverb') return 'Adverb';
+  if (t === 'praeposition') return 'Präposition';
+  if (t === 'konjunktion' || t === 'subjunktion') return 'Konjunktion';
+  if (t === 'partikel') return 'Partikel';
+  if (t === 'satzaequivalent' || t === 'interjektion') return 'Satzäquivalent';
+  const later = LATER.find(l => normKey(l) === t);
+  return later ? '#' + later : null;
+}
+function stickerFor(title){
+  const t = title.toLowerCase();
+  const map = [['frosch', 'frog'], ['rotk', 'hood'], ['hänsel', 'house'], ['gretel', 'house'], ['schneewitt', 'apple'],
+    ['holle', 'pillow'], ['bremer', 'rooster'], ['stadtmusik', 'rooster'], ['rumpel', 'gold'],
+    ['geiß', 'goat'], ['geiss', 'goat'], ['sterntaler', 'taler'], ['igel', 'hedgehog'],
+    ['dornr', 'rose'], ['aschen', 'shoe'], ['zwilling', 'twins'], ['meister', 'crown']];
+  const hit = map.find(([k]) => t.includes(k));
+  return hit ? hit[1] : 'star';
+}
+function splitForms(s){
+  const arrow = /→|->/.test(s);
+  return s.split(arrow ? /\s*(?:→|->)\s*/ : /\s*(?:·|,|;|\|)\s*/).map(x => x.replace(/^\*+/, '').replace(/\?+$/, '').trim()).filter(Boolean);
+}
+const REQUIRED = {
+  2: { Nomen: ['dekl'], Adjektiv: ['dekl'], Pronomen: ['dekl', 'sg'], Artikel: ['dekl', 'sg'] },
+  3: { Adverb: ['sg'], 'Präposition': ['kasus'], Konjunktion: ['fueg'] },
+  5: { Nomen: ['dekl'], Adjektiv: ['dekl'], Pronomen: ['dekl', 'sg'], Artikel: ['dekl', 'sg'], Adverb: ['sg'], 'Präposition': ['kasus'], Konjunktion: ['fueg'] }
+};
+const FIELD_HELP = {
+  dekl: '„- deklinierbar: der Frosch → des Frosches → dem Frosch“',
+  sg: '„- Satzglied: …“ (der Satz mit dem Wort allein vor dem Verb)',
+  kasus: '„- Kasusforderung: mit wem? → mit dem Wolf → Dativ“',
+  fueg: '„- Fügteil: Satz 1 · Satz 2“ (die zwei getrennten Teile)'
+};
+function parseMD(text, lab){
+  const L = LABS[lab], rounds = [], errors = [];
+  let cur = null, entry = null;
+  text.split(/\r?\n/).forEach((raw, idx) => {
+    const line = raw.trim();
+    if (!line) return;
+    let m;
+    if ((m = line.match(/^#\s+(.+)$/))){
+      cur = { title: m[1].trim(), words: [] }; cur.sticker = stickerFor(cur.title);
+      rounds.push(cur); entry = null; return;
+    }
+    if ((m = line.match(/^##\s+(.+)$/))){
+      if (!cur){ cur = { title: 'Eigene Wörter', words: [], sticker: 'star' }; rounds.push(cur); }
+      entry = { wort: m[1].trim(), line: idx + 1 }; cur.words.push(entry); return;
+    }
+    if ((m = line.match(/^[-*]\s*([^:]+):\s*(.*)$/)) && entry){
+      const key = KEYMAP[normKey(m[1])];
+      if (key) entry[key] = m[2].trim();
+    }
+  });
+  const allowed = L.wa.join(', ').replace(/, ([^,]*)$/, ' und $1');
+  rounds.forEach(r => {
+    r.words = r.words.filter(e => {
+      const where = `Zeile ${e.line} („${e.wort}“)`;
+      if (!e.satz){ errors.push(`${where}: Es fehlt „- Satz: …“.`); return false; }
+      const wa = normWortart(e.wortart);
+      if (!wa){ errors.push(`${where}: Wortart „${e.wortart || ''}“ kenne ich nicht. Erlaubt in Labor ${lab}: ${allowed}.`); return false; }
+      if (wa[0] === '#' || !L.wa.includes(wa)){
+        const home = LAB_IDS.find(n => LABS[n].wa.includes(wa));
+        errors.push(`${where}: ${wa.replace('#', '')} gehört ${home ? 'in Labor ' + home : 'in ein späteres Labor'}. In Labor ${lab} gehen ${allowed}.`); return false;
+      }
+      if (wa === 'Verb' && !e.partizip && normKey(e.wortart).includes('partizip')) e.partizip = 'ja';
+      if (wa !== 'Verb') delete e.partizip;
+      e.wortart = wa;
+      const mm = e.satz.match(/^(.*?)\*\*(.+?)\*\*(.*)$/);
+      if (mm){ e.parts = [mm[1], mm[2], mm[3]]; e.wort = mm[2]; }
+      else {
+        const i = e.satz.indexOf(e.wort);
+        if (i < 0){ errors.push(`${where}: Das Wort steht nicht im Satz. Markiere es so: **${e.wort}**`); return false; }
+        e.parts = [e.satz.slice(0, i), e.wort, e.satz.slice(i + e.wort.length)];
+      }
+      const need = ((REQUIRED[lab] || {})[wa] || []).filter(f => !e[f]);
+      if (need.length){ errors.push(`${where}: In Labor ${lab} braucht ${wa === 'Präposition' || wa === 'Konjunktion' ? 'eine' : 'ein'} ${wa} die Zeile ${need.map(f => FIELD_HELP[f]).join(' und ')}.`); return false; }
+      if (!e.grundform){
+        if (wa === 'Nomen' && e.art){ const first = splitForms(e.art)[0] || ''; e.grundform = first.replace(/^(der|die|das)\s+/i, '').trim() || e.wort; }
+        else if (wa === 'Nomen' || wa === 'Verb' || wa === 'Adjektiv') e.grundform = e.wort;
+        else e.grundform = e.wort.toLowerCase();
+      }
+      e.round = r.title;
+      return true;
+    });
+  });
+  return { rounds: rounds.filter(r => r.words.length), errors };
+}
+
+/* ---------- Echte Formen und Fehlversuche ---------- */
+const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
+function verbStem(g){
+  const b = g.toLowerCase();
+  if (/(el|er)n$/.test(b)) return b.slice(0, -1);
+  if (b.endsWith('en')) return b.slice(0, -2);
+  if (b.endsWith('n')) return b.slice(0, -1);
+  return b;
+}
+function konjAttempt(g){
+  let b = g.toLowerCase();
+  if (b.endsWith('en')) b = b.slice(0, -2); else if (b.endsWith('e')) b = b.slice(0, -1);
+  const du = /[sßzx]$/.test(b) ? b + 't' : /[td]$/.test(b) ? b + 'est' : b + 'st';
+  const sie = /[td]$/.test(b) ? b + 'ete' : b + 'te';
+  return [`ich ${b}e`, `du ${du}`, `sie ${sie}`];
+}
+function kompAttempt(g, wortart){
+  const b = wortart === 'Verb' ? verbStem(g) : g.toLowerCase();
+  const core = b.replace(/e$/, '');
+  const comp = b.endsWith('e') ? b + 'r' : b + 'er';
+  const sup = 'am ' + core + (/(s|ß|sch|z|x|t|d)$/.test(core) ? 'esten' : 'sten');
+  return { base: g, items: [comp, sup] };
+}
+function flexAttempt(lw){
+  const b = lw.replace(/e$/, '');
+  return [`ich ${b}e`, `${b}er`, `des ${b}es`];
+}
+const LOWER_START = /^(Der|Die|Das|Den|Dem|Des|Ein|Eine|Einen|Einem|Er|Sie|Es|Ich|Wir|Ihr|Ihre|Seine|Sein|Da|Dann|Dort|Im|In|Am|An)\b/;
+function moveFront(e){
+  let rest = (e.parts[0] + e.parts[2]).replace(/\s+/g, ' ').trim();
+  rest = rest.replace(LOWER_START, m => m.toLowerCase());
+  return `${cap(e.wort.toLowerCase())} ${rest}`;
+}
+function sentenceOf(e){ return (e.parts[0] + e.parts[1] + e.parts[2]).replace(/\s+/g, ' ').trim(); }
+/* Partizip vor einem Nomen: Steigern und Deklinieren klappen, es bleibt aber eine Verbform (attributiver Gebrauch) */
+function isPartizipCase(entry, t){ return !entry.partizip && entry.wortart === 'Verb' && (t === 'komp' || t === 'dekl'); }
+function partizipStem(entry){
+  const p = String(entry.partizip || '').trim();
+  if (p && !/^(ja|x|true|1)$/i.test(p)) return p.toLowerCase();
+  return entry.wort.toLowerCase().replace(/(es|em|en|er|e)$/, '');
+}
+function stateOf(entry, t, truth){ return isPartizipCase(entry, t) ? 'partizip' : truth ? 'ja' : 'nein'; }
+function probe(entry, t){
+  if (isPartizipCase(entry, t)){
+    const given = entry[t], p = partizipStem(entry);
+    const parts = given ? splitForms(given) : [];
+    if (parts.length > 1) return { truth: true, base: parts[0], items: parts.slice(1), partizip: true };
+    if (t === 'komp') return { truth: true, base: p, partizip: true,
+      items: [p + 'er', 'am ' + p + (/(er|el)t$|end$/.test(p) ? 'sten' : /(s|ß|sch|z|x|t|d)$/.test(p) ? 'esten' : 'sten')] };
+    return { truth: true, base: entry.wort, items: [p + 'en', p + 'em'], partizip: true };
+  }
+  const truth = TRUTH[t](entry.wortart);
+  if (t === 'isol'){
+    const alone = entry.isol ? entry.isol.replace(/^\*+/, '') : cap(entry.wort.toLowerCase()) + '!';
+    return { truth, base: sentenceOf(entry), items: [alone] };
+  }
+  if (t === 'flex' && truth && !entry.flex){
+    const main = entry.konj ? 'konj' : entry.komp ? 'komp' : entry.dekl ? 'dekl' : entry.art ? 'art' : null;
+    if (main){ const p = probe(entry, main); return { truth, base: p.base, items: p.items, sep: TESTS[main].sep }; }
+  }
+  const given = entry[t === 'sgatt' ? 'sg' : t];
+  const lw = entry.wort.toLowerCase(), g = entry.grundform;
+  const pa = entry.wortart === 'Pronomen' || entry.wortart === 'Artikel';
+  if (t === 'kasus'){
+    if (given){
+      const parts = given.split(/\s*(?:→|->)\s*/).map(x => x.trim()).filter(Boolean);
+      let fall = null;
+      if (parts.length > 1 && /^(Nominativ|Genitiv|Dativ|Akkusativ)$/i.test(parts[parts.length - 1])) fall = cap(parts.pop().toLowerCase());
+      return parts.length > 1 ? { truth, base: parts[0], items: parts.slice(1), fall } : { truth, base: null, items: parts, fall };
+    }
+    return { truth, base: null, items: [`${lw} wem?`] };
+  }
+  if (t === 'fueg'){
+    if (given) return { truth, base: null, items: given.split(/\s*(?:·|\|)\s*/).map(x => x.trim()).filter(Boolean) };
+    const a = entry.parts[0].trim().replace(/[,;:]$/, ''), b = entry.parts[2].trim();
+    return { truth, base: null, items: [cap(a || '…') + (/[.!?]$/.test(a) ? '' : '.'), cap(b || '…')] };
+  }
+  if (t === 'sg' || t === 'sgatt'){
+    const items = [given ? given.replace(/^\*+/, '') : moveFront(entry)];
+    if (t === 'sgatt' && settings.attribut && entry.attribut) items.push(entry.attribut);
+    return { truth, base: null, items };
+  }
+  if (given){
+    const parts = splitForms(given);
+    if (TESTS[t].sep === '→' && parts.length > 1) return { truth, base: parts[0], items: parts.slice(1) };
+    return { truth, base: null, items: parts };
+  }
+  if (truth) return { truth, base: null, items: [entry.wort] };
+  if (t === 'flex') return { truth, base: null, items: flexAttempt(lw) };
+  if (t === 'konj') return { truth, base: null, items: konjAttempt(pa ? lw : g) };
+  if (t === 'komp') return Object.assign({ truth }, kompAttempt(pa ? lw : g, entry.wortart));
+  if (t === 'dekl'){ const core = lw.replace(/e$/, ''); return { truth, base: entry.wort, items: [core + 'es', core + 'em'] }; }
+  if (t === 'art') return { truth, base: null, items: pa ? [`ein ${lw}`, `der ${lw}`] : [`der ${g}`, `die ${g}`] };
+  return { truth, base: null, items: [`${entry.wort} …`] };
+}
+
+/* ---------- Spielstand ---------- */
+const DEMOS = {
+  1: { wort: 'König', parts: ['Es war einmal ein ', 'König', '.'], wortart: 'Nomen', grundform: 'König', art: 'der König · die Könige', round: 'Vorführung' },
+  2: { wort: 'er', parts: ['Da sah ', 'er', ' einen Frosch.'], wortart: 'Pronomen', grundform: 'er', round: 'Vorführung',
+       konj: 'ich ere · du erest · sie erte', komp: 'er → erer → am eresten', dekl: 'er → ihm → ihn', art: 'ein er · der er', sg: 'Er sah da einen Frosch.' },
+  3: { wort: 'dort', parts: ['Die Geißlein wohnten ', 'dort', ' im Wald.'], wortart: 'Adverb', grundform: 'dort', round: 'Vorführung',
+       sg: 'Dort wohnten die Geißlein im Wald.', attribut: 'das Haus dort' },
+  4: { wort: 'Oh', parts: ['„', 'Oh', ', wie schön!“, rief die Königin.'], wortart: 'Satzäquivalent', grundform: 'oh', round: 'Vorführung' },
+  5: { wort: 'Fee', parts: ['Oben wartete die dreizehnte ', 'Fee', '.'], wortart: 'Nomen', grundform: 'Fee', round: 'Vorführung',
+       art: 'die Fee · die Feen', dekl: 'die Fee → der Fee → den Feen' }
+};
+const S = {
+  lab: 1, labRounds: {}, labMD: {}, visited: {},
+  rounds: [], r: 0, i: 0, entry: null, tests: {}, phase: 'idle', result: null,
+  sortTries: 0, named: {}, counts: {}, album: {}, busy: false, demoStep: -1, sortedAs: null
+};
+LAB_IDS.forEach(n => { S.labRounds[n] = []; S.labMD[n] = ''; S.visited[n] = false; });
+WA_ALL.forEach(w => { S.named[w] = false; S.counts[w] = 0; });
+
+function labTests(){ return LABS[S.lab].tests; }
+function labWA(){ return LABS[S.lab].wa.filter(w => settings.enabled[w]); }
+function activeWords(r){
+  const round = S.rounds[r];
+  return round ? round.words.filter(w => settings.enabled[w.wortart]) : [];
+}
+function nextPlayableRound(from){
+  for (let k = from; k < S.rounds.length; k++) if (activeWords(k).length) return k;
+  return -1;
+}
+/* Voraussetzungen im Baum (im geführten Modus als Rolltor sichtbar) */
+function unlocked(t){
+  const T = S.tests, tests = labTests();
+  const hasFlex = tests.includes('flex');
+  if (hasFlex && LEFT_TESTS.includes(t) && T.flex !== 'ja') return false;
+  if (hasFlex && RIGHT_TESTS.includes(t) && T.flex !== 'nein') return false;
+  if (t === 'sg') return T.dekl === 'ja' && T.art === 'nein' && T.komp === 'nein';
+  if ((t === 'sgatt' || t === 'kasus' || t === 'fueg') && tests.includes('isol')) return T.isol === 'nein';
+  return true;
+}
+/* Im Abschlusslabor zeigt die Weiche nur die Maschinen der passenden Baumhälfte */
+function visibleTests(){
+  if (S.lab !== 5) return labTests();
+  if (S.tests.flex === 'ja') return ['flex'].concat(LEFT_TESTS);
+  if (S.tests.flex === 'nein') return ['flex'].concat(RIGHT_TESTS);
+  return ['flex'];
+}
+function reachedWortart(){
+  const T = S.tests;
+  if (T.konj === 'ja') return 'Verb';
+  if (T.komp === 'ja') return 'Adjektiv';
+  if (T.art === 'ja') return 'Nomen';
+  if (T.sg === 'ja') return 'Pronomen';
+  if (T.sg === 'nein') return 'Artikel';
+  if (T.sgatt === 'ja') return 'Adverb';
+  if (T.kasus === 'ja') return 'Präposition';
+  if (T.fueg === 'ja') return 'Konjunktion';
+  if (T.isol === 'ja') return 'Satzäquivalent';
+  if (T.sgatt === 'nein' && T.kasus === 'nein' && T.fueg === 'nein' && labTests().includes('isol')) return 'Partikel';
+  return null;
+}
+
+/* ---------- Voreinstellungen per Link (#labor-3.experte.mit-attribut) ---------- */
+function readPresets(){
+  const tokens = [];
+  try {
+    const h = (location.hash || '').replace(/^#/, '');
+    if (h) tokens.push(...h.split('.'));
+    new URLSearchParams(location.search).forEach((v, k) => tokens.push(v && v !== '1' ? `${k}-${v}` : k));
+  } catch (e) { /* ohne Voreinstellung weiter */ }
+  tokens.forEach(raw => {
+    const t = raw.toLowerCase();
+    let m;
+    if (t === 'experte') settings.expert = true;
+    else if (t === 'ohne-urteil') settings.kidJudge = false;
+    else if (t === 'ohne-vorfuehrung') settings.demo = false;
+    else if (t === 'ohne-geschichte') settings.story = false;
+    else if (t === 'mit-attribut') settings.attribut = true;
+    else if (t === 'ton') settings.sound = true;
+    else if ((m = t.match(/^labor-?(\d)$/)) && LABS[+m[1]]) settings.lab = +m[1];
+    else if ((m = t.match(/^runde-?(\d+)$/))) settings.startRound = Math.max(0, +m[1] - 1);
+    else if (t.startsWith('ohne-')){
+      const w = WA_ALL.find(x => normKey(x) === normKey(t.slice(5)));
+      if (w) settings.enabled[w] = false;
+    }
+  });
+}
+function presetString(){
+  const t = [];
+  if (S.lab !== 1) t.push('labor-' + S.lab);
+  if (settings.expert) t.push('experte');
+  if (!settings.kidJudge) t.push('ohne-urteil');
+  if (settings.attribut && S.lab >= 3) t.push('mit-attribut');
+  LABS[S.lab].wa.forEach(w => { if (!settings.enabled[w]) t.push('ohne-' + normKey(w)); });
+  if (!settings.demo) t.push('ohne-vorfuehrung');
+  if (!settings.story) t.push('ohne-geschichte');
+  if (settings.sound) t.push('ton');
+  if (S.r > 0) t.push('runde-' + (S.r + 1));
+  return t.length ? '#' + t.join('.') : '(Standard – kein Zusatz nötig)';
+}
+
+/* ---------- Hilfsfunktionen ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const qw = w => `<span class="w">„${esc(w)}“</span>`;
+const termOf = t => `<span class="term">${TESTS[t].term}</span>`;
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const reduceMotion = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function setBubble(html, mood){
+  $('#bubble').innerHTML = html;
+  paintCanvas($('#mascot'), machineSprite(mood || 'normal'));
+  fitStation();
+}
+/* Prüfband auf der Bühne: Passt der Inhalt nicht, wird die Schrift stufenweise kleiner (nie Scrollen). */
+const staged = () => document.documentElement.classList.contains('staged');
+function fitStation(){
+  const st = document.querySelector('.station');
+  if (!st) return;
+  ['--fs-sent', '--fs-bub', '--fs-res'].forEach(v => st.style.removeProperty(v));
+  if (!staged()) return;
+  const over = () => st.scrollHeight > st.clientHeight + 1;
+  const steps = [['--fs-sent', [1.95, 1.8, 1.65, 1.5, 1.35]], ['--fs-bub', [1, .94, .88]], ['--fs-res', [1.05, .96]]];
+  for (const [v, vals] of steps) for (const x of vals){ if (!over()) return; st.style.setProperty(v, x + 'rem'); }
+}
+/* Dezenter Phasenfokus: Der Bereich, in dem gerade etwas zu tun ist, wird hervorgehoben. */
+function updateFocus(){
+  const p = S.phase, set = (id, focus, calm) => { const el = document.getElementById(id); if (el){ el.classList.toggle('focus', !!focus); el.classList.toggle('calm', !!calm); } };
+  const live = ['pick', 'judge', 'sort', 'done', 'stuck'].includes(p) && !!S.entry;
+  set('bandPanel', live && (p === 'judge' || p === 'done' || p === 'stuck'), false);
+  set('machinePanel', live && p === 'pick', live && p !== 'pick');
+  set('cabinetPanel', live && p === 'sort', live && (p === 'pick' || p === 'judge'));
+}
+let toastTimer = null;
+function toast(text){
+  const t = $('#toast'); t.textContent = text; t.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 2400);
+}
+
+/* ---------- Kopfzeile ---------- */
+function renderHeader(){
+  const demo = S.phase === 'demo';
+  const round = S.rounds[S.r];
+  $('#floorLabel').textContent = `${LABS[S.lab].floor} · ${labName(S.lab)}`;
+  $('#keysHint').textContent = `Tasten 1–${visibleTests().length} · J / N · Enter`;
+  $('#maerchenTitle').textContent = demo ? 'Vorführung' : (round ? round.title : '');
+  const words = demo ? [] : activeWords(S.r);
+  $('#pips').innerHTML = words.map((w, k) => {
+    const done = k < S.i || (k === S.i && S.phase === 'done');
+    return `<i class="pip${done ? ' done' : k === S.i ? ' now' : ''}"></i>`;
+  }).join('');
+  $('#soundLbl').textContent = settings.sound ? 'Ton an' : 'Ton aus';
+  $('#soundBtn').setAttribute('aria-pressed', settings.sound ? 'true' : 'false');
+  paintCanvas($('#soundIco'), settings.sound ? SPR.speakerOn : SPR.speakerOff);
+  $('#modeTag').innerHTML = settings.expert ? '<span class="tag">Expertenmodus</span>' : '';
+}
+
+/* ---------- Satz mit Wortkarte ---------- */
+function renderSentence(){
+  const e = S.entry;
+  if (!e){ $('#sentence').innerHTML = ''; return; }
+  const cls = S.phase === 'done' && S.sortedAs ? ' ' + WA[S.sortedAs].cls : '';
+  $('#sentence').innerHTML = `${esc(e.parts[0])}<span class="wordcard${cls}" id="wordcard">${esc(e.parts[1])}</span>${esc(e.parts[2])}`;
+}
+
+/* ---------- Maschinen (je Labor einmal bauen, dann nur aktualisieren) ---------- */
+let builtFor = '';
+function buildMachines(force){
+  const tests = visibleTests();
+  const key = S.lab + ':' + tests.join(',') + ':' + settings.attribut;
+  if (!force && key === builtFor) return;
+  builtFor = key;
+  const box = $('#machines');
+  ['one', 'four', 'five', 'six'].forEach(c => box.classList.remove(c));
+  const cls = { 1: 'one', 4: 'four', 5: 'five', 6: 'six' }[tests.length];
+  if (cls) box.classList.add(cls);
+  /* Platz für die größte Maschinenzahl des Labors reservieren, damit nach der Weiche nichts springt */
+  const maxN = labTests().includes('flex') && labTests().length > 5 ? 1 + Math.max(LEFT_TESTS.length, RIGHT_TESTS.length) : labTests().length;
+  const rows = maxN <= 3 ? '1' : '2';
+  $('#bench').dataset.rows = rows; $('#machinePanel').dataset.rows = rows;
+  box.innerHTML = tests.map((t, k) => {
+    const T = TESTS[t];
+    return `<button class="machine" type="button" data-test="${t}" aria-label="${T.term}: ${frageOf(t)}">
+      <span class="mhead"><span class="key">${k + 1}</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="lamp" aria-hidden="true"></span></span>
+      <span class="mbody">
+        <span class="iconbox"><canvas class="icon" data-sprite="${T.sprite}" aria-hidden="true"></canvas>${t === 'art' ? '<span class="das" aria-hidden="true">das</span>' : ''}</span>
+        <span class="term">${T.term}</span>
+        <span class="question">${frageOf(t)}</span>
+        <span class="shutter" aria-hidden="true"></span>
+      </span>
+    </button>`;
+  }).join('');
+  paintAllIcons(box);
+}
+function machineLocked(t){ return !settings.expert && !unlocked(t); }
+function updateMachines(){
+  buildMachines();
+  visibleTests().forEach(t => {
+    const el = $(`.machine[data-test="${t}"]`);
+    if (!el) return;
+    const st = S.tests[t];
+    const locked = machineLocked(t);
+    const can = S.phase === 'pick' && !S.busy && !st && !locked;
+    const active = !!(S.result && S.result.t === t && !S.result.judged);
+    el.disabled = !can;
+    el.classList.toggle('locked', locked);
+    el.classList.toggle('active', active);
+    el.classList.toggle('waiting', !can && !st && !locked && !active);
+    const lamp = el.querySelector('.lamp');
+    lamp.className = 'lamp' + (st ? ' ' + st : '');
+    lamp.textContent = st === 'ja' ? '✓' : st === 'nein' ? '✗' : st === 'partizip' ? '!' : '';
+    const stText = st === 'partizip' ? 'klappt, aber das Wort ist eine Verbform (Partizip)' : st;
+    el.setAttribute('aria-label', `${TESTS[t].term}: ${frageOf(t)}` + (st ? ` Ergebnis: ${stText}.` : locked ? ' Noch geschlossen.' : ''));
+  });
+}
+
+/* ---------- Schubladen ---------- */
+function drawerHTML(w, can){
+  return `<button class="drawer ${WA[w].cls}${w.length > 10 ? ' long' : ''}" type="button" data-w="${w}" ${can ? '' : 'disabled'}>
+      <span class="handle" aria-hidden="true"></span><span>${{ 'Satzäquivalent': 'Satz&shy;äquivalent', 'Präposition': 'Präpo&shy;sition', 'Konjunktion': 'Kon&shy;junktion' }[w] || w}</span>
+      <span class="count">${S.counts[w]} ${S.counts[w] === 1 ? 'Wort' : 'Wörter'}</span></button>`;
+}
+function renderCabinet(){
+  const list = labWA();
+  const cab = $('#cabinet');
+  const ten = S.lab === 5;
+  cab.classList.toggle('ten', ten);
+  cab.classList.toggle('five', !ten && list.length > 3);
+  cab.style.gridTemplateColumns = ten || list.length > 3 ? '' : `repeat(${list.length}, minmax(0, 1fr))`;
+  cab.classList.toggle('active', S.phase === 'sort');
+  const can = S.phase === 'sort' && !S.busy;
+  if (ten){
+    const left = list.filter(w => FLEKTIERBAR.includes(w)), right = list.filter(w => !FLEKTIERBAR.includes(w));
+    cab.innerHTML = (left.length ? `<p class="cab-row">flektierbar</p>${left.map(w => drawerHTML(w, can)).join('')}` : '')
+      + (right.length ? `<p class="cab-row">nicht-flektierbar</p>${right.map(w => drawerHTML(w, can)).join('')}` : '');
+  } else cab.innerHTML = list.map(w => drawerHTML(w, can)).join('');
+}
+
+/* ---------- Ergebnis der Probe ---------- */
+function renderResult(){
+  const R = S.result, box = $('#result');
+  if (!R){ box.innerHTML = ''; return; }
+  const cls = R.judged ? (R.truth ? 'ok' : 'bad') : '';
+  let s = `<span class="mtag">${TESTS[R.t].term}?</span>`;
+  if (R.base) s += `<span class="form base">${esc(R.base)}</span><span class="sep">→</span>`;
+  R.items.forEach((it, k) => {
+    if (k) s += `<span class="sep">${R.sep || TESTS[R.t].sep}</span>`;
+    s += `<span class="form ${cls}">${R.judged && !R.truth ? '*' : ''}${esc(it)}</span>`;
+  });
+  if (R.judged && R.truth && R.fall) s += `<span class="sep">→</span><span class="form ok">${esc(R.fall)}</span>`;
+  box.innerHTML = s;
+}
+
+/* ---------- Aktionszeile ---------- */
+function renderActions(){
+  const a = $('#actions');
+  let s = '';
+  if (S.phase === 'pick') s = `<p class="hint-line">Tippe auf eine Maschine.</p>`;
+  else if (S.phase === 'judge') s = `<button class="btn big thumb yes" type="button" id="yesBtn"><canvas class="ico" data-sprite="thumb" aria-hidden="true"></canvas>Klappt <span class="kbd">J</span></button>
+      <button class="btn big thumb no" type="button" id="noBtn"><canvas class="ico" data-sprite="thumb" data-flip="1" aria-hidden="true"></canvas>Klappt nicht <span class="kbd">N</span></button>`;
+  else if (S.phase === 'sort') s = `<p class="hint-line">Tippe auf die passende Schublade.</p>`;
+  else if (S.phase === 'done'){
+    const last = S.i >= activeWords(S.r).length - 1;
+    s = `<button class="btn big primary" type="button" id="nextBtn">${last ? 'Märchen fertig' : 'Nächstes Wort'} ▶ <span class="kbd">Enter</span></button>`;
+  } else if (S.phase === 'stuck') s = `<button class="btn big primary" type="button" id="nextBtn">Wort überspringen ▶</button>`;
+  else if (S.phase === 'demo'){
+    const step = demoSteps()[S.demoStep];
+    s = `<button class="btn big" type="button" id="skipBtn">Überspringen</button>
+      <button class="btn big primary" type="button" id="demoNext" ${S.busy ? 'disabled' : ''}>${(step && step.btn) || 'Weiter'} ▶</button>`;
+  }
+  a.innerHTML = s;
+  paintAllIcons(a);
+}
+
+function render(){
+  renderHeader(); renderSentence(); updateMachines(); renderTree(); renderCabinet(); renderResult(); renderActions(); updateFocus(); fitStation();
+}
+
+/* ---------- Animationen ---------- */
+/* Auf der skalierten Bühne fliegt die Wortkarte in Bühnen-Koordinaten (Bildschirmmaß geteilt durch den Maßstab). */
+function stageFrame(){
+  const st = $('#stage');
+  if (!staged() || !st) return { host: document.body, x: 0, y: 0, s: 1 };
+  const r = st.getBoundingClientRect();
+  return { host: st, x: r.left, y: r.top, s: r.width / st.offsetWidth || 1 };
+}
+function flyer(from){
+  const F = stageFrame(), r = from.getBoundingClientRect();
+  const f = from.cloneNode(true);
+  f.removeAttribute('id'); f.classList.add('flyer');
+  Object.assign(f.style, { left: (r.left - F.x) / F.s + 'px', top: (r.top - F.y) / F.s + 'px', width: r.width / F.s + 'px', height: r.height / F.s + 'px', fontSize: getComputedStyle(from).fontSize });
+  F.host.appendChild(f);
+  return { f, r, s: F.s };
+}
+function centerDelta(r, el, s){
+  const b = el.getBoundingClientRect();
+  return [(b.left + b.width / 2 - (r.left + r.width / 2)) / (s || 1), (b.top + b.height / 2 - (r.top + r.height / 2)) / (s || 1)];
+}
+async function flyWord(t){
+  const card = $('#wordcard'), m = $(`.machine[data-test="${t}"]`), icon = m && m.querySelector('.iconbox');
+  const belt = $('#belt');
+  sfx.machine();
+  belt.classList.add('run');
+  if (!card || !icon || reduceMotion()){
+    if (m) m.classList.add('shake'); await wait(300); if (m) m.classList.remove('shake'); belt.classList.remove('run'); return;
+  }
+  const { f, r, s } = flyer(card);
+  card.classList.add('ghost');
+  const [dx, dy] = centerDelta(r, icon, s);
+  await f.animate([{ transform: 'translate(0,0) scale(1)' }, { transform: `translate(${dx}px,${dy}px) scale(.35)` }], { duration: 360, easing: 'steps(8, end)', fill: 'forwards' }).finished;
+  m.classList.add('shake'); await wait(300); m.classList.remove('shake');
+  await f.animate([{ transform: `translate(${dx}px,${dy}px) scale(.35)` }, { transform: 'translate(0,0) scale(1)' }], { duration: 320, easing: 'steps(8, end)', fill: 'forwards' }).finished;
+  f.remove(); card.classList.remove('ghost'); belt.classList.remove('run');
+}
+async function flyToDrawer(w){
+  const card = $('#wordcard'), d = $(`.drawer[data-w="${w}"]`);
+  sfx.drawer();
+  if (!card || !d || reduceMotion()) return;
+  const { f, r, s } = flyer(card);
+  const [dx, dy] = centerDelta(r, d, s);
+  await f.animate([{ transform: 'translate(0,0) scale(1)' }, { transform: `translate(${dx}px,${dy}px) scale(.4)`, opacity: .4 }], { duration: 420, easing: 'steps(8, end)', fill: 'forwards' }).finished;
+  f.remove();
+}
+function bump(sel, cls){
+  const el = $(sel); if (!el) return;
+  el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls);
+}
+
+/* ---------- Laborplan (Baum): zwei Hälften wie auf dem Arbeitsblatt ---------- */
+const HALF = {
+  left: {
+    nodes: {
+      root: { x: 330, y: 36,  label: ['flektierbar'], lab: 1, start: true },
+      konj: { x: 95,  y: 130, label: ['konjugierbar'], lab: 1 },
+      komp: { x: 255, y: 200, label: ['komparierbar'], lab: 1 },
+      dekl: { x: 440, y: 130, label: ['deklinierbar'], lab: 1 },
+      art:  { x: 350, y: 270, label: ['artikelfähig'], lab: 1 },
+      sg:   { x: 480, y: 330, label: ['kann SG sein'], lab: 2 },
+      nsg:  { x: 620, y: 395, label: ['kann nicht', 'SG sein'], lab: 2 }
+    },
+    leaves: { Verb: { x: 85, lab: 1 }, Adjektiv: { x: 225, lab: 1 }, Nomen: { x: 350, lab: 1 }, Pronomen: { x: 480, lab: 2 }, Artikel: { x: 625, lab: 2 } },
+    edges: [['root', 'konj'], ['root', 'komp'], ['root', 'dekl'], ['dekl', 'art'], ['dekl', 'sg'], ['dekl', 'nsg'],
+            ['konj', 'Verb'], ['komp', 'Adjektiv'], ['art', 'Nomen'], ['sg', 'Pronomen'], ['nsg', 'Artikel']]
+  },
+  right: {
+    nodes: {
+      root2:  { x: 330, y: 36,  label: ['nicht-flektierbar'], lab: 3 },
+      integ:  { x: 210, y: 125, label: ['syntaktisch', 'integriert'], lab: 3 },
+      isol:   { x: 560, y: 125, label: ['syntaktisch', 'isoliert'], lab: 4 },
+      sgatt:  { x: 93,  y: 240, label: ['kann SG oder', 'Attribut sein'], lab: 3 },
+      nsgatt: { x: 345, y: 240, label: ['kann nicht SG', 'oder Attribut sein'], lab: 3 },
+      kasus:  { x: 190, y: 350, label: ['Kasusforderung'], lab: 3 },
+      fueg:   { x: 355, y: 350, label: ['Fügteil'], lab: 3 }
+    },
+    leaves: { Adverb: { x: 50, w: 92, lab: 3 }, 'Präposition': { x: 185, w: 128, lab: 3 }, Konjunktion: { x: 340, w: 128, lab: 3 },
+              Partikel: { x: 470, w: 104, lab: 4 }, 'Satzäquivalent': { x: 615, w: 160, lab: 4 } },
+    /* dritter Wert: Startpunkt der Linie seitlich verschoben, damit Adverb- und Partikel-Ast frei an den Kästen vorbeilaufen */
+    edges: [['root2', 'integ'], ['root2', 'isol'], ['integ', 'sgatt'], ['integ', 'nsgatt'], ['nsgatt', 'kasus'], ['nsgatt', 'fueg'], ['nsgatt', 'Partikel', 95],
+            ['sgatt', 'Adverb', -43], ['kasus', 'Präposition'], ['fueg', 'Konjunktion'], ['isol', 'Satzäquivalent']]
+  }
+};
+const LEAF_Y = 460, LEAF_H = 46, LINE_H = 22;
+function nodeState(id, T){
+  switch (id){
+    case 'dekl': return T.dekl || (T.art === 'ja' ? 'ja' : '');
+    case 'nsg': return T.sg === 'nein' ? 'ja' : T.sg === 'ja' ? 'nein' : '';
+    case 'root2': return T.flex === 'nein' ? 'ja' : T.flex === 'ja' ? 'nein' : '';
+    case 'integ': return T.isol === 'nein' || (!T.isol && T.flex === 'nein') ? 'ja' : T.isol === 'ja' ? 'nein' : '';
+    case 'nsgatt': return T.sgatt === 'nein' ? 'ja' : T.sgatt === 'ja' ? 'nein' : '';
+    case 'root': return T.flex === 'ja' ? 'ja' : T.flex === 'nein' ? 'nein' : '';
+    default: return T[id] || '';
+  }
+}
+function leafEdgeState(parent, leaf, T){
+  if (leaf === 'Partikel'){
+    if (T.sgatt === 'nein' && T.kasus === 'nein' && T.fueg === 'nein') return 'ja';
+    return T.kasus === 'ja' || T.fueg === 'ja' || T.sgatt === 'ja' ? 'nein' : '';
+  }
+  return nodeState(parent, T);
+}
+function nodeBox(n){
+  const h = n.label.length * LINE_H + 16, w = Math.max(...n.label.map(l => l.length)) * 12 + 26;
+  return { w, h };
+}
+function halfSVG(name, opts){
+  const H = HALF[name], live = !!opts.live, all = !!opts.all, T = live ? S.tests : {};
+  const shown = lab => all || lab <= S.lab;
+  const leafOn = w => all || (H.leaves[w].lab <= S.lab && settings.enabled[w]);
+  const reached = live && (S.phase === 'sort' || S.phase === 'demo') && !S.sortedAs ? reachedWortart() : null;
+  const pt = id => {
+    if (H.nodes[id]){ const n = H.nodes[id], b = nodeBox(n); return { x: n.x, top: n.y - b.h / 2, bottom: n.y + b.h / 2, lab: n.lab }; }
+    const l = H.leaves[id]; return { x: l.x, top: LEAF_Y - LEAF_H / 2, bottom: LEAF_Y + LEAF_H / 2, lab: l.lab };
+  };
+  let s = '';
+  H.edges.forEach(([a, b, dx = 0]) => {
+    const A = pt(a), B = pt(b), isLeaf = !H.nodes[b];
+    if (isLeaf && !leafOn(b) && shown(B.lab)) return;
+    const x1 = A.x + dx, y1 = A.bottom, x2 = B.x, y2 = B.top;
+    if (!shown(B.lab)){ s += `<line class="future-edge" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`; return; }
+    const st = isLeaf ? leafEdgeState(a, b, T) : nodeState(b, T);
+    s += `<line class="edge ${st}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
+    if (st === 'ja'){
+      const n = Math.floor(Math.hypot(x2 - x1, y2 - y1) / 22);
+      for (let k = 1; k < n; k++){
+        const px = x1 + (x2 - x1) * k / n, py = y1 + (y2 - y1) * k / n;
+        s += `<rect class="pebble" x="${(px - 3.5).toFixed(1)}" y="${(py - 3.5).toFixed(1)}" width="7" height="7"/>`;
+      }
+    }
+  });
+  Object.keys(H.nodes).forEach(id => {
+    const n = H.nodes[id], b = nodeBox(n);
+    if (!shown(n.lab)){ s += `<rect class="future" x="${n.x - 8}" y="${n.y - 8}" width="16" height="16"/>`; return; }
+    const st = nodeState(id, T);
+    const text = n.label.map((l, k) => `<text x="${n.x}" y="${(n.y + 1 + (k - (n.label.length - 1) / 2) * LINE_H).toFixed(1)}">${l}</text>`).join('');
+    s += `<g class="node ${st} ${n.start ? 'root' : ''}"><rect x="${n.x - b.w / 2}" y="${n.y - b.h / 2}" width="${b.w}" height="${b.h}"/>${text}</g>`;
+  });
+  Object.keys(H.leaves).forEach(w => {
+    const l = H.leaves[w], lw = l.w || 108;
+    if (!shown(l.lab)){ s += `<rect class="future" x="${l.x - lw / 2 + 10}" y="${LEAF_Y - 20}" width="${lw - 20}" height="40"/>`; return; }
+    if (!leafOn(w)) return;
+    const named = S.named[w] && !settings.expert;
+    s += `<g class="leaf ${named ? WA[w].cls : ''} ${reached === w ? 'reached' : ''}">
+      <rect class="box" x="${l.x - lw / 2}" y="${LEAF_Y - LEAF_H / 2}" width="${lw}" height="${LEAF_H}"/>
+      <rect class="handle" x="${l.x - 14}" y="${LEAF_Y + 11}" width="28" height="6"/>
+      <text x="${l.x}" y="${LEAF_Y - 5}"${named && w.length > 8 ? ' class="small"' : ''}>${named ? w : '?'}</text></g>`;
+  });
+  return s;
+}
+let treeView = null, treeAnim = 0;
+function setViewBox(svg, target){
+  const from = treeView || target;
+  treeView = target;
+  cancelAnimationFrame(treeAnim);
+  if (reduceMotion() || from.join() === target.join()){ svg.setAttribute('viewBox', target.join(' ')); return; }
+  const t0 = performance.now();
+  const step = now => {
+    const k = Math.min(1, (now - t0) / 350), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    svg.setAttribute('viewBox', from.map((v, i) => (v + (target[i] - v) * e).toFixed(1)).join(' '));
+    if (k < 1) treeAnim = requestAnimationFrame(step);
+  };
+  treeAnim = requestAnimationFrame(step);
+}
+function renderTree(){
+  const half = LABS[S.lab].half;
+  const svg = $('#tree');
+  if (half === 'both'){
+    svg.innerHTML = `<g>${halfSVG('left', { live: true })}</g><g transform="translate(730 0)">${halfSVG('right', { live: true })}</g>`;
+    const f = S.tests.flex;
+    setViewBox(svg, f === 'ja' ? [0, 0, 700, 500] : f === 'nein' ? [730, 0, 700, 500] : [0, 0, 1430, 500]);
+    svg.setAttribute('aria-label', 'Laborplan: ganzer Bestimmungsbaum');
+    return;
+  }
+  treeView = [0, 0, 700, 500];
+  svg.setAttribute('viewBox', '0 0 700 500');
+  svg.innerHTML = halfSVG(half, { live: true });
+  svg.setAttribute('aria-label', `Laborplan: Bestimmungsbaum für ${half === 'left' ? 'flektierbare' : 'nicht-flektierbare'} Wörter`);
+}
+function showFullPlan(){
+  const half = LABS[S.lab].half, leftLive = half === 'left' || half === 'both', rightLive = half === 'right' || half === 'both';
+  openDialog('Ganzer Laborplan', `<div class="tree-wrap plan-full"><svg class="treesvg" viewBox="0 0 1430 500" role="img" aria-label="Ganzer Bestimmungsbaum">
+      <g>${halfSVG('left', { all: true, live: leftLive })}</g>
+      <g transform="translate(730 0)">${halfSVG('right', { all: true, live: rightLive })}</g></svg></div>
+    <p class="plan-note">So sieht der ganze Bestimmungsbaum aus. Die Schilder füllen sich, sobald ihr eine Schublade das erste Mal richtig gefüllt habt.</p>
+    <div class="dialog-actions"><span></span><div class="right"><button class="btn big primary" type="button" data-act="close">Schließen</button></div></div>`, { wide: true, closable: true });
+}
+
+/* ---------- Ablauf eines Wortes ---------- */
+function loadWord(intro){
+  const words = activeWords(S.r);
+  if (S.i >= words.length){ roundComplete(); return; }
+  S.entry = words[S.i]; S.tests = {}; S.result = null; S.sortTries = 0; S.sortedAs = null;
+  S.phase = 'pick'; S.busy = false;
+  render();
+  const prev = S.i > 0 ? words[S.i - 1] : null;
+  S.twin = prev && prev.wort.toLowerCase() === S.entry.wort.toLowerCase() ? prev : null;
+  const twinNote = S.twin ? ` <b>Achtung, Zwilling!</b> ${qw(S.twin.wort)} war gerade ${WA[S.twin.wortart].ein} ${S.twin.wortart}. Prüfe genau – der Satz entscheidet.` : '';
+  setBubble((intro ? intro + ' ' : '') + `Neues Wort: ${qw(S.entry.wort)}.` + (twinNote || ' Schick es in eine Maschine!'), S.twin ? 'think' : 'normal');
+}
+function startRound(r){
+  let k = nextPlayableRound(Math.max(0, r || 0));
+  if (k < 0) k = nextPlayableRound(0);
+  if (k < 0){
+    S.phase = 'idle'; S.entry = null; render();
+    setBubble('Für diese Einstellung gibt es keine Wörter. Schalte im Lehrkraft-Bereich eine Wortart ein.', 'think');
+    return;
+  }
+  S.r = k; S.i = 0;
+  loadWord(`Märchen: <b>${esc(S.rounds[k].title)}</b>.`);
+}
+function lockMessage(t){
+  const T = S.tests;
+  if (labTests().includes('flex') && !T.flex && (LEFT_TESTS.includes(t) || RIGHT_TESTS.includes(t))) return `Noch nicht! Erst kommt die Formfrage: Ist das Wort ${termOf('flex')}?`;
+  if (t === 'sg') return `Noch nicht! Erst muss klar sein: ${termOf('dekl')} ja, ${termOf('art')} nein und ${termOf('komp')} nein.`;
+  if ((t === 'sgatt' || t === 'kasus' || t === 'fueg') && labTests().includes('isol')) return `Noch nicht! Erst kommt die Frage: Ist das Wort ${termOf('isol')}?`;
+  return 'Diese Maschine ist noch nicht dran.';
+}
+async function runTest(t){
+  if (S.phase !== 'pick' || S.busy || S.tests[t] || !visibleTests().includes(t)) return;
+  if (!unlocked(t)){
+    if (settings.expert){ bump(`.machine[data-test="${t}"]`, 'shake'); setBubble(lockMessage(t), 'think'); }
+    return;
+  }
+  S.busy = true; updateMachines(); renderActions();
+  await flyWord(t);
+  const p = probe(S.entry, t);
+  S.result = { t, truth: p.truth, base: p.base, items: p.items, fall: p.fall, sep: p.sep, partizip: !p.partizip, judged: false };
+  S.busy = false;
+  if (settings.kidJudge){
+    S.phase = 'judge';
+    render();
+    setBubble(`Die Maschine ${termOf(t)} hat es ausprobiert. Klappt das? Entscheide du!`, 'normal');
+  } else commitTest(null);
+}
+function judge(yes){
+  if (S.phase !== 'judge' || S.busy || !S.result) return;
+  commitTest(yes === S.result.truth);
+}
+function commitTest(kidCorrect){
+  const R = S.result, t = R.t, w = qw(S.entry.wort), first = esc(R.items[0] || '');
+  const lockedBefore = labTests().filter(x => !unlocked(x));
+  R.judged = true;
+  S.tests[t] = stateOf(S.entry, t, R.truth);
+  if (R.truth) sfx.ja(); else sfx.nein();
+  if (R.partizip){
+    /* Partizip vor dem Nomen: Die Form lässt sich bilden – es bleibt aber eine Verbform. */
+    const g = qw(S.entry.grundform || S.entry.wort);
+    let pm = kidCorrect === true ? 'Genau, das klappt! ' : kidCorrect === false ? `Doch, das klappt: „${first}“. ` : 'Das klappt! ';
+    const again = Object.keys(S.tests).some(k => k !== t && S.tests[k] === 'partizip');
+    pm += again
+      ? `Auch hier gilt: ${w} ist ein Partizip, eine Verbform. Prüfe jetzt mit der Maschine ${termOf('konj')}!`
+      : `Aber Achtung: ${w} ist eine Verbform, ein Partizip von ${g}. Hier wird es attributiv gebraucht: `
+        + `Es beschreibt ein Nomen näher, ähnlich wie ein Adjektiv. Prüfe jetzt mit der Maschine ${termOf('konj')}, ob es ein Verb ist!`;
+    S.phase = 'pick';
+    render(); setBubble(pm, 'think');
+    return;
+  }
+  const fact = R.truth ? saysYes(t, w, R) : saysNo(t, w);
+  let msg;
+  if (kidCorrect === true) msg = (R.truth ? 'Genau, das klappt! ' : 'Genau, so geht das nicht. ') + fact;
+  else if (kidCorrect === false) msg = (R.truth ? `Doch, das klappt: „${first}“. ` : `Schau genau: „${first}“ – so geht das nicht. `) + fact;
+  else msg = (R.truth ? 'Das klappt! ' : 'Das klappt nicht. ') + fact;
+  let mood = kidCorrect === false ? 'think' : 'happy';
+  const wa = reachedWortart();
+  if (!wa && S.lab === 5 && t === 'flex' && R.truth){
+    S.phase = 'pick';
+    msg += ' Die Weiche stellt um: Jetzt kommen die Maschinen für flektierbare Wörter.';
+    setTimeout(sfx.shutter, 150);
+    render(); bump('#machines', 'switched'); setBubble(msg, mood);
+    return;
+  }
+  if (wa){
+    S.phase = 'sort';
+    msg += S.named[wa] && !settings.expert ? ' Ab in die passende Schublade!' : ' ' + WA[wa].frage();
+  } else {
+    S.phase = 'pick';
+    const opened = lockedBefore.filter(x => unlocked(x));
+    if (S.lab === 5 && t === 'flex'){
+      msg += ` Die Weiche stellt um: Jetzt kommen die Maschinen für ${R.truth ? '' : 'nicht-'}flektierbare Wörter.`;
+      setTimeout(sfx.shutter, 150);
+      render(); bump('#machines', 'switched'); setBubble(msg, mood);
+      return;
+    }
+    const open = labTests().filter(x => !S.tests[x] && unlocked(x));
+    if (opened.length){
+      if (opened.length > 1) msg += settings.expert ? ' Jetzt sind die anderen Maschinen dran.' : ' Jetzt öffnen sich die anderen Maschinen!';
+      else msg += settings.expert ? ` Jetzt ist die Maschine ${termOf(opened[0])} dran.` : ` Jetzt öffnet sich die Maschine ${termOf(opened[0])}!`;
+      if (!settings.expert) setTimeout(sfx.shutter, 150);
+    } else if (!open.length){
+      S.phase = 'stuck'; mood = 'think';
+      msg += ' Keine Maschine führt weiter. Dieses Wort gehört wohl in ein späteres Labor.';
+    } else if (t === 'dekl' && R.truth){
+      const next = ['art', 'komp'].filter(x => open.includes(x));
+      msg += next.length ? ` Prüfe jetzt ${next.map(termOf).join(' und ')}.` : ' Probier eine andere Maschine.';
+    } else if (t === 'dekl' && open.includes('konj')){
+      msg += ` Dann probier ${termOf('konj')}.`;
+    } else msg += ' Probier eine andere Maschine.';
+  }
+  render();
+  setBubble(msg, mood);
+}
+async function sortInto(w, auto){
+  if (S.phase !== 'sort' || (S.busy && !auto)) return;
+  const e = S.entry, info = WA[e.wortart];
+  if (w !== e.wortart){
+    S.sortTries++;
+    bump(`.drawer[data-w="${w}"]`, 'wrong'); sfx.nein();
+    if (S.sortTries === 1){ setBubble(`Fast! ${qw(e.wort)} ${info.prop()}. ${info.hilfe}`, 'think'); return; }
+    S.busy = true; renderCabinet();
+    setBubble(`Komm, ich zeig's dir: ${info.merksatz}`, 'think');
+    await wait(1500);
+    return sortInto(e.wortart, true);
+  }
+  S.busy = true; renderCabinet();
+  await flyToDrawer(w);
+  S.counts[w]++;
+  const newly = !S.named[w] && !settings.expert;
+  if (newly) S.named[w] = true;
+  S.sortedAs = w; S.phase = 'done'; S.busy = false;
+  render(); bump(`.drawer[data-w="${w}"]`, 'bump');
+  let msg = (auto ? 'So: ' : 'Richtig! ') + `${qw(e.wort)} ist ${WA[w].ein} ${w}.`;
+  if (newly) msg += ` Neues Schild im Laborplan: <b>${w}</b>.`;
+  if (S.twin && S.twin.wortart !== w) msg += ` Gleiches Wort, andere Wortart als eben: Der Satz entscheidet!`;
+  if (e.hinweis) msg += `<br><b>Übrigens:</b> ${esc(e.hinweis)}`;
+  setBubble(msg, auto ? 'normal' : 'happy');
+}
+function nextWord(){
+  if (S.phase !== 'done' && S.phase !== 'stuck') return;
+  S.i++; loadWord();
+}
+
+/* ---------- Dialoge ---------- */
+let dialogClosable = true, storyOpen = false;
+function openDialog(title, html, opts){
+  opts = opts || {};
+  $('#dlgTitle').textContent = title;
+  $('#dlgBody').innerHTML = html;
+  $('#dialog').classList.toggle('wide', !opts.wide);
+  $('#overlay').hidden = false;
+  dialogClosable = !opts.closable;
+  paintAllIcons($('#dlgBody'));
+  const first = $('#dlgBody').querySelector('.btn.primary') || $('#dlgBody').querySelector('button');
+  if (first) first.focus({ preventScroll: true });
+}
+function closeDialog(){
+  $('#overlay').hidden = true; $('#dlgBody').innerHTML = ''; storyOpen = false;
+}
+
+/* ---------- Geschichte ---------- */
+const STORY = [
+  { scene: 'turm', html: 'Im Märchenturm steht die Märchenmaschine. Jeden Abend erzählt sie ein Märchen.' },
+  { scene: 'fee', html: 'Doch die dreizehnte Fee war nicht eingeladen. Vor Wut wirbelte sie alle Wörter durcheinander.' },
+  { scene: 'chaos', html: '<span class="say">„Es war … einmal … ein … schön?“</span>Hilf mir! Prüfe jedes Wort und bring es in die richtige Schublade.' }
+];
+const FAIRY_INTRO = [
+  { scene: 'turmspitze', html: 'Ganz oben in der Turmspitze wartet jemand: die dreizehnte Fee.' },
+  { scene: 'turmspitze', html: '<span class="say">„Ihr habt alle Schubladen repariert? Dann besteht meine Probe!“</span>Sie hat Wortzwillinge versteckt: gleiche Wörter, andere Wortart.' }
+];
+const FINALE = [
+  { scene: 'fest', html: 'Alle zehn Schubladen sind wieder voll. Die Märchenmaschine erzählt wieder jeden Abend ein Märchen.' },
+  { scene: 'fest', html: 'Und die dreizehnte Fee? Die ist diesmal eingeladen. Sie sitzt in der ersten Reihe.' },
+  { plan: true, html: 'Ihr seid jetzt Meisterinnen und Meister der Wortarten! So sieht euer fertiger Laborplan aus.', last: 'Zum Album' }
+];
+let storyStep = 0, afterStory = null, storyPages = STORY, storyTitle = 'Die Märchenmaschine';
+function showStory(then, pages, title){ afterStory = then || null; storyPages = pages || STORY; storyTitle = title || 'Die Märchenmaschine'; storyStep = 0; storyRender(); }
+function storyRender(){
+  const st = storyPages[storyStep], last = storyStep === storyPages.length - 1;
+  const visual = st.plan
+    ? `<div class="tree-wrap plan-full"><svg class="treesvg" viewBox="0 0 1430 500" role="img" aria-label="Fertiger Bestimmungsbaum"><g>${halfSVG('left', { all: true })}</g><g transform="translate(730 0)">${halfSVG('right', { all: true })}</g></svg></div>`
+    : '<canvas class="scene" id="sceneCv" aria-hidden="true"></canvas>';
+  openDialog(storyTitle, `${visual}
+    <p class="story-text">${st.html}</p>
+    <div class="dialog-actions"><button class="btn" type="button" data-act="storySkip">Überspringen</button>
+      <div class="right"><button class="btn big primary" type="button" data-act="storyNext">${last ? (st.last || 'Ins Labor') : 'Weiter'} ▶</button></div></div>`, { wide: !st.plan });
+  storyOpen = true;
+  if (!st.plan) drawScene($('#sceneCv'), st.scene);
+}
+function storyEnd(){ closeDialog(); const f = afterStory; afterStory = null; if (f) f(); }
+
+/* ---------- Vorführung je Labor (überspringbar) ---------- */
+async function demoProbe(t){
+  S.busy = true; renderActions();
+  await flyWord(t);
+  const p = probe(DEMOS[S.lab], t);
+  S.result = { t, truth: p.truth, base: p.base, items: p.items, fall: p.fall, sep: p.sep, judged: false };
+  S.busy = false; renderResult(); updateMachines(); renderActions();
+}
+function demoCommit(t){
+  S.result.judged = true; S.tests[t] = stateOf(DEMOS[S.lab], t, S.result.truth);
+  if (S.result.truth) sfx.ja(); else sfx.nein();
+  render();
+}
+async function demoSort(w, text){
+  S.busy = true; renderActions();
+  setBubble(text, 'happy');
+  await wait(500); await flyToDrawer(w);
+  S.counts[w]++; S.named[w] = true; S.sortedAs = w; S.busy = false;
+  render(); bump(`.drawer[data-w="${w}"]`, 'bump');
+}
+const thumbNote = yes => settings.kidJudge ? ` Du tippst dann auf <b>${yes ? 'Klappt' : 'Klappt nicht'}</b>.` : '';
+const DEMO_STEPS = {
+  1: [
+    { run: async () => setBubble('Hier im Erdgeschoss klemmen drei Schubladen. Drei Prüfmaschinen helfen dir. Ich zeige dir mit dem Wort „König“, wie es geht.', 'happy') },
+    { run: async () => { setBubble(`Erste Frage an die Maschine ${termOf('konj')}: ${TESTS.konj.frage}`); await demoProbe('konj'); } },
+    { run: async () => { demoCommit('konj'); setBubble(`„ich könige“? Das gibt es nicht.${thumbNote(false)} Also: nicht ${termOf('konj')}.`, 'think'); } },
+    { run: async () => { setBubble(`Zweite Frage an die Maschine ${termOf('komp')}: ${TESTS.komp.frage}`); await demoProbe('komp'); } },
+    { run: async () => { demoCommit('komp'); setBubble(`„königer“? Gibt es auch nicht. Also: nicht ${termOf('komp')}.`, 'think'); } },
+    { run: async () => { setBubble(`Dritte Frage an die Maschine ${termOf('art')}: ${TESTS.art.frage}`); await demoProbe('art'); } },
+    { run: async () => { demoCommit('art'); setBubble(`„der König, die Könige“ – das klappt!${thumbNote(true)} „König“ ist ${termOf('art')}. Im Laborplan leuchtet jetzt der Weg.`, 'happy'); } },
+    { run: async () => demoSort('Nomen', 'Wörter, vor die ein Artikel passt, sind Nomen. Ab in die Schublade!') },
+    { btn: 'Los geht’s', run: async () => setBubble(settings.kidJudge
+        ? 'Jetzt bist du dran! Bei jeder Probe entscheidest du selbst: Klappt das – oder klappt es nicht?'
+        : 'Jetzt bist du dran! Wähle die Maschinen und sortiere die Wörter in die Schubladen.', 'happy') }
+  ],
+  2: [
+    { run: async () => setBubble(`Willkommen im 1. Stock! Hier klemmen zwei neue Schubladen. Dafür gibt es zwei neue Maschinen: ${termOf('dekl')} und ${termOf('sg')}.`, 'happy') },
+    { run: async () => { setBubble(`Unser Wort ist „er“. Neue Frage an die Maschine ${termOf('dekl')}: ${TESTS.dekl.frage}`); await demoProbe('dekl'); } },
+    { run: async () => { demoCommit('dekl'); setBubble(`„er, ihm, ihn“ – das klappt! „er“ ist ${termOf('dekl')}. Auf diesem Ast geht es weiter.`, 'happy'); } },
+    { run: async () => { setBubble(`Passt ein Artikel davor? Das prüft die Maschine ${termOf('art')}.`); await demoProbe('art'); } },
+    { run: async () => { demoCommit('art'); setBubble(`„der er“? So geht das nicht. „er“ ist kein Nomen.`, 'think'); } },
+    { run: async () => { setBubble(`Und steigern? Das prüft die Maschine ${termOf('komp')}.`); await demoProbe('komp'); } },
+    { run: async () => { demoCommit('komp'); setTimeout(sfx.shutter, 150); setBubble(`„erer“? Gibt es nicht. Jetzt öffnet sich die Maschine ${termOf('sg')}!`, 'think'); } },
+    { run: async () => { setBubble(`Neue Frage: ${TESTS.sg.frage} Die Maschine stellt das Wort ganz nach vorn.`); await demoProbe('sg'); } },
+    { run: async () => { demoCommit('sg'); setBubble(`„Er sah da einen Frosch.“ – das klappt!${thumbNote(true)} „er“ kann allein vor dem Verb stehen. Es ist ein Satzglied.`, 'happy'); } },
+    { run: async () => demoSort('Pronomen', 'Deklinierbare Wörter, die allein vor dem Verb stehen können, sind Pronomen. Ab in die Schublade!') },
+    { btn: 'Los geht’s', run: async () => setBubble('Und wenn ein deklinierbares Wort <b>nicht</b> allein vor dem Verb stehen kann, ist es ein Artikel. Jetzt bist du dran!', 'happy') }
+  ],
+  3: [
+    { run: async () => setBubble('Willkommen im 2. Stock! Hier wohnen Wörter, die sich nie verändern. Dafür gibt es vier neue Maschinen.', 'happy') },
+    { run: async () => { setBubble(`Unser Wort ist „dort“. Die erste Frage ist immer: ${TESTS.flex.frage} Das prüft die Maschine ${termOf('flex')}.`); await demoProbe('flex'); } },
+    { run: async () => { demoCommit('flex'); setTimeout(sfx.shutter, 150); setBubble(`„ich dorte, dorter, des dortes“? So geht das nicht.${thumbNote(false)} „dort“ ist nicht ${termOf('flex')}. Jetzt öffnen sich die anderen Maschinen!`, 'think'); } },
+    { run: async () => { setBubble(`Nächste Frage: ${frageOf('sgatt')} Die Maschine stellt das Wort ganz nach vorn.`); await demoProbe('sgatt'); } },
+    { run: async () => { demoCommit('sgatt'); setBubble(`„Dort wohnten die Geißlein im Wald.“ – das klappt!${thumbNote(true)} „dort“ kann allein vor dem Verb stehen.`, 'happy'); } },
+    { run: async () => demoSort('Adverb', 'Wörter, die sich nie verändern und allein vor dem Verb stehen können, sind Adverbien. Ab in die Schublade!') },
+    { btn: 'Los geht’s', run: async () => setBubble(`Kann ein Wort nicht allein vor dem Verb stehen, helfen ${termOf('kasus')} (für Präpositionen) und ${termOf('fueg')} (für Konjunktionen). Jetzt bist du dran!`, 'happy') }
+  ],
+  4: [
+    { run: async () => setBubble(`Willkommen auf dem Dachboden! Hier klemmen die letzten zwei Schubladen. Neu ist die Maschine ${termOf('isol')}.`, 'happy') },
+    { run: async () => { setBubble(`Unser Wort ist „Oh“. Zuerst die Formfrage: ${TESTS.flex.frage}`); await demoProbe('flex'); } },
+    { run: async () => { demoCommit('flex'); setTimeout(sfx.shutter, 150); setBubble(`„ich ohe, oher, des ohes“? So geht das nicht.${thumbNote(false)} „Oh“ ist nicht ${termOf('flex')}.`, 'think'); } },
+    { run: async () => { setBubble(`Neue Frage: ${TESTS.isol.frage}`); await demoProbe('isol'); } },
+    { run: async () => { demoCommit('isol'); setBubble(`„Oh!“ – das klappt!${thumbNote(true)} „Oh“ kann ganz allein stehen.`, 'happy'); } },
+    { run: async () => demoSort('Satzäquivalent', 'Wörter, die ganz allein eine Äußerung sein können, sind Satzäquivalente. Ab in die Schublade!') },
+    { btn: 'Los geht’s', run: async () => setBubble(`Kann ein Wort nicht allein stehen, prüfst du die drei Maschinen aus dem 2. Stock. Sagt keine davon ja, ist es eine Partikel. Jetzt bist du dran!`, 'happy') }
+  ],
+  5: [
+    { run: async () => setBubble('Hier oben gibt es alle zehn Schubladen. Damit es nicht zu viele Maschinen werden, gibt es eine Weiche.', 'happy') },
+    { run: async () => { setBubble(`Unser Wort ist „Fee“. Die Weiche fragt zuerst: ${TESTS.flex.frage}`); await demoProbe('flex'); } },
+    { run: async () => { demoCommit('flex'); bump('#machines', 'switched'); setTimeout(sfx.shutter, 150); setBubble(`„die Fee, der Fee, den Feen“ – das klappt! „Fee“ ist ${termOf('flex')}. Die Weiche stellt um: Jetzt siehst du die Maschinen für flektierbare Wörter.`, 'happy'); } },
+    { run: async () => { setBubble(`Passt ein Artikel davor? Das prüft die Maschine ${termOf('art')}.`); await demoProbe('art'); } },
+    { run: async () => { demoCommit('art'); setBubble(`„die Fee, die Feen“ – das klappt! „Fee“ ist ${termOf('art')}.`, 'happy'); } },
+    { run: async () => demoSort('Nomen', 'Also ein Nomen. Ab in die Schublade!') },
+    { btn: 'Los geht’s', run: async () => setBubble('Achtung: Die Fee hat Wortzwillinge versteckt. Gleiches Wort, andere Wortart. Der Satz entscheidet! Jetzt bist du dran.', 'happy') }
+  ]
+};
+function demoSteps(){ return DEMO_STEPS[S.lab] || []; }
+let demoReturn = null, demoStartRound = 0;
+function runDemo(returnTo, startRoundIdx){
+  demoReturn = returnTo || null; demoStartRound = startRoundIdx || 0;
+  S.phase = 'demo'; S.entry = DEMOS[S.lab]; S.tests = {}; S.result = null; S.sortedAs = null; S.busy = false; S.demoStep = 0;
+  render(); demoSteps()[0].run();
+}
+async function demoAdvance(){
+  if (S.phase !== 'demo' || S.busy) return;
+  S.demoStep++;
+  if (S.demoStep >= demoSteps().length){ endDemo(); return; }
+  renderActions();
+  await demoSteps()[S.demoStep].run();
+  renderActions();
+}
+function endDemo(){
+  if (S.phase !== 'demo') return;
+  S.demoStep = -1;
+  if (demoReturn){ S.r = demoReturn.r; S.i = demoReturn.i; demoReturn = null; loadWord(); }
+  else startRound(demoStartRound);
+}
+
+/* ---------- Laborwechsel ---------- */
+function switchLab(n, roundIdx){
+  if (!LABS[n]) return;
+  S.lab = n; settings.lab = n;
+  S.rounds = S.labRounds[n]; S.r = 0; S.i = 0;
+  S.entry = DEMOS[n]; S.tests = {}; S.result = null; S.sortedAs = null; S.phase = 'idle'; S.busy = false;
+  buildMachines(); render();
+  const first = !S.visited[n];
+  S.visited[n] = true;
+  const go = () => { if (settings.demo && first) runDemo(null, roundIdx || 0); else startRound(roundIdx || 0); };
+  if (n === 5 && first && settings.story) showStory(go, FAIRY_INTRO, 'Die Turmspitze');
+  else go();
+}
+
+/* ---------- Rundenende, Album, Laborende ---------- */
+const albumKey = (lab, title) => lab + ':' + title;
+function roundComplete(){
+  const round = S.rounds[S.r], words = activeWords(S.r);
+  S.phase = 'idle'; render();
+  setBubble(`Ich kann wieder erzählen: <b>${esc(round.title)}</b>!`, 'happy');
+  const legend = labWA().map(w => `<mark class="${WA[w].cls}">${w}</mark>`).join(' ');
+  openDialog('Ich kann wieder erzählen!', `<p class="big-title">${esc(round.title)}</p>
+    <div class="retell">${words.map(w => `<p>${esc(w.parts[0])}<mark class="${WA[w.wortart].cls}">${esc(w.parts[1])}</mark>${esc(w.parts[2])}</p>`).join('')}</div>
+    <div class="retell legend-box"><p>${legend}</p></div>
+    <div class="reveal"><canvas data-sprite="${round.sticker}" aria-hidden="true"></canvas><p>Dafür bekommst du einen Sticker für dein Album.</p></div>
+    <div class="dialog-actions"><span></span><div class="right"><button class="btn big primary" type="button" data-act="stick">Sticker ins Album ▶</button></div></div>`, { wide: true });
+}
+function showAlbum(newKey, fromRound){
+  const floors = LAB_IDS.map(n => {
+    const slots = S.labRounds[n].map(r => {
+      const key = albumKey(n, r.title), has = !S.album[key];
+      return `<div class="slot${has ? ' filled' : ''}${key === newKey ? ' new' : ''}">${has ? `<canvas data-sprite="${r.sticker}" aria-hidden="true"></canvas>` : '<span class="empty" aria-hidden="true">?</span>'}<span>${esc(r.title)}</span></div>`;
+    }).join('');
+    return `<div class="album-floor"><h3>${LABS[n].floor} · ${labName(n)}</h3><div class="slots">${slots}</div></div>`;
+  }).join('');
+  const later = LATER_FLOORS.map(([f, n]) => `<p class="floor-locked">${f} · Labor ${n} – kommt bald</p>`).join('');
+  let actions = '<button class="btn big primary" type="button" data-act="close">Schließen</button>';
+  if (fromRound){
+    const n = nextPlayableRound(S.r + 1);
+    actions = n >= 0
+      ? `<button class="btn big primary" type="button" data-act="nextRound" data-r="${n}">Weiter mit: ${esc(S.rounds[n].title)} ▶</button>`
+      : `<button class="btn big primary" type="button" data-act="laborDone">Weiter ▶</button>`;
+  }
+  openDialog('Stickeralbum', `<div class="album-grid">${floors}</div>${later ? `<div class="album-floor">${later}</div>` : ''}
+    <div class="dialog-actions"><span></span><div class="right">${actions}</div></div>`, { wide: true, closable: !fromRound });
+}
+function laborDone(){
+  const nextLab = LABS[S.lab + 1] ? S.lab + 1 : null;
+  const text = {
+    1: 'Das Erdgeschoss ist repariert! Alle drei Schubladen funktionieren wieder. Im 1. Stock klemmen noch zwei Schubladen.',
+    2: 'Der 1. Stock ist repariert! Jetzt funktionieren fünf Schubladen. Im 2. Stock warten Wörter, die sich nie verändern.',
+    3: 'Der 2. Stock ist repariert! Jetzt funktionieren acht Schubladen. Auf dem Dachboden klemmen noch zwei.',
+    4: 'Der Dachboden ist repariert! Alle zehn Schubladen funktionieren. Doch oben in der Turmspitze wartet noch jemand …'
+  }[S.lab];
+  if (S.lab === 5){ closeDialog(); showStory(() => showAlbum(null, false), FINALE, 'Das große Fest'); return; }
+  const main = nextLab
+    ? `<button class="btn big" type="button" data-act="again">Noch einmal spielen</button><button class="btn big primary" type="button" data-act="gotoLab" data-lab="${nextLab}">${{ 2: 'Auf in den 1. Stock', 3: 'Auf in den 2. Stock', 4: 'Hinauf auf den Dachboden', 5: 'Hinauf in die Turmspitze' }[nextLab]} ▶</button>`
+    : `<button class="btn big primary" type="button" data-act="again">Noch einmal spielen ▶</button>`;
+  openDialog(`${LABS[S.lab].floor} repariert!`, `<canvas class="scene" id="sceneCv" aria-hidden="true"></canvas>
+    <p class="story-text">${text}</p>
+    <div class="dialog-actions"><button class="btn big" type="button" data-act="album">Album ansehen</button>
+      <div class="right">${main}</div></div>`);
+  drawScene($('#sceneCv'), 'fertig');
+}
+
+/* ---------- Lehrkraft-Bereich ---------- */
+let teacherTab = 'set', mdDraft = null;
+const ORIGINAL_MD = { 1: '', 2: '', 3: '', 4: '', 5: '' };
+const MD_EXAMPLE = {
+  1: `
+
+# Eigene Wörter
+
+## Zwerge
+- Satz: Am Abend kamen die **Zwerge** nach Hause.
+- Wortart: Nomen
+- artikelfähig: der Zwerg · die Zwerge`,
+  2: `
+
+# Eigene Wörter
+
+## uns
+- Satz: Die Zwerge halfen **uns** gern.
+- Wortart: Pronomen
+- deklinierbar: wir → uns → uns
+- Satzglied: Uns halfen die Zwerge gern.`,
+  3: `
+
+# Eigene Wörter
+
+## bei
+- Satz: Die Geißlein blieben **bei** ihrer Mutter.
+- Wortart: Präposition
+- Kasusforderung: bei wem? → bei ihrer Mutter → Dativ`,
+  4: `
+
+# Eigene Wörter
+
+## Huch
+- Satz: „**Huch**, ein Frosch!“, rief die Königstochter.
+- Wortart: Satzäquivalent`,
+  5: `
+
+# Eigene Wortzwillinge
+
+## dort
+- Satz: Die Hexe wohnte **dort** im Wald.
+- Wortart: Adverb
+- Satzglied: Dort wohnte die Hexe im Wald.`
+};
+
+const GUIDE_HTML = `<div class="guide-text">
+  <h3>So läuft eine Probe</h3>
+  <ol><li>Ein Kind schickt das markierte Wort in eine Maschine (antippen oder Taste 1–6).</li>
+  <li>Die Maschine zeigt, was sie probiert hat. Die Klasse urteilt mit dem Daumen: Klappt das?</li>
+  <li>Die Lampe bestätigt oder korrigiert. Der Laborplan zeigt den Weg durch den Baum.</li>
+  <li>Am Blatt angekommen, tippt das Kind die passende Schublade an. Beim ersten richtigen Mal bekommt das Blatt sein Schild – wie die Lücken auf dem Arbeitsblatt.</li></ol>
+  <h3>Die Etagen</h3>
+  <ul><li><b>Erdgeschoss:</b> Verb, Adjektiv, Nomen</li><li><b>1. Stock:</b> dazu Pronomen und Artikel</li>
+  <li><b>2. Stock:</b> Adverb, Präposition, Konjunktion</li><li><b>Dachboden:</b> Partikel und Satzäquivalent</li>
+  <li><b>Turmspitze:</b> alle zehn Wortarten mit Weiche, Wortzwillingen und Meisterprüfung</li></ul>
+  <h3>Hilfen</h3>
+  <p>Beim ersten falschen Einsortieren gibt die Maschine einen Hinweis, beim zweiten zeigt sie den Weg. Geschlossene Maschinen (Rolltor) öffnen sich, sobald der Baum sie erlaubt.</p>
+  <h3>Im Unterricht</h3>
+  <p>Das Labor passt sich jedem Bildschirm an und muss nie gescrollt werden, auf dem Tablet quer und hochkant. Am Smartboard macht „Vollbild“ (oben rechts) alles größer. Der Bereich, in dem gerade etwas zu tun ist, ist rosa umrandet.</p>
+  <p>Am Smartboard wird das Daumen-Urteil zur Klassenabstimmung. Für Tablets stellst du hier unter „Einstellungen“ einen Code ein und hängst ihn an den Link, z. B. #labor-3.experte. Eigene Wörter trägst du in der Werkstatt ein (gilt für die Sitzung) oder dauerhaft in der Datei.</p>
+  <h3>Konventionen</h3>
+  <p>Partizipien zählen als Verben, auch wenn sie attributiv gebraucht werden (ähnlich wie ein Adjektiv vor einem Nomen). Steigern und Deklinieren klappen dann zwar, die Maschine erklärt aber die Verbform und schickt zum Konjugator. In der Wortliste aktiviert das die Zeile <b>- Partizip:</b> (z. B. verzaubert). Eigennamen zählen als Nomen, Possessivpronomen als Pronomen.</p>
+  <h3>Datenschutz</h3>
+  <p>Das Labor speichert nichts und fragt keine Namen ab. Schubladen und Album gelten nur, solange die Seite geöffnet ist.</p></div>`;
+function openTeacher(){ mdDraft = null; renderTeacher(); }
+function renderTeacher(){
+  const tab = (id, label) => `<button class="btn tab" type="button" role="tab" aria-selected="${teacherTab === id}" data-act="tab" data-tab="${id}">${label}</button>`;
+  let body;
+  if (teacherTab === 'set'){
+    const preset = presetString(), hasPreset = preset[0] === '#';
+    const labOpts = LAB_IDS.map(n => `<option value="${n}"${n === S.lab ? ' selected' : ''}>Labor ${n} · ${LABS[n].floor}</option>`).join('')
+      + LATER_FLOORS.map(([f, n]) => `<option disabled>Labor ${n} · ${f} (in Arbeit)</option>`).join('');
+    body = `
+    <div class="setting"><span class="lbl">Labor<small>Ein Wechsel startet das Labor von vorn.</small></span>
+      <select class="sel" id="selLabor" aria-label="Labor">${labOpts}</select></div>
+    <div class="setting"><span class="lbl">Märchen-Runde</span>
+      <span class="preset"><select class="sel" id="selRound" aria-label="Märchen-Runde">${S.rounds.map((r, k) => `<option value="${k}"${k === S.r ? ' selected' : ''}>${esc(r.title)} (${activeWords(k).length} Wörter)</option>`).join('')}</select>
+      <button class="btn" type="button" data-act="startRound">Starten</button></span></div>
+    <div class="setting"><label for="swJudge">Kinder entscheiden selbst<small>Daumen hoch oder runter, danach bestätigt die Maschine.</small></label>
+      <input class="switch" type="checkbox" id="swJudge" data-set="kidJudge"${settings.kidJudge ? ' checked' : ''}></div>
+    <div class="setting"><label for="swExpert">Expertenmodus<small>Alle Maschinen sind sofort da, die Schilder im Laborplan bleiben leer.</small></label>
+      <input class="switch" type="checkbox" id="swExpert" data-set="expert"${settings.expert ? ' checked' : ''}></div>
+    ${S.lab >= 3 ? `<div class="setting"><label for="swAttr">Attribut mitprüfen<small>Die Maschine fragt zusätzlich: Kann das Wort ein Nomen näher beschreiben (das Haus dort)?</small></label>
+      <input class="switch" type="checkbox" id="swAttr" data-set="attribut"${settings.attribut ? ' checked' : ''}></div>` : ''}
+    <div class="setting"><label for="swSound">Ton</label>
+      <input class="switch" type="checkbox" id="swSound" data-set="sound"${settings.sound ? ' checked' : ''}></div>
+    <div class="setting"><span class="lbl">Geprüfte Wortarten<small>Eine Änderung startet die Runde neu.</small></span>
+      <span class="checks">${LABS[S.lab].wa.map(w => `<label class="check ${WA[w].cls}"><input type="checkbox" id="chk${w}" data-wa="${w}"${settings.enabled[w] ? ' checked' : ''}>${w}</label>`).join('')}</span></div>
+    <div class="setting"><span class="lbl">Noch einmal zeigen</span>
+      <span class="preset"><button class="btn" type="button" data-act="showStory">Geschichte</button><button class="btn" type="button" data-act="showDemo">Vorführung</button></span></div>
+    <div class="setting"><span class="lbl">Voreinstellung für Tablets<small>An den Link oder Dateinamen anhängen, dann startet das Labor mit diesen Einstellungen.</small></span>
+      <span class="preset"><code id="presetCode">${esc(preset)}</code><button class="btn" type="button" data-act="copyPreset"${hasPreset ? '' : ' disabled'}>Kopieren</button></span></div>
+    <div class="setting"><span class="lbl">Zurücksetzen<small>Leert Schubladen, Schilder und Album.</small></span>
+      <button class="btn" type="button" data-act="resetAll">Zurücksetzen</button></div>`;
+  } else if (teacherTab === 'md'){
+    const val = mdDraft != null ? mdDraft : S.labMD[S.lab];
+    const need = S.lab === 5 ? ' Im Abschlusslabor gelten die Pflichtzeilen aus Labor 2 und 3. Zwei gleiche Wörter direkt hintereinander zeigt das Spiel als Wortzwillinge an.' : S.lab === 4 ? ' In Labor 4 genügen Satz und Wortart. Bei Satzäquivalenten kannst du mit <b>- isoliert:</b> die Kurzform angeben, z. B. Huch!' : S.lab >= 3 ? ' In Labor 3 brauchen Adverbien eine Zeile <b>- Satzglied:</b> (Wort allein vor dem Verb), Präpositionen <b>- Kasusforderung:</b> (z. B. mit wem? → mit dem Wolf → Dativ) und Konjunktionen <b>- Fügteil:</b> (die zwei getrennten Teile, verbunden mit ·).' : S.lab >= 2 ? ' In Labor 2 brauchen Nomen, Adjektive, Pronomen und Artikel eine Zeile <b>- deklinierbar:</b>, Pronomen und Artikel zusätzlich <b>- Satzglied:</b> mit der Umstellprobe. Possessivpronomen (mein, dein, ihr …) zählen als Pronomen; gib bei ihnen den Satz ohne Nomen an, z. B. „Ihre schüttelte das Mädchen.“' : '';
+    body = `<div class="werkstatt">
+      <p>Hier änderst oder ergänzt du die Wörter von <b>Labor ${S.lab}</b> für diese Sitzung. Ein Märchen beginnt mit <b>#</b>, jedes Wort mit <b>##</b>. Markiere das Prüfwort im Satz mit <b>**Sternchen**</b>.${need} Dauerhaft speicherst du eine Liste im Abschnitt „wortliste-${S.lab}“ der HTML-Datei.</p>
+      <textarea id="mdText" spellcheck="false" aria-label="Wortliste im Markdown-Format">${esc(val)}</textarea>
+      <div class="preset"><button class="btn primary" type="button" data-act="mdApply">Liste übernehmen</button>
+        <button class="btn" type="button" data-act="mdExample">Beispiel anhängen</button>
+        <button class="btn" type="button" data-act="mdRestore">Originalliste</button></div>
+      <div id="mdMsg" aria-live="polite"></div></div>`;
+  }
+  if (teacherTab === 'help') body = GUIDE_HTML;
+  openDialog('Lehrkraft-Bereich', `<div class="tabs" role="tablist">${tab('set', 'Einstellungen')}${tab('md', 'Werkstatt')}${tab('help', 'Anleitung')}</div>
+    <div>${body}</div>
+    <div class="dialog-actions"><span></span><div class="right"><button class="btn big primary" type="button" data-act="close">Fertig</button></div></div>`, { wide: true, closable: true });
+}
+function refreshPreset(){
+  const c = $('#presetCode'); if (!c) return;
+  const p = presetString(); c.textContent = p;
+  const b = $('[data-act="copyPreset"]'); if (b) b.disabled = p[0] !== '#';
+}
+function mdMessage(ok, text, list){
+  const box = $('#mdMsg'); if (!box) return;
+  box.innerHTML = `<p class="msg ${ok ? 'ok' : 'err'}">${esc(text)}${list && list.length ? '<ul>' + list.map(x => `<li>${esc(x)}</li>`).join('') + '</ul>' : ''}</p>`;
+}
+function applyMD(text, label){
+  const { rounds, errors } = parseMD(text, S.lab);
+  if (!rounds.length){ mdMessage(false, 'Ich habe keine gültigen Wörter gefunden.', errors); return; }
+  S.labRounds[S.lab] = rounds; S.rounds = rounds; S.labMD[S.lab] = text; mdDraft = null;
+  const n = rounds.reduce((a, r) => a + r.words.length, 0);
+  mdMessage(true, `${label || 'Übernommen'}: ${rounds.length} Märchen mit ${n} Wörtern.${errors.length ? ' Diese Einträge habe ich übersprungen:' : ''}`, errors);
+  if (S.phase !== 'demo') startRound(0);
+}
+
+/* ---------- Ereignisse in Dialogen ---------- */
+function onDialogClick(e){
+  const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
+  const act = b.dataset.act;
+  if (act === 'storyNext'){ if (storyStep >= STORY.length - 1) storyEnd(); else { storyStep++; storyRender(); } }
+  else if (act === 'storySkip') storyEnd();
+  else if (act === 'stick'){ const key = albumKey(S.lab, S.rounds[S.r].title); S.album[key] = true; sfx.sticker(); showAlbum(key, true); }
+  else if (act === 'nextRound'){ closeDialog(); startRound(+b.dataset.r); }
+  else if (act === 'laborDone') laborDone();
+  else if (act === 'album') showAlbum(null, false);
+  else if (act === 'again'){ closeDialog(); startRound(0); }
+  else if (act === 'gotoLab'){ closeDialog(); switchLab(+b.dataset.lab, 0); }
+  else if (act === 'close') closeDialog();
+  else if (act === 'tab'){ if (teacherTab === 'md'){ const ta = $('#mdText'); if (ta) mdDraft = ta.value; } teacherTab = b.dataset.tab; renderTeacher(); }
+  else if (act === 'startRound'){ const k = +$('#selRound').value; closeDialog(); if (S.phase === 'demo'){ S.phase = 'idle'; demoReturn = null; } startRound(k); }
+  else if (act === 'showStory'){ closeDialog(); showStory(null); }
+  else if (act === 'showDemo'){ closeDialog(); if (S.phase !== 'demo') runDemo({ r: S.r, i: S.i }); }
+  else if (act === 'copyPreset'){
+    const code = $('#presetCode'), text = code.textContent;
+    try { navigator.clipboard.writeText(text).then(() => toast('Kopiert: ' + text)).catch(() => selectText(code)); }
+    catch (err) { selectText(code); }
+  }
+  else if (act === 'resetAll'){
+    if (!b.dataset.confirm){ b.dataset.confirm = '1'; b.textContent = 'Wirklich zurücksetzen?'; return; }
+    WA_ALL.forEach(w => { S.counts[w] = 0; S.named[w] = false; });
+    S.album = {}; closeDialog(); toast('Schubladen, Schilder und Album sind leer.');
+    if (S.phase === 'demo'){ S.phase = 'idle'; demoReturn = null; }
+    startRound(S.r);
+  }
+  else if (act === 'mdApply') applyMD($('#mdText').value);
+  else if (act === 'mdExample'){ const ta = $('#mdText'); ta.value = ta.value.replace(/\s+$/, '') + MD_EXAMPLE[S.lab] + '\n'; mdDraft = ta.value; ta.focus(); ta.scrollTop = ta.scrollHeight; }
+  else if (act === 'mdRestore'){ $('#mdText').value = ORIGINAL_MD[S.lab]; applyMD(ORIGINAL_MD[S.lab], 'Originalliste wiederhergestellt'); }
+}
+function selectText(el){
+  try { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('Markiert – jetzt kopieren'); } catch (e) { /* nichts */ }
+}
+function onDialogChange(e){
+  const el = e.target;
+  if (el.id === 'selLabor'){ const n = +el.value; closeDialog(); if (n !== S.lab){ demoReturn = null; switchLab(n, 0); } return; }
+  if (el.dataset.set){
+    const key = el.dataset.set;
+    settings[key] = el.checked;
+    if (key === 'kidJudge' && !settings.kidJudge && S.phase === 'judge') commitTest(null);
+    if (key === 'sound' && settings.sound) sfx.ja();
+    if (key === 'attribut'){ buildMachines(); if (S.result && !S.result.judged && S.result.t === 'sgatt'){ const p = probe(S.entry, 'sgatt'); S.result.items = p.items; } }
+    render(); refreshPreset();
+  } else if (el.dataset.wa){
+    settings.enabled[el.dataset.wa] = el.checked;
+    if (!LABS[S.lab].wa.some(w => settings.enabled[w])){
+      settings.enabled[el.dataset.wa] = true; el.checked = true;
+      toast('Mindestens eine Wortart bleibt an.'); return;
+    }
+    refreshPreset();
+    if (S.phase === 'demo') render(); else startRound(S.r);
+  }
+}
+
+/* ---------- Bedienung ---------- */
+function bindEvents(){
+  $('#machines').addEventListener('click', e => { const m = e.target.closest('.machine'); if (m && !m.disabled) runTest(m.dataset.test); });
+  $('#cabinet').addEventListener('click', e => { const d = e.target.closest('.drawer'); if (d && !d.disabled) sortInto(d.dataset.w); });
+  $('#actions').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b || b.disabled) return;
+    if (b.id === 'yesBtn') judge(true);
+    else if (b.id === 'noBtn') judge(false);
+    else if (b.id === 'nextBtn') nextWord();
+    else if (b.id === 'demoNext') demoAdvance();
+    else if (b.id === 'skipBtn') endDemo();
+  });
+  $('#dlgBody').addEventListener('click', onDialogClick);
+  $('#dlgBody').addEventListener('change', onDialogChange);
+  $('#dlgBody').addEventListener('input', e => { if (e.target.id === 'mdText') mdDraft = e.target.value; });
+  $('#overlay').addEventListener('click', e => { if (e.target.id === 'overlay' && dialogClosable) closeDialog(); });
+  $('#albumBtn').addEventListener('click', () => showAlbum(null, false));
+  $('#planBtn').addEventListener('click', showFullPlan);
+  $('#soundBtn').addEventListener('click', () => { settings.sound = !settings.sound; renderHeader(); if (settings.sound) sfx.ja(); });
+  $('#fsBtn').addEventListener('click', toggleFullscreen);
+  ['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, () => { renderFsBtn(); fitStage(); }));
+  let fitTimer = null;
+  const refit = () => { clearTimeout(fitTimer); fitTimer = setTimeout(fitStage, 60); };
+  window.addEventListener('resize', refit);
+  window.addEventListener('orientationchange', refit);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', refit);
+
+  // Lehrkraft-Bereich: 2 Sekunden gedrückt halten
+  const gear = $('#gearBtn');
+  let holdTimer = null;
+  const start = e => {
+    if (e && e.type === 'keydown'){ if ((e.key !== 'Enter' && e.key !== ' ') || e.repeat) return; e.preventDefault(); }
+    if (holdTimer) return;
+    gear.classList.add('holding');
+    holdTimer = setTimeout(() => { holdTimer = null; gear.classList.remove('holding'); openTeacher(); }, 2000);
+  };
+  const stop = () => {
+    if (!holdTimer) return;
+    clearTimeout(holdTimer); holdTimer = null; gear.classList.remove('holding');
+    toast('Lehrkraft-Bereich: Zahnrad 2 Sekunden gedrückt halten');
+  };
+  gear.addEventListener('pointerdown', e => { e.preventDefault(); start(); });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => gear.addEventListener(ev, stop));
+  gear.addEventListener('keydown', start);
+  gear.addEventListener('keyup', e => { if (e.key === 'Enter' || e.key === ' ') stop(); });
+  gear.addEventListener('contextmenu', e => e.preventDefault());
+  gear.addEventListener('click', e => e.preventDefault());
+
+  document.addEventListener('keydown', e => {
+    const tag = (e.target.tagName || '').toLowerCase();
+    const open = !$('#overlay').hidden;
+    if (e.key === 'Escape' && open){
+      if (storyOpen) storyEnd(); else if (dialogClosable) closeDialog();
+      return;
+    }
+    if (open || tag === 'textarea' || tag === 'input' || tag === 'select' || e.target === gear) return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const k = e.key.toLowerCase();
+    if (/^[1-9]$/.test(k)){ const t = visibleTests()[+k - 1]; if (t) runTest(t); }
+    else if (k === 'j' || k === 'y') judge(true);
+    else if (k === 'n') judge(false);
+    else if (k === 'enter'){
+      if (tag === 'button') return;
+      if (S.phase === 'done' || S.phase === 'stuck'){ e.preventDefault(); nextWord(); }
+      else if (S.phase === 'demo'){ e.preventDefault(); demoAdvance(); }
+    }
+  });
+}
+
+/* ---------- Bühne: ganzes Labor ohne Scrollen, quer oder hoch ---------- */
+const STAGE = { land: [1280, 800], port: [800, 1140] };
+function fitStage(){
+  const html = document.documentElement, st = $('#stage');
+  const vw = window.innerWidth, vh = window.innerHeight;
+  const port = vw / vh < 0.9;
+  const [W, H] = port ? STAGE.port : STAGE.land;
+  const s = Math.min(vw / W, vh / H);
+  const ok = s >= 0.6;   // sehr kleine Bildschirme (Handy): normale Seite mit Scrollen
+  html.classList.toggle('staged', ok); html.classList.toggle('port', ok && port); html.classList.toggle('land', ok && !port);
+  if (!ok){ st.style.transform = ''; st.style.left = ''; st.style.top = ''; fitStation(); return; }
+  st.style.transform = `scale(${s.toFixed(4)})`;
+  st.style.left = Math.max(0, Math.round((vw - W * s) / 2)) + 'px';
+  st.style.top = Math.max(0, Math.round((vh - H * s) / 2)) + 'px';
+  fitStation();
+}
+/* Vollbild (am Smartboard gewinnt das die Browserleiste) */
+const fsElement = () => document.fullscreenElement || document.webkitFullscreenElement || null;
+const fsAllowed = () => !(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+function renderFsBtn(){
+  const b = $('#fsBtn'); if (!b) return;
+  b.hidden = !fsAllowed();
+  const on = !fsElement();
+  $('#fsLbl').textContent = on ? 'Vollbild aus' : 'Vollbild';
+  b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  paintCanvas($('#fsIco'), on ? SPR.fullscreenExit : SPR.fullscreen);
+}
+function toggleFullscreen(){
+  const d = document.documentElement;
+  const fail = () => toast('Vollbild ist hier nicht möglich. Öffne die Datei direkt im Browser.');
+  try {
+    if (fsElement()){ (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
+    const req = d.requestFullscreen || d.webkitRequestFullscreen;
+    if (!req) return fail();
+    const p = req.call(d);
+    if (p && p.catch) p.catch(fail);
+  } catch (e) { fail(); }
+}
+
+/* ---------- Start ---------- */
+function boot(data){
+  LAB_IDS.forEach(n => {
+    const src = document.getElementById(LABS[n].md);
+    ORIGINAL_MD[n] = src ? src.textContent.trim() : '';
+  });
+  readPresets();
+  const saved = data && data.state;
+  if (saved && saved.settings){
+    Object.assign(settings, saved.settings, { enabled: Object.assign({}, settings.enabled, saved.settings.enabled || {}) });
+  }
+  LAB_IDS.forEach(n => {
+    S.labMD[n] = (saved && saved.md && saved.md[n]) || ORIGINAL_MD[n];
+    S.labRounds[n] = parseMD(S.labMD[n], n).rounds;
+  });
+  S.lab = LABS[settings.lab] ? settings.lab : 1;
+  S.rounds = S.labRounds[S.lab];
+  paintCanvas($('#brandIcon'), machineSprite('happy'));
+  paintAllIcons(document);
+  renderFsBtn();
+  fitStage();
+  buildMachines();
+  bindEvents();
+
+  // WissOS 2.0 Integration Hook
+  if (window.WissOS) {
+    if (typeof WissOS.onVolumeChanged === 'function') {
+      WissOS.onVolumeChanged(function(muted) {
+        settings.sound = !muted;
+        renderHeader();
+      });
+    }
+  }
+
+  if (saved && S.rounds.length){
+    Object.assign(S.counts, saved.counts || {}); Object.assign(S.named, saved.named || {}); Object.assign(S.album, saved.album || {});
+    Object.assign(S.visited, saved.visited || {});
+    S.r = Math.min(saved.r || 0, S.rounds.length - 1); S.i = saved.i || 0;
+    if (S.i >= activeWords(S.r).length) S.i = 0;
+    loadWord();
+    return;
+  }
+  S.entry = DEMOS[S.lab]; S.phase = 'idle'; render();
+  setBubble('Hallo! Ich bin die Märchenmaschine.', 'stutter');
+  const go = () => { S.visited[S.lab] = true; if (settings.demo) runDemo(null, settings.startRound); else startRound(settings.startRound); };
+  if (settings.story) showStory(go); else go();
+}
+try {
+  if (window.claude && window.claude.hot && window.claude.hot.snapshot){
+    window.claude.hot.snapshot(() => ({ state: { r: S.r, i: S.i, counts: S.counts, named: S.named, album: S.album, visited: S.visited, md: S.labMD, settings: Object.assign(JSON.parse(JSON.stringify(settings)), { lab: S.lab }) } }));
+  }
+} catch (e) { /* ohne Zwischenstand */ }
+if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(boot);
+else boot((window.claude && window.claude.hot && window.claude.hot.data) || {});
+</script>
+</body>
+</html>

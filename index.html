@@ -130,12 +130,21 @@
             'http://localhost:8000',
           '</a>',
         '</div>',
-        '<p style="font-size:12px;color:#555;margin:0;">',
+        '<p style="font-size:12px;color:#888;margin:0;">',
           'Dieser Hinweis erscheint nur bei direktem Öffnen der Datei.',
-        '</p>'
+        '</p>',
+        '<button id="dismiss-protocol-warning" style="margin-top:8px;background:#7DFFC2;color:#000;border:3px solid #000;padding:10px 22px;font-family:\'Courier New\',monospace;font-size:15px;font-weight:bold;cursor:pointer;box-shadow:4px 4px 0 #FFE66D;">',
+          '▶ Trotzdem fortfahren (Offline-Modus)',
+        '</button>'
       ].join('');
 
       document.body.appendChild(overlay);
+      var btn = overlay.querySelector('#dismiss-protocol-warning');
+      if (btn) {
+        btn.addEventListener('click', function() {
+          overlay.remove();
+        });
+      }
     })();
   </script>
 

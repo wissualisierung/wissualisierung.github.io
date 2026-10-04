@@ -75,6 +75,17 @@ WissOS.ICONS = {
     <rect x="36" y="34" width="8" height="6" fill="#EAE6FF" stroke="#000" stroke-width="2.5" transform="rotate(45 36 34)"/>
   </svg>`,
 
+  flask: `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="18" y="2" width="12" height="6" fill="#D9A066" stroke="#000" stroke-width="3"/>
+    <polygon points="20,8 28,8 28,20 42,42 6,42 20,20" fill="#E6F4FF" stroke="#000" stroke-width="3"/>
+    <polygon points="14,30 34,30 41,41 7,41" fill="#7DFFC2"/>
+    <rect x="18" y="33" width="3" height="3" fill="#000"/>
+    <rect x="27" y="33" width="3" height="3" fill="#000"/>
+    <rect x="21" y="37" width="6" height="2" fill="#000"/>
+    <rect x="24" y="22" width="3" height="3" fill="#FFFFFF" stroke="#000" stroke-width="1"/>
+    <rect x="30" y="14" width="3" height="3" fill="#FF6B9D" stroke="#000" stroke-width="1"/>
+  </svg>`,
+
   book: `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect x="8" y="6" width="32" height="36" fill="#FF6B9D" stroke="#000" stroke-width="3"/>
     <rect x="12" y="6" width="28" height="36" fill="#FFF" stroke="#000" stroke-width="3"/>
@@ -335,7 +346,7 @@ WissOS.launchProgram = function (prog) {
     WissOS.WindowManager.createWindow({
       title: prog.osName || prog.name,
       icon: prog.icon,
-      content: `<iframe src="${prog.url}" style="width:100%;height:100%;border:none;background:#fff;" title="${prog.name}"></iframe>`,
+      content: `<iframe src="${prog.url}" style="width:100%;height:100%;border:none;background:#fff;" title="${prog.name}" allow="fullscreen"></iframe>`,
       width: prog.width || 920,
       height: prog.height || 680,
       url: prog.url

@@ -200,6 +200,33 @@ window.WissOS._configData = {
       "height": 680,
       "showOnDesktop": true,
       "desktopPosition": { "col": 2, "row": 3 }
+    },
+    {
+      "id": "wortartenlabor",
+      "name": "Wortarten-Labor",
+      "osName": "Wortarten-Labor",
+      "description": "Wortarten durch Proben bestimmen",
+      "icon": "flask",
+      "category": "Werkzeuge",
+      "url": "PROGRAMME/Wortartenlabor/index.html",
+      "openInWindow": true,
+      "width": 1280,
+      "height": 820,
+      "showOnDesktop": true,
+      "desktopPosition": { "col": 2, "row": 2 }
+    },
+    {
+      "id": "wortartenlabor-backup",
+      "name": "Wortarten-Labor (Alt / Backup)",
+      "osName": "Wortarten-Labor V1",
+      "description": "Klassische Version des Wortartenlabors (Backup)",
+      "icon": "flask",
+      "category": "Werkzeuge",
+      "url": "PROGRAMME/Wortartenlabor_backup/index.html",
+      "openInWindow": true,
+      "width": 1150,
+      "height": 760,
+      "showOnDesktop": false
     }
   ],
   "systemPrograms": [
@@ -246,7 +273,7 @@ window.WissOS._configData = {
       {
         "name": "Werkzeuge",
         "icon": "gear",
-        "programIds": ["stilmittel-navigator", "strophen-navigator", "bewertungsschluessel", "paed-navigator", "qr-generator", "fullscreen-toggle", "assistant-toggle"]
+        "programIds": ["stilmittel-navigator", "strophen-navigator", "bewertungsschluessel", "wortartenlabor", "paed-navigator", "qr-generator", "fullscreen-toggle", "assistant-toggle"]
       },
       {
         "name": "Kreativ",
