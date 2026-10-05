@@ -4,7 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Die Wortwurfbude</title>
-<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif;background:#faf9f7}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>:root{color-scheme:light;box-sizing:border-box;--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px)}html,body{width:100%;height:100%;height:100dvh;margin:0;padding:0;overflow:hidden}body{font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+
+  <!-- WissOS SDK -->
+  <script src="../../js/wissos-sdk.js"></script>
 </head>
 <body>
 <title>Die Wortwurfbude</title>
@@ -79,8 +82,11 @@ body{margin:0;background:var(--sky);color:var(--ink);font-family:var(--f-body);o
 @media (min-width:760px){#bubble{font-size:16px}}
 
 /* ball tray on the counter */
-#tray{position:absolute;z-index:4;display:flex;flex-wrap:wrap;gap:10px 8px;align-content:center;align-items:center}
-.ballbtn{position:relative;width:var(--bw,52px);height:var(--bh,46px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:0;padding:0;background:var(--paper);color:var(--ink);font-family:var(--f-pixel);font-size:12px;line-height:1;cursor:pointer;transition:transform .12s ease}
+#tray{position:absolute;z-index:4;display:flex;flex-wrap:wrap;gap:var(--gy,10px) var(--gx,8px);align-content:flex-start;align-items:center;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior:contain;padding:2px 2px max(4px,env(safe-area-inset-bottom,0px)) 2px;box-sizing:border-box}
+#tray::-webkit-scrollbar{width:6px}
+#tray::-webkit-scrollbar-track{background:rgba(0,0,0,0.12);border-radius:3px}
+#tray::-webkit-scrollbar-thumb{background:var(--ink);border-radius:3px}
+.ballbtn{position:relative;width:var(--bw,52px);height:var(--bh,46px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--ball-gap,3px);border:0;padding:0;background:var(--paper);color:var(--ink);font-family:var(--f-pixel);font-size:clamp(10px,2.7vw,13px);line-height:1;cursor:pointer;transition:transform .12s ease;flex-shrink:0}
 .ballbtn svg{display:block}
 .ballbtn[aria-pressed="true"]{transform:translateY(-5px);background:#ffffff;box-shadow:0 -3px 0 0 var(--ink),0 3px 0 0 var(--ink),-3px 0 0 0 var(--ink),3px 0 0 0 var(--ink),0 10px 0 0 var(--shadow)}
 .ballbtn:disabled{cursor:default;background:var(--paper-2);color:var(--ink-soft)}
@@ -89,7 +95,7 @@ body{margin:0;background:var(--sky);color:var(--ink);font-family:var(--f-body);o
 .badge{position:absolute;top:-9px;right:-8px;min-width:18px;height:18px;padding:0 4px;display:grid;place-items:center;background:var(--ink);color:var(--paper);font-size:12px}
 .badge.done{background:#5aa772}
 .tray-wide .ballbtn{font-size:13px}.tray-wide .ballbtn .short{display:none}.tray-wide .ballbtn .full{display:inline}
-@media (max-width:520px),(max-height:520px){#bubble .who{display:none}#bubble{font-size:14.5px;line-height:1.38;padding:9px 12px 10px}#bubbleActions{margin-top:8px}}
+@media (max-width:520px),(max-height:520px){#bubble .who{display:none}#bubble{font-size:14.5px;line-height:1.38;padding:9px 12px 10px}#bubbleActions{margin-top:8px}.ballbtn svg{width:20px;height:20px}.ballbtn{font-size:11px}.badge{min-width:15px;height:15px;font-size:10px;top:-6px;right:-6px}}
 .journey svg{width:clamp(22px,6.4vw,28px);height:auto}
 @media (max-width:480px){.stats{grid-template-columns:minmax(0,1fr)}}
 .stats dd{white-space:nowrap}
@@ -294,12 +300,6 @@ body{margin:0;background:var(--sky);color:var(--ink);font-family:var(--f-body);o
 #app.board #modePill,#app.board #coopBar{height:42px;font-size:22px}
 #app.board #council b{font-size:56px}
 #app.board #toast b{font-size:26px}
-/* Vollbild-Knopf */
-.iconbtn.fsbtn{width:auto;min-width:36px;padding:0 8px;display:inline-flex;align-items:center;gap:6px;font-family:var(--f-pixel);font-size:15px}
-.iconbtn.fsbtn[aria-pressed] svg{opacity:1}
-.fslbl{display:none}
-@media (min-width:760px){.fslbl{display:inline}}
-#app.board .iconbtn.fsbtn{height:42px;font-size:18px}
 </style>
 
 <div id="app" data-mode="solo">
@@ -320,7 +320,6 @@ body{margin:0;background:var(--sky);color:var(--ink);font-family:var(--f-body);o
     </div>
     <div class="hud-c">
       <button class="teachbtn px2 team-only" id="teachBtn" aria-expanded="false" aria-controls="teachBar">Lehrkraft</button>
-      <button class="iconbtn px2 fsbtn" id="fsBtn" type="button" aria-pressed="false" title="Vollbild" hidden><span class="ico" id="fsIco"></span><span class="fslbl" id="fsLbl">Vollbild</span></button>
       <button class="iconbtn px2" id="musicBtn" aria-pressed="true" aria-label="Musik" title="Musik an/aus"></button>
       <button class="iconbtn px2" id="menuBtn" aria-haspopup="true" aria-expanded="false" aria-label="Menü" title="Menü"></button>
     </div>
@@ -375,10 +374,10 @@ body{margin:0;background:var(--sky);color:var(--ink);font-family:var(--f-body);o
       <div class="row tight">
         <button class="btn ghost" id="helpBtn">So wird gespielt</button>
         <button class="btn ghost" id="albumBtn">Stickeralbum <span class="albumCount"></span></button>
-        <button class="btn ghost" id="fsBtn2" type="button" hidden>Vollbild</button>
       </div>
       <p class="note"><span id="tRound"></span> Mit Musik – Ton anschalten lohnt sich.</p>
       <div class="row teacher"><span class="kicker">Für Lehrkräfte</span><button class="btn ghost" id="setBtn">Wortarten wählen</button><button class="btn ghost" id="editBtn">Sätze bearbeiten</button></div>
+      <p style="margin-top:14px;margin-bottom:0;font-size:11px;color:#777;text-align:center;">CC-BY-SA 4.0 Sebastian Wolf (2026) · Erstellt mit Hilfe von Claude Opus 5.5 und Gemini 3.8 Flash</p>
     </div>
   </section>
 
@@ -400,7 +399,6 @@ body{margin:0;background:var(--sky);color:var(--ink);font-family:var(--f-body);o
         <li><b>Duell mit Ansage:</b> Der Schausteller nennt die Wortart, das Team sucht das passende Wort. Jeder Treffer bringt 10 Punkte.</li>
         <li><b>Freies Duell:</b> Das Team wählt Ball und Wort selbst.</li>
         <li><b>Gemeinsam gegen die Bude:</b> Die ganze Klasse spielt zusammen. Pro Satz gibt es bis zu drei Sterne – je weniger Fehlwürfe, desto mehr.</li>
-        <li>Am Smartboard: Mit „Vollbild“ oben rechts verschwindet die Browserleiste. <span class="kbd">Esc</span> beendet das Vollbild.</li>
         <li>Nach jedem Wurf geht es mit „Weiter“ zum nächsten Team. Unter „Lehrkraft“ kannst du Würfe zurücknehmen, gute Begründungen belohnen, Sätze überspringen und Pausen machen.</li>
       </ul>
       <h3 class="sub-h">Märchensticker</h3>
@@ -411,6 +409,8 @@ body{margin:0;background:var(--sky);color:var(--ink);font-family:var(--f-body);o
       <details class="credits">
         <summary>Quellen und Lizenzen</summary>
         <p>Die Schrift „Wortwurf Pixel“ beruht auf Jersey 10 (Copyright 2023 The Soft Type Project Authors), „Wortwurf Text“ auf Lexend (Copyright 2018 The Lexend Project Authors). Beide stehen unter der SIL Open Font License 1.1 und wurden für dieses Spiel auf die nötigen Zeichen gekürzt und umbenannt. Der vollständige Lizenztext steht am Ende des Quelltexts dieser Datei. Musik und Klänge entstehen im Browser. Die Märchen der Brüder Grimm sind gemeinfrei.</p>
+        <p><strong>Lizenz des Spiels:</strong> Lizenziert unter <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" target="_blank" rel="noopener">Creative Commons Namensnennung – Weitergabe unter gleichen Bedingungen 4.0 International (CC-BY-SA 4.0)</a> für Sebastian Wolf (2026).</p>
+        <p><strong>Transparenzhinweis:</strong> Erstellt mit Hilfe von Claude Opus 5.5 und Gemini 3.8 Flash.</p>
       </details>
       <div class="row"><button class="btn primary" id="helpClose">Verstanden</button></div>
     </div>
@@ -1213,10 +1213,6 @@ const HEART_ON = gridSVG(outlineGrid(HEART_ROWS, PP), 16);
 const HEART_OFF = gridSVG(outlineGrid(HEART_ROWS, {R:'#efe6f3'}), 16);
 const STAR_SVG = gridSVG(EMBLEMS.find(e => e.id === 'stern').grid, 20);
 
-// Vollbild-Symbole (wie im Wortartenlabor)
-const FS_ON_SVG = strGridSVG(['KKKK....KKKK','KWWK....KWWK','KWK......KWK','KK........KK','............','............','............','............','KK........KK','KWK......KWK','KWWK....KWWK','KKKK....KKKK'], {K:INK, W:'#fff8ec'}, 18);
-const FS_OFF_SVG = strGridSVG(['............','...K....K...','...K....K...','KKKK....KKKK','............','............','............','............','KKKK....KKKK','...K....K...','...K....K...','............'], {K:INK}, 18);
-
 /* ------------------------------------------------------------------ Klang: eigene Walzer-Melodie + Effekte */
 const Snd = (() => {
   let ac = null, master, mus, sfx, lp, noiseBuf, timer = null, loopStart = 0, idx = 0, events = [], totalBeats = 0;
@@ -1494,15 +1490,41 @@ function positionDom() {
   Object.assign(bubble.style, {left: b.left + 'px', width: width + 'px', bottom: (L.H - b.bottom) + 'px', top: 'auto', maxHeight: Math.max(90, Math.min(b.maxH, b.bottom - hudBottom)) + 'px'});
   if (b.mode === 'left') { tail.innerHTML = TAIL_LEFT; Object.assign(tail.style, {left: '-12px', top: 'auto', bottom: clamp(8, b.bottom - b.anchorY - 10, 160) + 'px'}); }
   else { tail.innerHTML = TAIL_DOWN; Object.assign(tail.style, {left: clamp(10, b.anchorX - b.left - 10, width - 34) + 'px', top: 'auto', bottom: '-12px'}); }
-  const tl = Math.max(16, (L.bx0 + L.post) * A + 8), tt = (L.ctop + L.ct) * A + 12;
-  const trW = Math.max(120, L.handLeft * A - 12 - tl), trH = Math.max(50, L.H - tt - 10);
-  Object.assign(tray.style, {left: tl + 'px', top: tt + 'px', width: trW + 'px', height: trH + 'px'});
-  const n = Math.max(1, ACTIVE.length), gx = 8, gy = 10;
+  const tl = Math.max(16, (L.bx0 + L.post) * A + 8), tt = (L.ctop + L.ct) * A + 10;
+  const isMobile = (L.W < 560 || (L.W < 840 && portrait));
+  const trW = Math.max(120, L.handLeft * A - 12 - tl);
+  const n = Math.max(1, ACTIVE.length);
+  const gx = isMobile ? 6 : 8, gy = isMobile ? 6 : 10;
+  const minBw = isMobile ? 36 : 44;
   let rows = 1, bw = 0;
-  for (rows = 1; rows <= 3; rows++) { const per = Math.ceil(n / rows); bw = Math.floor((trW - gx * (per - 1)) / per); if (bw >= 44) break; }
+  for (rows = 1; rows <= 3; rows++) {
+    const per = Math.ceil(n / rows);
+    bw = Math.floor((trW - gx * (per - 1)) / per);
+    if (bw >= minBw) break;
+  }
   rows = Math.min(rows, 3);
-  const bh = clamp(36, Math.floor((trH - gy * (rows - 1)) / rows), 54);
-  tray.style.setProperty('--bw', clamp(40, bw, 90) + 'px'); tray.style.setProperty('--bh', bh + 'px');
+  const safeBottom = Math.max(4, parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-bottom') || 0));
+  const maxAvailableH = Math.max(44, L.H - tt - safeBottom);
+  const bh = clamp(isMobile ? 28 : 36, Math.floor((maxAvailableH - gy * (rows - 1)) / rows), 54);
+  const neededTrayH = rows * bh + (rows - 1) * gy + 2;
+  let finalTt = tt;
+  if (finalTt + neededTrayH > L.H - safeBottom) {
+    const counterTopPx = Math.round((L.ctop + 2) * A);
+    finalTt = Math.max(counterTopPx, L.H - neededTrayH - safeBottom);
+  }
+  const finalTrH = Math.max(44, Math.min(neededTrayH, L.H - finalTt - safeBottom));
+  Object.assign(tray.style, {
+    left: tl + 'px',
+    top: finalTt + 'px',
+    width: trW + 'px',
+    height: finalTrH + 'px',
+    maxHeight: (L.H - finalTt - safeBottom) + 'px'
+  });
+  tray.style.setProperty('--bw', clamp(32, bw, 90) + 'px');
+  tray.style.setProperty('--bh', bh + 'px');
+  tray.style.setProperty('--gx', gx + 'px');
+  tray.style.setProperty('--gy', gy + 'px');
+  tray.style.setProperty('--ball-gap', isMobile ? '1px' : '3px');
   tray.classList.toggle('tray-wide', bw >= 80);
   menu.style.top = (hud.getBoundingClientRect().height + 8) + 'px'; teachBar.style.top = menu.style.top;
   const zc = Math.round((L.zx0 + L.zx1) / 2 * A) + 'px', zt = Math.round((L.zy0 + 2) * A) + 'px';
@@ -2645,31 +2667,6 @@ function renderTeamSetup() {
 }
 const TD_LIMITS = {teams: [2, 8], throwsPer: [3, 20], goal: [3, 12], patience: [3, 8]};
 
-/* ------------------------------------------------------------------ Vollbild (wie im Wortartenlabor: am Smartboard verschwindet die Browserleiste) */
-const fsElement = () => document.fullscreenElement || document.webkitFullscreenElement || null;
-const fsAllowed = () => !!(document.fullscreenEnabled || document.webkitFullscreenEnabled);
-function renderFsBtn() {
-  const okFs = fsAllowed(), onFs = !!fsElement();
-  const b = $('#fsBtn'), b2 = $('#fsBtn2');
-  b.hidden = !okFs; b2.hidden = !okFs;
-  $('#fsIco').innerHTML = onFs ? FS_OFF_SVG : FS_ON_SVG;
-  $('#fsLbl').textContent = onFs ? 'Vollbild aus' : 'Vollbild';
-  b.title = onFs ? 'Vollbild beenden' : 'Vollbild'; b.setAttribute('aria-label', b.title);
-  b.setAttribute('aria-pressed', onFs ? 'true' : 'false');
-  b2.textContent = onFs ? 'Vollbild aus' : 'Vollbild';
-}
-function toggleFullscreen() {
-  const d = document.documentElement;
-  const fail = () => showToast(FS_ON_SVG, 'Vollbild', 'Hier nicht möglich. Öffne die Datei direkt im Browser.');
-  try {
-    if (fsElement()) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
-    const req = d.requestFullscreen || d.webkitRequestFullscreen;
-    if (!req) return fail();
-    const p = req.call(d);
-    if (p && p.catch) p.catch(fail);
-  } catch (e) { fail(); }
-}
-
 /* ------------------------------------------------------------------ Events */
 function artPoint(e) { const r = canvas.getBoundingClientRect(); return {x: (e.clientX - r.left) / A, y: (e.clientY - r.top) / A}; }
 canvas.addEventListener('pointerdown', e => {
@@ -2696,9 +2693,6 @@ document.addEventListener('keydown', e => {
 });
 const on = (sel, fn) => { const el = $(sel); if (el) el.addEventListener('click', fn); };
 on('#soloBtn', startGame);
-on('#fsBtn', toggleFullscreen);
-on('#fsBtn2', toggleFullscreen);
-['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, () => { renderFsBtn(); computeLayout(); }));
 on('#teamBtn', openTeamSetup);
 on('#helpBtn', () => openOverlay('help'));
 on('#helpClose', () => closeOverlay('help'));
@@ -2825,7 +2819,7 @@ function start(data) {
   SENTS = parseMD(currentMD).sentences;
   if (!SENTS.length) { currentMD = DEFAULT_MD; SENTS = parseMD(DEFAULT_MD).sentences; }
   G.level = S.start; G.unlocked = S.start; G.selected = S.start - 1;
-  fillStatic(); buildTray(); updateHud(); updateAlbumCount(); renderFsBtn();
+  fillStatic(); buildTray(); updateHud(); updateAlbumCount();
   computeLayout();
   newSentence(); updateTray();
   let roH = 0; const ro = new ResizeObserver(() => { const h = hud.offsetHeight; if (roH && h === roH && ro._w === app.clientWidth && ro._h === app.clientHeight) return; roH = h; ro._w = app.clientWidth; ro._h = app.clientHeight; computeLayout(); });
@@ -2938,5 +2932,19 @@ FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
 OTHER DEALINGS IN THE FONT SOFTWARE.
 
 -->
+
+<!--
+======================================================================
+Lizenz & Urheberrecht:
+Die Wortwurfbude
+Lizenziert unter Creative Commons Namensnennung – Weitergabe unter gleichen Bedingungen 4.0 International (CC-BY-SA 4.0)
+Autor: Sebastian Wolf (2026)
+https://creativecommons.org/licenses/by-sa/4.0/deed.de
+
+Transparenzhinweis:
+Erstellt mit Hilfe von Claude Opus 5.5 und Gemini 3.8 Flash
+======================================================================
+-->
 </body>
 </html>
+
