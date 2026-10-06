@@ -1,0 +1,2233 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Der Kasus-Teich</title>
+<style>
+:root{--p:3px;--q:2px;--ink:#3A3350;--soft:#6E6688;--paper:#FFF7EA;--card:#FFFDF8;--line:#E7DCF2;--frame:#5E4BA8;--frame2:#B9A6E0;--btn:#8C7BD1;--btn-hi:#B4A8E8;--btn-sh:#6A59B2;--btn-bd:#3F3470;--mark:#D9CEF6;--mark-d:#7058C8;--font:Verdana,Tahoma,"Segoe UI","Trebuchet MS",Arial,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font-family:var(--font);-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+button{font-family:inherit;color:inherit}
+canvas.px,.px canvas,#stage canvas{image-rendering:pixelated;image-rendering:crisp-edges}
+:fullscreen{background:var(--paper)}
+
+/* ---------- Pixel-Bausteine ---------- */
+/* Rahmen mit abgeschrägten Pixelecken, innen hell/dunkel abgesetzt */
+.pf{--bd:var(--frame);--bg:var(--card);--hi:#FFFFFF;--sh:var(--line);background:var(--bg);border-radius:0;
+  box-shadow:inset var(--p) var(--p) 0 0 var(--hi),inset calc(-1*var(--p)) calc(-1*var(--p)) 0 0 var(--sh),
+  0 calc(-1*var(--p)) 0 0 var(--bd),0 var(--p) 0 0 var(--bd),calc(-1*var(--p)) 0 0 0 var(--bd),var(--p) 0 0 0 var(--bd),
+  0 calc(3*var(--p)) 0 calc(-1*var(--p)) rgba(58,51,80,.22)}
+.pf.soft{--bd:var(--frame2);--sh:#F1EAFA}
+.pf.flat{box-shadow:inset var(--p) var(--p) 0 0 var(--hi),inset calc(-1*var(--p)) calc(-1*var(--p)) 0 0 var(--sh),0 calc(-1*var(--p)) 0 0 var(--bd),0 var(--p) 0 0 var(--bd),calc(-1*var(--p)) 0 0 0 var(--bd),var(--p) 0 0 0 var(--bd)}
+/* Knöpfe */
+.pb{--bd:var(--btn-bd);--bg:var(--btn);--hi:var(--btn-hi);--sh:var(--btn-sh);position:relative;font-family:inherit;font-weight:bold;color:#fff;border:0;border-radius:0;background:var(--bg);cursor:pointer;
+  margin:calc(2*var(--p)) calc(2*var(--p)) calc(3*var(--p));padding:calc(3*var(--p)) calc(6*var(--p));min-height:54px;font-size:clamp(17px,2.3vw,22px);line-height:1.2;
+  box-shadow:inset var(--p) var(--p) 0 0 var(--hi),inset calc(-1*var(--p)) calc(-1*var(--p)) 0 0 var(--sh),
+  0 calc(-1*var(--p)) 0 0 var(--bd),0 var(--p) 0 0 var(--bd),calc(-1*var(--p)) 0 0 0 var(--bd),var(--p) 0 0 0 var(--bd),
+  0 calc(2*var(--p)) 0 calc(-1*var(--p)) var(--bd)}
+.pb:active,.pb.down{transform:translateY(var(--p));box-shadow:inset var(--p) var(--p) 0 0 var(--sh),0 calc(-1*var(--p)) 0 0 var(--bd),0 var(--p) 0 0 var(--bd),calc(-1*var(--p)) 0 0 0 var(--bd),var(--p) 0 0 0 var(--bd)}
+.pb.alt{--bg:#EFE8FA;--hi:#FFFFFF;--sh:#D6C9EE;--bd:var(--frame);color:var(--ink)}
+.pb.teal{--bg:#7FC8DB;--hi:#BFE6F0;--sh:#55A7BD;--bd:#2F6F86}
+.pb.gold{--bg:#F5CF52;--hi:#FFF0B0;--sh:#D9A42C;--bd:#8E6D0C;color:#4A3A08}
+.pb.sm{min-height:46px;font-size:16px;padding:calc(2*var(--p)) calc(4*var(--p))}
+.pb:focus-visible,.seg button:focus-visible{outline:var(--p) dashed var(--frame);outline-offset:calc(3*var(--p))}
+.pb .ic{width:calc(8*var(--p));height:calc(8*var(--p));vertical-align:-0.35em;margin-right:calc(2*var(--p))}
+/* Symbolknöpfe in der Kopfzeile */
+.ib{--bg:#FFFFFF;--hi:#FFFFFF;--sh:#E3DAF3;--bd:var(--frame);color:var(--ink);width:max(44px,calc(15*var(--p)));height:max(44px,calc(15*var(--p)));min-height:0;padding:0;margin:var(--p) calc(1.5*var(--p)) calc(3*var(--p));display:grid;place-items:center;flex:0 0 auto;font-size:0}
+.ib canvas{width:calc(12*var(--p));height:calc(12*var(--p))}
+.ib.hold::after{content:"";position:absolute;left:0;bottom:0;width:100%;background:rgba(140,123,209,.5);animation:fillup 1.6s steps(8) forwards}
+@keyframes fillup{from{height:0}to{height:100%}}
+/* Umschalter */
+.seg{display:inline-flex;flex-wrap:wrap;gap:calc(2*var(--p));padding:calc(1.5*var(--p));margin:calc(2*var(--p));--bg:#EFE8FA;--sh:#E3DAF3;justify-content:center}
+.seg button{border:0;border-radius:0;background:transparent;color:var(--soft);font-weight:bold;font-size:16px;min-height:46px;padding:calc(2*var(--p)) calc(4*var(--p));cursor:pointer}
+.seg button.on{background:#FFFFFF;color:var(--ink);box-shadow:0 calc(-1*var(--p)) 0 0 var(--frame),0 var(--p) 0 0 var(--frame),calc(-1*var(--p)) 0 0 0 var(--frame),var(--p) 0 0 0 var(--frame),inset 0 calc(-1*var(--p)) 0 0 #E3DAF3}
+/* Kasus-Etiketten */
+.k,.chip{display:inline-block;background:var(--c);color:var(--ink);font-weight:bold;padding:0 .35em;margin:var(--q) calc(2*var(--q));line-height:1.45;
+  box-shadow:0 calc(-1*var(--q)) 0 0 var(--cd),0 var(--q) 0 0 var(--cd),calc(-1*var(--q)) 0 0 0 var(--cd),var(--q) 0 0 0 var(--cd),inset 0 calc(-1*var(--q)) 0 0 var(--cd)}
+.chip{font-size:max(13px,calc(4.6*var(--p)));padding:calc(.5*var(--p)) calc(2*var(--p));white-space:nowrap}
+.chip.off{opacity:.28;filter:grayscale(.8)}
+.chip .ab{display:none}
+.ptitle{display:block;margin:calc(2*var(--p)) auto calc(3*var(--p));line-height:0}
+.ptitle canvas{display:inline-block;max-width:100%;height:auto}
+
+/* ---------- Kopfzeile, Satzkarte ---------- */
+#app{position:fixed;inset:0;display:flex;flex-direction:column}
+#hud{flex:0 0 auto;display:flex;align-items:center;gap:calc(1.5*var(--p));padding:var(--p) calc(3*var(--p));background:#F4EDFB;border-bottom:var(--p) solid var(--frame2);min-height:60px}
+#lvl{line-height:0;flex:0 0 auto}
+.chips{display:flex;gap:var(--p);flex-wrap:nowrap}
+#pips{display:flex;gap:var(--p);align-items:center;margin-left:var(--p)}
+#pips canvas{width:calc(7*var(--p));height:calc(7*var(--p))}
+.sp{flex:1}
+#scores{display:flex;gap:calc(3*var(--p));align-items:center;flex-wrap:wrap;justify-content:flex-end;margin-right:var(--p)}
+.score{display:inline-flex;align-items:center;gap:calc(2*var(--p));padding:var(--p) calc(3*var(--p));font-weight:bold;font-size:max(16px,calc(6*var(--p)));white-space:nowrap;margin:var(--p)}
+.score canvas{width:calc(6*var(--p));height:calc(6*var(--p))}
+.score.act{--bg:#FFF4C8;--sh:#F5E3A0}
+#card{flex:0 0 auto;background:var(--card);border-bottom:var(--p) solid var(--frame2);box-shadow:0 var(--p) 0 0 #EFE8FA;padding:calc(2*var(--p)) calc(5*var(--p)) calc(1.5*var(--p));text-align:center;position:relative;z-index:2}
+#sent{height:var(--sentH,90px);display:flex;align-items:center;justify-content:center;line-height:1.55;font-weight:bold;overflow:hidden;letter-spacing:.02em}
+#sent>div{max-width:100%}
+#taskline{display:flex;align-items:center;justify-content:center;gap:calc(3*var(--p));font-size:clamp(15px,2.1vw,21px);color:var(--soft);min-height:32px;flex-wrap:wrap;padding-bottom:var(--p)}
+#gprog{font-size:.8em;padding:0 calc(3*var(--p));margin:var(--p) calc(2*var(--p));--bg:#F1EAFA;--bd:var(--frame2);--sh:#E3DAF3}
+.np{padding:0 .12em;white-space:nowrap}
+.np.cur{background:var(--mark);box-shadow:inset 0 calc(-1*max(3px,var(--p))) 0 0 var(--mark-d);animation:blink 1.6s steps(1) infinite}
+@keyframes blink{50%{background:#EAE3FC}}
+.np.done{background:var(--c);box-shadow:inset 0 calc(-1*max(3px,var(--p))) 0 0 var(--cd)}
+.np sup{font-size:.46em;color:var(--ct);margin-left:.14em;font-weight:bold}
+
+/* ---------- Spielfläche ---------- */
+#stage{flex:1 1 auto;position:relative;overflow:hidden;touch-action:none;cursor:pointer}
+#pix,#txt{position:absolute;left:0;top:0}
+#txt{image-rendering:auto}
+#floats{position:absolute;inset:0;pointer-events:none;z-index:3}
+#banner{position:absolute;left:50%;top:calc(4*var(--p));transform:translate(-50%,-12px);opacity:0;background:var(--card);padding:calc(3*var(--p)) calc(6*var(--p));font-size:clamp(15px,2vw,20px);line-height:1.5;max-width:calc(100% - 32px);text-align:center;pointer-events:none;z-index:4;transition:opacity .2s ease-out,transform .2s ease-out}
+#banner.show{opacity:1;transform:translate(-50%,0)}
+#banner.low{top:auto;bottom:calc(6*var(--p))}
+.fl{position:absolute;animation:fl 1.3s ease-out forwards;line-height:0;will-change:transform,opacity}
+.fl canvas{display:block}
+@keyframes fl{0%{transform:translate(-50%,0);opacity:1}65%{opacity:1}100%{transform:translate(-50%,-60px);opacity:0}}
+#carpBtn{position:absolute;left:calc(4*var(--p));bottom:calc(5*var(--p));width:max(84px,calc(28*var(--p)));height:max(84px,calc(28*var(--p)));padding:0;margin:0;--bg:#BFE6F0;--hi:#DFF4F9;--sh:#9FD3E3;--bd:#2F6F86;z-index:3}
+#carpCv{display:block;width:100%;height:100%}
+#carpBtn .q{position:absolute;right:calc(-4*var(--p));top:calc(-4*var(--p));width:calc(12*var(--p));height:calc(12*var(--p));min-width:30px;min-height:30px;display:grid;place-items:center;--bg:#FFFFFF;--bd:var(--frame);line-height:0}
+#carpBtn .q canvas{width:calc(5*var(--p));height:calc(7*var(--p));min-width:10px;min-height:14px}
+#carpBtn.call .q{animation:bob 1s steps(2) infinite;--bg:#FFF3C4}
+@keyframes bob{50%{transform:translateY(calc(-2*var(--p)))}}
+#bubble{position:absolute;left:50%;top:calc(4*var(--p));transform:translateX(-50%);width:max-content;max-width:min(680px,calc(100% - 32px));max-height:calc(100% - 140px);overflow:auto;
+  --bg:#FFFFFF;--bd:#2F6F86;--sh:#DFF0F5;padding:calc(4*var(--p)) calc(5*var(--p));font-size:clamp(16px,2.1vw,21px);line-height:1.55;display:none;cursor:default;z-index:5}
+#bubble.show{display:block}
+#bubble .who{display:flex;align-items:center;gap:calc(2*var(--p));font-size:.72em;color:#2F6F86;font-weight:bold;margin-bottom:var(--p)}
+#bubble .who canvas{width:calc(19*var(--q));height:calc(10*var(--q))}
+#bubble .row{display:flex;gap:calc(2*var(--p));margin-top:calc(2*var(--p));justify-content:flex-end;flex-wrap:wrap}
+.hl{background:var(--mark);padding:0 4px;font-weight:bold;box-shadow:inset 0 calc(-1*var(--q)) 0 0 var(--mark-d)}
+
+/* ---------- Überlagerungen ---------- */
+.ov{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:50;padding:calc(6*var(--p));
+  background:repeating-conic-gradient(rgba(58,51,80,.46) 0 25%,rgba(58,51,80,.30) 0 50%) 0 0/calc(2*var(--p)) calc(2*var(--p))}
+.ov.show{display:flex}
+.panel{width:100%;max-width:800px;max-height:calc(100% - 4*var(--p));overflow:auto;padding:calc(5*var(--p)) calc(7*var(--p));text-align:center}
+.panel.wide{max-width:980px;text-align:left}
+.lead{font-size:clamp(17px,2.4vw,22px);font-weight:bold;color:var(--frame);margin:0 0 calc(3*var(--p))}
+h3{margin:calc(5*var(--p)) 0 calc(2*var(--p));color:var(--frame);font-size:18px}
+p{line-height:1.55;margin:8px 0}
+.lbl{font-size:15px;color:var(--soft);margin-top:calc(4*var(--p));font-weight:bold}
+.small{font-size:14px;color:var(--soft)}
+.steps{display:grid;gap:calc(5*var(--p));text-align:left;margin:calc(4*var(--p)) var(--p)}
+.step{display:flex;gap:calc(4*var(--p));align-items:center;padding:calc(3*var(--p)) calc(4*var(--p));font-size:clamp(16px,2.2vw,20px);line-height:1.45}
+.step canvas{width:64px;height:64px;flex:0 0 64px}
+.ex{padding:calc(3*var(--p)) calc(4*var(--p));margin:calc(4*var(--p)) var(--p);font-size:clamp(17px,2.4vw,23px);line-height:1.75}
+.ex .q{font-size:.86em;font-weight:normal}
+.album{display:grid;grid-template-columns:repeat(auto-fill,minmax(124px,1fr));gap:calc(5*var(--p));margin:calc(4*var(--p)) var(--p)}
+.st{padding:calc(2*var(--p)) calc(2*var(--p)) calc(3*var(--p));font-size:13px;line-height:1.35}
+.st canvas{width:84px;height:84px;display:block;margin:0 auto 4px}
+.st b{display:block;font-size:14px}
+.st.lock{--bg:#F6F2FB;color:#9A93B0}
+.st .pr{font-size:12px;color:#8A82A3;margin-top:2px}
+.bigst{width:192px;height:192px}
+.tabs{display:flex;gap:0;flex-wrap:wrap;margin:calc(2*var(--p)) 0 calc(3*var(--p))}
+.tabs .pb{margin:calc(2*var(--p)) calc(2*var(--p)) calc(3*var(--p)) var(--p)}
+.set{display:grid;grid-template-columns:minmax(170px,1fr) 2.4fr;gap:calc(1.5*var(--p)) calc(4*var(--p));align-items:center}
+.set>div:nth-child(odd){font-weight:bold;font-size:15px}
+.set .seg{margin:calc(1.5*var(--p)) var(--p);justify-content:flex-start;justify-self:start}
+#ed{display:block;width:calc(100% - 2*var(--p));margin:var(--p);min-height:260px;font:15px/1.55 ui-monospace,Menlo,Consolas,monospace;border:0;padding:calc(3*var(--p));-webkit-user-select:text;user-select:text;color:var(--ink);resize:vertical;outline:none}
+.btnrow{display:flex;flex-wrap:wrap;align-items:center;margin:calc(2*var(--p)) 0}
+.check{font-size:14px;line-height:1.5;padding-left:22px;max-height:260px;overflow:auto}
+.check li.err{color:#B4486A}.check li.warn{color:#8A6D0E}
+.sum{padding:calc(2*var(--p)) calc(4*var(--p));font-size:15px;margin:calc(3*var(--p)) var(--p);--bg:#F4EFFC}
+table.stat{border-collapse:collapse;width:100%;font-size:15px;background:#fff}
+table.stat td,table.stat th{border:var(--q) solid var(--frame2);padding:6px 10px;text-align:left}
+table.stat th{background:#F4EFFC}
+code,pre{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;-webkit-user-select:text;user-select:text}
+pre{padding:calc(2*var(--p)) calc(3*var(--p));margin:calc(3*var(--p)) var(--p);white-space:pre-wrap;word-break:break-word;--bg:#FFFFFF}
+#toast{position:fixed;left:50%;bottom:calc(6*var(--p));transform:translateX(-50%);--bg:#3A3350;--bd:#1F1A2E;--hi:#544A78;--sh:#2A2440;color:#fff;padding:calc(3*var(--p)) calc(5*var(--p));font-size:16px;z-index:80;opacity:0;pointer-events:none;max-width:90%;text-align:center;transition:opacity .25s ease-out}
+#toast.show{opacity:1}
+.fadein #pix,.fadein #txt{animation:fi .4s ease-out}@keyframes fi{from{opacity:0}}
+#titleCv{width:100%;max-width:460px;display:block;margin:var(--p) auto calc(2*var(--p))}
+@media (max-width:1100px){.chip .full{display:none}.chip .ab{display:inline}}
+@media (max-width:700px){#hud{flex-wrap:wrap;row-gap:0}#pips{order:1}.score{font-size:15px}.set{grid-template-columns:1fr}.panel{padding:calc(4*var(--p)) calc(4*var(--p))}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="hud">
+    <span id="lvl"></span>
+    <span class="chips" id="chips"></span>
+    <span id="pips" title="Goldene Kugel"></span>
+    <span class="sp"></span>
+    <span id="scores"></span>
+    <button class="pb ib" id="bAlbum" aria-label="Stickeralbum" title="Stickeralbum"></button>
+    <button class="pb ib" id="bMusic" aria-label="Musik an oder aus" title="Musik"></button>
+    <button class="pb ib" id="bFull" aria-label="Vollbild" title="Vollbild (F)"></button>
+    <button class="pb ib" id="bMenu" aria-label="Menü" title="Menü"></button>
+    <button class="pb ib" id="bGear" aria-label="Lehrkraft-Bereich (2 Sekunden gedrückt halten)" title="Lehrkraft-Bereich: 2 Sekunden gedrückt halten"></button>
+  </header>
+  <section id="card" aria-live="polite">
+    <div id="sent"><div></div></div>
+    <div id="taskline"><span id="task"></span><span id="gprog" class="pf flat"></span></div>
+  </section>
+  <div id="stage">
+    <canvas id="pix"></canvas>
+    <canvas id="txt"></canvas>
+    <div id="floats"></div>
+    <div id="banner" class="pf"></div>
+    <div id="bubble" class="pf" role="dialog" aria-live="polite"><div class="who"><canvas id="bubCarp" width="19" height="10" class="px"></canvas>Karpfen, der Teichwächter</div><div id="bubText"></div><div class="row"><button class="pb alt sm" id="bubMore">Noch ein Tipp</button><button class="pb teal sm" id="bubOk">Danke!</button></div></div>
+    <button id="carpBtn" class="pb" aria-label="Den Karpfen um einen Tipp bitten"><canvas id="carpCv" width="28" height="28" class="px"></canvas><span class="q pf flat"></span></button>
+  </div>
+</div>
+
+<div class="ov" id="ovStart"><div class="panel pf" id="startBody"></div></div>
+<div class="ov" id="ovHow"><div class="panel pf" id="howBody"></div></div>
+<div class="ov" id="ovLevel"><div class="panel pf" id="levelBody"></div></div>
+<div class="ov" id="ovGold"><div class="panel pf" id="goldBody"></div></div>
+<div class="ov" id="ovSticker"><div class="panel pf" id="stickerBody" style="max-width:440px"></div></div>
+<div class="ov" id="ovAlbum"><div class="panel pf" id="albumBody"></div></div>
+<div class="ov" id="ovTeacher"><div class="panel pf wide" id="teacherBody"></div></div>
+<input type="file" id="edFile" accept=".md,.txt,text/markdown,text/plain" hidden>
+<div id="toast" class="pf flat"></div>
+<script>
+'use strict';
+/* =========================================================
+   Der Kasus-Teich – ein Froschkönig-Spiel zu den vier Fällen
+   Eine Datei, offline lauffähig. Alle Grafiken und Töne
+   werden im Code erzeugt. Es werden keine Namen gespeichert.
+   ========================================================= */
+
+// ---------- Hilfsfunktionen ----------
+const $ = s => document.querySelector(s);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const rnd = (a, b) => a + Math.random() * (b - a);
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+const FONT = 'Verdana, Tahoma, "Segoe UI", Arial, sans-serif';
+
+// ---------- Kasus ----------
+const CI = {
+  Nom: { name: 'Nominativ', ab: 'Nom', short: 'Wer oder was?', qw: 'Wer oder was', col: '#FBE38E', rim: '#E2C25A', dark: '#8E6D0C', hi: '#FFF4C8' },
+  Gen: { name: 'Genitiv', ab: 'Gen', short: 'Wessen?', qw: 'Wessen', col: '#9FE0B8', rim: '#62C08B', dark: '#25784A', hi: '#D6F6E3' },
+  Dat: { name: 'Dativ', ab: 'Dat', short: 'Wem?', qw: 'Wem', col: '#A9CFF5', rim: '#73A9E0', dark: '#2B629E', hi: '#DDECFC' },
+  Akk: { name: 'Akkusativ', ab: 'Akk', short: 'Wen oder was?', qw: 'Wen oder was', col: '#F8B7D0', rim: '#E487AD', dark: '#A23A6C', hi: '#FDE1EC' }
+};
+const ORDER = ['Nom', 'Gen', 'Dat', 'Akk'];
+const LEVEL_CASES = { 1: ['Nom', 'Akk'], 2: ['Nom', 'Dat', 'Akk'], 3: ['Nom', 'Gen', 'Dat', 'Akk'], 4: ['Nom', 'Gen', 'Dat', 'Akk'] };
+const NEW_CASE = { 2: 'Dat', 3: 'Gen' };
+const chip = c => `<span class="k" style="--c:${CI[c].col};--cd:${CI[c].rim}">${CI[c].name}</span>`;
+
+// ---------- Eingebauter Satzvorrat ----------
+// Format: [Nominalgruppe]{Kasus: vollständige Frage}
+// Bei Präpositionen steht die Präposition in der Frage: Worauf …? / Auf wen …? / Weswegen …? / Trotz wessen …?
+const CORPUS = `# Der Froschkönig
+[Der König]{Nom: Wer oder was ruft den Frosch?} ruft [den Frosch]{Akk: Wen oder was ruft der König?}.
+[Der Frosch]{Nom: Wer oder was sieht den tiefen Brunnen?} sieht [den tiefen Brunnen]{Akk: Wen oder was sieht der Frosch?}.
+[Der treue Heinrich]{Nom: Wer oder was lenkt den Wagen?} lenkt [den Wagen]{Akk: Wen oder was lenkt der treue Heinrich?}.
+[Der Frosch]{Nom: Wer oder was hört einen lauten Ruf?} hört [einen lauten Ruf]{Akk: Wen oder was hört der Frosch?}.
+[Der Frosch]{Nom: Wer oder was fängt einen Käfer?} fängt [einen Käfer]{Akk: Wen oder was fängt der Frosch?}.
+[Der Frosch]{Nom: Wer oder was sieht den Mond?} sieht [den Mond]{Akk: Wen oder was sieht der Frosch?}.
+[Die Prinzessin]{Nom: Wer oder was verliert die goldene Kugel?} verliert [die goldene Kugel]{Akk: Wen oder was verliert die Prinzessin?}.
+[Der Frosch]{Nom: Wer oder was holt die Kugel aus dem Wasser?} holt [die Kugel]{Akk: Wen oder was holt der Frosch aus dem Wasser?} aus [dem Wasser]{Dat: Woraus holt der Frosch die Kugel?}.
+[Die Kugel]{Nom: Wer oder was liegt in dem Brunnen?} liegt in [dem Brunnen]{Dat: Worin liegt die Kugel?}.
+[Der Frosch]{Nom: Wer oder was springt auf den Tisch?} springt auf [den Tisch]{Akk: Worauf springt der Frosch?}.
+[Der Frosch]{Nom: Wer oder was sitzt auf dem Tisch?} sitzt auf [dem Tisch]{Dat: Worauf sitzt der Frosch?}.
+[Der Frosch]{Nom: Wer oder was wartet auf die Prinzessin?} wartet auf [die Prinzessin]{Akk: Auf wen wartet der Frosch?}.
+[Die Prinzessin]{Nom: Wer oder was gibt dem Frosch einen Kuss?} gibt [dem Frosch]{Dat: Wem gibt die Prinzessin einen Kuss?} [einen Kuss]{Akk: Wen oder was gibt die Prinzessin dem Frosch?}.
+[Der Frosch]{Nom: Wer oder was bringt der Prinzessin die Kugel?} bringt [der Prinzessin]{Dat: Wem bringt der Frosch die Kugel?} [die Kugel]{Akk: Wen oder was bringt der Frosch der Prinzessin?}.
+[Der König]{Nom: Wer oder was gibt seiner Tochter einen Rat?} gibt [seiner Tochter]{Dat: Wem gibt der König einen Rat?} [einen Rat]{Akk: Wen oder was gibt der König seiner Tochter?}.
+[Die Prinzessin]{Nom: Wer oder was dankt dem Frosch?} dankt [dem Frosch]{Dat: Wem dankt die Prinzessin?}.
+[Der Frosch]{Nom: Wer oder was erzählt dem König eine Geschichte?} erzählt [dem König]{Dat: Wem erzählt der Frosch eine Geschichte?} [eine Geschichte]{Akk: Wen oder was erzählt der Frosch dem König?}.
+[Die Krone]{Nom: Wer oder was gehört dem Froschkönig?} gehört [dem Froschkönig]{Dat: Wem gehört die Krone?}.
+[Die Prinzessin]{Nom: Wer oder was spielt mit dem Frosch?} spielt mit [dem Frosch]{Dat: Mit wem spielt die Prinzessin?}.
+[Der Frosch]{Nom: Wer oder was schwimmt zu der Prinzessin?} schwimmt zu [der Prinzessin]{Dat: Zu wem schwimmt der Frosch?}.
+[Die Seerose]{Nom: Wer oder was schwimmt auf dem Teich?} schwimmt auf [dem Teich]{Dat: Worauf schwimmt die Seerose?}.
+[Der Frosch]{Nom: Wer oder was isst von dem goldenen Teller?} isst von [dem goldenen Teller]{Dat: Wovon isst der Frosch?}.
+Die Tochter [des Königs]{Gen: Wessen Tochter spielt am Brunnen?} spielt am Brunnen.
+Die Krone [des Froschkönigs]{Gen: Wessen Krone glänzt im Licht?} glänzt im Licht.
+[Der Frosch]{Nom: Wer oder was sitzt auf dem Rand des Brunnens?} sitzt auf dem Rand [des Brunnens]{Gen: Auf wessen Rand sitzt der Frosch?}.
+Die Tür [des Schlosses]{Gen: Wessen Tür ist verschlossen?} ist verschlossen.
+Der Mantel [des Königs]{Gen: Wessen Mantel ist aus rotem Samt?} ist aus rotem Samt.
+Das Pferd [des Prinzen]{Gen: Wessen Pferd wartet vor dem Tor?} wartet vor dem Tor.
+Wegen [des Regens]{Gen: Weswegen bleibt die Prinzessin im Schloss?} bleibt [die Prinzessin]{Nom: Wer oder was bleibt wegen des Regens im Schloss?} im Schloss.
+
+# Rotkäppchen
+[Der Wolf]{Nom: Wer oder was fragt das Mädchen nach dem Weg?} fragt [das Mädchen]{Akk: Wen oder was fragt der Wolf nach dem Weg?} nach [dem Weg]{Dat: Wonach fragt der Wolf das Mädchen?}.
+[Das Mädchen]{Nom: Wer oder was pflückt einen bunten Strauß?} pflückt [einen bunten Strauß]{Akk: Wen oder was pflückt das Mädchen?}.
+[Rotkäppchen]{Nom: Wer oder was bringt der Großmutter Kuchen und Wein?} bringt [der Großmutter]{Dat: Wem bringt Rotkäppchen Kuchen und Wein?} [Kuchen und Wein]{Akk: Wen oder was bringt Rotkäppchen der Großmutter?}.
+[Der Wolf]{Nom: Wer oder was folgt dem Mädchen?} folgt [dem Mädchen]{Dat: Wem folgt der Wolf?}.
+[Der Jäger]{Nom: Wer oder was findet den Wolf im Bett?} findet [den Wolf]{Akk: Wen oder was findet der Jäger im Bett?} im Bett.
+[Rotkäppchen]{Nom: Wer oder was geht in das Haus der Großmutter?} geht in das Haus [der Großmutter]{Gen: In wessen Haus geht Rotkäppchen?}.
+Trotz [der Warnung]{Gen: Trotz wessen verlässt Rotkäppchen den Weg?} verlässt [Rotkäppchen]{Nom: Wer oder was verlässt trotz der Warnung den Weg?} [den Weg]{Akk: Wen oder was verlässt Rotkäppchen trotz der Warnung?}.
+Außerhalb [des Dorfes]{Gen: Außerhalb wessen wohnt die Großmutter?} wohnt die Großmutter.
+
+# Hänsel und Gretel
+[Hänsel]{Nom: Wer oder was streut die weißen Kieselsteine auf den Weg?} streut [die weißen Kieselsteine]{Akk: Wen oder was streut Hänsel auf den Weg?} auf [den Weg]{Akk: Worauf streut Hänsel die weißen Kieselsteine?}.
+[Die Hexe]{Nom: Wer oder was heizt den Ofen?} heizt [den Ofen]{Akk: Wen oder was heizt die Hexe?}.
+[Gretel]{Nom: Wer oder was befreit ihren Bruder?} befreit [ihren Bruder]{Akk: Wen oder was befreit Gretel?}.
+Das Haus [der Hexe]{Gen: Wessen Haus ist aus Lebkuchen?} ist aus Lebkuchen.
+[Die Ente]{Nom: Wer oder was trägt die Kinder über das Wasser?} trägt [die Kinder]{Akk: Wen oder was trägt die Ente über das Wasser?} über [das Wasser]{Akk: Worüber trägt die Ente die Kinder?}.
+[Gretel]{Nom: Wer oder was öffnet die Tür des Stalls?} öffnet die Tür [des Stalls]{Gen: Wessen Tür öffnet Gretel?}.
+
+# Schneewittchen
+[Die Königin]{Nom: Wer oder was fragt den Spiegel?} fragt [den Spiegel]{Akk: Wen oder was fragt die Königin?}.
+[Der Spiegel]{Nom: Wer oder was antwortet der Königin?} antwortet [der Königin]{Dat: Wem antwortet der Spiegel?}.
+[Schneewittchen]{Nom: Wer oder was kocht den Zwergen das Essen?} kocht [den Zwergen]{Dat: Wem kocht Schneewittchen das Essen?} [das Essen]{Akk: Wen oder was kocht Schneewittchen den Zwergen?}.
+[Die alte Frau]{Nom: Wer oder was reicht Schneewittchen einen roten Apfel?} reicht [Schneewittchen]{Dat: Wem reicht die alte Frau einen roten Apfel?} [einen roten Apfel]{Akk: Wen oder was reicht die alte Frau Schneewittchen?}.
+Das Bett [des siebten Zwerges]{Gen: Wessen Bett passt Schneewittchen?} passt [Schneewittchen]{Dat: Wem passt das Bett des siebten Zwerges?}.
+
+# Dornröschen
+[Der Koch]{Nom: Wer oder was backt einen großen Kuchen?} backt [einen großen Kuchen]{Akk: Wen oder was backt der Koch?}.
+[Die zwölfte Fee]{Nom: Wer oder was schenkt dem Kind einen Wunsch?} schenkt [dem Kind]{Dat: Wem schenkt die zwölfte Fee einen Wunsch?} [einen Wunsch]{Akk: Wen oder was schenkt die zwölfte Fee dem Kind?}.
+[Der Prinz]{Nom: Wer oder was weckt Dornröschen mit einem Kuss?} weckt [Dornröschen]{Akk: Wen oder was weckt der Prinz mit einem Kuss?} mit [einem Kuss]{Dat: Womit weckt der Prinz Dornröschen?}.
+Die Dornenhecke wächst um das Schloss [des Königs]{Gen: Um wessen Schloss wächst die Dornenhecke?}.
+Innerhalb [der Dornenhecke]{Gen: Innerhalb wessen schläft das ganze Schloss?} schläft das ganze Schloss.
+
+# Die Bremer Stadtmusikanten
+[Der Esel]{Nom: Wer oder was trägt den Hund?} trägt [den Hund]{Akk: Wen oder was trägt der Esel?}.
+[Der Hahn]{Nom: Wer oder was sieht ein helles Licht?} sieht [ein helles Licht]{Akk: Wen oder was sieht der Hahn?}.
+[Die Katze]{Nom: Wer oder was folgt dem Esel?} folgt [dem Esel]{Dat: Wem folgt die Katze?}.
+
+# Der Wolf und die sieben Geißlein
+Die Mutter [der sieben Geißlein]{Gen: Wessen Mutter geht in den Wald?} geht in den Wald.
+Die Stimme [des Wolfes]{Gen: Wessen Stimme klingt rau?} klingt rau.
+Wegen [des Wolfes]{Gen: Weswegen haben die Geißlein Angst?} haben [die Geißlein]{Nom: Wer oder was hat wegen des Wolfes Angst?} Angst.
+
+# Frau Holle
+[Die fleißige Marie]{Nom: Wer oder was schüttelt die Betten?} schüttelt [die Betten]{Akk: Wen oder was schüttelt die fleißige Marie?}.
+Statt [des Goldes]{Gen: Statt wessen fällt Pech auf die faule Marie?} fällt Pech auf [die faule Marie]{Akk: Auf wen fällt statt des Goldes Pech?}.
+
+# Rumpelstilzchen
+[Das Männchen]{Nom: Wer oder was spinnt das Stroh zu Gold?} spinnt [das Stroh]{Akk: Wen oder was spinnt das Männchen zu Gold?} zu Gold.
+Der Name [des Männchens]{Gen: Wessen Name ist Rumpelstilzchen?} ist Rumpelstilzchen.
+[Die Königin]{Nom: Wer oder was errät den Namen des Männchens?} errät den Namen [des Männchens]{Gen: Wessen Namen errät die Königin?}.
+
+# Aschenputtel
+[Aschenputtel]{Nom: Wer oder was verliert einen goldenen Schuh?} verliert [einen goldenen Schuh]{Akk: Wen oder was verliert Aschenputtel?}.
+[Die Taube]{Nom: Wer oder was pickt die Linsen aus der Asche?} pickt [die Linsen]{Akk: Wen oder was pickt die Taube aus der Asche?} aus [der Asche]{Dat: Woraus pickt die Taube die Linsen?}.
+[Der Prinz]{Nom: Wer oder was zeigt dem Mädchen den Schuh?} zeigt [dem Mädchen]{Dat: Wem zeigt der Prinz den Schuh?} [den Schuh]{Akk: Wen oder was zeigt der Prinz dem Mädchen?}.
+Der Prinz kennt den Namen [des Mädchens]{Gen: Wessen Namen kennt der Prinz nicht?} nicht.
+Während [des Festes]{Gen: Während wessen tanzt Aschenputtel mit dem Prinzen?} tanzt Aschenputtel mit [dem Prinzen]{Dat: Mit wem tanzt Aschenputtel während des Festes?}.
+`;
+
+// ---------- Parser ----------
+const TAG = { nom: 'Nom', nominativ: 'Nom', n: 'Nom', '1': 'Nom', gen: 'Gen', genitiv: 'Gen', g: 'Gen', '2': 'Gen', dat: 'Dat', dativ: 'Dat', d: 'Dat', '3': 'Dat', akk: 'Akk', akkusativ: 'Akk', acc: 'Akk', a: 'Akk', '4': 'Akk' };
+const PREP = {};
+'an auf hinter in neben über unter vor zwischen'.split(' ').forEach(p => PREP[p] = 'wechsel');
+'aus bei mit nach seit von zu gegenüber außer'.split(' ').forEach(p => PREP[p] = 'dat');
+'durch für gegen ohne um bis'.split(' ').forEach(p => PREP[p] = 'akk');
+'wegen trotz während statt anstatt innerhalb außerhalb'.split(' ').forEach(p => PREP[p] = 'gen');
+const CONTR = { im: 'in', ins: 'in', am: 'an', ans: 'an', aufs: 'auf', zum: 'zu', zur: 'zu', vom: 'von', beim: 'bei', 'übers': 'über', unters: 'unter', vors: 'vor', hinters: 'hinter', ums: 'um', durchs: 'durch', 'fürs': 'für' };
+const prepOf = w => { const lw = String(w).toLowerCase(); const b = CONTR[lw] || lw; return PREP[b] ? { base: b, kind: PREP[b] } : null; };
+
+function topLevelPipe(line) {
+  let d = 0;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '[' || c === '{') d++;
+    else if (c === ']' || c === '}') d = Math.max(0, d - 1);
+    else if (c === '|' && d === 0) return i;
+  }
+  return -1;
+}
+
+function parseLine(raw, no) {
+  let line = String(raw).replace(/\r/g, '').replace(/\s+/g, ' ').trim();
+  if (!line || /^(#|<!--|>|-{3,}$|={3,}$|\*{3,}$)/.test(line)) return null;
+  line = line.replace(/^([-*+]|\d+[.)])\s+/, '').trim();
+  if (!line) return null;
+  const out = { raw: line, no, plain: '', groups: [], errors: [], warnings: [], notes: [] };
+  let gq = null;
+  const pi = topLevelPipe(line);
+  if (pi >= 0) { gq = line.slice(pi + 1).trim() || null; line = line.slice(0, pi).trim(); }
+  const re = /\[([^\[\]{}]+)\]\s*\{([^{}]*)\}/g;
+  let m, pos = 0, plain = '';
+  while ((m = re.exec(line))) {
+    plain += line.slice(pos, m.index);
+    const text = m[1].trim();
+    const inner = m[2].trim();
+    let tagRaw = inner, q = null;
+    const ci = inner.indexOf(':');
+    if (ci >= 0) { tagRaw = inner.slice(0, ci).trim(); q = inner.slice(ci + 1).trim() || null; }
+    const cs = TAG[tagRaw.toLowerCase()];
+    if (!cs) out.errors.push(`„{${tagRaw}}“ kenne ich nicht. Erlaubt sind Nom, Gen, Dat, Akk.`);
+    const start = plain.length;
+    plain += text;
+    out.groups.push({ text, case: cs || null, q, start, end: plain.length, prep: null });
+    pos = m.index + m[0].length;
+  }
+  plain += line.slice(pos);
+  out.plain = plain;
+  if (/[\[\]{}]/.test(plain)) out.errors.push('Eine Klammer passt nicht. So geht es: [dem Frosch]{Dat}');
+  if (!out.groups.length && !out.errors.length) out.errors.push('Keine markierte Gruppe gefunden. So geht es: [dem Frosch]{Dat}');
+  out.groups.forEach(g => {
+    const mm = plain.slice(0, g.start).match(/([A-Za-zÄÖÜäöüß]+)\s+$/);
+    if (mm) { const p = prepOf(mm[1]); if (p) g.prep = { word: mm[1], base: p.base, kind: p.kind }; }
+  });
+  if (gq) {
+    if (out.groups.length === 1 && !out.groups[0].q) out.groups[0].q = gq;
+    else if (out.groups.length > 1) out.warnings.push('Bei mehreren Gruppen gehört die Frage in die Klammer: [dem Frosch]{Dat: Wem …?}');
+  }
+  out.groups.forEach(g => {
+    if (!g.case) return;
+    if (!g.q) out.warnings.push(`„${g.text}“ hat keine Frage. Der Karpfen gibt dann allgemeine Tipps, die Fragen-Reihe entfällt.`);
+    else if (!probeOpts(g, ORDER)) out.notes.push(`Zu „${g.text}“ gibt es keine Fragen-Reihe (Frage beginnt nicht mit einem Fragewort wie Wer, Wen, Wem, Wessen, Worauf …). Die Kasus-Reihe funktioniert.`);
+    if (g.prep && g.prep.kind === 'gen' && g.case !== 'Gen') out.warnings.push(`„${g.prep.word} ${g.text}“: Nach „${g.prep.word}“ steht in der Schriftsprache der Genitiv. Bitte prüfen.`);
+    const ql = g.q ? g.q.trim().toLowerCase() : '';
+    const b = g.prep ? g.prep.base : '';
+    if (g.prep && g.q && !(ql.startsWith('wo' + b) || ql.startsWith('wor' + b) || ql.startsWith(b + ' ') || /^(wohin|wo)\s/.test(ql) || (b === 'wegen' && /^wes(wegen|halb)\s/.test(ql))))
+      out.notes.push(`„${g.prep.word} ${g.text}“: Tipp – die Frage sollte die Präposition enthalten, z. B. ${g.prep.kind === 'gen' ? `„${cap(g.prep.base)} wessen …?“` : `„Wo${/^[aeiouäöü]/i.test(g.prep.base) ? 'r' : ''}${g.prep.base} …?“ oder „${cap(g.prep.base)} wem …?“`}`);
+  });
+  return out;
+}
+
+function parseAll(text, src) {
+  const res = [];
+  String(text || '').split('\n').forEach((ln, i) => {
+    const p = parseLine(ln, i + 1);
+    if (p && !p.errors.length) { p.id = src + ':' + i; p.src = src; res.push(p); }
+  });
+  return res;
+}
+
+// Antwort für die Frageprobe, z. B. „Dem Frosch.“ oder „Auf dem Tisch.“
+const answerOf = g => cap((g.prep ? g.prep.word + ' ' : '') + g.text) + '.';
+
+// ---------- Vollständige Fragen für die Fragen-Reihe ----------
+// Fragewort am Anfang abtrennen, Rest der Frage behalten.
+const LEAD_RE = /^(Weswegen|Weshalb|Wo(?:r)?(?:auf|an|in|über|unter|vor|hinter|neben|zwischen|aus|bei|mit|nach|von|zu|durch|für|gegen|um)|Wohin|Woher|Wo|Wer oder was|Wen oder was|Wem oder was|Wessen|Wem|Wen|Wer|Was|[A-Za-zÄÖÜäöüß]+\s+(?:wem oder was|wen oder was|wem|wen|wessen))(?=[\s?]|$)\s*(.*)$/i;
+function splitQ(q) { const m = String(q || '').trim().match(LEAD_RE); return m ? { lead: m[1], rest: m[2] } : null; }
+function dropNoun(rest) {
+  const t = rest.split(' ');
+  const i = t.findIndex(w => /^[A-ZÄÖÜ]/.test(w));
+  return i >= 0 ? t.slice(i + 1).join(' ') : rest;
+}
+const joinQ = (lead, rest) => !rest ? lead + '?' : (/^[?!.,]/.test(rest) ? lead + rest : lead + ' ' + rest);
+
+// Liefert die Antwortmöglichkeiten der Fragen-Reihe (eine pro Kasus) oder null.
+function probeOpts(g, avail) {
+  if (!g.q || !g.case) return null;
+  const sp = splitQ(g.q);
+  if (!sp) return null;
+  const lead = sp.lead, rest = sp.rest;
+  // 1) Präpositionalgruppe: Präposition gehört in die Frage
+  if (g.prep) {
+    if (g.case === 'Nom') return null;
+    const P = cap(g.prep.base);
+    if (g.prep.kind === 'gen' || g.case === 'Gen') {
+      if (g.case !== 'Gen') return null;
+      const opts = [{ case: 'Gen', lead: P + ' wessen', rest }];
+      if (avail.includes('Dat')) opts.push({ case: 'Dat', lead: P + ' wem oder was', rest });
+      if (avail.includes('Akk')) opts.push({ case: 'Akk', lead: P + ' wen oder was', rest });
+      return opts.length >= 2 ? { kind: 'genprep', opts } : null;
+    }
+    const opts = [];
+    if (avail.includes('Dat')) opts.push({ case: 'Dat', lead: P + ' wem oder was', rest });
+    if (avail.includes('Akk')) opts.push({ case: 'Akk', lead: P + ' wen oder was', rest });
+    return opts.length >= 2 ? { kind: 'prep', opts } : null;
+  }
+  // 2) Genitivattribut: „Wessen Tochter …?“ oder „Auf wessen Rand …?“
+  if (g.case === 'Gen') {
+    const pm = lead.match(/^([A-Za-zÄÖÜäöüß]+)\s+wessen$/i);
+    if (pm && prepOf(pm[1])) {
+      const P = cap(pm[1].toLowerCase()), other = dropNoun(rest);
+      const opts = [{ case: 'Gen', lead: P + ' wessen', rest }];
+      if (avail.includes('Dat')) opts.push({ case: 'Dat', lead: P + ' wem oder was', rest: other });
+      if (avail.includes('Akk')) opts.push({ case: 'Akk', lead: P + ' wen oder was', rest: other });
+      return opts.length >= 2 ? { kind: 'gen', opts } : null;
+    }
+    if (!/^wessen$/i.test(lead)) return null;
+    const other = dropNoun(rest);
+    const opts = avail.map(c => ({ case: c, lead: CI[c].qw, rest: c === 'Gen' ? rest : other }));
+    return opts.length >= 2 ? { kind: 'gen', opts } : null;
+  }
+  // 3) Nominativ, Dativ, Akkusativ ohne Präposition
+  if (!/^(wer oder was|wen oder was|wem oder was|wem|wen|wer|was)$/i.test(lead)) return null;
+  const opts = avail.filter(c => c !== 'Gen').map(c => ({ case: c, lead: CI[c].qw, rest }));
+  return opts.length >= 2 ? { kind: 'plain', opts } : null;
+}
+const optText = o => joinQ(o.lead, o.rest);
+
+// Die passende Probe-Frage (für den Karpfen-Tipp)
+function probeQuestion(g) {
+  const p = probeOpts(g, ORDER);
+  if (!p) return null;
+  const o = p.opts.find(o => o.case === g.case);
+  return o ? optText(o) : null;
+}
+
+// Reihen für eine Überquerung bauen: erst die Frage, dann der Kasus
+function buildRows(sent, level, ext) {
+  const av = LEVEL_CASES[level], out = [];
+  const asked = sent.groups.map((g, gi) => ({ g, gi })).filter(o => o.g.case && av.includes(o.g.case));
+  // Fragen-Reihen für höchstens zwei Gruppen, Nominativ zuletzt
+  let qSet = new Set();
+  if (ext && level >= 2) {
+    const cand = asked.filter(o => probeOpts(o.g, av)).sort((a, b) => (a.g.case === 'Nom') - (b.g.case === 'Nom'));
+    cand.slice(0, 2).forEach(o => qSet.add(o.gi));
+  }
+  asked.forEach(({ g, gi }) => {
+    if (qSet.has(gi)) {
+      const pv = probeOpts(g, av);
+      out.push({ type: 'q', gi, opts: shuffle(pv.opts.map(o => ({ case: o.case, lead: o.lead, rest: o.rest, correct: o.case === g.case }))) });
+    }
+    out.push({ type: 'k', gi, opts: shuffle(av.map(c => ({ case: c, correct: c === g.case }))) });
+  });
+  return out;
+}
+
+// Wie gut hilft der Artikel? (für den Einstieg in Level 1)
+function easyScore(s, av) {
+  const asked = s.groups.filter(g => av.includes(g.case));
+  if (!asked.length) return 0;
+  let n = 0;
+  asked.forEach(g => {
+    if (g.case === 'Nom' && /^der\s/i.test(g.text)) n++;
+    if (g.case === 'Akk' && !g.prep && /^(den|einen)\s/i.test(g.text)) n++;
+  });
+  return n / asked.length;
+}
+
+// Frage mit hervorgehobenem Fragewort
+function fmtQ(q) {
+  const sp = splitQ(q);
+  return sp ? `<b>${esc(sp.lead)}</b>${sp.rest ? (/^[?!.,]/.test(sp.rest) ? '' : ' ') + esc(sp.rest) : '?'}` : esc(q);
+}
+
+// =========================================================
+// Lokaler Speicher (nur Sticker, Zähler, Einstellungen, eigene Sätze – keine Namen)
+// =========================================================
+const STORE_KEY = 'kasusteich.v1';
+function loadStore() { try { return JSON.parse(localStorage.getItem(STORE_KEY) || '{}') || {}; } catch (e) { return {}; } }
+const saved = loadStore();
+saved.stickers = saved.stickers || {};
+saved.count = Object.assign({ Nom: 0, Gen: 0, Dat: 0, Akk: 0, frage: 0, hilfe: 0, balls: 0, mut: 0 }, saved.count || {});
+saved.settings = Object.assign({ mode: 'normal', teams: 1, ext: true, tempo: false, perBall: 5, source: 'builtin', music: true, sfx: true, startLevel: 1 }, saved.settings || {});
+saved.custom = typeof saved.custom === 'string' ? saved.custom : '';
+function persist() { try { localStorage.setItem(STORE_KEY, JSON.stringify(saved)); } catch (e) { /* ohne Speicher geht es auch */ } }
+const SET = saved.settings;
+
+// =========================================================
+// Musik und Geräusche (Web Audio API, alles selbst erzeugt)
+// =========================================================
+const SND = {
+  ctx: null, master: null, music: null, sfx: null, echo: null, on: false, timer: null,
+  init() {
+    if (this.ctx) return;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    const c = this.ctx = new AC();
+    this.master = c.createGain(); this.master.gain.value = 0.7; this.master.connect(c.destination);
+    const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 5200; lp.connect(this.master);
+    this.music = c.createGain(); this.music.gain.value = 0; this.music.connect(lp);
+    this.sfx = c.createGain(); this.sfx.gain.value = 0.5; this.sfx.connect(this.master);
+    // sanftes Echo für die Spieluhr
+    const d = c.createDelay(1); d.delayTime.value = 0.37;
+    const fb = c.createGain(); fb.gain.value = 0.3;
+    const wet = c.createGain(); wet.gain.value = 0.32;
+    d.connect(fb); fb.connect(d); d.connect(wet); wet.connect(lp);
+    this.echo = d;
+    // weißes Rauschen für das Platschen
+    const len = c.sampleRate * 0.6, buf = c.createBuffer(1, len, c.sampleRate), ch = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) ch[i] = Math.random() * 2 - 1;
+    this.noise = buf;
+  },
+  resume() { if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume(); },
+  setMusic(on) {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    this.music.gain.cancelScheduledValues(t);
+    this.music.gain.setTargetAtTime(on ? 0.2 : 0, t, 0.6);
+    if (on && !this.on) { this.on = true; MUSIC.start(); }
+    if (!on && this.on) { this.on = false; setTimeout(() => { if (!this.on) MUSIC.stop(); }, 2500); }
+  },
+  // Spieluhr-Ton
+  box(midi, when, vel = 1, dest) {
+    const c = this.ctx; if (!c) return;
+    const f = 440 * Math.pow(2, (midi - 69) / 12);
+    const g = c.createGain(); g.gain.value = 0;
+    g.connect(dest || this.music);
+    if (!dest) g.connect(this.echo);
+    const dur = midi < 60 ? 2.4 : midi < 72 ? 1.9 : 1.4;
+    [[1, 1, 'sine'], [2, 0.22, 'sine'], [3.98, 0.06, 'sine']].forEach(([m, a, type]) => {
+      const o = c.createOscillator(); o.type = type; o.frequency.value = f * m;
+      const og = c.createGain(); og.gain.value = a; o.connect(og); og.connect(g);
+      o.start(when); o.stop(when + dur + 0.1);
+    });
+    g.gain.setValueAtTime(0, when);
+    g.gain.linearRampToValueAtTime(0.32 * vel, when + 0.006);
+    g.gain.exponentialRampToValueAtTime(0.0008, when + dur);
+  },
+  pad(midi, when, dur, vel = 1) {
+    const c = this.ctx; if (!c) return;
+    const f = 440 * Math.pow(2, (midi - 69) / 12);
+    const o = c.createOscillator(); o.type = 'triangle'; o.frequency.value = f;
+    const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 700;
+    const g = c.createGain(); g.gain.value = 0;
+    o.connect(lp); lp.connect(g); g.connect(this.music);
+    g.gain.setValueAtTime(0, when);
+    g.gain.linearRampToValueAtTime(0.22 * vel, when + 0.08);
+    g.gain.exponentialRampToValueAtTime(0.001, when + dur);
+    o.start(when); o.stop(when + dur + 0.1);
+  },
+  tone(f, dur, type = 'sine', vol = 0.3, when = 0, glide = null) {
+    const c = this.ctx; if (!c || !SET.sfx) return;
+    const t = c.currentTime + when;
+    const o = c.createOscillator(); o.type = type; o.frequency.setValueAtTime(f, t);
+    if (glide) o.frequency.exponentialRampToValueAtTime(glide, t + dur);
+    const g = c.createGain(); g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(vol, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.connect(g); g.connect(this.sfx); o.start(t); o.stop(t + dur + 0.05);
+  },
+  splash(when = 0) {
+    const c = this.ctx; if (!c || !SET.sfx) return;
+    const t = c.currentTime + when;
+    const s = c.createBufferSource(); s.buffer = this.noise;
+    const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.setValueAtTime(1400, t); bp.frequency.exponentialRampToValueAtTime(400, t + 0.4); bp.Q.value = 0.9;
+    const g = c.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.35, t + 0.02); g.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
+    s.connect(bp); bp.connect(g); g.connect(this.sfx); s.start(t); s.stop(t + 0.5);
+  },
+  play(name) {
+    if (!this.ctx || !SET.sfx) return;
+    const T = (m, d, w, v, ty) => this.tone(440 * Math.pow(2, (m - 69) / 12), d, ty || 'triangle', v || 0.22, w || 0);
+    switch (name) {
+      case 'tap': this.tone(880, 0.06, 'sine', 0.08); break;
+      case 'jump': this.tone(330, 0.18, 'sine', 0.18, 0, 620); break;
+      case 'good': T(84, 0.5, 0, 0.18); T(88, 0.6, 0.09, 0.16); T(91, 0.8, 0.18, 0.14); break;
+      case 'qgood': T(81, 0.5, 0, 0.16); T(86, 0.7, 0.1, 0.14); break;
+      case 'plop': this.tone(260, 0.3, 'sine', 0.25, 0, 90); this.splash(0.04); break;
+      case 'blub': this.tone(180, 0.12, 'sine', 0.16, 0, 120); this.tone(220, 0.12, 'sine', 0.14, 0.15, 140); break;
+      case 'arrive': [72, 76, 79, 84, 88].forEach((m, i) => T(m, 0.6, i * 0.09, 0.15)); break;
+      case 'gold': [77, 81, 84, 89, 93, 96].forEach((m, i) => T(m, 0.9, i * 0.11, 0.14)); [65, 69, 72].forEach(m => T(m, 1.6, 0.66, 0.08, 'sine')); break;
+      case 'sticker': [96, 100, 103, 108].forEach((m, i) => T(m, 0.4, i * 0.06, 0.08, 'sine')); break;
+      case 'croak': this.tone(140, 0.09, 'square', 0.05, 0, 110); this.tone(150, 0.09, 'square', 0.05, 0.12, 115); break;
+      case 'heart': T(88, 0.3, 0, 0.1, 'sine'); T(93, 0.4, 0.08, 0.08, 'sine'); break;
+    }
+  }
+};
+
+// Ruhige, leicht veränderliche Märchen-Melodie im Dreivierteltakt (F-Dur, pentatonisch)
+const MUSIC = {
+  bpm: 76, beat: 60 / 76, nextBar: 0, bar: 0, phraseIdx: 0, timer: null, phrases: {}, lastNote: 77,
+  CH: { F: { bass: 41, arp: [57, 60, 65], tones: [65, 69, 72, 77, 81, 84] }, Dm: { bass: 38, arp: [57, 62, 65], tones: [62, 65, 69, 74, 77, 81] }, Bb: { bass: 46, arp: [58, 62, 65], tones: [65, 70, 74, 77, 82] }, C: { bass: 48, arp: [55, 60, 64], tones: [67, 72, 76, 79, 84] }, Am: { bass: 45, arp: [57, 60, 64], tones: [69, 72, 76, 81, 84] } },
+  PROG: { A: ['F', 'Dm', 'Bb', 'C', 'F', 'Am', 'Bb', 'C'], B: ['Bb', 'C', 'Am', 'Dm', 'Bb', 'C', 'F', 'F'] },
+  PENTA: [65, 67, 69, 72, 74, 77, 79, 81, 84],
+  RHY: [[1, 1, 1], [2, 1], [1, 2], [1, 0.5, 0.5, 1], [1.5, 0.5, 1], [3]],
+  makePhrase(key) {
+    const prog = this.PROG[key], bars = [];
+    let last = this.lastNote;
+    prog.forEach((ch, bi) => {
+      const end = bi === 3 || bi === 7;
+      const rhy = end ? [3] : pick(this.RHY.slice(0, 5));
+      const notes = []; let t = 0;
+      rhy.forEach((d, k) => {
+        let m;
+        if (k === 0 || end) {
+          const tones = this.CH[ch].tones.filter(x => x >= 65 && x <= 84);
+          m = tones.reduce((a, b) => Math.abs(b - last) < Math.abs(a - last) ? b : a);
+          if (end && key === 'B' && bi === 7) m = 77;
+        } else {
+          let i = this.PENTA.indexOf(last); if (i < 0) i = 4;
+          i = clamp(i + pick([-2, -1, -1, 1, 1, 2]), 1, this.PENTA.length - 1);
+          m = this.PENTA[i];
+        }
+        notes.push({ t, m, d }); last = m; t += d;
+      });
+      bars.push({ ch, notes });
+    });
+    this.lastNote = last;
+    return bars;
+  },
+  start() {
+    if (this.timer) return;
+    this.phrases = { A: this.makePhrase('A'), B: this.makePhrase('B') };
+    this.nextBar = SND.ctx.currentTime + 0.2; this.bar = 0; this.phraseIdx = 0;
+    this.timer = setInterval(() => this.tick(), 90);
+  },
+  stop() { clearInterval(this.timer); this.timer = null; },
+  tick() {
+    const c = SND.ctx; if (!c) return;
+    const barDur = this.beat * 3;
+    while (this.nextBar < c.currentTime + 0.4) {
+      const form = ['A', 'A', 'B', 'A'];
+      const key = form[this.phraseIdx % 4];
+      const ph = this.phrases[key];
+      const b = ph[this.bar], ch = this.CH[b.ch], t0 = this.nextBar;
+      SND.pad(ch.bass, t0, barDur * 1.1, 0.9);
+      SND.box(ch.arp[0], t0 + this.beat, 0.28); SND.box(ch.arp[1], t0 + this.beat * 2, 0.24);
+      if (this.bar % 2 === 1) SND.box(ch.arp[2], t0 + this.beat * 2.5, 0.18);
+      const rest = (this.phraseIdx % 8 === 7) && this.bar >= 4; // gelegentlich atmen
+      if (!rest) b.notes.forEach(n => SND.box(n.m, t0 + n.t * this.beat, 0.62));
+      this.nextBar += barDur;
+      this.bar++;
+      if (this.bar >= ph.length) {
+        this.bar = 0; this.phraseIdx++;
+        if (this.phraseIdx % 4 === 0) this.phrases.B = this.makePhrase('B');
+        if (this.phraseIdx % 8 === 0) this.phrases.A = this.makePhrase('A');
+      }
+    }
+  }
+};
+
+// =========================================================
+// Pixel-Sprites
+// =========================================================
+function makeSprite(rows, pal) {
+  const h = rows.length, w = Math.max(...rows.map(r => r.length));
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const x = c.getContext('2d');
+  rows.forEach((r, y) => { for (let i = 0; i < r.length; i++) { const ch = r[i]; if (ch !== '.' && ch !== ' ' && pal[ch]) { x.fillStyle = pal[ch]; x.fillRect(i, y, 1, 1); } } });
+  return c;
+}
+const FROG_ROWS = [
+  '.....y.y.y.....',
+  '.ooo.yyyyy.ooo.',
+  'owwkogYYYgokwwo',
+  'owwkogggggokwwo',
+  '.olgggggggggog.',
+  'oggpgggggggpggo',
+  'oggggkgggkggggo',
+  'ogggggkkkgggggo',
+  '.ogggbbbbbgggo.',
+  'ogggbbbbbbbgggo',
+  'oggobbbbbbboggo',
+  'ogggobbbbbogggo',
+  '.oolloo.oolloo.'
+];
+const FROG_JUMP_ROWS = [
+  '.....y.y.y.....',
+  '.ooo.yyyyy.ooo.',
+  'owwkogYYYgokwwo',
+  'owwkogggggokwwo',
+  '.olgggggggggog.',
+  'oggpgggggggpggo',
+  'oggggkkkkkggggo',
+  '.ogggbbbbbgggo.',
+  '..ogbbbbbbbgo..',
+  '..oggbbbbbggo..',
+  '..ogo.....ogo..',
+  '.ogo.......ogo.',
+  'olo.........olo',
+  'oo...........oo'
+];
+const FROG_PAL = [
+  { o: '#3F7F4A', g: '#8FD48A', l: '#B7E8A6', b: '#E3F7D4', w: '#FFFFFF', k: '#2E2A3A', y: '#F5CF52', Y: '#D9A42C', p: '#F6B3C6' },
+  { o: '#3E6B9A', g: '#93C3EE', l: '#BFDDF7', b: '#E6F2FD', w: '#FFFFFF', k: '#2E2A3A', y: '#F5CF52', Y: '#D9A42C', p: '#F6B3C6' }
+];
+const TEAM = [{ name: 'Team Seerose', dot: '#8FD48A' }, { name: 'Team Libelle', dot: '#93C3EE' }];
+const PRINCESS_ROWS = [
+  '....y.y.y....',
+  '....yyyyy....',
+  '...hhhhhhh...',
+  '..hhssssshh..',
+  '..hsksssksh..',
+  '..hsrsssrsh..',
+  '..hsssmsssh..',
+  '..hhssssshh..',
+  '.hhh.sss.hhh.',
+  '.hhpppppppph.',
+  '.hppppPpppph.',
+  '..sppppppps..',
+  '..sPpppppPs..',
+  '...ppppppp...',
+  '..ppppPpppp..',
+  '..pppPpPppp..',
+  '.ppppPpPpppp.',
+  '.pppPpppPppp.',
+  'pppPpppppPppp',
+  'PPPPPPPPPPPPP',
+  '...oo...oo...'
+];
+const PRINCESS_PAL = { h: '#F7D88A', H: '#E2B65C', s: '#FBE0CF', k: '#3A3350', r: '#F6AFC2', m: '#E77F9C', p: '#F4B8D6', P: '#E58DB8', y: '#F5CF52', o: '#9C83C9' };
+const BALL_ROWS = ['..YYY..', '.YyyyY.', 'YywyyyY', 'YyyyyyY', 'YyyyyYY', '.YyyYY.', '..YYY..'];
+const BALL_PAL = { y: '#F5CF52', Y: '#D9A42C', w: '#FFF7D0' };
+const CARP_ROWS = [
+  '.......oooooo.....',
+  '.....oowwwccccoo..',
+  'oo..owwwrrccccccoo',
+  'ffoocwwrrrcccccekco',
+  'fffocccrrccccccccmo',
+  'fffocllllllccccccoo',
+  'ffoocllllllllccco.',
+  'oo..oollllllcoo...',
+  '......ooffoooo....',
+  '.......off........'
+];
+const CARP_PAL = { o: '#C27352', c: '#F8B48A', l: '#FDE3D0', w: '#FFF6EE', r: '#F2906E', e: '#FFFFFF', k: '#3A3350', f: '#F7A27F', m: '#E07A63' };
+const HEART_ROWS = ['.rr.rr.', 'rrrrrrr', 'rrwrrrr', '.rrrrr.', '..rrr..', '...r...'];
+const HEART_PAL = { r: '#F49AB7', w: '#FFE3EE' };
+const FLOWER_ROWS = ['..p.p..', '.ppPpp.', 'pppyppp', '.ppppp.', '..ppp..'];
+const FLOWER_PAL = { p: '#F7C3D9', P: '#F29BC0', y: '#F5CF52' };
+const DRAGON_ROWS = [
+  '.....bb.....',
+  '.ww..bb..ww.',
+  'wwww.bb.wwww',
+  '.wwwwbbwwww.',
+  '..wwwbbwww..',
+  '.wwwwbbwwww.',
+  'wwww.bb.wwww',
+  '.ww..bb..ww.',
+  '.....bb.....',
+  '.....bb.....',
+  '.....bb.....',
+  '.....b......'
+];
+const DRAGON_PAL = { b: '#8F9EE0', w: '#E9F1FF' };
+const CROWN_ROWS = ['y.....y.....y', 'yy...yyy...yy', 'yyy.yyyyy.yyy', 'yyyyyyryyyyyy', 'yyyyyyyyyyyyy', 'YYYYYYYYYYYYY', 'ybyyybyyybyyy', 'YYYYYYYYYYYYY'];
+const CROWN_PAL = { y: '#F5CF52', Y: '#D9A42C', r: '#F29BB0', b: '#A9CFF5' };
+const STAR_ROWS = ['....y....', '....y....', '...yyy...', 'yyyywyyyy', '.yyyyyyy.', '..yyyyy..', '..yy.yy..', '.yy...yy.', '.y.....y.'];
+const STAR_PAL = { y: '#F5CF52', w: '#FFF7D0' };
+const DROP_ROWS = ['...b...', '...b...', '..bbb..', '.bbbbb.', 'bbwbbbb', 'bwbbbbb', 'bbbbbbb', '.bbbbb.', '..bbb..'];
+const DROP_PAL = { b: '#8CC9EA', w: '#E6F6FD' };
+const CASTLE_ROWS = [
+  '..r...........r..',
+  '.rrr....f....rrr.',
+  'rrrrr...ff..rrrrr',
+  '.www...rrr...www.',
+  '.wdw..rrrrr..wdw.',
+  '.www.rrrrrrr.www.',
+  '.w.w.w.www.w.w.w.',
+  '.wwwwwwwwwwwwwww.',
+  '.wdwwwwwdwwwwwdw.',
+  '.wwwwwwwwwwwwwww.',
+  '.wwwwwwgggwwwwww.',
+  '.wwwwwgggggwwwww.',
+  '.wwwwwgggggwwwww.',
+  '.SSSSSSSSSSSSSSS.'
+];
+const CASTLE_PAL = { r: '#F2B8CE', w: '#EDE3F7', d: '#B9A6E0', g: '#C9BCE4', f: '#F5CF52', S: '#D6CCE8' };
+const LETTERS = {
+  N: ['o...o', 'oo..o', 'o.o.o', 'o.o.o', 'o..oo', 'o...o', 'o...o'],
+  A: ['.ooo.', 'o...o', 'o...o', 'ooooo', 'o...o', 'o...o', 'o...o'],
+  D: ['oooo.', 'o...o', 'o...o', 'o...o', 'o...o', 'o...o', 'oooo.'],
+  G: ['.ooo.', 'o...o', 'o....', 'o.ooo', 'o...o', 'o...o', '.ooo.'],
+  '?': ['.ooo.', 'o...o', '....o', '...o.', '..o..', '.....', '..o..']
+};
+
+// Pixel-Icons für Knöpfe (12 × 12)
+const ICONS = {
+  album: ['............', '..oooooooo..', '.orrrrrrrro.', '.orrrryrrro.', '.orrryyyrro.', '.orrrryrrro.', '.orrrrrrrro.', '.orrrrrrrro.', '.owwwwwwwwo.', '.oooooooooo.', '............', '............'],
+  music: ['............', '....ooooooo.', '....ooooooo.', '....o.....o.', '....o.....o.', '....o.....o.', '..ooo...ooo.', '.oooo..oooo.', '.oooo..oooo.', '..oo....oo..', '............', '............'],
+  home: ['............', '.....oo.....', '....oooo....', '...oorroo...', '..oorrrroo..', '.oorrrrrroo.', '..owwwwwwo..', '..owwoowwo..', '..owwoowwo..', '..oooooooo..', '............', '............'],
+  gear: ['............', '.....oo.....', '..oo.oo.oo..', '..oooooooo..', '...oo..oo...', '.ooo....ooo.', '.ooo....ooo.', '...oo..oo...', '..oooooooo..', '..oo.oo.oo..', '.....oo.....', '............'],
+  full: ['............', '.oooo..oooo.', '.ooo....ooo.', '.oo......oo.', '.o.o....o.o.', '............', '............', '.o.o....o.o.', '.oo......oo.', '.ooo....ooo.', '.oooo..oooo.', '............'],
+  unfull: ['............', '...o....o...', '...o....o...', '.ooo....ooo.', '............', '............', '............', '............', '.ooo....ooo.', '...o....o...', '...o....o...', '............'],
+  pipOff: ['..ooo..', '.o...o.', 'o.....o', 'o.....o', 'o.....o', '.o...o.', '..ooo..']
+};
+const ICON_PAL = { o: '#4A3F7A', r: '#F4B8D6', y: '#F5CF52', w: '#FFFFFF' };
+
+const SPR = {};
+function buildSprites() {
+  SPR.frog = FROG_PAL.map(p => makeSprite(FROG_ROWS, p));
+  SPR.frogJ = FROG_PAL.map(p => makeSprite(FROG_JUMP_ROWS, p));
+  SPR.princess = makeSprite(PRINCESS_ROWS, PRINCESS_PAL);
+  SPR.ball = makeSprite(BALL_ROWS, BALL_PAL);
+  SPR.carp = makeSprite(CARP_ROWS, CARP_PAL);
+  SPR.heart = makeSprite(HEART_ROWS, HEART_PAL);
+  SPR.flower = makeSprite(FLOWER_ROWS, FLOWER_PAL);
+  SPR.dragon = makeSprite(DRAGON_ROWS, DRAGON_PAL);
+  SPR.crown = makeSprite(CROWN_ROWS, CROWN_PAL);
+  SPR.star = makeSprite(STAR_ROWS, STAR_PAL);
+  SPR.drop = makeSprite(DROP_ROWS, DROP_PAL);
+  SPR.castle = makeSprite(CASTLE_ROWS, CASTLE_PAL);
+  SPR.icon = {};
+  Object.keys(ICONS).forEach(k => { SPR.icon[k] = makeSprite(ICONS[k], k === 'pipOff' ? { o: '#CFC6E2' } : ICON_PAL); });
+  // Musik aus: Notensymbol mit Querstrich
+  const mo = document.createElement('canvas'); mo.width = 12; mo.height = 12;
+  const mx = mo.getContext('2d'); mx.globalAlpha = 0.45; mx.drawImage(SPR.icon.music, 0, 0); mx.globalAlpha = 1; mx.fillStyle = '#D0507E';
+  for (let i = 1; i < 11; i++) mx.fillRect(i, i, 2, 1);
+  SPR.icon.musicOff = mo;
+  SPR.letter = {};
+  Object.keys(LETTERS).forEach(k => { SPR.letter[k] = makeSprite(LETTERS[k], { o: '#3A3350' }); });
+}
+
+// Pixel-Ellipse auf beliebigem Kontext (ganzzahlige Zeilen)
+function pEllipse(ctx, cx, cy, rx, ry, col) {
+  if (rx <= 0 || ry <= 0) return;
+  ctx.fillStyle = col;
+  const r0 = Math.ceil(ry);
+  for (let yy = -r0; yy <= r0; yy++) {
+    const t = (yy + 0.5 * Math.sign(-yy)) / ry;
+    if (Math.abs(t) > 1) continue;
+    const hw = Math.round(rx * Math.sqrt(1 - t * t));
+    if (hw <= 0) continue;
+    ctx.fillRect(Math.round(cx) - hw, Math.round(cy) + yy, hw * 2, 1);
+  }
+}
+function pRing(ctx, cx, cy, rx, ry, col, dotted) {
+  ctx.fillStyle = col;
+  const n = Math.max(12, Math.ceil((rx + ry) * 3.2));
+  for (let i = 0; i < n; i++) {
+    if (dotted && (i % 6) > 2) continue;
+    const a = i / n * Math.PI * 2;
+    ctx.fillRect(Math.round(cx + Math.cos(a) * rx), Math.round(cy + Math.sin(a) * ry), 1, 1);
+  }
+}
+// Seerosenblatt
+const WATER = '#A9DDEA';
+function pPad(ctx, cx, cy, rx, ry, pal, notch, waterCol) {
+  pEllipse(ctx, cx, cy + 1.5, rx, ry, 'rgba(70,120,150,0.20)');
+  pEllipse(ctx, cx, cy, rx, ry, pal.rim);
+  pEllipse(ctx, cx, cy - 0.5, rx - 1, ry - 1, pal.fill);
+  pEllipse(ctx, cx - rx * 0.32, cy - ry * 0.42, rx * 0.34, Math.max(1, ry * 0.16), pal.hi);
+  if (notch) {
+    const th = 0.62, N = 10;
+    ctx.fillStyle = waterCol || WATER;
+    for (let k = 0; k <= N; k++) {
+      const f = 0.55 + 0.47 * (k / N);
+      const x = cx + Math.cos(th) * rx * f, y = cy + Math.sin(th) * ry * f;
+      const w = Math.max(1, Math.round((k / N) * rx * 0.16));
+      ctx.fillRect(Math.round(x - w / 2), Math.round(y - w / 2), w, w);
+    }
+  }
+}
+
+// =========================================================
+// Spielzustand
+// =========================================================
+const stage = $('#stage'), cvPix = $('#pix'), cvTxt = $('#txt');
+const px = cvPix.getContext('2d'), tx = cvTxt.getContext('2d');
+let W = 0, H = 0, P = 3, DPR = 1, LW = 0, LH = 0;
+const LAY = { bankTop: 150, bankBot: 120, worldH: 600 };
+
+function hex2rgb(h) { h = h.replace('#', ''); return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]; }
+function mix(a, b, t) { const A = hex2rgb(a), B = hex2rgb(b); return 'rgb(' + A.map((v, i) => Math.round(v + (B[i] - v) * t)).join(',') + ')'; }
+
+let POOL_BUILTIN = parseAll(CORPUS, 'b');
+let POOL_CUSTOM = parseAll(saved.custom, 'c');
+function pool() {
+  if (SET.source === 'custom' && POOL_CUSTOM.length) return POOL_CUSTOM;
+  if (SET.source === 'both') return POOL_BUILTIN.concat(POOL_CUSTOM);
+  return POOL_BUILTIN;
+}
+
+function newStats() {
+  const k = {}; ORDER.forEach(c => k[c] = { asked: 0, first: 0, wrong: 0, conf: {} });
+  return { k, q: { asked: 0, first: 0, wrong: 0 }, sents: {}, hints: 0, crossings: 0, flawless: 0 };
+}
+
+const G = {
+  running: false, paused: true, level: 1, solved: 0, turn: 0, score: [0, 0], best: 0,
+  streak: 0, used: {}, sent: null, rows: [], ri: -1, phase: 'idle', safe: { r: -1 },
+  rowErr: 0, rowSplash: false, crossErr: 0, hint: 0, rowTime: 0, done: {}, qDone: {},
+  sel: -1, selVis: false, cam: 0, t: 0, timers: [], fx: [], waves: [], deco: [],
+  carp: null, ballFly: null, joy: 0, frogS: 2,
+  frogs: [{ team: 0, at: { r: -1 }, x: 0, y: 0, anim: null, hidden: false }, { team: 1, at: { r: -1 }, x: 0, y: 0, anim: null, hidden: false }],
+  stats: newStats(), pending: [], teams: 1
+};
+const activeFrog = () => G.frogs[G.teams === 2 ? G.turn : 0];
+const mult = () => LEVEL_CASES[G.level].length;
+function later(sec, fn) { G.timers.push({ t: sec, fn }); }
+
+// ---------- Satzwahl ----------
+function chooseSentence() {
+  const av = LEVEL_CASES[G.level];
+  const cand = pool().filter(s => s.groups.some(g => g.case && av.includes(g.case)));
+  if (!cand.length) return null;
+  const key = 'L' + G.level;
+  G.used[key] = G.used[key] || new Set();
+  const lastId = G.sent && G.sent.id;
+  let fresh = cand.filter(s => !G.used[key].has(s.id) && s.id !== lastId);
+  if (!fresh.length) { G.used[key].clear(); fresh = cand.filter(s => s.id !== lastId); if (!fresh.length) fresh = cand; }
+  const nAsked = s => s.groups.filter(g => av.includes(g.case)).length;
+  let sub = fresh;
+  const nc = NEW_CASE[G.level];
+  if (G.level === 1 && G.solved < 2) {
+    const e = fresh.filter(s => easyScore(s, av) === 1 && nAsked(s) >= 2);
+    if (e.length) sub = e;
+  } else if (nc && Math.random() < 0.65 && fresh.some(s => s.groups.some(g => g.case === nc))) {
+    sub = fresh.filter(s => s.groups.some(g => g.case === nc));
+  } else {
+    const multi = fresh.filter(s => nAsked(s) >= 2);
+    if (multi.length && Math.random() < 0.75) sub = multi;
+  }
+  const s = pick(sub);
+  G.used[key].add(s.id);
+  return s;
+}
+
+// ---------- Layout ----------
+function fonts() {
+  const m = Math.min(W, H * 1.6);
+  return { big: clamp(m * 0.03, 18, 40), small: clamp(m * 0.021, 14, 27), q: clamp(m * 0.022, 15, 28) };
+}
+function fontStr(b, s) { return `${b ? 'bold ' : ''}${Math.round(s)}px ${FONT}`; }
+function wrapWords(words, s, maxW) {
+  const lines = []; let cur = null;
+  words.forEach(wd => {
+    tx.font = fontStr(wd.b, s);
+    const w = tx.measureText(wd.t).width, sp = tx.measureText(' ').width;
+    const it = { t: wd.t, font: fontStr(wd.b, s), w, sp };
+    if (!cur || (cur.w + sp + w > maxW && cur.items.length)) { cur = { items: [it], w, lh: s * 1.28 }; lines.push(cur); }
+    else { cur.items[cur.items.length - 1].spAfter = true; cur.w += sp + w; cur.items.push(it); }
+  });
+  return lines;
+}
+function buildLeaf(row, o, g, F, n) {
+  const Lf = o.leaf;
+  let lines = [];
+  const gap = clamp(W * 0.025, 10, 34);
+  if (row.demo) { Lf.lines = []; Lf.w = F.big * 5.2; Lf.h = F.big * 2.6; return; }
+  if (row.type === 'k') {
+    lines = wrapWords([{ t: CI[o.case].name, b: true }], F.big, 9999);
+    if (SET.mode === 'easy') {
+      let h = CI[o.case].short;
+      if (g.prep) h = o.case === 'Dat' ? cap(g.prep.base) + ' wem oder was?' : o.case === 'Akk' ? cap(g.prep.base) + ' wen oder was?' : o.case === 'Gen' ? cap(g.prep.base) + ' wessen?' : 'Wer oder was?';
+      lines = lines.concat(wrapWords(h.split(' ').map(t => ({ t, b: false })), F.small, F.big * 7));
+    }
+  } else {
+    const leadW = o.lead.split(' ').map(t => ({ t, b: true }));
+    const restW = (o.rest || '?').split(' ').filter(Boolean).map(t => ({ t, b: false }));
+    if (!o.rest) leadW[leadW.length - 1].t += '?';
+    const words = o.rest && /^[?!.,]/.test(o.rest) ? (leadW[leadW.length - 1].t += o.rest, leadW) : leadW.concat(restW);
+    let s = F.q, maxW = clamp((W - (n + 1) * gap) / n / 1.25 - 16, 110, 420);
+    for (let k = 0; k < 6; k++) { lines = wrapWords(words, s, maxW); if (lines.length <= 3 || s <= 14) break; s -= 1; }
+  }
+  const tw = Math.max(...lines.map(l => l.w)), th = lines.reduce((a, l) => a + l.lh, 0);
+  Lf.lines = lines;
+  Lf.w = Math.max(tw * 1.24 + F.small * 1.6, F.big * 5.4);
+  Lf.h = Math.max(th * 1.32 + F.small * 1.1, F.big * 2.5);
+}
+function arrange(row) {
+  const live = row.opts.filter(o => o.leaf.state !== 'sink' && o.leaf.state !== 'gone');
+  if (!live.length) return;
+  const gap = clamp(W * 0.025, 10, 34);
+  const sumW = live.reduce((a, o) => a + o.leaf.w, 0);
+  let lines = [live];
+  if (sumW + gap * (live.length + 1) > W && live.length > 1) { const k = Math.ceil(live.length / 2); lines = [live.slice(0, k), live.slice(k)]; }
+  let minSlack = 1e9;
+  lines.forEach((ln, li) => {
+    const sum = ln.reduce((a, o) => a + o.leaf.w, 0);
+    const g = Math.max(4, (W - sum) / (ln.length + 1));
+    minSlack = Math.min(minSlack, g);
+    let x = g;
+    ln.forEach(o => { o.leaf.tx = x + o.leaf.w / 2; x += o.leaf.w + g; o.leaf.line = li; });
+  });
+  const mh = Math.max(...live.map(o => o.leaf.h));
+  live.forEach(o => { o.leaf.tdy = lines.length === 1 ? 0 : (o.leaf.line === 0 ? -1 : 1) * (mh / 2 + 6); });
+  row.nLines = Math.max(row.nLines || 1, lines.length);
+  row.swayA = clamp((minSlack - gap * 0.6) * 0.45, 0, 28);
+}
+function layoutCrossing() {
+  const F = fonts();
+  G.rows.forEach((row, ri) => {
+    const g = G.sent ? G.sent.groups[row.gi] : null;
+    row.nLines = 1;
+    row.opts.forEach(o => {
+      o.leaf = o.leaf || { state: 'neutral', colorT: 0, sinkT: 0, labelA: 0, x: null, dy: 0, flower: Math.random() < 0.3 };
+      buildLeaf(row, o, g, F, row.opts.length);
+    });
+    arrange(row);
+    const mh = Math.max(...row.opts.map(o => o.leaf.h));
+    row.h = row.nLines * (mh + 14) + clamp(H * 0.045, 16, 36);
+    const gap = clamp(W * 0.06, 30, 80);
+    let bx = 0; row.opts.forEach(o => { o.leaf.bx = bx + o.leaf.w / 2; bx += o.leaf.w + gap; });
+    const maxW = Math.max(...row.opts.map(o => o.leaf.w));
+    row.beltL = Math.max(W + maxW + gap, bx);
+    row.speed = clamp(W * 0.016, 12, 26);
+  });
+  let bankTop = clamp(H * 0.26, 120, 210), bankBot = clamp(H * 0.2, 100, 150);
+  const rowsH = G.rows.reduce((a, r) => a + r.h, 0);
+  let worldH = bankTop + rowsH + bankBot;
+  if (worldH < H) {
+    const extra = H - worldH, add = Math.min(extra * 0.6, G.rows.length * 70);
+    G.rows.forEach(r => r.h += add / Math.max(1, G.rows.length));
+    bankTop += extra - add; worldH = H;
+  }
+  let y = worldH - bankBot;
+  G.rows.forEach(r => { r.y = y - r.h / 2; y -= r.h; });
+  LAY.bankTop = bankTop; LAY.bankBot = bankBot; LAY.worldH = worldH;
+  const minRow = G.rows.length ? Math.min(...G.rows.map(r => r.h)) : 120;
+  G.frogS = Math.max(1, Math.round(Math.min(clamp(minRow * 0.72, 50, 112), W * 0.16) / (13 * P)));
+  makeWaves();
+}
+function makeWaves() {
+  G.waves = [];
+  const n = Math.round(W * LAY.worldH / 7000);
+  for (let i = 0; i < n; i++) G.waves.push({ x: rnd(0, W), y: rnd(LAY.bankTop + 10, LAY.worldH - LAY.bankBot - 8), len: Math.round(rnd(2, 7)), sp: rnd(5, 14) * (Math.random() < 0.5 ? -1 : 1), ph: rnd(0, 6) });
+  G.deco = [];
+  for (let i = 0; i < Math.round(W / 70); i++) {
+    let x = rnd(10, W - 10);
+    if (Math.abs(x - W / 2) < 70) x += 140 * Math.sign(x - W / 2 || 1);
+    G.deco.push({ x, f: rnd(0.4, 0.92), k: Math.random() < 0.6 ? 'flower' : 'tuft' });
+  }
+}
+
+function demoRows() {
+  G.sent = null;
+  G.rows = [0, 1, 2].map(i => ({ demo: true, type: 'k', gi: 0, state: 'future', dir: i % 2 ? -1 : 1, beltOff: rnd(0, 400), phase: rnd(0, 6), opts: [0, 1, 2].map(() => ({ case: null })) }));
+  G.ri = -1;
+  layoutCrossing();
+  G.cam = Math.max(0, LAY.worldH - H);
+}
+
+// ---------- Positionen ----------
+function leafPos(o) { return { x: o.leaf.x, y: o.leaf.ly + o.leaf.h * 0.2 + (o.leaf.state === 'sink' ? o.leaf.sinkT * 14 : 0) }; }
+function princessPos() { return { x: W * 0.36, y: LAY.bankTop * 0.9 }; }
+function goalPos() { return { x: W * 0.36 + 15 * G.frogS * P, y: LAY.bankTop * 0.92 }; }
+function bankPos(team) { const act = (G.teams === 2 ? G.turn : 0) === team; return { x: act ? W / 2 : W * 0.84, y: LAY.worldH - LAY.bankBot * 0.4 }; }
+function restPos(f, at) {
+  at = at || f.at;
+  if (at.r === -1) return bankPos(f.team);
+  if (at.r === 'goal') return goalPos();
+  if (at.r === 'water') return { x: at.x, y: at.y };
+  const row = G.rows[at.r], o = row && row.opts[at.j];
+  return o ? leafPos(o) : bankPos(f.team);
+}
+
+// ---------- Ablauf ----------
+function newGame() {
+  G.teams = SET.teams === 2 ? 2 : 1;
+  G.level = clamp(+SET.startLevel || 1, 1, 4); G.solved = 0; G.score = [0, 0]; G.turn = 0; G.streak = 0; G.used = {};
+  G.running = true; G.timers = []; G.fx = [];
+  G.frogs.forEach(f => { f.at = { r: -1 }; f.anim = null; f.hidden = false; });
+  updateHUD();
+  if (G.level >= 4) checkStickers();
+  showLevelIntro(G.level, () => nextSentence(false));
+}
+
+function nextSentence(switchTeam) {
+  if (switchTeam && G.teams === 2) G.turn = 1 - G.turn;
+  const s = chooseSentence();
+  if (!s) { toast('Für dieses Level gibt es keine passenden Sätze. Bitte im Lehrkraft-Bereich Sätze ergänzen oder die Satzquelle ändern.'); demoRows(); return; }
+  G.sent = s; G.done = {}; G.qDone = {}; G.crossErr = 0; G.ri = -1;
+  G.rows = buildRows(s, G.level, SET.ext).map((r, i) => Object.assign(r, { state: 'future', dir: i % 2 ? -1 : 1, beltOff: rnd(0, 600), phase: rnd(0, 6) }));
+  G.frogs.forEach(f => { f.at = { r: -1 }; f.anim = null; f.hidden = false; });
+  G.safe = { r: -1 }; G.carp = null; G.fx = [];
+  layoutCrossing();
+  G.cam = Math.max(0, LAY.worldH - H);
+  stage.classList.remove('fadein'); void stage.offsetWidth; stage.classList.add('fadein');
+  G.phase = 'intro';
+  renderSentence(); renderTask(); updateHUD();
+  if (G.teams === 2) banner(`<b style="color:${TEAM[G.turn].dot === '#8FD48A' ? '#4C9A4A' : '#3E78B0'}">${TEAM[G.turn].name}</b> ist dran!`);
+  later(0.6, () => activateRow(0));
+}
+
+function activateRow(i) {
+  G.ri = i; const row = G.rows[i];
+  row.state = 'active';
+  arrange(row);
+  G.rowErr = 0; G.rowSplash = false; G.hint = 0; G.rowTime = 0;
+  const f = activeFrog();
+  const live = row.opts.map((o, j) => j).filter(j => row.opts[j].leaf.state === 'neutral');
+  G.sel = live.reduce((a, j) => Math.abs(row.opts[j].leaf.tx - f.x) < Math.abs(row.opts[a].leaf.tx - f.x) ? j : a, live[0]);
+  const g = G.sent.groups[row.gi];
+  if (row.type === 'k') G.stats.k[g.case].asked++; else G.stats.q.asked++;
+  $('#carpBtn').classList.remove('call');
+  renderSentence(); renderTask();
+  G.phase = 'ready';
+}
+
+function jumpFrog(f, target, dur, arc, done) {
+  f.anim = { type: 'jump', t: 0, dur, fx: f.x, fy: f.y, target, arc, done };
+  SND.play('jump');
+}
+
+function jumpTo(j) {
+  if (G.phase !== 'ready' || G.paused) return;
+  const row = G.rows[G.ri], o = row && row.opts[j];
+  if (!o || o.leaf.state !== 'neutral') return;
+  closeBubble();
+  G.phase = 'jump';
+  const f = activeFrog();
+  jumpFrog(f, () => leafPos(o), 0.55, 55 + row.h * 0.3, () => (o.correct ? onCorrect : onWrong)(row, o));
+}
+
+const GOOD_MSG = ['Richtig!', 'Super!', 'Klasse!', 'Genau!', 'Prima!', 'Toll!'];
+const WRONG_MSG = ['Platsch! Dieses Blatt trägt dich nicht.', 'Platsch! Nasse Füße – probier ein anderes Blatt.', 'Huch! Das Blatt ist untergetaucht.'];
+const ARRIVE_MSG = ['Geschafft! Die Prinzessin freut sich.', 'Wunderbar! Du bist am Schloss.', 'Hurra, angekommen!'];
+
+function onCorrect(row, o) {
+  const f = activeFrog(), j = row.opts.indexOf(o), g = G.sent.groups[row.gi];
+  o.leaf.state = 'good';
+  f.at = { r: G.ri, j }; G.safe = { r: G.ri, j };
+  row.state = 'done';
+  const first = G.rowErr === 0;
+  const m = mult();
+  let pts = 10 * m;
+  const p = leafPos(o);
+  addPoints(pts, '', p.x, p.y - G.cam - 60);
+  if (SET.tempo && first && G.rowTime < 8) later(0.35, () => addPoints(5 * m, 'Tempo', p.x, p.y - G.cam - 60));
+  saved.count.jumps = (saved.count.jumps || 0) + 1;
+  if (G.rowSplash) saved.count.mut++;
+  if (row.type === 'k') {
+    G.done[row.gi] = o.case;
+    if (first) { saved.count[o.case]++; G.stats.k[o.case].first++; }
+    SND.play('good');
+    sparkFx(p.x, p.y - 10, CI[o.case].rim);
+    floatText(CI[o.case].name + '!', p.x, p.y - G.cam - 100, o.case);
+    showProbeLine(g);
+  } else {
+    G.qDone[row.gi] = optText(o);
+    if (first) { saved.count.frage++; G.stats.q.first++; }
+    SND.play('qgood');
+    sparkFx(p.x, p.y - 10, '#B4A3E6');
+    $('#task').innerHTML = `<span style="color:#5E4BA8">✓</span> ${fmtQ(optText(o))} – <b>${esc(answerOf(g))}</b>`;
+    $('#gprog').textContent = '';
+  }
+  persist();
+  checkStickers();
+  renderSentence();
+  G.hint = 0; $('#carpBtn').classList.remove('call');
+  G.phase = 'land';
+  later(row.type === 'k' ? 1.5 : 1.1, () => { if (G.ri + 1 < G.rows.length) activateRow(G.ri + 1); else finishCrossing(); });
+}
+
+function onWrong(row, o) {
+  const f = activeFrog(), j = row.opts.indexOf(o), g = G.sent.groups[row.gi];
+  o.leaf.state = 'sink'; o.leaf.sinkT = 0;
+  f.at = { r: G.ri, j };
+  G.crossErr++; G.rowErr++; G.rowSplash = true;
+  if (row.type === 'k') { const st = G.stats.k[g.case]; st.wrong++; st.conf[o.case] = (st.conf[o.case] || 0) + 1; }
+  else G.stats.q.wrong++;
+  const sid = G.sent.id; G.stats.sents[sid] = G.stats.sents[sid] || { plain: G.sent.plain, wrong: 0 }; G.stats.sents[sid].wrong++;
+  arrange(row);
+  G.phase = 'fall';
+  later(0.5, () => {
+    const p = { x: f.x, y: f.y };
+    f.hidden = true; f.at = { r: 'water', x: p.x, y: p.y };
+    SND.play('plop'); splashFx(p.x, p.y);
+    banner(pick(WRONG_MSG));
+    later(0.6, () => {
+      G.carp = { x: p.x, y: p.y + 6, t: 0, leave: false };
+      SND.play('blub');
+      later(0.5, () => {
+        f.hidden = false; f.x = p.x; f.y = p.y;
+        jumpFrog(f, () => restPos(f, G.safe), 0.75, 80, () => {
+          f.at = Object.assign({}, G.safe);
+          if (G.carp) G.carp.leave = true;
+          G.phase = 'ready';
+          if (G.rowErr >= 2) { $('#carpBtn').classList.add('call'); later(0.3, () => openHint(true)); }
+          else banner('Der Karpfen hat dich zurückgebracht. Probier ein anderes Blatt.', 2.4);
+        });
+      });
+    });
+  });
+}
+
+function finishCrossing() {
+  G.phase = 'finish'; G.ri = G.rows.length;
+  renderTask(); renderSentence();
+  const f = activeFrog();
+  jumpFrog(f, () => goalPos(), 0.85, 120, () => {
+    f.at = { r: 'goal' };
+    G.phase = 'arrive'; G.joy = 2.2;
+    SND.play('arrive');
+    const pp = princessPos();
+    heartsFx(pp.x, pp.y - 60, 7);
+    G.solved++; G.stats.crossings++;
+    if (G.crossErr === 0) {
+      G.streak++; G.stats.flawless++;
+      const bonus = 20 * Math.min(G.streak, 5);
+      later(0.5, () => addPoints(bonus, 'Serie', W / 2, LAY.bankTop * 0.5 - G.cam));
+      banner(G.streak > 1 ? `Ohne Platsch! Serie ${G.streak}: Bonus +${bonus}` : `Ohne Platsch! Serien-Bonus +${bonus}`, 2.6, true);
+      G.flagFlawless = true;
+    } else { G.streak = 0; banner(pick(ARRIVE_MSG), 2.4, true); }
+    if (G.teams === 2) G.flagTeam = true;
+    checkStickers();
+    updateHUD();
+    later(2.4, afterCrossing);
+  });
+}
+
+function afterCrossing() {
+  if (G.solved >= SET.perBall) goldBall();
+  else showPending(() => nextSentence(true));
+}
+
+function goldBall() {
+  G.phase = 'gold';
+  const pp = princessPos(), f = activeFrog();
+  G.ballFly = { t: 0, dur: 1.1, fx: pp.x + 5 * G.frogS * P, fy: pp.y - 10 * G.frogS * P, tx: f.x, ty: f.y - 14 * G.frogS * P };
+  SND.play('gold');
+  later(1.4, () => {
+    G.ballFly = null;
+    saved.count.balls++; persist();
+    const old = G.level;
+    if (G.level < 4) G.level++;
+    checkStickers();
+    showGold(old, () => {
+      G.solved = 0; updateHUD();
+      showPending(() => { if (G.level !== old) showLevelIntro(G.level, () => nextSentence(true)); else nextSentence(true); });
+    });
+  });
+}
+
+function addPoints(n, label, sx, sy) {
+  G.score[G.teams === 2 ? G.turn : 0] += n;
+  G.best = Math.max(G.best, G.score[0], G.score[1]);
+  floatText(`+${n}${label ? ' ' + label : ''}`, sx, sy);
+  updateHUD();
+}
+
+// ---------- Karpfen-Tipps (gestuft) ----------
+function hintHTML(lv) {
+  const row = G.rows[G.ri], g = G.sent.groups[row.gi];
+  const av = LEVEL_CASES[G.level], ans = answerOf(g);
+  const mk = `<span class="hl">${esc(g.text)}</span>`;
+  const P0 = g.prep ? cap(g.prep.base) : '';
+  if (row.type === 'q') {
+    const cor = row.opts.find(o => o.correct);
+    if (lv === 1) return `Welche Frage hat als Antwort genau ${mk}?<br>Lies jede Frage leise und antworte: <b>„${esc(ans)}“</b>`;
+    if (lv === 2) {
+      if (g.prep && g.prep.kind === 'gen') return `Vor der Gruppe steht <b>„${esc(g.prep.word)}“</b>. Darum beginnt die Frage mit „${esc(P0)}“.<br>Nach <b>wegen, trotz, während, statt</b> fragt man mit <b>wessen</b>.`;
+      if (g.prep) return `Vor der Gruppe steht <b>„${esc(g.prep.word)}“</b>. Darum beginnt die Frage mit „${esc(P0)}“.<br>Hör genau hin: <b>${esc(P0)} wem</b> oder <b>${esc(P0)} wen</b>?`;
+      if (g.case === 'Gen') return `Die markierte Gruppe gehört zu dem Nomen davor.<br>Frag, <b>wem etwas gehört</b>: „Wessen …?“`;
+      return `Achte auf das Fragewort: <b>Wer</b>, <b>Wen</b> oder <b>Wem</b>?<br>Antworte jedes Mal mit <b>„${esc(ans)}“</b>. Wo passt es?`;
+    }
+    return `Diese Frage passt:<br>${fmtQ(optText(cor))} – <b>${esc(ans)}</b>`;
+  }
+  if (lv === 1) {
+    if (G.qDone[row.gi]) return `Du hast schon die passende Frage gefunden:<br>${fmtQ(G.qDone[row.gi])}<br>Welcher Kasus gehört zu diesem Fragewort?`;
+    if (g.prep) return `Vor der Gruppe steht <b>„${esc(g.prep.word)}“</b>. Nimm dieses Wort mit in die Frage.<br>Die Antwort ist: <b>„${esc(ans)}“</b>`;
+    return `Stell eine Frage mit dem Verb.<br>Die Antwort soll ${mk} sein.`;
+  }
+  if (lv === 2) {
+    let rows;
+    if (g.prep && (g.prep.kind === 'gen' || g.case === 'Gen')) {
+      rows = [`<b>${esc(P0)} wessen?</b> → ${chip('Gen')}`, `<b>${esc(P0)} wem oder was?</b> → ${chip('Dat')}`, `<b>${esc(P0)} wen oder was?</b> → ${chip('Akk')}`,
+        `<span class="small">Merksatz: Nach <b>wegen, trotz, während, statt, innerhalb, außerhalb</b> steht der Genitiv. Im Alltag hört man oft „wegen dem …“. Richtig ist „wegen des …“.</span>`];
+    } else if (g.prep) {
+      rows = [`<b>${esc(P0)} wem oder was?</b> → ${chip('Dat')}`, `<b>${esc(P0)} wen oder was?</b> → ${chip('Akk')}`];
+      if (g.prep.kind === 'wechsel') rows.push(`<span class="small">Noch ein Trick: <b>Wo?</b> → Dativ · <b>Wohin?</b> → Akkusativ</span>`);
+    } else {
+      rows = ORDER.filter(c => av.includes(c)).map(c => `<b>${CI[c].short}</b> → ${chip(c)}`);
+      if (av.includes('Akk') && (g.case === 'Nom' || g.case === 'Akk')) rows.push(`<span class="small">Achte auf <b>WER</b> oder <b>WEN</b>. Das „was“ klingt bei beiden gleich.</span>`);
+    }
+    return `Welche Frage passt?<br>` + rows.join('<br>');
+  }
+  const pq = probeQuestion(g);
+  let h;
+  if (g.q) h = `Frag: ${fmtQ(g.q)} – <b>${esc(ans)}</b>`;
+  else h = `Frag: <b>${g.prep ? esc(P0) + ' ' + ({ Dat: 'wem oder was', Akk: 'wen oder was', Gen: 'wessen', Nom: 'wer oder was' }[g.case]) : CI[g.case].qw}</b> …? – <b>${esc(ans)}</b>`;
+  if (g.prep && pq && g.q && !/(^|\s)(wem|wen|wessen)(\s|\?|$)/i.test(g.q)) h += `<br>Genauer: ${fmtQ(pq)} – <b>${esc(ans)}</b>`;
+  return h + `<br>Also: ${chip(g.case)}`;
+}
+function openHint(auto) {
+  SND.init(); SND.resume();
+  if (!G.sent || G.ri < 0 || G.ri >= G.rows.length || !['ready', 'jump', 'fall', 'land'].includes(G.phase)) {
+    showBubble('Ich bin der Karpfen, der Teichwächter. Wenn du nicht weiterweißt, tippe auf mich. Ich gebe dir Tipps!', false);
+    SND.play('blub'); return;
+  }
+  G.hint = Math.min(3, G.hint + 1);
+  if (auto) G.hint = Math.max(G.hint, 2);
+  saved.count.hilfe++; G.stats.hints++; persist();
+  SND.play('blub');
+  showBubble(hintHTML(G.hint), G.hint < 3);
+  $('#carpBtn').classList.remove('call');
+  checkStickers();
+}
+
+// ---------- Effekte ----------
+function splashFx(x, y) {
+  G.fx.push({ k: 'ring', x, y, t: 0, dur: 1.3, r: 5 }, { k: 'ring', x, y, t: -0.3, dur: 1.3, r: 3 });
+  for (let i = 0; i < 16; i++) G.fx.push({ k: 'drop', x, y: y - 6, vx: rnd(-80, 80), vy: rnd(-200, -80), t: 0, dur: rnd(0.5, 0.9), c: pick(['#E6F6FD', '#CDEFF5', '#FFFFFF']) });
+}
+function sparkFx(x, y, c) { for (let i = 0; i < 12; i++) { const a = i / 12 * Math.PI * 2; G.fx.push({ k: 'drop', x, y, vx: Math.cos(a) * rnd(60, 120), vy: Math.sin(a) * rnd(40, 90) - 60, t: 0, dur: 0.7, c, g: 120 }); } }
+function heartsFx(x, y, n) { for (let i = 0; i < n; i++) G.fx.push({ k: 'heart', x: x + rnd(-40, 40), y: y + rnd(-10, 10), vy: rnd(-55, -30), t: -i * 0.15, dur: 1.8 }); }
+
+// ---------- Update ----------
+function update(dt) {
+  G.t += dt;
+  G.rows.forEach((row, ri) => {
+    row.beltOff += row.dir * row.speed * dt;
+    const sway = Math.sin(G.t * 0.55 + row.phase) * (row.swayA || 0) * (row.state === 'done' ? 0.6 : 1);
+    row.opts.forEach(o => {
+      const L = o.leaf; if (!L) return;
+      if (row.state === 'future') {
+        let x = (L.bx + row.beltOff) % row.beltL; if (x < 0) x += row.beltL;
+        L.x = x - (row.beltL - W) / 2; L.dy = 0;
+        L.labelA = Math.max(0, L.labelA - dt * 3);
+      } else {
+        const tgt = (L.tx || 0) + sway;
+        if (L.x == null) L.x = tgt;
+        L.x += (tgt - L.x) * Math.min(1, dt * (row.state === 'active' ? 4 : 2));
+        L.dy += ((L.tdy || 0) - L.dy) * Math.min(1, dt * 3);
+        const frogHere = G.frogs.some(f => f.at.r === ri && row.opts[f.at.j] === o && !f.hidden);
+        const near = Math.abs(L.x - tgt) < 40;
+        const want = row.state === 'active' && L.state === 'neutral' ? (near ? 1 : 0) : (row.type === 'k' && L.state === 'good' && !frogHere ? 0.85 : 0);
+        L.labelA += (want - L.labelA) * Math.min(1, dt * 4);
+      }
+      L.ly = row.y + L.dy;
+      if (L.state === 'good') L.colorT = Math.min(1, L.colorT + dt * 1.8);
+      if (L.state === 'sink') { L.sinkT += dt / 1.1; if (L.sinkT >= 1) { L.sinkT = 1; L.state = 'gone'; } }
+    });
+  });
+  if (!G.paused) {
+    if (G.phase === 'ready') G.rowTime += dt;
+    const due = []; G.timers.forEach(tm => { tm.t -= dt; if (tm.t <= 0) due.push(tm); });
+    G.timers = G.timers.filter(tm => tm.t > 0); due.forEach(tm => tm.fn());
+    G.frogs.forEach(f => {
+      const a = f.anim; if (!a) return;
+      a.t += dt; const k = clamp(a.t / a.dur, 0, 1), p = a.target();
+      f.x = lerp(a.fx, p.x, ease(k)); f.y = lerp(a.fy, p.y, ease(k)) - a.arc * 4 * k * (1 - k);
+      a.sx = lerp(a.fx, p.x, ease(k)); a.sy = lerp(a.fy, p.y, ease(k));
+      if (k >= 1) { f.anim = null; a.done && a.done(); }
+    });
+    if (G.ballFly) G.ballFly.t += dt;
+    if (G.joy > 0) G.joy -= dt;
+  }
+  G.frogs.forEach(f => { if (!f.anim) { const p = restPos(f); f.x = p.x; f.y = p.y; } });
+  G.fx.forEach(e => { e.t += dt; if (e.t < 0) return; if (e.k === 'drop') { e.x += e.vx * dt; e.y += e.vy * dt; e.vy += (e.g || 420) * dt; } if (e.k === 'heart') e.y += e.vy * dt; });
+  G.fx = G.fx.filter(e => e.t < e.dur);
+  if (G.carp) { G.carp.t += dt; if (G.carp.leave) { G.carp.out = (G.carp.out || 0) + dt; if (G.carp.out > 0.8) G.carp = null; } }
+  // Kamera
+  const f = activeFrog();
+  let target;
+  if (['finish', 'arrive', 'gold'].includes(G.phase) || f.at.r === 'goal') target = 0;
+  else if (G.ri >= 0 && G.rows[G.ri] && G.bubble) target = G.rows[G.ri].y - H * 0.7;
+  else if (G.ri >= 0 && G.rows[G.ri]) { target = G.rows[G.ri].y - H * 0.42; target = Math.max(target, f.y - H + 50); }
+  else target = f.y - H * 0.8;
+  target = clamp(target, 0, Math.max(0, LAY.worldH - H));
+  G.cam += (target - G.cam) * Math.min(1, dt * 2.6);
+}
+
+// ---------- Zeichnen ----------
+const lx = v => Math.round(v / P);
+function leafPal(row, o) {
+  const L = o.leaf;
+  const neutral = { fill: '#CDEDB4', rim: '#86C47F', hi: '#E8F8DA' };
+  if (L.state === 'good') {
+    const t = row.type === 'k' ? { fill: CI[o.case].col, rim: CI[o.case].rim, hi: CI[o.case].hi } : { fill: '#E3D9FA', rim: '#B4A3E6', hi: '#F3EEFE' };
+    const k = L.colorT;
+    return { fill: mix(neutral.fill, t.fill, k), rim: mix(neutral.rim, t.rim, k), hi: mix(neutral.hi, t.hi, k) };
+  }
+  if (L.state === 'sink') return { fill: '#D6D3DD', rim: '#ABA6BA', hi: '#E7E5EC' };
+  if (row.state === 'future') return { fill: '#C3E8A9', rim: '#86C47F', hi: '#DAF2C9' };
+  return neutral;
+}
+function draw() {
+  const cam = G.cam;
+  px.imageSmoothingEnabled = false;
+  px.fillStyle = WATER; px.fillRect(0, 0, LW, LH);
+  // Bahnen
+  G.rows.forEach((row, i) => {
+    const y0 = lx(row.y - row.h / 2 - cam), y1 = lx(row.y + row.h / 2 - cam);
+    if (y1 < 0 || y0 > LH) return;
+    if (i % 2) { px.fillStyle = '#A2D7E5'; px.fillRect(0, y0, LW, y1 - y0); }
+    if (row.state === 'active') { px.fillStyle = 'rgba(255,255,255,0.13)'; px.fillRect(0, y0, LW, y1 - y0); }
+  });
+  // Wellen
+  px.fillStyle = '#CFEFF6';
+  G.waves.forEach(w => {
+    const sy = w.y - cam; if (sy < -4 || sy > H + 4) return;
+    if (Math.sin(G.t * 1.3 + w.ph) < -0.3) return;
+    let x = (w.x + G.t * w.sp) % (W + 60); if (x < 0) x += W + 60;
+    px.fillRect(lx(x - 30), lx(sy), w.len, 1);
+  });
+  drawTopBank(); drawBottomBank();
+  // Blätter
+  G.rows.forEach(row => row.opts.forEach(o => drawLeaf(row, o)));
+  // Auswahlring (Wischen/Tastatur)
+  if (G.selVis && G.phase === 'ready' && G.rows[G.ri]) {
+    const o = G.rows[G.ri].opts[G.sel];
+    if (o && o.leaf.state === 'neutral') { const L = o.leaf, k = 1 + 0.03 * Math.sin(G.t * 5); pRing(px, L.x / P, (L.ly - cam) / P, L.w / 2 / P * k + 2, L.h / 2 / P * k + 2, '#FFFFFF', true); pRing(px, L.x / P, (L.ly - cam) / P, L.w / 2 / P * k + 3, L.h / 2 / P * k + 3, '#7058C8', true); }
+  }
+  // Karpfen im Wasser
+  if (G.carp) {
+    const c = G.carp, a = clamp(c.t / 0.3, 0, 1) * (c.leave ? clamp(1 - (c.out || 0) / 0.8, 0, 1) : 1);
+    const s = G.frogS, w = SPR.carp.width * s, h = SPR.carp.height * s;
+    px.globalAlpha = a;
+    pRing(px, c.x / P, (c.y - cam) / P + h / 3, w * 0.6, h * 0.35, 'rgba(255,255,255,0.7)');
+    px.drawImage(SPR.carp, lx(c.x) - w / 2, Math.round((c.y - cam) / P - h / 2 + Math.sin(c.t * 6) * 1), w, h);
+    px.globalAlpha = 1;
+  }
+  // Effekte unten
+  G.fx.forEach(e => {
+    if (e.t < 0) return; const k = e.t / e.dur;
+    if (e.k === 'ring') { const r = e.r + k * 16; px.globalAlpha = 1 - k; pRing(px, e.x / P, (e.y - cam) / P, r, r * 0.38, '#FFFFFF'); px.globalAlpha = 1; }
+  });
+  // Frösche
+  if (G.teams === 2) G.frogs.forEach(f => { if (f !== activeFrog()) drawFrog(f); });
+  drawFrog(activeFrog());
+  // fliegende Kugel
+  if (G.ballFly) {
+    const b = G.ballFly, k = clamp(b.t / b.dur, 0, 1), s = G.frogS * 2;
+    const x = lerp(b.fx, b.tx, ease(k)), y = lerp(b.fy, b.ty, ease(k)) - 120 * 4 * k * (1 - k);
+    px.drawImage(SPR.ball, lx(x) - 7 * s / 2, lx(y - cam) - 7 * s / 2, 7 * s, 7 * s);
+    if (Math.random() < 0.6) G.fx.push({ k: 'drop', x, y, vx: rnd(-20, 20), vy: rnd(-20, 20), t: 0, dur: 0.5, c: '#FFF3B0', g: 10 });
+  }
+  // Effekte oben
+  G.fx.forEach(e => {
+    if (e.t < 0) return; const k = e.t / e.dur;
+    if (e.k === 'drop') { px.fillStyle = e.c; px.fillRect(lx(e.x), lx(e.y - cam), Math.max(1, Math.round(G.frogS / 2 + 0.5)), Math.max(1, Math.round(G.frogS / 2 + 0.5))); }
+    if (e.k === 'heart') { const s = Math.max(1, G.frogS - 1 + (k < 0.2 ? 0 : 1)); px.globalAlpha = 1 - k * k; px.drawImage(SPR.heart, lx(e.x) - 3 * s, lx(e.y - cam), 7 * s, 6 * s); px.globalAlpha = 1; }
+  });
+  drawDragonfly();
+  drawText();
+}
+function drawLeaf(row, o) {
+  const L = o.leaf; if (!L || L.state === 'gone' || L.x == null) return;
+  const sy = L.ly - G.cam;
+  if (sy < -L.h || sy > H + L.h || L.x < -L.w || L.x > W + L.w) return;
+  let rx = L.w / 2 / P, ry = L.h / 2 / P, dy = 0;
+  if (L.state === 'sink') { const k = L.sinkT; rx *= 1 - 0.3 * k; ry *= 1 - 0.3 * k; px.globalAlpha = 1 - k; dy = k * 3; }
+  const bob = row.state === 'future' ? Math.sin(G.t * 1.4 + L.bx) * 0.6 : 0;
+  pPad(px, L.x / P, sy / P + dy + bob, rx, ry, leafPal(row, o), true, (row.opts.indexOf(o) + G.rows.indexOf(row)) % 2 ? '#A2D7E5' : WATER);
+  if (L.flower && row.state === 'future') px.drawImage(SPR.flower, Math.round(L.x / P - rx * 0.55), Math.round(sy / P - ry * 0.55 + bob), 7, 5);
+  px.globalAlpha = 1;
+}
+function drawFrog(f) {
+  if (f.hidden) return;
+  const jumping = f.anim && f.anim.type === 'jump';
+  const spr = jumping ? SPR.frogJ[f.team] : SPR.frog[f.team];
+  const s = G.frogS, w = spr.width * s, h = spr.height * s;
+  if (jumping && f.anim.sx != null) pEllipse(px, f.anim.sx / P, (f.anim.sy - G.cam) / P - 1, w * 0.32, 1.6, 'rgba(60,100,130,0.25)');
+  else if (f.at.r === -1 || f.at.r === 'goal') pEllipse(px, f.x / P, (f.y - G.cam) / P - 1, w * 0.42, 2, 'rgba(70,110,80,0.18)');
+  const breath = !jumping && Math.sin(G.t * 2.2 + f.team * 2) > 0.85 ? 1 : 0;
+  px.drawImage(spr, Math.round(f.x / P - w / 2), Math.round((f.y - G.cam) / P - h) + breath, w, h - breath);
+  if (G.teams === 2 && f !== activeFrog() && G.running) {
+    px.globalAlpha = 0.5; px.fillStyle = '#FFFFFF';
+    px.fillRect(Math.round(f.x / P - 3), Math.round((f.y - G.cam) / P - h - 4), 6, 1); px.globalAlpha = 1;
+  }
+}
+function drawTopBank() {
+  const cam = G.cam, bt = LAY.bankTop, yb = bt - cam;
+  if (yb < 0) return;
+  const s = G.frogS;
+  // Himmel
+  const skyEnd = lx(bt * 0.55 - cam);
+  px.fillStyle = '#F6EFFB'; px.fillRect(0, lx(-cam) - 2, LW, skyEnd - lx(-cam) + 2);
+  px.fillStyle = '#FFFFFF';
+  [[0.12, 0.12], [0.7, 0.2], [0.88, 0.08]].forEach(([fx, fy], i) => { const cx = (fx * LW + G.t * 1.5 * (i + 1)) % (LW + 30) - 15, cy = lx(bt * fy - cam); pEllipse(px, cx, cy, 8, 2.5, '#FFFFFF'); pEllipse(px, cx + 5, cy - 2, 5, 2.5, '#FFFFFF'); });
+  // Bäume
+  const tree = (x, sc) => { const by = lx(bt * 0.62 - cam); px.fillStyle = '#C99A6B'; px.fillRect(Math.round(x) - 1, by - 6 * sc, 2 * sc, 6 * sc); pEllipse(px, x, by - 10 * sc, 6 * sc, 6 * sc, '#A8DB9A'); pEllipse(px, x - 2 * sc, by - 12 * sc, 3 * sc, 3 * sc, '#C2E8B2'); };
+  tree(LW * 0.06, 1); tree(LW * 0.17, 1.3); tree(LW * 0.83, 1.2); tree(LW * 0.95, 1);
+  // Schloss
+  const cs = Math.max(2, Math.floor(Math.min(LW * 0.3 / 17, (bt * 0.56 / P) / 14)));
+  const cw = 17 * cs, ch = 14 * cs;
+  px.drawImage(SPR.castle, Math.round(LW * 0.6 - cw / 2), lx(bt * 0.6 - cam) - ch, cw, ch);
+  // Wiese
+  const gy = lx(bt * 0.55 - cam);
+  px.fillStyle = '#BFE5A6'; px.fillRect(0, gy, LW, lx(yb) - gy);
+  px.fillStyle = '#AEDC94';
+  for (let x = 0; x < LW; x += 7) px.fillRect(x, gy + ((x * 7) % 5), 2, 1);
+  px.fillStyle = '#9DD08C'; px.fillRect(0, lx(yb) - 2, LW, 2);
+  px.fillStyle = '#D8D2E3'; for (let x = 3; x < LW; x += 11) px.fillRect(x, lx(yb) - 1, 3, 2);
+  // Brunnen
+  const wx = LW * 0.88, wy = lx(bt * 0.86 - cam);
+  pEllipse(px, wx, wy, 7 * s / 2 + 3, 2.5, '#C9C1DB'); px.fillStyle = '#DCD6E8'; px.fillRect(Math.round(wx - 7), wy - 6, 14, 6);
+  px.fillStyle = '#C9C1DB'; for (let i = 0; i < 14; i += 4) px.fillRect(Math.round(wx - 7) + i, wy - 6, 2, 2);
+  px.fillStyle = '#C99A6B'; px.fillRect(Math.round(wx - 7), wy - 16, 1, 10); px.fillRect(Math.round(wx + 6), wy - 16, 1, 10);
+  px.fillStyle = '#F2B8CE'; for (let i = 0; i < 4; i++) px.fillRect(Math.round(wx - 9 + i), wy - 17 - i, 18 - 2 * i, 1);
+  // Prinzessin mit Kugel
+  const pp = princessPos();
+  const jump = G.joy > 0 ? Math.abs(Math.sin(G.joy * 7)) * 3 : 0;
+  const pw = SPR.princess.width * s, ph = SPR.princess.height * s;
+  const px0 = Math.round(pp.x / P - pw / 2), py0 = Math.round((pp.y - cam) / P - ph - jump);
+  pEllipse(px, pp.x / P, (pp.y - cam) / P - 1, pw * 0.4, 2, 'rgba(70,110,80,0.18)');
+  px.drawImage(SPR.princess, px0, py0, pw, ph);
+  if (!G.ballFly) px.drawImage(SPR.ball, px0 + pw - 4 * s, py0 + 9 * s, 7 * s, 7 * s);
+}
+function drawBottomBank() {
+  const cam = G.cam, top = LAY.worldH - LAY.bankBot - cam;
+  if (top > H) return;
+  const y0 = lx(top);
+  px.fillStyle = '#9DD08C'; px.fillRect(0, y0, LW, 3);
+  for (let x = 0; x < LW; x += 4) { const b = (x * 13) % 3; px.fillRect(x, y0 - b, 4, b + 1); }
+  px.fillStyle = '#BFE5A6'; px.fillRect(0, y0 + 2, LW, LH - y0);
+  px.fillStyle = '#AEDC94';
+  for (let x = 2; x < LW; x += 9) px.fillRect(x, y0 + 6 + ((x * 5) % 9), 1, 2);
+  G.deco.forEach(d => {
+    const y = lx(top + LAY.bankBot * d.f);
+    if (d.k === 'flower') px.drawImage(SPR.flower, lx(d.x) - 3, y - 3);
+    else { px.fillStyle = '#9DD08C'; px.fillRect(lx(d.x), y - 3, 1, 3); px.fillRect(lx(d.x) - 2, y - 2, 1, 2); px.fillRect(lx(d.x) + 2, y - 2, 1, 2); }
+  });
+  // Schilf
+  const reed = (x, i) => { const h = 14 + (i * 7) % 9, sw = Math.round(Math.sin(G.t * 1.2 + i) * 1); px.fillStyle = '#8DBF7A'; px.fillRect(x, y0 - h + 4, 1, h); px.fillStyle = '#C99A6B'; px.fillRect(x - 1 + sw, y0 - h + 2, 3, 5); };
+  for (let i = 0; i < 6; i++) { reed(Math.round(LW * 0.02 + i * 3), i); reed(Math.round(LW * 0.97 - i * 3), i + 3); }
+  // Stein unter dem Startfrosch
+  const bp = bankPos(G.teams === 2 ? G.turn : 0);
+  pEllipse(px, bp.x / P, (bp.y - cam) / P, 9 * G.frogS, 3 * G.frogS / 1.5 + 1, '#DCD6E8');
+  pEllipse(px, bp.x / P, (bp.y - cam) / P - 1, 8 * G.frogS, 2 * G.frogS / 1.5 + 1, '#E9E5F1');
+}
+function drawDragonfly() {
+  const t = G.t * 0.25;
+  const x = W * (0.5 + 0.42 * Math.sin(t * 1.3)), y = H * (0.5 + 0.35 * Math.sin(t * 2.1 + 1));
+  const flap = Math.sin(G.t * 30) > 0;
+  px.globalAlpha = 0.85;
+  px.save(); px.translate(lx(x), lx(y));
+  px.drawImage(SPR.dragon, -6, -6, 12, flap ? 12 : 11);
+  px.restore(); px.globalAlpha = 1;
+}
+function drawText() {
+  tx.clearRect(0, 0, W, H);
+  tx.textBaseline = 'middle'; tx.fillStyle = '#3A3350';
+  G.rows.forEach(row => row.opts.forEach(o => {
+    const L = o.leaf; if (!L || !L.lines || !L.lines.length || L.labelA < 0.02 || L.state === 'gone') return;
+    const sy = L.ly - G.cam; if (sy < -L.h || sy > H + L.h) return;
+    tx.globalAlpha = clamp(L.labelA * (L.state === 'sink' ? 1 - L.sinkT * 1.6 : 1), 0, 1);
+    const th = L.lines.reduce((a, l) => a + l.lh, 0);
+    let y = sy - th / 2 + (L.state === 'sink' ? L.sinkT * 9 : 0);
+    L.lines.forEach(l => {
+      let x = L.x - l.w / 2;
+      l.items.forEach(it => { tx.font = it.font; tx.fillText(it.t, x, y + l.lh / 2); x += it.w + (it.spAfter ? it.sp : 0); });
+      y += l.lh;
+    });
+  }));
+  tx.globalAlpha = 1;
+}
+
+function resize() {
+  const r = stage.getBoundingClientRect();
+  W = Math.max(200, r.width); H = Math.max(200, r.height);
+  P = clamp(Math.round(Math.min(W, H * 1.4) / 260), 2, 4);
+  document.documentElement.style.setProperty('--p', uiP() + 'px');
+  LW = Math.ceil(W / P); LH = Math.ceil(H / P);
+  cvPix.width = LW; cvPix.height = LH; cvPix.style.width = LW * P + 'px'; cvPix.style.height = LH * P + 'px';
+  DPR = Math.min(2, window.devicePixelRatio || 1);
+  cvTxt.width = Math.round(W * DPR); cvTxt.height = Math.round(H * DPR); cvTxt.style.width = W + 'px'; cvTxt.style.height = H + 'px';
+  tx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  if (G.rows.length) { layoutCrossing(); G.cam = clamp(G.cam, 0, Math.max(0, LAY.worldH - H)); }
+  fitSentence();
+}
+
+// ---------- Eingabe ----------
+let ptr = null;
+stage.addEventListener('pointerdown', e => {
+  if (e.target.closest('#carpBtn, #bubble')) return;
+  const r = stage.getBoundingClientRect();
+  ptr = { x: e.clientX - r.left, y: e.clientY - r.top, t: performance.now(), id: e.pointerId };
+});
+stage.addEventListener('pointerup', e => {
+  if (!ptr || e.pointerId !== ptr.id) return;
+  const r = stage.getBoundingClientRect();
+  const x = e.clientX - r.left, y = e.clientY - r.top, dx = x - ptr.x, dy = y - ptr.y;
+  const dist = Math.hypot(dx, dy), dt = performance.now() - ptr.t;
+  ptr = null;
+  SND.init(); SND.resume();
+  if (dist < 16 && dt < 900) onTap(ptr0x(x), y);
+  else if (dist >= 40) {
+    if (Math.abs(dx) > Math.abs(dy)) moveSel(dx > 0 ? 1 : -1);
+    else if (dy < 0) { if (!G.selVis) selNearest(); jumpTo(G.sel); }
+  }
+});
+stage.addEventListener('pointercancel', () => { ptr = null; });
+function ptr0x(x) { return x; }
+function liveSorted() {
+  const row = G.rows[G.ri]; if (!row) return [];
+  return row.opts.map((o, j) => j).filter(j => row.opts[j].leaf.state === 'neutral').sort((a, b) => row.opts[a].leaf.tx - row.opts[b].leaf.tx || row.opts[a].leaf.line - row.opts[b].leaf.line);
+}
+function selNearest() {
+  const row = G.rows[G.ri]; if (!row) return;
+  const f = activeFrog(), l = liveSorted();
+  if (l.length) G.sel = l.reduce((a, j) => Math.abs(row.opts[j].leaf.x - f.x) < Math.abs(row.opts[a].leaf.x - f.x) ? j : a, l[0]);
+}
+function moveSel(d) {
+  if (G.phase !== 'ready') return;
+  const l = liveSorted(); if (!l.length) return;
+  if (!G.selVis) { G.selVis = true; if (!l.includes(G.sel)) selNearest(); SND.play('tap'); return; }
+  let i = l.indexOf(G.sel); if (i < 0) i = 0;
+  G.sel = l[clamp(i + d, 0, l.length - 1)]; SND.play('tap');
+}
+function onTap(x, y) {
+  if (G.phase === 'ready' && G.rows[G.ri]) {
+    const row = G.rows[G.ri], wy = y + G.cam;
+    let hit = -1, best = 1e9;
+    row.opts.forEach((o, j) => {
+      const L = o.leaf; if (L.state !== 'neutral') return;
+      const nx = (x - L.x) / (L.w / 2 + 14), ny = (wy - L.ly) / (L.h / 2 + 14), d = nx * nx + ny * ny;
+      if (d <= 1 && d < best) { best = d; hit = j; }
+    });
+    if (hit >= 0) { G.sel = hit; jumpTo(hit); return; }
+  }
+  const f = activeFrog();
+  if (Math.abs(x - f.x) < 50 && Math.abs(y + G.cam - (f.y - 30)) < 50) { SND.play('croak'); return; }
+  const pp = princessPos();
+  if (Math.abs(x - pp.x) < 50 && Math.abs(y + G.cam - (pp.y - 50)) < 70) { SND.play('heart'); heartsFx(pp.x, pp.y - 70, 3); }
+}
+document.addEventListener('keydown', e => {
+  if (document.querySelector('.ov.show')) return;
+  if (e.target && (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT')) return;
+  SND.init(); SND.resume();
+  if (e.key === 'ArrowLeft') { moveSel(-1); e.preventDefault(); }
+  else if (e.key === 'ArrowRight') { moveSel(1); e.preventDefault(); }
+  else if (e.key === 'ArrowUp' || e.key === 'Enter' || e.key === ' ') { if (G.phase === 'ready') { if (!G.selVis) { G.selVis = true; selNearest(); if (e.key !== 'ArrowUp') { e.preventDefault(); return; } } jumpTo(G.sel); } e.preventDefault(); }
+  else if (/^[1-4]$/.test(e.key)) { const l = liveSorted(); const j = l[+e.key - 1]; if (j != null) jumpTo(j); }
+  else if (e.key === 'h' || e.key === '?') openHint(false);
+});
+
+let lastT = performance.now();
+function frame(now) {
+  const dt = Math.min(0.05, (now - lastT) / 1000); lastT = now;
+  update(dt); draw();
+  requestAnimationFrame(frame);
+}
+
+// =========================================================
+// Pixel-Schrift (für Überschriften und Punkte) und Pixel-Icons
+// =========================================================
+const _measure = document.createElement('canvas').getContext('2d');
+function pixText(text, o) {
+  o = o || {};
+  const size = o.size || 12, fill = o.fill || '#5E4BA8', line = o.outline || null, shadow = o.shadow || null, maxW = o.maxW || 9999;
+  const font = `bold ${size}px ${FONT}`;
+  _measure.font = font;
+  const words = String(text).split(' '), lines = [];
+  let cur = '';
+  words.forEach(w => { const t = cur ? cur + ' ' + w : w; if (cur && _measure.measureText(t).width > maxW) { lines.push(cur); cur = w; } else cur = t; });
+  if (cur) lines.push(cur);
+  const lh = Math.ceil(size * 1.3), pad = 2;
+  const w = Math.ceil(Math.max(...lines.map(l => _measure.measureText(l).width))) + pad * 2 + 2, h = lh * lines.length + pad * 2 + 1;
+  const c = document.createElement('canvas'); c.width = w; c.height = h; c.className = 'px';
+  const x = c.getContext('2d', { willReadFrequently: true });
+  x.font = font; x.textBaseline = 'top'; x.fillStyle = '#000';
+  lines.forEach((l, i) => x.fillText(l, Math.round((w - _measure.measureText(l).width) / 2), pad + i * lh + 1));
+  const d = x.getImageData(0, 0, w, h).data, on = new Uint8Array(w * h);
+  for (let i = 0; i < w * h; i++) on[i] = d[i * 4 + 3] > 110 ? 1 : 0;
+  const out = x.createImageData(w, h), od = out.data;
+  const put = (i, col) => { const [r, g, b] = hex2rgb(col); od[i * 4] = r; od[i * 4 + 1] = g; od[i * 4 + 2] = b; od[i * 4 + 3] = 255; };
+  if (shadow) for (let y = 0; y < h - 1; y++) for (let xx = 0; xx < w - 1; xx++) if (on[y * w + xx]) put((y + 1) * w + xx + 1, shadow);
+  if (line) for (let y = 0; y < h; y++) for (let xx = 0; xx < w; xx++) {
+    const i = y * w + xx; if (on[i]) continue;
+    if ((xx > 0 && on[i - 1]) || (xx < w - 1 && on[i + 1]) || (y > 0 && on[i - w]) || (y < h - 1 && on[i + w])) put(i, line);
+  }
+  for (let i = 0; i < w * h; i++) if (on[i]) put(i, fill);
+  x.putImageData(out, 0, 0);
+  return c;
+}
+// Pixel-Überschrift in ein Element setzen (ganzzahlig skaliert)
+function uiP() { return clamp(Math.round(Math.min(window.innerWidth, window.innerHeight * 1.4) / 360), 2, 4); }
+function pixTitle(el, text, o) {
+  o = Object.assign({ fill: '#5E4BA8', shadow: '#D9CEF6' }, o || {});
+  const k = o.k || (window.innerWidth > 760 ? 3 : 2);
+  const avail = Math.min(window.innerWidth - 90, o.wide ? 900 : 740);
+  const c = pixText(text, Object.assign({ maxW: avail / k - 6 }, o));
+  c.style.width = c.width * k + 'px'; c.style.height = c.height * k + 'px';
+  c.setAttribute('role', 'img'); c.setAttribute('aria-label', text);
+  el.innerHTML = ''; el.appendChild(c);
+  return el;
+}
+function titleHTML(id) { return `<div class="ptitle" id="${id}"></div>`; }
+function iconCv(name, scale) {
+  const src = SPR.icon[name], c = document.createElement('canvas');
+  c.width = src.width; c.height = src.height; c.className = 'px';
+  c.getContext('2d').drawImage(src, 0, 0);
+  if (scale) { c.style.width = src.width * scale + 'px'; c.style.height = src.height * scale + 'px'; }
+  return c;
+}
+function spriteCv(spr, cls) { const c = document.createElement('canvas'); c.width = spr.width; c.height = spr.height; c.className = 'px ' + (cls || ''); c.getContext('2d').drawImage(spr, 0, 0); return c; }
+
+// =========================================================
+// Anzeige: Satz, Aufgabe, Kopfzeile, Meldungen
+// =========================================================
+function npSpan(text, c) { return `<span class="np done" style="--c:${CI[c].col};--cd:${CI[c].rim};--ct:${CI[c].dark}">${esc(text)}<sup>${CI[c].ab}</sup></span>`; }
+function renderSentence() {
+  const inner = $('#sent').firstElementChild;
+  const s = G.sent;
+  if (!s) { inner.innerHTML = ''; inner.appendChild(pixText('Der Kasus-Teich', { size: 12, fill: '#D9CEF6', shadow: '#EFE8FA' })); const c = inner.firstChild; c.style.width = c.width * 3 + 'px'; c.style.height = c.height * 3 + 'px'; return; }
+  const row = G.rows[G.ri];
+  const cur = row && G.phase !== 'finish' ? row.gi : -1;
+  let html = '', pos = 0;
+  s.groups.forEach((g, gi) => {
+    html += esc(s.plain.slice(pos, g.start));
+    const d = G.done[gi];
+    if (d) html += npSpan(g.text, d);
+    else if (gi === cur) html += `<span class="np cur">${esc(g.text)}</span>`;
+    else html += esc(g.text);
+    pos = g.end;
+  });
+  html += esc(s.plain.slice(pos));
+  inner.innerHTML = html;
+  fitSentence();
+}
+function fitSentence() {
+  const box = $('#sent'), inner = box.firstElementChild;
+  document.documentElement.style.setProperty('--sentH', clamp(window.innerHeight * 0.15, 66, 140) + 'px');
+  if (!G.sent) return;
+  let fs = clamp(Math.min(window.innerWidth, 1500) * 0.04, 20, 46);
+  inner.style.fontSize = fs + 'px';
+  let guard = 0;
+  while ((inner.scrollHeight > box.clientHeight || inner.scrollWidth > box.clientWidth) && fs > 14 && guard++ < 50) { fs -= 1; inner.style.fontSize = fs + 'px'; }
+}
+function teamTag() {
+  if (G.teams !== 2 || !G.running) return '';
+  return `<span style="display:inline-flex;align-items:center;gap:6px"><i style="width:12px;height:12px;background:${TEAM[G.turn].dot};display:inline-block;box-shadow:0 0 0 2px #3A3350"></i>${TEAM[G.turn].name}</span>`;
+}
+function renderTask() {
+  const row = G.rows[G.ri];
+  let t = '';
+  if (!G.sent) t = G.running ? '' : 'Tippe auf „Los geht’s!“';
+  else if (!row || G.phase === 'finish') t = 'Geschafft! Der Frosch hüpft zur Prinzessin.';
+  else if (row.type === 'k') t = G.qDone[row.gi] ? `Welcher <b>Kasus</b> passt zur Frage „${fmtQ(G.qDone[row.gi])}“` : 'In welchem <b>Kasus</b> steht die markierte Gruppe?';
+  else t = 'Welche <b>Frage</b> passt zur markierten Gruppe?';
+  $('#task').innerHTML = t;
+  const tag = teamTag();
+  const prog = row && G.sent && G.phase !== 'finish' ? `Reihe ${G.ri + 1} von ${G.rows.length}` : '';
+  const gp = $('#gprog');
+  gp.innerHTML = [tag, prog].filter(Boolean).join(' · ');
+  gp.style.display = gp.innerHTML ? '' : 'none';
+}
+function showProbeLine(g) {
+  const q = G.qDone[G.sent.groups.indexOf(g)] || probeQuestion(g) || g.q;
+  $('#task').innerHTML = `${chip(g.case)} ${q ? fmtQ(q) + ' – ' : ''}<b>${esc(answerOf(g))}</b>`;
+  $('#gprog').style.display = 'none';
+}
+let _lvlShown = '';
+function updateHUD() {
+  const lt = G.level >= 4 ? 'Freispiel' : 'Level ' + G.level;
+  if (_lvlShown !== lt + uiP()) { _lvlShown = lt + uiP(); pixTitle($('#lvl'), lt, { k: 2, size: 11, shadow: '#D9CEF6' }); }
+  $('#chips').innerHTML = ORDER.map(c => `<span class="chip ${LEVEL_CASES[G.level].includes(c) ? '' : 'off'}" style="--c:${CI[c].col};--cd:${CI[c].rim}" title="${CI[c].name}: ${CI[c].short}"><span class="full">${CI[c].name}</span><span class="ab">${CI[c].ab}</span></span>`).join('');
+  const pips = $('#pips'); pips.innerHTML = '';
+  for (let i = 0; i < SET.perBall; i++) pips.appendChild(i < G.solved ? spriteCv(SPR.ball) : spriteCv(SPR.icon.pipOff));
+  const sc = $('#scores'); sc.innerHTML = '';
+  const mk = (val, title, dot, act) => {
+    const s = document.createElement('span'); s.className = 'score pf flat' + (act ? ' act' : ''); s.title = title;
+    if (dot) { const i = document.createElement('i'); i.style.cssText = `width:12px;height:12px;background:${dot};display:inline-block;box-shadow:0 0 0 2px #3A3350`; s.appendChild(i); }
+    else s.appendChild(spriteCv(SPR.star));
+    s.appendChild(document.createTextNode(val)); sc.appendChild(s);
+  };
+  if (G.teams === 2) TEAM.forEach((t, i) => mk(G.score[i], t.name, t.dot, G.turn === i && G.running));
+  else mk(G.score[0], 'Punkte');
+}
+let bannerT = null;
+function banner(html, dur = 2.2, low) {
+  const b = $('#banner'); b.innerHTML = html; b.classList.add('show'); b.classList.toggle('low', !!low);
+  clearTimeout(bannerT); bannerT = setTimeout(() => b.classList.remove('show'), dur * 1000);
+}
+// schwebende Punkte und Kasus-Namen in Pixelschrift
+function floatText(text, sx, sy, kase) {
+  const d = document.createElement('div'); d.className = 'fl';
+  const c = kase ? pixText(text, { size: 11, fill: CI[kase].col, outline: CI[kase].dark }) : pixText(text, { size: 11, fill: '#FFFFFF', outline: '#5E4BA8' });
+  const k = uiP() >= 3 ? 3 : 2;
+  c.style.width = c.width * k + 'px'; c.style.height = c.height * k + 'px';
+  d.appendChild(c);
+  d.style.left = clamp(sx, 60, W - 60) + 'px'; d.style.top = clamp(sy, 30, H - 40) + 'px';
+  $('#floats').appendChild(d); setTimeout(() => d.remove(), 1600);
+}
+let toastT = null;
+function toast(msg, dur = 3.2) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), dur * 1000); }
+function showBubble(html, more) { $('#bubText').innerHTML = html; $('#bubMore').style.display = more ? '' : 'none'; $('#bubble').classList.add('show'); $('#banner').classList.remove('show'); G.bubble = true; }
+function closeBubble() { $('#bubble').classList.remove('show'); G.bubble = false; }
+
+// =========================================================
+// Vollbild
+// =========================================================
+const FS = {
+  can() { return !!(document.fullscreenEnabled || document.webkitFullscreenEnabled); },
+  is() { return !!(document.fullscreenElement || document.webkitFullscreenElement); },
+  toggle() {
+    SND.init(); SND.resume();
+    if (!this.can()) { toast('Dieser Browser kann kein Vollbild. Tipp: Seite zum Home-Bildschirm hinzufügen.', 4); return; }
+    try {
+      if (this.is()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      else {
+        const el = document.documentElement, req = el.requestFullscreen || el.webkitRequestFullscreen;
+        const pr = req.call(el, { navigationUI: 'hide' });
+        if (pr && pr.catch) pr.catch(() => toast('Vollbild ist hier nicht erlaubt.'));
+      }
+    } catch (e) { toast('Vollbild ist hier nicht erlaubt.'); }
+  }
+};
+function updateFsBtn() {
+  const b = $('#bFull'); b.innerHTML = ''; b.appendChild(iconCv(FS.is() ? 'unfull' : 'full'));
+  b.setAttribute('aria-pressed', FS.is() ? 'true' : 'false');
+  b.title = FS.is() ? 'Vollbild beenden (F)' : 'Vollbild (F)';
+  const sb = document.getElementById('bFull2');
+  if (sb) { sb.innerHTML = ''; const ic = iconCv(FS.is() ? 'unfull' : 'full'); ic.classList.add('ic'); sb.appendChild(ic); sb.appendChild(document.createTextNode(FS.is() ? 'Vollbild beenden' : 'Vollbild')); }
+  setTimeout(resize, 60);
+}
+['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, updateFsBtn));
+document.addEventListener('keydown', e => {
+  if (e.target && (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT')) return;
+  if ((e.key === 'f' || e.key === 'F') && !e.ctrlKey && !e.metaKey && !e.altKey) { FS.toggle(); e.preventDefault(); }
+});
+
+// =========================================================
+// Sticker
+// =========================================================
+const STICKERS = [
+  { id: 'erster', name: 'Erster Sprung', how: 'Der erste richtige Sprung', icon: 'frog', bg: '#DFF3D2', ok: () => (saved.count.jumps || 0) >= 1 },
+  { id: 'platsch0', name: 'Ohne Platsch', how: 'Eine Überquerung ganz ohne Platsch', icon: 'flower', bg: '#E4F4FA', ok: () => !!G.flagFlawless },
+  { id: 'mut', name: 'Nasse Füße, kluger Kopf', how: 'Nach einem Platsch die Reihe geschafft', icon: 'drop', bg: '#E4F1FB', ok: () => saved.count.mut >= 1 },
+  { id: 'kugel1', name: 'Goldene Kugel', how: 'Die erste goldene Kugel', icon: 'ball', bg: '#FFF4D6', ok: () => saved.count.balls >= 1 },
+  { id: 'nom10', name: 'Nominativ-Profi', how: '10 Nominative beim ersten Versuch', icon: 'N', bg: '#FFF6D8', ok: () => saved.count.Nom >= 10, prog: () => [saved.count.Nom, 10] },
+  { id: 'akk10', name: 'Akkusativ-Profi', how: '10 Akkusative beim ersten Versuch', icon: 'A', bg: '#FDE6EF', ok: () => saved.count.Akk >= 10, prog: () => [saved.count.Akk, 10] },
+  { id: 'dat10', name: 'Dativ-Detektiv', how: '10 Dative beim ersten Versuch', icon: 'D', bg: '#E3EFFC', ok: () => saved.count.Dat >= 10, prog: () => [saved.count.Dat, 10] },
+  { id: 'gen10', name: 'Genitiv-Genie', how: '10 Genitive beim ersten Versuch', icon: 'G', bg: '#E0F6E9', ok: () => saved.count.Gen >= 10, prog: () => [saved.count.Gen, 10] },
+  { id: 'frage10', name: 'Fragen-Fuchs', how: '10 passende Fragen beim ersten Versuch', icon: '?', bg: '#EEE8FB', ok: () => saved.count.frage >= 10, prog: () => [saved.count.frage, 10] },
+  { id: 'karpfen', name: 'Karpfen-Freund', how: '5-mal den Karpfen um Rat gefragt', icon: 'carp', bg: '#FDEBDF', ok: () => saved.count.hilfe >= 5, prog: () => [saved.count.hilfe, 5] },
+  { id: 'serie3', name: 'Libellen-Serie', how: '3 Überquerungen ohne Platsch hintereinander', icon: 'dragon', bg: '#E8EBFB', ok: () => G.streak >= 3 },
+  { id: 'kugel3', name: 'Drei Kugeln', how: '3 goldene Kugeln gesammelt', icon: 'crown', bg: '#FFF1D2', ok: () => saved.count.balls >= 3, prog: () => [saved.count.balls, 3] },
+  { id: 'frei', name: 'Alle vier Fälle', how: 'Das Freispiel erreicht', icon: 'castle', bg: '#F3EDFB', ok: () => G.running && G.level >= 4 },
+  { id: 'team', name: 'Teamgeist', how: 'Eine Überquerung im Teammodus', icon: 'heart', bg: '#FDE8EF', ok: () => !!G.flagTeam },
+  { id: 'kugel10', name: 'Sternenkugel', how: '10 goldene Kugeln gesammelt', icon: 'star', bg: '#FFF6DC', ok: () => saved.count.balls >= 10, prog: () => [saved.count.balls, 10] },
+  { id: 'teich', name: 'Großer Teich', how: '100 richtige Sprünge', icon: 'pad', bg: '#E2F4D6', ok: () => (saved.count.jumps || 0) >= 100, prog: () => [saved.count.jumps || 0, 100] }
+];
+function checkStickers() {
+  STICKERS.forEach(st => { if (!saved.stickers[st.id] && st.ok()) { saved.stickers[st.id] = 1; G.pending.push(st); } });
+  G.flagFlawless = false; G.flagTeam = false;
+  persist();
+}
+function drawIcon(t, ic) {
+  const LT = { N: 'Nom', A: 'Akk', D: 'Dat', G: 'Gen' };
+  if (LT[ic]) { const ci = CI[LT[ic]]; pPad(t, 12, 13, 9.5, 7, { fill: ci.col, rim: ci.rim, hi: ci.hi }, false); t.drawImage(SPR.letter[ic], 10, 9); return; }
+  switch (ic) {
+    case 'frog': t.drawImage(SPR.frog[0], 5, 6); break;
+    case 'ball': t.drawImage(SPR.ball, 5, 5, 14, 14); break;
+    case 'flower': pPad(t, 12, 14, 9.5, 6, { fill: '#CDEDB4', rim: '#86C47F', hi: '#E8F8DA' }, true, '#E4F4FA'); t.drawImage(SPR.flower, 8, 8); break;
+    case 'drop': t.drawImage(SPR.drop, 5, 3, 14, 18); break;
+    case 'carp': t.drawImage(SPR.carp, 3, 7); break;
+    case 'dragon': t.drawImage(SPR.dragon, 6, 6); break;
+    case 'crown': t.drawImage(SPR.crown, 6, 8); break;
+    case 'castle': t.drawImage(SPR.castle, 4, 5); break;
+    case 'heart': t.drawImage(SPR.heart, 5, 6, 14, 12); break;
+    case 'star': t.drawImage(SPR.star, 3, 3, 18, 18); break;
+    case '?': pPad(t, 12, 13, 9.5, 7, { fill: '#E3D9FA', rim: '#B4A3E6', hi: '#F3EEFE' }, false); t.drawImage(SPR.letter['?'], 10, 9); break;
+    case 'pad': pPad(t, 12, 15, 10, 6, { fill: '#CDEDB4', rim: '#86C47F', hi: '#E8F8DA' }, true, '#E2F4D6'); t.drawImage(SPR.crown, 6, 6); break;
+  }
+}
+function drawSticker(cv, st, locked) {
+  const c = cv.getContext('2d'); c.imageSmoothingEnabled = false; c.clearRect(0, 0, 24, 24);
+  pEllipse(c, 12, 12, 12, 12, locked ? '#B9B0CC' : '#5E4BA8');
+  pEllipse(c, 12, 12, 11, 11, locked ? '#E2DCEC' : '#FFFFFF');
+  pEllipse(c, 12, 12, 9.5, 9.5, locked ? '#F1EDF6' : st.bg);
+  const tmp = document.createElement('canvas'); tmp.width = 24; tmp.height = 24;
+  const t = tmp.getContext('2d'); t.imageSmoothingEnabled = false;
+  drawIcon(t, st.icon);
+  if (locked) { t.globalCompositeOperation = 'source-in'; t.fillStyle = '#CFC8DD'; t.fillRect(0, 0, 24, 24); }
+  c.drawImage(tmp, 0, 0);
+}
+function iconCanvasHTML(ic, bg) { return `<canvas width="24" height="24" class="px" data-ic="${ic}" data-bg="${bg || '#F1ECFA'}"></canvas>`; }
+function paintIcons(root) { root.querySelectorAll('canvas[data-ic]').forEach(cv => drawSticker(cv, { icon: cv.dataset.ic, bg: cv.dataset.bg }, false)); }
+
+// =========================================================
+// Überlagerungen
+// =========================================================
+function show(id) { $('#' + id).classList.add('show'); syncPause(); }
+function hide(id) { $('#' + id).classList.remove('show'); syncPause(); }
+function syncPause() { G.paused = !!document.querySelector('.ov.show'); }
+function segHTML(key, opts, cur) {
+  return `<div class="seg pf flat" data-key="${key}">` + opts.map(([v, l]) => `<button data-v='${JSON.stringify(v)}' class="${JSON.stringify(cur) === JSON.stringify(v) ? 'on' : ''}">${l}</button>`).join('') + '</div>';
+}
+function bindSegs(root, onChange) {
+  root.querySelectorAll('.seg[data-key]').forEach(sg => sg.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    sg.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+    const key = sg.dataset.key, v = JSON.parse(b.dataset.v);
+    SET[key] = v; persist(); SND.play('tap');
+    onChange && onChange(key, v);
+  }));
+}
+function applySetting(key) {
+  if (key === 'music') { SND.init(); SND.resume(); SND.setMusic(SET.music); updateMusicBtn(); }
+  if (key === 'mode' && G.rows.length) layoutCrossing();
+  if (key === 'perBall') { if (G.solved >= SET.perBall) G.solved = SET.perBall - 1; updateHUD(); }
+}
+
+let howSeen = false;
+function startAudio() { SND.init(); SND.resume(); if (SET.music) SND.setMusic(true); updateMusicBtn(); }
+function showStart() {
+  const running = G.running;
+  $('#startBody').innerHTML = `
+    <canvas id="titleCv" width="120" height="46" class="px pf flat"></canvas>
+    ${titleHTML('tStart')}
+    <p style="font-size:clamp(16px,2.2vw,20px);margin-top:0">Hilf dem Froschkönig über den Teich zur Prinzessin.<br>Er springt nur auf das Blatt mit dem richtigen <b>Kasus</b>.</p>
+    <div class="lbl">Wie viel Hilfe?</div>
+    ${segHTML('mode', [['easy', 'Leicht – mit Fragehilfe'], ['normal', 'Normal']], SET.mode)}
+    <div class="lbl">Wer spielt?</div>
+    ${segHTML('teams', [[1, 'Ein Frosch'], [2, 'Zwei Teams']], SET.teams)}
+    <div id="teamNote" class="small" style="display:none">Gilt ab dem nächsten neuen Spiel.</div>
+    <div style="margin-top:calc(4*var(--p))">${running ? '<button class="pb" id="bCont">Weiterspielen</button>' : ''}<button class="pb ${running ? 'alt' : 'gold'}" id="bGo">${running ? 'Neues Spiel' : 'Los geht’s!'}</button></div>
+    <div><button class="pb alt sm" id="bHow">So geht’s</button><button class="pb alt sm" id="bAlb2">Stickeralbum</button><button class="pb alt sm" id="bFull2"></button></div>
+    <p class="small">Bestwert heute: <b>${G.best}</b> Punkte · Für Lehrkräfte: Zahnrad oben rechts 2 Sekunden gedrückt halten.</p>`;
+  const body = $('#startBody');
+  pixTitle($('#tStart'), 'Der Kasus-Teich', { k: window.innerWidth > 760 ? 4 : 3, size: 12, fill: '#FBE38E', outline: '#5E4BA8', shadow: '#B9A6E0' });
+  bindSegs(body, (k) => { applySetting(k); if (k === 'teams' && running) $('#teamNote').style.display = ''; });
+  drawTitle($('#titleCv'));
+  updateFsBtn();
+  $('#bGo').onclick = () => { startAudio(); hide('ovStart'); if (!howSeen) showHow(() => newGame()); else newGame(); };
+  if (running) $('#bCont').onclick = () => { startAudio(); hide('ovStart'); };
+  $('#bHow').onclick = () => { hide('ovStart'); showHow(() => showStart()); };
+  $('#bAlb2').onclick = () => { hide('ovStart'); showAlbum(() => showStart()); };
+  $('#bFull2').onclick = () => FS.toggle();
+  if (!FS.can()) $('#bFull2').style.display = 'none';
+  show('ovStart');
+}
+function drawTitle(cv) {
+  const c = cv.getContext('2d'); c.imageSmoothingEnabled = false;
+  c.fillStyle = WATER; c.fillRect(0, 0, 120, 46);
+  c.fillStyle = '#F6EFFB'; c.fillRect(0, 0, 120, 9);
+  c.drawImage(SPR.castle, 51, -2);
+  c.fillStyle = '#BFE5A6'; c.fillRect(0, 9, 120, 6); c.fillStyle = '#9DD08C'; c.fillRect(0, 14, 120, 1);
+  c.fillStyle = '#CFEFF6'; [[8, 22], [60, 30], [100, 24], [30, 40], [85, 41]].forEach(([x, y]) => c.fillRect(x, y, 5, 1));
+  pPad(c, 30, 35, 16, 6, { fill: '#CDEDB4', rim: '#86C47F', hi: '#E8F8DA' }, true);
+  pPad(c, 66, 26, 10, 4, { fill: CI.Dat.col, rim: CI.Dat.rim, hi: CI.Dat.hi }, true);
+  pPad(c, 96, 37, 12, 5, { fill: CI.Akk.col, rim: CI.Akk.rim, hi: CI.Akk.hi }, true);
+  pPad(c, 8, 20, 7, 3, { fill: CI.Nom.col, rim: CI.Nom.rim, hi: CI.Nom.hi }, true);
+  pPad(c, 112, 20, 7, 3, { fill: CI.Gen.col, rim: CI.Gen.rim, hi: CI.Gen.hi }, true);
+  c.drawImage(SPR.frog[0], 23, 23);
+  c.drawImage(SPR.flower, 92, 32);
+  c.drawImage(SPR.princess, 82, -6, 13, 21);
+  c.drawImage(SPR.ball, 92, 4, 5, 5);
+}
+function showHow(after) {
+  const n = SET.perBall;
+  $('#howBody').innerHTML = `${titleHTML('tHow')}<div class="steps">
+    <div class="step pf soft">${iconCanvasHTML('?', '#EEE8FB')}<div>Lies den Satz oben. Eine Gruppe ist <span class="hl">markiert</span>.</div></div>
+    <div class="step pf soft">${iconCanvasHTML('frog', '#DFF3D2')}<div><b>Tippe</b> auf das Seerosenblatt mit dem richtigen Kasus. Der Frosch springt hin.</div></div>
+    <div class="step pf soft">${iconCanvasHTML('drop', '#E4F1FB')}<div>Falsches Blatt? <b>Platsch!</b> Kein Problem: Der Karpfen bringt dich zurück.</div></div>
+    <div class="step pf soft">${iconCanvasHTML('carp', '#FDEBDF')}<div>Tippe auf den <b>Karpfen</b> unten links. Dann bekommst du einen Tipp.</div></div>
+    <div class="step pf soft">${iconCanvasHTML('ball', '#FFF4D6')}<div>${n} Sätze = eine <b>goldene Kugel</b>. Danach kommt ein neuer Fall dazu.</div></div>
+  </div>
+  <p class="small">Wischen geht auch: nach links oder rechts wählen, nach oben springen. Tastatur: Pfeiltasten, Leertaste oder 1–4, F für Vollbild.</p>
+  <button class="pb gold" id="bHowOk">Alles klar!</button>`;
+  pixTitle($('#tHow'), 'So geht’s');
+  paintIcons($('#howBody'));
+  $('#bHowOk').onclick = () => { howSeen = true; hide('ovHow'); after && after(); };
+  show('ovHow');
+}
+function showLevelIntro(lv, cb) {
+  let h = '', title = '', sub = '';
+  const probe = (q, a, c) => `<div class="q">${fmtQ(q)} – ${esc(a)} → ${chip(c)}</div>`;
+  if (lv === 1) {
+    title = 'Level 1'; sub = 'Nominativ und Akkusativ';
+    h = `<div class="ex pf soft">${chip('Nom')} <b>Wer oder was?</b><br>${chip('Akk')} <b>Wen oder was?</b></div>
+    <div class="ex pf soft">${npSpan('Der König', 'Nom')} ruft ${npSpan('den Frosch', 'Akk')}.
+    ${probe('Wer oder was ruft den Frosch?', 'Der König.', 'Nom')}${probe('Wen oder was ruft der König?', 'Den Frosch.', 'Akk')}</div>
+    <p>Stell die Frage mit dem Verb. Die Antwort ist die markierte Gruppe.</p>`;
+  }
+  if (lv === 2) {
+    title = 'Level 2'; sub = 'Der Dativ kommt dazu';
+    h = `<div class="ex pf soft">${chip('Dat')} <b>Wem?</b></div>
+    <div class="ex pf soft">Die Prinzessin gibt ${npSpan('dem Frosch', 'Dat')} einen Kuss.${probe('Wem gibt die Prinzessin einen Kuss?', 'Dem Frosch.', 'Dat')}</div>
+    <p>Steht ein Wort wie <b>auf</b>, <b>mit</b> oder <b>aus</b> davor? Nimm es mit in die Frage:</p>
+    <div class="ex pf soft">Der Frosch sitzt auf ${npSpan('dem Tisch', 'Dat')}.<div class="q"><b>Worauf</b> sitzt der Frosch? – Auf dem Tisch.</div><div class="q">Genauer: <b>Auf wem oder was</b> sitzt der Frosch? → ${chip('Dat')}</div></div>
+    ${SET.ext ? '<p><b>Neu:</b> Manchmal wählst du zuerst die passende <b>Frage</b>. Danach den Kasus.</p>' : ''}`;
+  }
+  if (lv === 3) {
+    title = 'Level 3'; sub = 'Der Genitiv kommt dazu';
+    h = `<div class="ex pf soft">${chip('Gen')} <b>Wessen?</b></div>
+    <div class="ex pf soft">Die Tochter ${npSpan('des Königs', 'Gen')} spielt am Brunnen.${probe('Wessen Tochter spielt am Brunnen?', 'Die Tochter des Königs.', 'Gen')}</div>
+    <p>Der Genitiv sagt oft, <b>wem etwas gehört</b>. Nach <b>wegen, trotz, während</b> und <b>statt</b> steht er auch:</p>
+    <div class="ex pf soft">Wegen ${npSpan('des Regens', 'Gen')} bleibt die Prinzessin im Schloss.<div class="q"><b>Weswegen</b> bleibt die Prinzessin im Schloss? – Wegen des Regens.</div><div class="q">Genauer: <b>Wegen wessen</b> bleibt sie im Schloss? → ${chip('Gen')}</div></div>`;
+  }
+  if (lv >= 4) {
+    title = 'Freispiel'; sub = 'Alle vier Fälle';
+    h = `<div class="ex pf soft">${ORDER.map(c => `${chip(c)} <b>${CI[c].short}</b>`).join('<br>')}</div><p>Sammle weitere goldene Kugeln und Sticker!</p>`;
+  }
+  $('#levelBody').innerHTML = titleHTML('tLevel') + `<div class="lead">${sub}</div>` + h + `<button class="pb gold" id="bLvOk">Los!</button>`;
+  pixTitle($('#tLevel'), title, { k: window.innerWidth > 760 ? 4 : 3 });
+  $('#bLvOk').onclick = () => { hide('ovLevel'); updateHUD(); cb && cb(); };
+  updateHUD();
+  show('ovLevel');
+}
+function showGold(oldLevel, cb) {
+  const sc = G.teams === 2 ? TEAM.map((t, i) => `<span class="score pf flat"><i style="width:12px;height:12px;background:${t.dot};display:inline-block;box-shadow:0 0 0 2px #3A3350"></i>${t.name}: ${G.score[i]}</span>`).join(' ') : `<span class="score pf flat" id="goldScore">${G.score[0]} Punkte</span>`;
+  const next = G.level !== oldLevel ? `<p>Als Nächstes: <b>${G.level >= 4 ? 'das Freispiel' : 'Level ' + G.level}</b>.</p>` : '';
+  $('#goldBody').innerHTML = `<canvas id="goldCv" width="40" height="30" class="px" style="width:240px;height:180px"></canvas>
+    ${titleHTML('tGold')}
+    <p>Du hast ${SET.perBall} Sätze geschafft.<br>Die Prinzessin schenkt dir ihre goldene Kugel.</p>
+    <div style="margin:calc(3*var(--p)) 0">${sc}</div>
+    <p class="small">Goldene Kugeln insgesamt: ${saved.count.balls} · Bestwert heute: ${G.best}</p>${next}
+    <button class="pb gold" id="bGoldOk">Weiter</button>`;
+  pixTitle($('#tGold'), 'Goldene Kugel!', { fill: '#F5CF52', outline: '#8E6D0C', shadow: '#E8D9A8', k: window.innerWidth > 760 ? 4 : 3 });
+  const gs = document.getElementById('goldScore'); if (gs) gs.prepend(spriteCv(SPR.star));
+  const c = $('#goldCv').getContext('2d'); c.imageSmoothingEnabled = false;
+  pEllipse(c, 20, 15, 15, 14, '#FFF4D6');
+  pPad(c, 20, 25, 13, 4, { fill: '#CDEDB4', rim: '#86C47F', hi: '#E8F8DA' }, false);
+  c.drawImage(SPR.frog[G.teams === 2 ? G.turn : 0], 6, 12);
+  c.drawImage(SPR.ball, 21, 7, 14, 14);
+  c.fillStyle = '#FFFFFF'; [[33, 5], [19, 5], [36, 18]].forEach(([x, y]) => { c.fillRect(x, y, 1, 3); c.fillRect(x - 1, y + 1, 3, 1); });
+  $('#bGoldOk').onclick = () => { hide('ovGold'); cb && cb(); };
+  show('ovGold');
+}
+function showPending(cb) {
+  if (!G.pending.length) { cb && cb(); return; }
+  const st = G.pending.shift();
+  SND.play('sticker');
+  $('#stickerBody').innerHTML = `<div class="lead">Neuer Sticker!</div><canvas width="24" height="24" class="px bigst"></canvas>${titleHTML('tSt')}<p>${st.how}</p><p class="small">Er klebt jetzt in deinem Album.</p><button class="pb gold" id="bStOk">Toll!</button>`;
+  drawSticker($('#stickerBody canvas'), st, false);
+  pixTitle($('#tSt'), st.name, { k: 3 });
+  $('#bStOk').onclick = () => { hide('ovSticker'); showPending(cb); };
+  show('ovSticker');
+}
+function showAlbum(after) {
+  const got = STICKERS.filter(s => saved.stickers[s.id]).length;
+  $('#albumBody').innerHTML = `${titleHTML('tAlb')}<p>${got} von ${STICKERS.length} Stickern gesammelt.</p>
+    <div class="album">${STICKERS.map(s => { const own = !!saved.stickers[s.id]; const pr = !own && s.prog ? s.prog() : null; return `<div class="st pf ${own ? '' : 'soft lock'}"><canvas width="24" height="24" class="px" data-id="${s.id}"></canvas><b>${own ? s.name : '???'}</b>${s.how}${pr ? `<div class="pr">${Math.min(pr[0], pr[1])} / ${pr[1]}</div>` : ''}</div>`; }).join('')}</div>
+    <p class="small">Die Sticker bleiben auf diesem Gerät gespeichert. Namen werden nicht gespeichert.</p>
+    <button class="pb" id="bAlbOk">Zurück</button>`;
+  pixTitle($('#tAlb'), 'Stickeralbum');
+  $('#albumBody').querySelectorAll('canvas[data-id]').forEach(cv => { const s = STICKERS.find(x => x.id === cv.dataset.id); drawSticker(cv, s, !saved.stickers[s.id]); });
+  $('#bAlbOk').onclick = () => { hide('ovAlbum'); after && after(); };
+  show('ovAlbum');
+}
+
+// =========================================================
+// Lehrkraft-Bereich
+// =========================================================
+let edTimer = null;
+function showTeacher(tab) {
+  tab = tab || 'set';
+  const tabs = [['set', 'Einstellungen'], ['text', 'Sätze'], ['stat', 'Auswertung'], ['info', 'Hinweise']];
+  let body = '';
+  if (tab === 'set') body = `<div class="set">
+      <div>Hilfe-Modus</div>${segHTML('mode', [['easy', 'Leicht (Fragehilfe auf den Blättern)'], ['normal', 'Normal']], SET.mode)}
+      <div>Start-Level (neues Spiel)</div>${segHTML('startLevel', [[1, '1: Nom/Akk'], [2, '2: + Dativ'], [3, '3: + Genitiv'], [4, 'Freispiel']], SET.startLevel)}
+      <div>Fragen-Reihe ab Level 2</div>${segHTML('ext', [[true, 'An'], [false, 'Aus']], SET.ext)}
+      <div>Tempobonus</div>${segHTML('tempo', [[false, 'Aus'], [true, 'An (ohne sichtbare Uhr)']], SET.tempo)}
+      <div>Sätze pro goldene Kugel</div>${segHTML('perBall', [[3, '3'], [5, '5'], [8, '8']], SET.perBall)}
+      <div>Satzquelle</div>${segHTML('source', [['builtin', 'Eingebaut'], ['custom', 'Eigene'], ['both', 'Beide']], SET.source)}
+      <div>Spieler</div>${segHTML('teams', [[1, 'Ein Frosch'], [2, 'Zwei Teams']], SET.teams)}
+      <div>Musik</div>${segHTML('music', [[true, 'An'], [false, 'Aus']], SET.music)}
+      <div>Geräusche</div>${segHTML('sfx', [[true, 'An'], [false, 'Aus']], SET.sfx)}
+    </div>
+    <div class="btnrow" style="margin-top:calc(4*var(--p))"><button class="pb sm" id="tNew">Neues Spiel mit diesen Einstellungen</button><button class="pb alt sm" id="tFull"></button><button class="pb alt sm" id="tAlbumReset">Stickeralbum leeren</button></div>
+    <p class="small">Start-Level und Spieler gelten ab dem nächsten neuen Spiel. Alles andere gilt sofort bzw. ab dem nächsten Satz.</p>`;
+  if (tab === 'text') body = `<p>Eine Zeile pro Satz. Markiere die Nominalgruppe mit <code>[eckigen Klammern]</code> und schreibe den Kasus in <code>{geschweifte Klammern}</code>. Die Frage ist freiwillig. Mit Frage gibt der Karpfen genauere Tipps, und die Fragen-Reihe wird möglich.</p>
+    <pre class="pf soft">Die Prinzessin gibt [dem Frosch]{Dat} einen Kuss. | Wem gibt die Prinzessin einen Kuss?
+[Die Prinzessin]{Nom: Wer oder was gibt dem Frosch einen Kuss?} gibt [dem Frosch]{Dat: Wem gibt die Prinzessin einen Kuss?} [einen Kuss]{Akk: Wen oder was gibt die Prinzessin dem Frosch?}.
+Der Frosch sitzt auf [dem Tisch]{Dat: Worauf sitzt der Frosch?}.
+Wegen [des Regens]{Gen: Weswegen bleibt die Prinzessin im Schloss?} bleibt die Prinzessin im Schloss.</pre>
+    <p class="small">Kürzel: Nom, Gen, Dat, Akk. Bei mehreren Gruppen fragt das Spiel sie nacheinander ab, eine Reihe pro Gruppe. Bei Präpositionen gehört die Präposition in die Frage (<b>Worauf</b> …? / <b>Auf wen</b> …? / <b>Weswegen</b> …? / <b>Trotz wessen</b> …?). Daraus macht das Spiel die Fragen „Auf wem oder was …?“, „Auf wen oder was …?“ bzw. „Wegen wessen …?“. Zeilen mit # sind Überschriften. Die Falschantworten wählt das Spiel selbst.</p>
+    <textarea id="ed" class="pf flat" spellcheck="false" placeholder="Hier eigene Sätze eintragen …"></textarea>
+    <div class="btnrow"><button class="pb sm" id="edApply">Übernehmen</button><button class="pb alt sm" id="edImport">Importieren (.md)</button><button class="pb alt sm" id="edExport">Exportieren (.md)</button><button class="pb alt sm" id="edBuiltin">Eingebaute Sätze einfügen</button><button class="pb alt sm" id="edClear">Leeren</button></div>
+    <div class="sum pf flat soft" id="edSum"></div><ul class="check" id="edCheck"></ul>`;
+  if (tab === 'stat') body = statHTML();
+  if (tab === 'info') body = `<h3>Ablauf</h3><p>Pro Satz eine Überquerung. Jede markierte Nominalgruppe bekommt eine eigene Reihe. Ab Level 2 kommt bei bis zu zwei Gruppen vorher eine <b>Fragen-Reihe</b> (erst die passende Frage, dann der Kasus). ${SET.perBall} gelöste Sätze ergeben eine goldene Kugel und das nächste Level. Nach Level 3 folgt das Freispiel mit allen vier Fällen.</p>
+    <h3>Hilfen</h3><p>Der Karpfen hilft in drei Stufen: (1) Frage mit dem Verb bilden, (2) Fragewörter mit Kasus, (3) die vollständige Frageprobe. Nach zwei Fehlsprüngen in derselben Reihe meldet er sich von selbst. Im leichten Modus steht die Fragehilfe direkt auf den Blättern, bei Präpositionen mit der Präposition („Auf wem oder was?“, „Wegen wessen?“).</p>
+    <h3>Präpositionen</h3><p>Bei Wechselpräpositionen ergänzt der Karpfen „Wo? → Dativ, Wohin? → Akkusativ“. Bei Präpositionen mit Genitiv (wegen, trotz, während, statt, innerhalb, außerhalb) fragt das Spiel mit „Wegen wessen …?“ usw. und nennt den Merksatz. Der Karpfen weist darauf hin, dass man im Alltag oft „wegen dem …“ hört, in der Schriftsprache aber „wegen des …“ richtig ist. Die eingebauten Sätze enthalten acht Beispiele dazu (Level 3).</p>
+    <h3>Wertung</h3><p>Richtiger Sprung: 10 Punkte × Anzahl der freigeschalteten Fälle. Überquerung ohne Platsch: Serien-Bonus (20, 40, 60 … bis 100). Tempobonus nur, wenn eingeschaltet. Der Bestwert gilt nur für diese Sitzung.</p>
+    <h3>Teammodus</h3><p>Zwei Teams wechseln sich pro Satz ab, jedes mit eigenem Frosch und eigenem Punktestand. Die goldenen Kugeln sammeln beide gemeinsam.</p>
+    <h3>Vollbild</h3><p>Knopf oben rechts (vier Ecken), im Startmenü oder Taste F. Mit Esc oder demselben Knopf zurück. Auf dem iPhone gibt es kein Vollbild im Browser; dort hilft „Zum Home-Bildschirm“.</p>
+    <h3>Datenschutz</h3><p>Gespeichert werden auf diesem Gerät nur Sticker, Zähler, Einstellungen und eigene Sätze. Keine Namen. Die Auswertung gilt nur für die laufende Sitzung. Das Spiel funktioniert ohne Internet.</p>
+    <h3>Steuerung</h3><p>Tippen oder Klicken auf ein Blatt. Wischen: links/rechts wählen, nach oben springen. Tastatur: Pfeiltasten, Leertaste/Enter, 1–4, H für einen Tipp, F für Vollbild.</p>`;
+  $('#teacherBody').innerHTML = `<div style="display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap">${titleHTML('tTeach')}<button class="pb alt sm" id="tClose">Schließen</button></div>
+    <div class="tabs">${tabs.map(([k, l]) => `<button data-tab="${k}" class="pb sm ${k === tab ? '' : 'alt'}">${l}</button>`).join('')}</div>${body}`;
+  const root = $('#teacherBody');
+  const tt = $('#tTeach'); tt.style.margin = '0'; pixTitle(tt, 'Lehrkraft-Bereich');
+  root.querySelectorAll('.tabs button').forEach(b => b.onclick = () => showTeacher(b.dataset.tab));
+  $('#tClose').onclick = () => { hide('ovTeacher'); renderTask(); };
+  if (tab === 'set') {
+    bindSegs(root, k => applySetting(k));
+    $('#tNew').onclick = () => { hide('ovTeacher'); closeBubble(); newGame(); };
+    const tf = $('#tFull'); tf.appendChild(iconCv('full')); tf.lastChild.classList.add('ic'); tf.appendChild(document.createTextNode('Vollbild')); tf.onclick = () => FS.toggle();
+    if (!FS.can()) tf.style.display = 'none';
+    $('#tAlbumReset').onclick = () => {
+      const b = $('#tAlbumReset');
+      if (b.dataset.sure) { saved.stickers = {}; Object.keys(saved.count).forEach(k => saved.count[k] = 0); persist(); toast('Stickeralbum geleert.'); b.textContent = 'Stickeralbum leeren'; delete b.dataset.sure; }
+      else { b.dataset.sure = '1'; b.textContent = 'Wirklich leeren? Nochmal tippen'; }
+    };
+  }
+  if (tab === 'text') {
+    const ed = $('#ed'); ed.value = saved.custom;
+    const run = () => checkEditor(ed.value);
+    ed.addEventListener('input', () => { clearTimeout(edTimer); edTimer = setTimeout(run, 250); });
+    run();
+    $('#edApply').onclick = () => {
+      saved.custom = ed.value; POOL_CUSTOM = parseAll(saved.custom, 'c');
+      let msg = `Übernommen: ${POOL_CUSTOM.length} eigene Sätze.`;
+      if (POOL_CUSTOM.length && SET.source === 'builtin') { SET.source = 'custom'; msg += ' Satzquelle steht jetzt auf „Eigene“.'; }
+      if (!POOL_CUSTOM.length && SET.source === 'custom') { SET.source = 'builtin'; msg = 'Keine gültigen eigenen Sätze. Es werden die eingebauten Sätze verwendet.'; }
+      persist(); toast(msg + ' Gilt ab dem nächsten Satz.', 4);
+    };
+    $('#edImport').onclick = () => $('#edFile').click();
+    $('#edExport').onclick = () => {
+      const txt = ed.value.trim() ? ed.value : CORPUS;
+      const blob = new Blob(['# Der Kasus-Teich – Sätze\n\n' + txt.replace(/^# Der Kasus-Teich – Sätze\n\n/, '')], { type: 'text/markdown' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'kasus-teich-saetze.md';
+      document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+    };
+    $('#edBuiltin').onclick = () => { ed.value = (ed.value.trim() ? ed.value.trimEnd() + '\n\n' : '') + CORPUS; run(); };
+    $('#edClear').onclick = () => { ed.value = ''; run(); };
+  }
+  if (tab === 'stat') { const r = $('#statReset'); if (r) r.onclick = () => { G.stats = newStats(); showTeacher('stat'); }; }
+  show('ovTeacher');
+}
+$('#edFile').addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  const rd = new FileReader();
+  rd.onload = () => { const ed = $('#ed'); if (ed) { ed.value = String(rd.result || ''); checkEditor(ed.value); toast('Importiert. Mit „Übernehmen“ aktivieren.'); } };
+  rd.readAsText(f, 'utf-8'); e.target.value = '';
+});
+function checkEditor(text) {
+  const lines = String(text).split('\n');
+  const items = []; let ok = 0, bad = 0; const cnt = { Nom: 0, Gen: 0, Dat: 0, Akk: 0 };
+  lines.forEach((ln, i) => {
+    const p = parseLine(ln, i + 1); if (!p) return;
+    if (p.errors.length) { bad++; p.errors.forEach(m => items.push(`<li class="err">Zeile ${i + 1}: ${esc(m)} – wird übersprungen.</li>`)); return; }
+    ok++; p.groups.forEach(g => g.case && cnt[g.case]++);
+    p.warnings.forEach(m => items.push(`<li class="warn">Zeile ${i + 1}: ${esc(m)}</li>`));
+    p.notes.forEach(m => items.push(`<li>Zeile ${i + 1}: ${esc(m)}</li>`));
+  });
+  $('#edSum').innerHTML = ok || bad ? `<b>${ok}</b> Sätze erkannt · ${ORDER.map(c => `${CI[c].ab} ${cnt[c]}`).join(' · ')}${bad ? ` · <span style="color:#B4486A">${bad} Zeile(n) mit Fehlern</span>` : ''}${!cnt.Gen && ok ? ' · <span class="small">Ohne Genitiv-Sätze nutzt Level 3 die übrigen Fälle.</span>' : ''}` : 'Noch keine eigenen Sätze.';
+  $('#edCheck').innerHTML = items.join('') || (ok ? '<li>Alles in Ordnung.</li>' : '');
+}
+function statHTML() {
+  const S = G.stats;
+  const pct = (a, b) => b ? Math.round(a / b * 100) + ' %' : '–';
+  const rows = ORDER.map(c => {
+    const s = S.k[c];
+    const conf = Object.entries(s.conf).sort((a, b) => b[1] - a[1]).map(([k, n]) => `${CI[k].name} (${n}×)`).join(', ') || '–';
+    return `<tr><td>${chip(c)}</td><td>${s.asked}</td><td>${s.first} (${pct(s.first, s.asked)})</td><td>${s.wrong}</td><td>${conf}</td></tr>`;
+  }).join('');
+  const top = Object.values(S.sents).sort((a, b) => b.wrong - a.wrong).slice(0, 6);
+  return `<p class="small">Diese Auswertung gilt nur für die laufende Sitzung auf diesem Gerät. Es werden keine Namen erfasst.</p>
+    <h3>Kasus-Reihen</h3>
+    <div style="overflow:auto"><table class="stat"><tr><th>Kasus</th><th>Gefragt</th><th>Beim 1. Versuch richtig</th><th>Platsch</th><th>Gehalten für …</th></tr>${rows}</table></div>
+    <h3>Fragen-Reihen</h3>
+    <table class="stat"><tr><th>Gefragt</th><th>Beim 1. Versuch richtig</th><th>Platsch</th></tr><tr><td>${S.q.asked}</td><td>${S.q.first} (${pct(S.q.first, S.q.asked)})</td><td>${S.q.wrong}</td></tr></table>
+    <h3>Überblick</h3><p>Überquerungen: ${S.crossings} · davon ohne Platsch: ${S.flawless} · Karpfen-Tipps: ${S.hints}</p>
+    <h3>Sätze mit den meisten Platschern</h3>${top.length ? '<ol>' + top.map(t => `<li>${esc(t.plain)} <span class="small">(${t.wrong}×)</span></li>`).join('') + '</ol>' : '<p class="small">Noch keine.</p>'}
+    <div class="btnrow"><button class="pb alt sm" id="statReset">Auswertung zurücksetzen</button></div>`;
+}
+
+// =========================================================
+// Knöpfe und Start
+// =========================================================
+function updateMusicBtn() {
+  const b = $('#bMusic'); b.innerHTML = ''; b.appendChild(iconCv(SET.music ? 'music' : 'musicOff'));
+  b.setAttribute('aria-pressed', SET.music ? 'true' : 'false');
+}
+function setupButtons() {
+  $('#bAlbum').appendChild(iconCv('album'));
+  $('#bMenu').appendChild(iconCv('home'));
+  $('#bGear').appendChild(iconCv('gear'));
+  updateMusicBtn(); updateFsBtn();
+  if (!FS.can()) $('#bFull').style.display = 'none';
+  $('#carpBtn .q').appendChild(spriteCv(SPR.letter['?']));
+  $('#bubCarp').getContext('2d').drawImage(SPR.carp, 0, 0);
+}
+$('#bMusic').onclick = () => { SND.init(); SND.resume(); SET.music = !SET.music; persist(); SND.setMusic(SET.music); updateMusicBtn(); toast(SET.music ? 'Musik an' : 'Musik aus', 1.4); };
+$('#bFull').onclick = () => FS.toggle();
+$('#bAlbum').onclick = () => showAlbum();
+$('#bMenu').onclick = () => { closeBubble(); showStart(); };
+$('#carpBtn').onclick = e => { e.stopPropagation(); openHint(false); };
+$('#bubMore').onclick = e => { e.stopPropagation(); openHint(false); };
+$('#bubOk').onclick = e => { e.stopPropagation(); closeBubble(); };
+(function gearHold() {
+  const b = $('#bGear'); let tm = null;
+  const cancel = (ev) => { if (tm) { clearTimeout(tm); tm = null; b.classList.remove('hold'); if (ev.type === 'pointerup') toast('Lehrkraft-Bereich: Zahnrad 2 Sekunden gedrückt halten.'); } };
+  b.addEventListener('pointerdown', e => { e.preventDefault(); b.classList.remove('hold'); void b.offsetWidth; b.classList.add('hold'); tm = setTimeout(() => { tm = null; b.classList.remove('hold'); closeBubble(); showTeacher('set'); }, 1600); });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => b.addEventListener(ev, cancel));
+  b.addEventListener('contextmenu', e => e.preventDefault());
+  b.addEventListener('keydown', e => { if (e.key === 'Enter' && e.shiftKey) showTeacher('set'); });
+})();
+function drawCarpButton() {
+  const c = $('#carpCv').getContext('2d'); c.imageSmoothingEnabled = false; c.clearRect(0, 0, 28, 28);
+  c.fillStyle = '#BFE6F0'; c.fillRect(0, 0, 28, 28);
+  c.fillStyle = '#A9DDEA'; c.fillRect(0, 15, 28, 13);
+  c.fillStyle = '#CFEFF6'; c.fillRect(2, 23, 5, 1); c.fillRect(17, 25, 6, 1); c.fillRect(21, 19, 4, 1);
+  c.drawImage(SPR.carp, 4, 9);
+  c.fillStyle = '#FFFFFF'; c.fillRect(22, 3, 2, 2); c.fillRect(19, 1, 1, 1); c.fillRect(25, 7, 1, 1);
+}
+document.addEventListener('visibilitychange', () => { if (!SND.ctx) return; if (document.hidden) SND.ctx.suspend(); else SND.ctx.resume(); });
+
+function boot() {
+  buildSprites();
+  drawCarpButton();
+  setupButtons();
+  G.teams = SET.teams === 2 ? 2 : 1;
+  resize();
+  demoRows();
+  renderSentence(); renderTask(); updateHUD();
+  if (window.ResizeObserver) new ResizeObserver(() => resize()).observe(stage);
+  window.addEventListener('resize', () => { resize(); _lvlShown = ''; updateHUD(); });
+  showStart();
+  requestAnimationFrame(frame);
+}
+boot();
+</script>
+</body>
+</html>

@@ -202,6 +202,19 @@ window.WissOS._configData = {
       "desktopPosition": { "col": 2, "row": 3 }
     },
     {
+      "id": "kasus-teich",
+      "name": "Kasus-Teich",
+      "osName": "Der Kasus-Teich",
+      "description": "Spiel zum Einüben der Kasusbestimmung (Kasus-Frogger)",
+      "icon": "joystick",
+      "category": "Spiele",
+      "url": "PROGRAMME/Kasus-Frogger/kasus-teich.html",
+      "openInWindow": true,
+      "width": 1020,
+      "height": 720,
+      "showOnDesktop": false
+    },
+    {
       "id": "wortartenlabor",
       "name": "Wortarten-Labor",
       "osName": "Wortarten-Labor",
@@ -283,7 +296,7 @@ window.WissOS._configData = {
       {
         "name": "Spiele",
         "icon": "joystick",
-        "programIds": ["blockkaskade", "spiele-generator", "wortwurfbude"]
+        "programIds": ["blockkaskade", "spiele-generator", "wortwurfbude", "kasus-teich"]
       }
     ],
     "systemEntries": [
