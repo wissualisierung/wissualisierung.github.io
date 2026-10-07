@@ -1149,6 +1149,20 @@ html.no-flexgap .btn .ico{margin-right:.4em}
 </script>
 <script>
 "use strict";
+/* ---------- Fehlerprotokoll für den Technik-Check ----------
+   Nur im Arbeitsspeicher dieser Sitzung, nichts wird gespeichert oder gesendet. Hilft der Lehrkraft,
+   Geräteprobleme (z. B. ältere Smartboard-Browser) an die Schul-IT oder die Autorin weiterzugeben. */
+const ERRLOG = [];
+function noteError(e, where){
+  try {
+    const msg = String((e && (e.message || e.reason && e.reason.message || e.reason)) || e || 'unbekannt').slice(0, 160);
+    if (ERRLOG.length && ERRLOG[ERRLOG.length - 1].msg === msg){ ERRLOG[ERRLOG.length - 1].n++; return; }
+    ERRLOG.push({ where: where || 'Skript', msg, n: 1 });
+    if (ERRLOG.length > 5) ERRLOG.shift();
+  } catch (err) { /* nichts */ }
+}
+window.addEventListener('error', e => noteError(e.error || e.message, 'Skript'));
+window.addEventListener('unhandledrejection', e => noteError(e.reason, 'Ablauf'));
 /* ---------- Pixel-Sprites ---------- */
 const PAL = {
   K:'#2c2a4a', W:'#ffffff', L:'#e3dff1', M:'#cbc5e2', D:'#8f88b8', S:'#c8f2dc',
@@ -1932,8 +1946,18 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;',
 const qw = w => `<span class="w">„${esc(w)}“</span>`;
 const termOf = t => `<span class="term">${TESTS[t].term}</span>`;
 const wait = ms => new Promise(r => setTimeout(r, ms));
-/* Ende einer Animation; ältere Browser (Chrome < 84) kennen animation.finished nicht */
-const animEnd = (a, ms) => (a && a.finished) ? a.finished : wait(ms);
+/* Animationen robust abspielen. Ältere Browser (z. B. Chrome < 84 auf Smartboards) kennen weder animation.finished
+   noch Teil-Keyframes und brechen dann mit einem Fehler ab. Das Spiel darf daran nie hängen bleiben:
+   play() fängt Fehler ab und wartet notfalls nur die Dauer; animEnd() endet spätestens nach der Dauer plus Puffer. */
+const animEnd = (a, ms) => {
+  if (!a || !a.finished || typeof a.finished.then !== 'function') return wait(ms);
+  return Promise.race([a.finished.then(() => {}, () => {}), wait(ms + 250)]);
+};
+function play(el, frames, opts){
+  let a = null;
+  try { a = el && el.animate ? el.animate(frames, opts) : null; } catch (e) { a = null; noteError(e, 'Animation'); }
+  return animEnd(a, opts.duration);
+}
 const reduceMotion = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function setBubble(html, mood){
@@ -2131,9 +2155,9 @@ async function flyWord(t){
   const { f, r, s } = flyer(card);
   card.classList.add('ghost');
   const [dx, dy] = centerDelta(r, icon, s);
-  await animEnd(f.animate([{ transform: 'translate(0,0) scale(1)' }, { transform: `translate(${dx}px,${dy}px) scale(.35)` }], { duration: 360, easing: 'steps(8, end)', fill: 'forwards' }), 360);
+  await play(f, [{ transform: 'translate(0,0) scale(1)' }, { transform: `translate(${dx}px,${dy}px) scale(.35)` }], { duration: 360, easing: 'steps(8, end)', fill: 'forwards' });
   m.classList.add('shake'); await wait(300); m.classList.remove('shake');
-  await animEnd(f.animate([{ transform: `translate(${dx}px,${dy}px) scale(.35)` }, { transform: 'translate(0,0) scale(1)' }], { duration: 320, easing: 'steps(8, end)', fill: 'forwards' }), 320);
+  await play(f, [{ transform: `translate(${dx}px,${dy}px) scale(.35)` }, { transform: 'translate(0,0) scale(1)' }], { duration: 320, easing: 'steps(8, end)', fill: 'forwards' });
   f.remove(); card.classList.remove('ghost'); belt.classList.remove('run');
 }
 async function flyToDrawer(w){
@@ -2142,7 +2166,8 @@ async function flyToDrawer(w){
   if (!card || !d || reduceMotion()) return;
   const { f, r, s } = flyer(card);
   const [dx, dy] = centerDelta(r, d, s);
-  await animEnd(f.animate([{ transform: 'translate(0,0) scale(1)' }, { transform: `translate(${dx}px,${dy}px) scale(.4)`, opacity: .4 }], { duration: 420, easing: 'steps(8, end)', fill: 'forwards' }), 420);
+  // Beide Keyframes nennen dieselben Eigenschaften (ältere Browser lehnen Teil-Keyframes ab)
+  await play(f, [{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: `translate(${dx}px,${dy}px) scale(.4)`, opacity: .4 }], { duration: 420, easing: 'steps(8, end)', fill: 'forwards' });
   f.remove();
 }
 /* Laufende Animationen abbrechen (beim Wortwechsel und beim Überspringen der Vorführung) */
@@ -2333,8 +2358,9 @@ async function runTest(t){
   }
   const gen = S.gen, entry = S.entry;
   S.busy = true; updateMachines(); renderActions();
-  await flyWord(t);
-  if (gen !== S.gen || entry !== S.entry || S.phase !== 'pick') return;   // inzwischen ein anderes Wort: Ergebnis verwerfen
+  try { await flyWord(t); } catch (e) { noteError(e, 'Probe'); clearFlights(); }
+  if (gen !== S.gen || entry !== S.entry){ return; }   // inzwischen ein anderes Wort: Ergebnis verwerfen
+  if (S.phase !== 'pick'){ S.busy = false; render(); return; }
   const p = probe(entry, t);
   S.result = { t, entry, truth: p.truth, base: p.base, items: p.items, fall: p.fall, sep: p.sep, partizip: !!p.partizip && isPartizipCase(entry, t), judged: false };
   S.busy = false;
@@ -2437,7 +2463,7 @@ async function sortInto(w, auto){
     return sortInto(e.wortart, true);
   }
   S.busy = true; renderCabinet();
-  await flyToDrawer(w);
+  try { await flyToDrawer(w); } catch (e) { noteError(e, 'Schublade'); clearFlights(); }
   if (gen !== S.gen) return;
   S.counts[w]++;
   const newly = !S.named[w] && !settings.expert;
@@ -2508,7 +2534,7 @@ const demoAlive = dg => dg === S.demoGen && S.phase === 'demo';
 async function demoProbe(t){
   const dg = S.demoGen;
   S.busy = true; renderActions();
-  await flyWord(t);
+  try { await flyWord(t); } catch (e) { noteError(e, 'Vorführung'); clearFlights(); }
   if (!demoAlive(dg)) return;   // Vorführung wurde übersprungen
   const p = probe(DEMOS[S.lab], t);
   S.result = { t, truth: p.truth, base: p.base, items: p.items, fall: p.fall, sep: p.sep, judged: false };
@@ -2525,7 +2551,8 @@ async function demoSort(w, text){
   S.busy = true; renderActions();
   setBubble(text, 'happy');
   await wait(500); if (!demoAlive(dg)) return;
-  await flyToDrawer(w); if (!demoAlive(dg)) return;
+  try { await flyToDrawer(w); } catch (e) { noteError(e, 'Vorführung'); clearFlights(); }
+  if (!demoAlive(dg)) return;
   S.counts[w]++; S.named[w] = true; S.sortedAs = w; S.busy = false;
   render(); bump(`.drawer[data-w="${w}"]`, 'bump');
 }
@@ -2782,7 +2809,8 @@ function techInfo(){
     ['Touch', (navigator.maxTouchPoints || 0) > 0, 'Bedienung mit Maus oder Tastatur.'],
     ['Labor-Schrift (in der Datei enthalten)', fonts, 'Der Browser zeigt eine Ersatzschrift. Das Labor funktioniert trotzdem.'],
     ['Nichts aus dem Internet geladen', external, 'Diese Fassung hat Inhalte von einem fremden Server geladen (z. B. eine Vorschau im Netz). Im Unterricht die Datei „Wortarten-Labor.html“ verwenden.'],
-    ['Sperre gegen Verbindungen nach außen', csp, 'Nur in der Datei „Wortarten-Labor.html“ eingebaut, nicht in einer Vorschau im Netz.']
+    ['Sperre gegen Verbindungen nach außen', csp, 'Nur in der Datei „Wortarten-Labor.html“ eingebaut, nicht in einer Vorschau im Netz.'],
+    ['Keine Fehler in dieser Sitzung', !ERRLOG.length, ERRLOG.map(x => `${x.where}: ${x.msg}${x.n > 1 ? ` (${x.n}×)` : ''}`).join(' · ') + '. Das Labor hat den Fehler abgefangen und läuft weiter.', true]
   ];
   const rows = [
     ['Browser', browser], ['System', sys],
@@ -2796,7 +2824,7 @@ function techInfo(){
 function techHTML(){
   const t = techInfo();
   const mark = v => v === null ? '<span>–</span>' : v ? '<span class="ok">✓</span>' : '<span class="no">✗</span>';
-  const report = t.rows.map(r => r[0] + ': ' + r[1]).concat(t.checks.map(c => (c[1] === null ? '–' : c[1] ? '✓' : '✗') + ' ' + c[0])).concat(['Kennung: ' + t.ua]).join('\n');
+  const report = t.rows.map(r => r[0] + ': ' + r[1]).concat(t.checks.map(c => (c[1] === null ? '–' : c[1] ? '✓' : '✗') + ' ' + c[0] + (c[1] === false && c[3] ? ': ' + c[2] : ''))).concat(['Kennung: ' + t.ua]).join('\n');
   return `<div class="guide-text">
     <p>${t.tooOld ? '<b>Dieser Browser ist älter.</b> Das Labor läuft mit Ersatzlösungen. Wenn etwas fehlt, hilft ein Browser-Update (bei Smartboards über die Schul-IT).' : 'Dieser Browser kann alles, was das Labor braucht.'}</p>
     <table class="tech"><tbody>${t.rows.map(r => `<tr><th>${esc(r[0])}</th><td>${esc(r[1])}</td></tr>`).join('')}</tbody></table>
