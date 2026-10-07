@@ -1,0 +1,3789 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Der Zeitfaden</title>
+<style>
+/* Layout: ein aufgeschlagenes Pixel-Märchenbuch auf einem Dämmerungs-Schreibtisch.
+   Breit: Bildseite links, Textseite rechts. Hoch: Bild oben, Text darunter. Die Kartenablage liegt unten wie ein Lesebändchen. */
+:root {
+  --desk: #c9c3f0;
+  --desk-deep: #a69fe0;
+  --star: rgba(255, 255, 255, 0.55);
+  --paper: #fdfaff;
+  --paper-2: #f2ecfb;
+  --ink: #3b3355;
+  --ink-soft: #6b6287;
+  --curse: #dedae8;
+  --curse-ink: #675f80;
+  --fairy: #7a5cd6;
+  --fairy-tint: #ebe4ff;
+  --gold: #f8d35a;
+  --ok: #3f9a7d;
+  --warn-tint: #fff1e6;
+  --shadow: rgba(59, 51, 85, 0.28);
+
+  --t-praes: #a8e8cf;
+  --t-praet: #f8b9cb;
+  --t-perf: #d2bff5;
+  --t-plusq: #ffcda9;
+  --t-fut1: #fce792;
+  --t-fut2: #acd8f6;
+  --t-none: #e8e3f2;
+
+  /* Nur Systemschriften: nichts wird aus dem Internet geladen. Die Pixelschrift ist selbst gezeichnet und eingebettet. */
+  --font-text: Verdana, "Segoe UI", Tahoma, "Trebuchet MS", system-ui, -apple-system, Roboto, "Noto Sans", "DejaVu Sans", sans-serif;
+  --font-ui: Verdana, "Segoe UI", Tahoma, "Trebuchet MS", system-ui, -apple-system, Roboto, "Noto Sans", "DejaVu Sans", sans-serif;
+
+  --fs: clamp(17px, max(1.1vw + 1.05vh, 2.3vh), 40px);
+  --b: clamp(2px, 0.28vmin, 4px);
+  --gap: clamp(10px, 1.6vmin, 24px);
+  color-scheme: light;
+}
+
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background-color: var(--desk);
+  background-image:
+    radial-gradient(var(--star) 1px, transparent 1.6px),
+    radial-gradient(var(--star) 1px, transparent 1.6px);
+  background-size: 46px 46px, 71px 71px;
+  background-position: 0 0, 23px 31px;
+  color: var(--ink);
+  font-family: var(--font-text);
+  -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
+}
+:fullscreen body, body:fullscreen { background-color: var(--desk); }
+
+button { font: inherit; color: inherit; cursor: pointer; }
+button:disabled { cursor: default; }
+:focus-visible { outline: 3px dashed var(--fairy); outline-offset: 3px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Pixelrahmen: vier Schatten ohne Ecken ergeben die gestuften Ecken */
+.px {
+  background: var(--paper);
+  box-shadow:
+    0 calc(-1 * var(--b)) 0 0 var(--ink),
+    0 var(--b) 0 0 var(--ink),
+    calc(-1 * var(--b)) 0 0 0 var(--ink),
+    var(--b) 0 0 0 var(--ink),
+    calc(2 * var(--b)) calc(3 * var(--b)) 0 0 var(--shadow),
+    calc(3 * var(--b)) calc(2 * var(--b)) 0 0 var(--shadow);
+}
+
+#app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-inline: max(var(--gap), env(safe-area-inset-left, 0px)) max(var(--gap), env(safe-area-inset-right, 0px));
+  padding-block: 0 max(var(--gap), env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
+}
+
+/* ---------- Kopfleiste ---------- */
+.bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--gap) * 0.6);
+  padding-block: max(calc(var(--gap) * 0.7), env(safe-area-inset-top, 0px)) calc(var(--gap) * 0.7);
+  min-height: 44px;
+  font-family: var(--font-ui);
+}
+.bar .where {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  font-weight: 700;
+  font-size: clamp(14px, 0.7vw + 0.7vh, 22px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bar .where small { font-weight: 400; color: var(--ink-soft); margin-left: 0.5em; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45em;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.35em 0.8em;
+  border: 0;
+  font-weight: 700;
+  font-size: clamp(14px, 0.6vw + 0.7vh, 20px);
+  background: var(--paper);
+  transition: transform 0.08s ease;
+}
+.btn.px:active { transform: translate(var(--b), var(--b)); }
+.btn svg { width: 1.25em; height: 1.25em; flex: none; shape-rendering: crispEdges; }
+.btn.icon { padding-inline: 0.55em; }
+.btn .lbl { white-space: nowrap; }
+.btn.primary { background: var(--gold); }
+.btn.fairy { background: var(--fairy); color: #fff; }
+.btn.quiet { background: var(--paper-2); }
+.stage-chip { background: var(--fairy-tint); }
+@media (max-width: 760px) {
+  .bar .lbl { display: none; }
+  .bar .stage-chip { display: none; }
+  .bar .where small { display: none; }
+}
+
+main#screen { flex: 1; min-height: 0; position: relative; }
+
+/* ---------- Titelbild ---------- */
+.cover {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+}
+.cover .cover-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+}
+.cover .cover-inner {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: calc(var(--gap) * 1.2);
+  padding: var(--gap);
+  text-align: center;
+  margin-top: -14vh;
+}
+.pixeltitle { image-rendering: pixelated; display: block; height: auto; }
+.cover .pixeltitle { width: min(88vw, 900px); }
+.cover p {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(16px, 1vw + 1.1vh, 30px);
+  max-width: 30ch;
+  text-shadow: 2px 2px 0 var(--ink);
+  text-wrap: balance;
+}
+.cover .btn { font-size: clamp(18px, 1vw + 1.3vh, 34px); padding: 0.5em 1.4em; }
+
+/* ---------- Inhaltsverzeichnis ---------- */
+.toc { height: 100%; overflow: auto; padding: var(--b) calc(var(--b) * 3) calc(var(--gap) * 2); box-sizing: border-box; }
+.toc-head { display: flex; align-items: center; justify-content: space-between; gap: var(--gap); flex-wrap: wrap; margin-bottom: var(--gap); }
+.toc-head .pixeltitle { height: clamp(28px, 6vmin, 64px); width: auto; }
+.toc-head p { margin: 0; color: var(--ink-soft); font-size: clamp(14px, 0.6vw + 0.8vh, 20px); }
+.toc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, clamp(220px, 22vw, 340px)), 1fr));
+  gap: calc(var(--gap) * 1.4);
+  padding: var(--b);
+}
+.story {
+  display: grid;
+  grid-template-rows: auto auto;
+  text-align: left;
+  border: 0;
+  padding: 0;
+  overflow: visible;
+}
+.story canvas { width: 100%; aspect-ratio: 16 / 9; display: block; image-rendering: pixelated; transition: filter 0.6s ease; }
+.story .info { padding: 0.7em 0.9em 0.9em; display: grid; gap: 0.45em; }
+.story h3 { margin: 0; font-size: clamp(16px, 0.7vw + 0.9vh, 24px); text-wrap: balance; }
+.story .meta { font-size: clamp(13px, 0.5vw + 0.6vh, 17px); color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.meter { height: 10px; background: var(--curse); display: flex; }
+.meter i { display: block; height: 100%; background: var(--fairy); }
+.story.done .meter i { background: var(--ok); }
+.badge { justify-self: start; font-size: 0.8em; font-weight: 700; padding: 0.15em 0.5em; background: var(--t-praes); }
+.story.frame .badge { background: var(--fairy-tint); }
+
+/* ---------- Buchseite ---------- */
+.page {
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  gap: calc(var(--gap) * 1.4);
+  padding: var(--b) calc(var(--b) * 3) calc(var(--b) * 3);
+  box-sizing: border-box;
+}
+.pic {
+  margin: 0;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+.pic canvas {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  image-rendering: pixelated;
+  transition: filter 0.9s ease;
+}
+.pic .sparkles { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.spark {
+  position: absolute;
+  width: 1.2%;
+  aspect-ratio: 1;
+  background: var(--gold);
+  box-shadow: 0 0 0 2px #fff;
+  animation: spark 1.4s steps(6) forwards;
+}
+@keyframes spark {
+  0% { transform: translateY(0) scale(0.2); opacity: 0; }
+  20% { opacity: 1; transform: translateY(-20%) scale(1); }
+  100% { transform: translateY(-260%) scale(0.4); opacity: 0; }
+}
+
+.textcol {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--gap) * 1.1);
+}
+.stack {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: calc(var(--gap) * 1.1);
+}
+.text {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: calc(var(--fs) * 0.9) calc(var(--fs) * 1.05);
+  font-size: var(--fs);
+  line-height: 1.85;
+  hyphens: manual;
+}
+.text p { margin: 0 0 0.6em; max-width: 34em; }
+.text p:last-child { margin-bottom: 0; }
+.text .heading { display: block; margin-bottom: 0.4em; }
+.text .heading canvas { height: calc(var(--fs) * 1.25); width: auto; image-rendering: pixelated; }
+
+.verb {
+  display: inline;
+  border: 0;
+  margin: 0 0.04em;
+  padding: 0.1em 0.32em;
+  font: inherit;
+  line-height: 1.2;
+  border-radius: 0;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  vertical-align: baseline;
+}
+.verb.cursed {
+  background: var(--curse);
+  color: var(--curse-ink);
+  box-shadow: inset 0 calc(-0.12em) 0 #c9c3d8;
+  animation: cursed 3.2s ease-in-out infinite;
+}
+.verb.cursed.gap { letter-spacing: 0.08em; }
+.verb.cursed:hover { background: #d3cde3; }
+.verb.sel {
+  background: var(--fairy-tint);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 0.12em var(--fairy);
+  animation: none;
+}
+.verb.done {
+  color: var(--ink);
+  font-weight: 700;
+  background: var(--tc, var(--t-none));
+  box-shadow: inset 0 calc(-0.12em) 0 rgba(59, 51, 85, 0.22);
+}
+.verb.pop { animation: pop 0.45s steps(4); }
+@keyframes pop { 0% { transform: scale(0.6); } 60% { transform: scale(1.15); } 100% { transform: scale(1); } }
+@keyframes cursed { 0%, 100% { background-color: var(--curse); } 50% { background-color: #e9e6f0; } }
+.t-praes { --tc: var(--t-praes); } .t-praet { --tc: var(--t-praet); } .t-perf { --tc: var(--t-perf); }
+.t-plusq { --tc: var(--t-plusq); } .t-fut1 { --tc: var(--t-fut1); } .t-fut2 { --tc: var(--t-fut2); }
+
+.tip {
+  position: fixed;
+  z-index: 40;
+  padding: 0.25em 0.6em;
+  font-weight: 700;
+  font-size: clamp(14px, 0.5vw + 0.9vh, 22px);
+  background: var(--ink);
+  color: #fff;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 8px));
+  white-space: nowrap;
+}
+
+/* Kartenablage */
+.tray {
+  flex: none;
+  padding: calc(var(--fs) * 0.7) calc(var(--fs) * 0.8);
+  display: grid;
+  gap: calc(var(--fs) * 0.55);
+  background: var(--paper-2);
+  font-size: var(--fs);
+}
+.tray .prompt { margin: 0; font-size: 0.82em; color: var(--ink-soft); display: flex; align-items: center; gap: 0.5em; min-height: 1.6em; }
+.tray .prompt b { color: var(--ink); }
+.tray .prompt svg { width: 1.3em; height: 1.3em; flex: none; shape-rendering: crispEdges; }
+.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: calc(var(--fs) * 0.6); }
+.card {
+  border: 0;
+  min-height: max(56px, 2.4em);
+  padding: 0.3em 0.4em;
+  font-weight: 700;
+  font-size: 1em;
+  line-height: 1.15;
+  background: var(--paper);
+  overflow-wrap: anywhere;
+  transition: transform 0.08s ease;
+}
+.card:hover:not(:disabled) { background: var(--fairy-tint); }
+.card:active:not(:disabled) { transform: translate(var(--b), var(--b)); }
+.card:disabled { opacity: 0.45; background: var(--curse); }
+.card.right { background: var(--t-praes); opacity: 1; }
+.card.shake { animation: shake 0.4s steps(6); }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-8%); } 40% { transform: translateX(7%); } 60% { transform: translateX(-5%); } 80% { transform: translateX(3%); } }
+.note {
+  margin: 0;
+  font-size: 0.78em;
+  line-height: 1.4;
+  padding: 0.5em 0.7em;
+  background: var(--warn-tint);
+  box-shadow: inset calc(var(--b) * 1.5) 0 0 #f2a477;
+}
+.note.good { background: #e3f7ee; box-shadow: inset calc(var(--b) * 1.5) 0 0 var(--ok); }
+.note.reveal { background: var(--fairy-tint); box-shadow: inset calc(var(--b) * 1.5) 0 0 var(--fairy); }
+.tray-head { display: flex; align-items: center; justify-content: space-between; gap: 0.6em; min-width: 0; }
+.tray-head .prompt, .tray-head .result { flex: 1 1 auto; min-width: 0; }
+.count {
+  flex: none;
+  font-size: 0.6em;
+  font-weight: 700;
+  color: var(--ink-soft);
+  padding: 0.15em 0.55em;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 2px var(--curse);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.result { margin: 0; display: flex; align-items: center; flex-wrap: wrap; gap: 0.25em 0.5em; font-size: 0.82em; color: var(--ok); }
+.result.reveal { color: var(--fairy); }
+.result b { color: var(--ink); }
+.result svg { width: 1.2em; height: 1.2em; flex: none; shape-rendering: crispEdges; }
+.tchip { font-size: 0.85em; font-weight: 700; color: var(--ink); padding: 0.05em 0.45em; background: var(--tc); }
+.kicker { font-size: 0.62em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--fairy); }
+.info {
+  display: grid;
+  gap: 0.2em;
+  font-size: 0.74em;
+  line-height: 1.42;
+  padding: 0.5em 0.75em;
+  background: var(--paper);
+  box-shadow: inset calc(var(--b) * 1.5) 0 0 var(--t-perf);
+}
+.info .kicker { font-size: 0.82em; }
+.info .forms { font-weight: 700; }
+.info p { margin: 0; max-width: 60ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 0.35em 0.5em; font-size: 0.62em; color: var(--ink-soft); }
+.legend span { padding: 0.1em 0.45em; background: var(--tc); color: var(--ink); font-weight: 700; }
+.done-row { display: flex; align-items: center; justify-content: space-between; gap: 0.6em; flex-wrap: wrap; }
+.done-row p { margin: 0; font-weight: 700; }
+.done-row .btn { font-size: 0.9em; }
+
+.pager { flex: none; display: flex; align-items: center; justify-content: space-between; gap: var(--gap); }
+.pager .count { font-weight: 700; color: var(--ink-soft); font-variant-numeric: tabular-nums; font-size: clamp(14px, 0.6vw + 0.7vh, 20px); }
+.btn.glow { background: var(--gold); animation: glow 1.2s steps(2) infinite; }
+@keyframes glow { 50% { background: #fff3b8; } }
+
+/* Hochformat und schmale Fenster: Bild oben */
+@media (max-aspect-ratio: 5/4), (max-width: 720px) {
+  .page { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: var(--gap); }
+  .pic { height: auto; }
+  .stack { justify-content: flex-start; }
+  .text { padding: 0.7em 0.85em; }
+}
+@media (max-width: 480px) {
+  .info { font-size: 0.7em; padding: 0.4em 0.6em; }
+  .cards { gap: 0.4em; }
+  .card { font-size: 0.92em; }
+}
+
+/* ---------- Abschlussseite ---------- */
+.finish { height: 100%; display: grid; place-items: center; overflow: auto; }
+.finish .box { padding: calc(var(--gap) * 1.6); display: grid; gap: var(--gap); justify-items: center; text-align: center; max-width: min(92vw, 780px); }
+.finish canvas.thumb { width: min(80vw, 560px); aspect-ratio: 16 / 9; image-rendering: pixelated; }
+.finish .pixeltitle { height: clamp(30px, 7vmin, 64px); width: auto; max-width: 100%; }
+.finish p { margin: 0; font-size: clamp(16px, 0.8vw + 1vh, 26px); text-wrap: balance; }
+.finish .row { display: flex; gap: var(--gap); flex-wrap: wrap; justify-content: center; }
+
+/* ---------- Lehrkraft-Menü ---------- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(44, 38, 72, 0.55);
+  display: grid;
+  place-items: center;
+  padding: var(--gap);
+}
+.panel {
+  width: min(100%, 760px);
+  max-height: calc(100% - 2 * var(--gap));
+  overflow: auto;
+  padding: calc(var(--gap) * 1.2) calc(var(--gap) * 1.4);
+  box-sizing: border-box;
+  font-size: clamp(15px, 0.4vw + 0.8vh, 19px);
+  line-height: 1.5;
+}
+.panel header { display: flex; align-items: center; justify-content: space-between; gap: 1em; margin-bottom: 0.4em; }
+.panel h2 { margin: 0; font-size: 1.4em; }
+.panel h3 { margin: 1.4em 0 0.5em; font-size: 1.05em; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); }
+.panel p { margin: 0.3em 0 0.6em; max-width: 62ch; }
+.stages { display: grid; gap: 0.6em; }
+.stage-opt { display: grid; grid-template-columns: auto 1fr; gap: 0.2em 0.8em; align-items: center; padding: 0.6em 0.8em; background: var(--paper-2); cursor: pointer; }
+.stage-opt input { width: 1.3em; height: 1.3em; accent-color: var(--fairy); grid-row: span 2; }
+.stage-opt b { font-size: 1.05em; }
+.stage-opt span { color: var(--ink-soft); }
+.stage-opt .chips { display: flex; flex-wrap: wrap; gap: 0.3em; grid-column: 2; }
+.stage-opt .chips i { font-style: normal; font-size: 0.85em; font-weight: 700; padding: 0.05em 0.45em; background: var(--tc); }
+.switch { display: flex; align-items: center; gap: 0.7em; cursor: pointer; }
+.switch input { width: 1.3em; height: 1.3em; accent-color: var(--fairy); }
+.panel textarea {
+  width: 100%;
+  min-height: 9em;
+  box-sizing: border-box;
+  font: 0.9em/1.45 ui-monospace, "Cascadia Mono", Consolas, monospace;
+  padding: 0.6em;
+  border: var(--b) solid var(--ink);
+  background: #fff;
+  color: var(--ink);
+  resize: vertical;
+}
+.row-btns { display: flex; gap: 0.7em; flex-wrap: wrap; margin-top: 0.6em; align-items: center; }
+.panel pre { background: var(--paper-2); padding: 0.7em 0.8em; overflow-x: auto; font-size: 0.85em; line-height: 1.45; margin: 0.4em 0; white-space: pre-wrap; }
+.report { padding: 0.6em 0.8em; background: var(--paper-2); margin-top: 0.6em; }
+.report.err { background: var(--warn-tint); }
+.report ul { margin: 0.3em 0 0; padding-left: 1.2em; }
+.custom-list { list-style: none; padding: 0; margin: 0.6em 0 0; display: grid; gap: 0.4em; }
+.custom-list li { display: flex; justify-content: space-between; align-items: center; gap: 0.6em; padding: 0.3em 0.6em; background: var(--paper-2); }
+.check-wrap { overflow-x: auto; margin-top: 0.6em; }
+.check { border-collapse: collapse; width: 100%; font-size: 0.88em; }
+.check th, .check td { text-align: left; padding: 0.3em 0.5em; border-bottom: 1px solid var(--curse); vertical-align: top; }
+.check th { background: var(--paper-2); }
+.check td.t span { display: inline-block; padding: 0 0.35em; background: var(--tc); font-weight: 700; }
+.panel select { font: inherit; padding: 0.35em 0.5em; border: var(--b) solid var(--ink); background: #fff; color: var(--ink); max-width: 100%; }
+.panel .small { font-size: 0.88em; color: var(--ink-soft); }
+
+/* ---------- Stickeralbum ---------- */
+.album-btn .num {
+  font-size: 0.78em;
+  min-width: 1.4em;
+  padding: 0 0.3em;
+  background: var(--gold);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.album { height: 100%; overflow: auto; padding: var(--b) calc(var(--b) * 3) calc(var(--gap) * 2); box-sizing: border-box; display: grid; gap: calc(var(--gap) * 1.6); align-content: start; }
+.album .toc-head { margin-bottom: 0; }
+.album-page { padding: calc(var(--gap) * 1) calc(var(--gap) * 1.2) calc(var(--gap) * 1.2); background: var(--paper); }
+.album-head { display: flex; align-items: center; justify-content: space-between; gap: 1em; }
+.album-head h2 { margin: 0; font-size: clamp(17px, 0.6vw + 1vh, 26px); }
+.album-head .count { font-size: clamp(13px, 0.4vw + 0.7vh, 17px); }
+.album-page > .small { margin: 0.3em 0 0.9em; color: var(--ink-soft); font-size: clamp(13px, 0.4vw + 0.7vh, 17px); }
+.sticker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, clamp(118px, 12vw, 220px)), 1fr)); gap: calc(var(--gap) * 0.9); }
+.slot {
+  margin: 0;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 0.35em;
+  padding: 0.7em 0.5em 0.8em;
+  text-align: center;
+  background: var(--paper-2);
+  box-shadow: inset 0 0 0 2px var(--curse);
+  background-image: repeating-linear-gradient(45deg, transparent 0 6px, rgba(255, 255, 255, 0.55) 6px 9px);
+}
+.slot.owned { background: #fff; background-image: none; box-shadow: inset 0 0 0 2px var(--t-perf); }
+.slot canvas { width: min(100%, clamp(96px, 8vw, 150px)); aspect-ratio: 1; image-rendering: pixelated; }
+.slot.owned canvas { animation: none; }
+.slot figcaption { display: grid; gap: 0.15em; font-size: clamp(13px, 0.45vw + 0.75vh, 20px); line-height: 1.3; }
+.slot figcaption span { color: var(--ink-soft); font-size: 0.9em; }
+.code-box p { margin: 0.4em 0; max-width: 60ch; font-size: clamp(14px, 0.4vw + 0.8vh, 18px); }
+.code {
+  font: 700 clamp(26px, 2vw + 2vh, 48px) / 1.2 ui-monospace, "Cascadia Mono", Consolas, "Courier New", monospace;
+  letter-spacing: 0.12em;
+  color: var(--fairy);
+}
+.code-box input {
+  font: 700 clamp(16px, 0.5vw + 1vh, 22px) ui-monospace, Consolas, "Courier New", monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.45em 0.6em;
+  width: 11ch;
+  border: var(--b) solid var(--ink);
+  background: #fff;
+  color: var(--ink);
+}
+.sticker-pop { z-index: 70; }
+.pop-card { width: min(100%, 640px); display: grid; justify-items: center; gap: calc(var(--gap) * 0.9); text-align: center; }
+.pop-card .pixeltitle { height: clamp(28px, 6vmin, 56px); width: auto; max-width: 100%; }
+.pop-row { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--gap); }
+.pop-sticker { margin: 0; display: grid; justify-items: center; gap: 0.3em; max-width: 220px; }
+.pop-sticker canvas { width: clamp(110px, 18vmin, 180px); aspect-ratio: 1; image-rendering: pixelated; animation: stick 0.7s steps(5) both; }
+.pop-sticker figcaption { display: grid; gap: 0.1em; }
+.pop-sticker figcaption span { color: var(--ink-soft); font-size: 0.9em; }
+@keyframes stick { 0% { transform: scale(0.2) rotate(-25deg); } 60% { transform: scale(1.12) rotate(6deg); } 100% { transform: scale(1) rotate(-3deg); } }
+.privacy { margin: 0.3em 0 0; padding-left: 1.2em; display: grid; gap: 0.3em; max-width: 62ch; }
+
+/* Hinweis unten */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: max(calc(var(--gap) * 1.5), env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: 60;
+  padding: 0.7em 1em;
+  max-width: min(90vw, 560px);
+  font-weight: 700;
+  font-size: clamp(14px, 0.5vw + 0.8vh, 19px);
+  background: var(--paper);
+}
+
+/* Flache Fenster (Handy quer): alles etwas kompakter */
+@media (max-height: 520px) {
+  :root { --fs: clamp(15px, 1.6vw + 1vh, 22px); --gap: 8px; }
+  .bar { padding-block: max(6px, env(safe-area-inset-top, 0px)) 6px; }
+  .btn { min-height: 38px; min-width: 38px; padding-block: 0.2em; }
+  .tray { padding: 0.45em 0.6em; gap: 0.4em; }
+  .card { min-height: 42px; }
+  .text { padding: 0.5em 0.75em; line-height: 1.7; }
+  .legend { display: none; }
+  .text .heading { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="bar" id="bar"></header>
+  <main id="screen" aria-live="off"></main>
+</div>
+<noscript><p style="padding:2em;font:20px Verdana,sans-serif">Dieses Spiel braucht JavaScript. Bitte im Browser erlauben.</p></noscript>
+<script type="text/markdown" id="book-md">
+# Der Fluch
+rolle: einleitung
+
+## Seite 1
+bild: fluch
+figuren: fee13
+Die dreizehnte Fee {war|sein} sehr traurig. Niemand {hatte|einladen} sie zum Fest {eingeladen}. Da {verfluchte|verfluchen} sie das Märchenbuch: Alle Verben {verloren|verlieren} ihre Zeit.
+
+Gib den Verben ihre Zeit zurück!
+
+# Rotkäppchen
+
+## Seite 1
+bild: haus
+figuren: grossmutter, rotkaeppchen
+Es {war|sein} einmal ein kleines Mädchen, das jeder lieb {hatte|haben}, der es nur {ansah|ansehen}. Die Großmutter aber hatte es am allerliebsten. Sie {schenkte|schenken} ihm ein Käppchen aus rotem Samt. Weil ihm das so gut {stand|stehen}, {hieß|heißen} es nur noch das Rotkäppchen.
+
+## Seite 2
+bild: haus
+figuren: mutter, rotkaeppchen
+Eines Tages {sagte|sagen} die Mutter: „Komm, Rotkäppchen, da {hast|haben} du ein Stück Kuchen und eine Flasche Wein. Bring das der Großmutter, sie {ist|sein} krank und schwach. Lauf aber nicht vom Weg ab!“ Rotkäppchen {gab|geben} der Mutter die Hand darauf.
+
+## Seite 3
+bild: wald
+figuren: rotkaeppchen, wolf
+Die Großmutter {wohnte|wohnen} draußen im Wald. Als Rotkäppchen in den Wald {kam|kommen}, {begegnete|begegnen} ihm der Wolf. Rotkäppchen wusste aber nicht, was das für ein böses Tier war, und {fürchtete|fürchten} sich nicht.
+
+## Seite 4
+bild: wald
+figuren: rotkaeppchen, wolf
+„Wohin so früh, Rotkäppchen?“, {fragte|fragen} der Wolf. „Zur Großmutter. Sie {wohnt|wohnen} unter den drei großen Eichbäumen“, antwortete Rotkäppchen. Der Wolf {dachte|denken} bei sich: „Das junge, zarte Ding {wird|schmecken} noch besser {schmecken} als die Alte.“
+
+## Seite 5
+bild: wiese
+figuren: rotkaeppchen, wolf
+„Sieh doch die schönen Blumen!“, {sagte|sagen} der Wolf. Da {verließ|verlassen} Rotkäppchen den Weg und {pflückte|pflücken} Blumen. Der Wolf aber {lief|laufen} geradewegs zum Haus der Großmutter.
+
+## Seite 6
+bild: stube
+figuren: wolf
+Der Wolf {klopfte|klopfen} an die Tür. „Drück nur auf die Klinke!“, rief die Großmutter. Da {sprang|aufspringen} die Tür {auf}. Ohne ein Wort zu sprechen, {ging|gehen} der Wolf zum Bett und {verschluckte|verschlucken} die Großmutter.
+
+## Seite 7
+bild: stube
+figuren: wolf, rotkaeppchen
+Dann {zog|anziehen} er ihre Kleider {an}, {setzte|aufsetzen} ihre Haube {auf} und {legte|legen} sich in ihr Bett. Bald {kam|kommen} Rotkäppchen. Es {wunderte|wundern} sich, dass die Tür offen {stand|stehen}.
+
+## Seite 8
+bild: stube
+figuren: rotkaeppchen, wolf
+„Ei, Großmutter, was {hast|haben} du für große Ohren!“ – „Damit ich dich besser hören {kann|können}.“ – „Ei, Großmutter, was hast du für ein entsetzlich großes Maul!“ – „Damit ich dich besser fressen kann!“ Kaum {hatte|sagen} der Wolf das {gesagt}, so {verschlang|verschlingen} er das arme Rotkäppchen.
+
+## Seite 9
+bild: stube
+figuren: jaeger, wolf
+Der Wolf legte sich wieder ins Bett und {schnarchte|schnarchen} laut. Ein Jäger {hörte|hören} es und {trat|eintreten} {ein}. „Finde ich dich hier, du alter Sünder? Ich {habe|suchen} dich lange {gesucht}.“ Mit einer Schere {schnitt|aufschneiden} er dem Wolf den Bauch {auf}.
+
+## Seite 10
+bild: stube
+figuren: rotkaeppchen, grossmutter, jaeger
+Da {sprang|herausspringen} Rotkäppchen {heraus}, und auch die alte Großmutter {kam|herauskommen} noch lebendig {heraus}. Rotkäppchen {holte|holen} schnell große Steine. Damit {füllten|füllen} sie dem Wolf den Leib.
+
+## Seite 11
+bild: stube
+figuren: jaeger, grossmutter, rotkaeppchen
+Als der Wolf {aufwachte|aufwachen}, {wollte|wollen} er fortspringen. Aber die Steine {waren|sein} so schwer, dass er gleich {niedersank|niedersinken} und tot war. Da {waren|sein} alle drei vergnügt.
+
+## Seite 12
+bild: wald
+figuren: rotkaeppchen
+Die Großmutter {aß|essen} den Kuchen und {trank|trinken} den Wein. Rotkäppchen aber {dachte|denken}: „Ich {werde|abgehen} mein Lebtag nicht mehr allein vom Weg {abgehen}, wenn es mir die Mutter {verboten} {hat|verbieten}.“
+
+# Der Froschkönig
+
+## Seite 1
+bild: schloss
+figuren: koenig, prinzessin
+In den alten Zeiten, als das Wünschen noch {geholfen} {hat|helfen}, {lebte|leben} ein König. Seine Töchter {waren|sein} alle schön. Die jüngste aber {war|sein} so schön, dass die Sonne selber sich {wunderte|wundern}, sooft sie ihr ins Gesicht schien.
+
+## Seite 2
+bild: brunnen
+figuren: prinzessin
+Nahe beim Schloss {lag|liegen} ein großer, dunkler Wald, und darin {war|sein} ein Brunnen. Wenn der Tag sehr heiß war, {ging|hinausgehen} die Königstochter {hinaus} in den Wald und {setzte|setzen} sich an den Rand des Brunnens. Am liebsten {spielte|spielen} sie mit ihrer goldenen Kugel.
+
+## Seite 3
+bild: brunnen
+figuren: prinzessin
+Einmal {fiel|fallen} die goldene Kugel nicht in ihre Hand, sondern auf die Erde und {rollte|rollen} ins Wasser. Der Brunnen {war|sein} so tief, dass man keinen Grund {sah|sehen}. Da {fing|anfangen} die Königstochter {an} zu weinen.
+
+## Seite 4
+bild: brunnen
+figuren: prinzessin, frosch
+Da {streckte|strecken} ein Frosch seinen dicken Kopf aus dem Wasser. „Wenn du mich lieb {hast|haben} und ich an deinem Tisch essen und in deinem Bettlein schlafen {darf|dürfen}, dann {hole|heraufholen} ich dir die Kugel {herauf}.“ – „Ach ja“, {sagte|sagen} sie, „ich {verspreche|versprechen} dir alles.“
+
+## Seite 5
+bild: brunnen
+figuren: frosch, prinzessin
+Der Frosch {tauchte|hinuntertauchen} {hinunter} und {brachte|heraufbringen} die Kugel im Maul wieder {herauf}. Die Königstochter {hob|aufheben} sie {auf} und {sprang|springen} damit fort. „Warte, warte, nimm mich mit!“, rief der Frosch. Aber sie {hörte|hören} nicht darauf.
+
+## Seite 6
+bild: saal
+figuren: koenig, prinzessin, frosch
+Am anderen Tag {saß|sitzen} sie mit dem König an der Tafel. Da {kam|heraufkommen} etwas die Marmortreppe {herauf} und {klopfte|klopfen} an die Tür: „Königstochter, jüngste, mach mir auf!“ Als sie den Frosch {sah|sehen}, {erschrak|erschrecken} sie sehr.
+
+## Seite 7
+bild: saal
+figuren: koenig, prinzessin, frosch
+Der König {sprach|sprechen}: „Was du {versprochen} {hast|versprechen}, das {musst|müssen} du auch halten.“ Da {ließ|hereinlassen} sie den Frosch {herein}. Er {aß|essen} von ihrem goldenen Tellerlein, ihr aber {blieb|bleiben} fast jeder Bissen im Hals stecken.
+
+## Seite 8
+bild: stube
+figuren: prinzessin, frosch
+Dann {wollte|wollen} der Frosch in ihrem Bettlein schlafen. Die Königstochter {fing|anfangen} {an} zu weinen. Sie {packte|packen} ihn mit zwei Fingern, {trug|hinauftragen} ihn {hinauf} in ihre Kammer und {setzte|setzen} ihn in eine Ecke.
+
+## Seite 9
+bild: stube
+figuren: prinzessin, prinz
+Als der Frosch zu ihr ins Bett {wollte|wollen}, {wurde|werden} sie bitterböse. Sie {warf|werfen} ihn aus allen Kräften gegen die Wand: „Nun {wirst|haben} du Ruhe {haben}, du garstiger Frosch!“ Als er aber {herabfiel|herabfallen}, {war|sein} er kein Frosch mehr, sondern ein Königssohn mit schönen und freundlichen Augen.
+
+## Seite 10
+bild: schloss
+figuren: prinz, prinzessin, heinrich
+Eine böse Hexe {hatte|verwünschen} ihn {verwünscht}, und niemand außer ihr {konnte|können} ihn erlösen. Am Morgen {kam|kommen} ein Wagen mit acht weißen Pferden, und hinten {stand|stehen} der treue Heinrich. Unterwegs {krachte|krachen} es dreimal: Die eisernen Bande um Heinrichs Herz {sprangen|abspringen} vor Freude {ab}.
+
+# Dornröschen
+
+## Seite 1
+bild: saal
+figuren: koenig, koenigin
+Vor langer Zeit {lebten|leben} ein König und eine Königin. Die {sprachen|sprechen} jeden Tag: „Ach, wenn wir doch ein Kind hätten!“ Aber sie {bekamen|bekommen} keins. Da {geschah|geschehen} es, als die Königin einmal im Bad {saß|sitzen}, dass ein Frosch aus dem Wasser {kroch|kriechen}.
+
+## Seite 2
+bild: schloss
+figuren: koenigin, frosch
+Der Frosch sprach zu ihr: „Ehe ein Jahr {vergeht|vergehen}, {wirst|bringen} du eine Tochter zur Welt {bringen}.“ Was der Frosch {gesagt} {hatte|sagen}, das {geschah|geschehen}, und die Königin {bekam|bekommen} ein Mädchen, das {war|sein} so schön, dass der König vor Freude ganz außer sich war.
+
+## Seite 3
+bild: fest
+figuren: koenig, fee
+Der König {stellte|anstellen} ein großes Fest {an}. Er {lud|einladen} auch die weisen Frauen {ein}, damit sie dem Kind hold und gewogen wären. Es {waren|sein} ihrer dreizehn in seinem Reich. Weil er aber nur zwölf goldene Teller {hatte|haben}, {musste|müssen} eine von ihnen daheim bleiben.
+
+## Seite 4
+bild: fest
+figuren: fee, fee13
+Die weisen Frauen {beschenkten|beschenken} das Kind mit ihren Wundergaben: die eine mit Tugend, die andere mit Schönheit, die dritte mit Reichtum. Als elf ihre Sprüche {getan} {hatten|tun}, {trat|hereintreten} plötzlich die dreizehnte {herein}. Sie {wollte|wollen} sich dafür rächen, dass man sie nicht {eingeladen} {hatte|einladen}.
+
+## Seite 5
+bild: fest
+figuren: fee13, fee
+Ohne jemanden zu grüßen, {rief|rufen} sie mit lauter Stimme: „Die Königstochter {wird|stechen} sich in ihrem fünfzehnten Jahr an einer Spindel {stechen} und tot hinfallen.“ Da {trat|hervortreten} die zwölfte {hervor}. Aufheben konnte sie den bösen Spruch nicht, nur mildern: „Es {wird|sein} aber kein Tod {sein}, sondern ein hundertjähriger tiefer Schlaf.“
+
+## Seite 6
+bild: turm
+figuren: alte, prinzessin
+Der König {ließ|lassen} alle Spindeln im ganzen Reich verbrennen. An dem Tag, als die Königstochter fünfzehn Jahre alt {wurde|werden}, {waren|sein} der König und die Königin nicht zu Haus. Da {stieg|hinaufsteigen} sie einen alten Turm {hinauf}. Oben {saß|sitzen} eine alte Frau mit einer Spindel und {spann|spinnen} emsig ihren Flachs.
+
+## Seite 7
+bild: turm
+figuren: prinzessin
+Kaum {hatte|anrühren} sie die Spindel {angerührt}, so {stach|stechen} sie sich in den Finger. Im selben Augenblick {fiel|niederfallen} sie auf das Bett {nieder} und {lag|liegen} in einem tiefen Schlaf. Dieser Schlaf {verbreitete|verbreiten} sich über das ganze Schloss.
+
+## Seite 8
+bild: hecke
+figuren: prinz
+Rings um das Schloss {wuchs|wachsen} eine Dornenhecke, die jedes Jahr höher {wurde|werden}. Von Zeit zu Zeit {kamen|kommen} Königssöhne und {wollten|wollen} durch die Hecke in das Schloss dringen. Die Dornen aber {hielten|festhalten} sie {fest}, und sie {starben|sterben} eines jämmerlichen Todes.
+
+## Seite 9
+bild: rosen
+figuren: prinz
+Nach langen, langen Jahren {kam|kommen} wieder ein Königssohn. Gerade {waren|verfließen} die hundert Jahre {verflossen}. Als er sich der Dornenhecke {näherte|nähern}, {waren|sein} es lauter große, schöne Blumen, die sich von selbst {auftaten|auftun}.
+
+## Seite 10
+bild: turm
+figuren: prinz, prinzessin
+Im Turm {fand|finden} er Dornröschen. Es lag da und {war|sein} so schön, dass er die Augen nicht abwenden konnte. Er {bückte|bücken} sich und {gab|geben} ihm einen Kuss. Da {schlug|aufschlagen} Dornröschen die Augen {auf} und {erwachte|erwachen}.
+
+## Seite 11
+bild: fest
+figuren: koenig, prinz, prinzessin
+Mit ihm {erwachten|erwachen} der König, die Königin und der ganze Hofstaat. Bald darauf {feierten|feiern} der Königssohn und Dornröschen in aller Pracht Hochzeit, und sie {lebten|leben} vergnügt bis an ihr Ende.
+
+# Frau Holle
+
+## Seite 1
+bild: haus
+figuren: goldmarie, mutter, pechmarie
+Eine Witwe {hatte|haben} zwei Töchter. Die eine {war|sein} schön und fleißig, die andere hässlich und faul. Die Witwe {hatte|haben} aber die hässliche und faule viel lieber, weil sie ihre rechte Tochter {war|sein}. Die andere {musste|müssen} alle Arbeit tun.
+
+## Seite 2
+bild: brunnen
+figuren: goldmarie
+Das arme Mädchen {musste|müssen} sich täglich an einen Brunnen setzen und so viel spinnen, dass ihm das Blut aus den Fingern {sprang|springen}. Einmal {wollte|wollen} es die blutige Spule im Brunnen abwaschen. Da {sprang|springen} ihm die Spule aus der Hand und {fiel|hinabfallen} {hinab}.
+
+## Seite 3
+bild: haus
+figuren: mutter, goldmarie
+Weinend {lief|laufen} es zur Stiefmutter. Die {schimpfte|schimpfen} heftig: „Hast du die Spule hinunterfallen lassen, so hol sie auch wieder herauf.“ In seiner Angst {sprang|hineinspringen} das Mädchen in den Brunnen {hinein}.
+
+## Seite 4
+bild: ofen
+figuren: goldmarie
+Als es {erwachte|erwachen}, {war|sein} es auf einer schönen Wiese. Es {kam|kommen} zu einem Backofen voller Brot. Das Brot {rief|rufen}: „Ach, zieh mich raus, zieh mich raus, sonst {verbrenne|verbrennen} ich!“ Da {holte|herausholen} das Mädchen alles mit dem Brotschieber {heraus}.
+
+## Seite 5
+bild: apfelbaum
+figuren: goldmarie
+Danach {kam|kommen} es zu einem Baum voller Äpfel. „Ach, schüttel mich, schüttel mich, wir Äpfel {sind|sein} alle miteinander reif!“, {rief|rufen} der Baum. Da {schüttelte|schütteln} es den Baum, bis keiner mehr oben {war|sein}.
+
+## Seite 6
+bild: holle
+figuren: frauholle, goldmarie
+Endlich {kam|kommen} es zu einem kleinen Haus. Daraus guckte eine alte Frau. Weil sie so große Zähne {hatte|haben}, wurde dem Mädchen angst. Die Alte aber rief: „Bleib bei mir! Wenn du mein Bett ordentlich {schüttelst|schütteln}, dann {schneit|schneien} es in der Welt. Ich {bin|sein} die Frau Holle.“
+
+## Seite 7
+bild: holle
+figuren: goldmarie, frauholle
+Das Mädchen {schüttelte|aufschütteln} das Bett immer gewaltig {auf}, dass die Federn wie Schneeflocken {umherflogen|umherfliegen}. Nach einiger Zeit {wurde|werden} es traurig, denn es {hatte|haben} Heimweh. Frau Holle sprach: „Weil du mir so treu {gedient} {hast|dienen}, {will|wollen} ich dich selbst wieder hinaufbringen.“
+
+## Seite 8
+bild: tor
+figuren: frauholle, goldmarie
+Sie {führte|führen} es zu einem großen Tor. Als das Mädchen gerade darunter {stand|stehen}, {fiel|fallen} ein gewaltiger Goldregen, und alles Gold {blieb|bleiben} an ihm hängen. Auf dem Brunnen saß der Hahn und {rief|rufen}: „Kikeriki, unsere goldene Jungfrau {ist|sein} wieder hier!“
+
+## Seite 9
+bild: brunnen
+figuren: pechmarie
+Nun {wollte|wollen} die Mutter der faulen Tochter das gleiche Glück verschaffen. Die {stach|stechen} sich in die Finger und {warf|werfen} die Spule in den Brunnen. Dann {sprang|hineinspringen} sie selbst {hinein}. Aber sie {holte|herausholen} das Brot nicht {heraus} und {schüttelte|schütteln} auch den Apfelbaum nicht.
+
+## Seite 10
+bild: tor
+figuren: frauholle, pechmarie
+Bei Frau Holle {faulenzte|faulenzen} sie schon am zweiten Tag. Da {sagte|aufsagen} ihr Frau Holle den Dienst {auf}. Unter dem Tor {fiel|herabfallen} statt Gold ein großer Kessel voll Pech auf sie {herab}. „Das {ist|sein} zur Belohnung deiner Dienste“, {sagte|sagen} Frau Holle.
+
+## Seite 11
+bild: haus
+figuren: pechmarie, mutter
+Der Hahn auf dem Brunnen {rief|rufen}: „Kikeriki, unsere schmutzige Jungfrau {ist|sein} wieder hier!“ Das Pech aber {blieb|bleiben} fest an ihr hängen und {wollte|wollen}, solange sie {lebte|leben}, nicht abgehen.
+
+# Hänsel und Gretel
+
+## Seite 1
+bild: haus
+figuren: haensel, gretel, vater
+Vor einem großen Wald {wohnte|wohnen} ein armer Holzhacker mit seiner Frau und seinen zwei Kindern. Das Bübchen {hieß|heißen} Hänsel und das Mädchen Gretel. Als eine große Hungersnot ins Land {kam|kommen}, {konnte|können} er das tägliche Brot nicht mehr schaffen.
+
+## Seite 2
+bild: nacht
+figuren: haensel, gretel
+Abends sprach die Frau zu ihrem Mann: „Morgen früh {führen|hinausführen} wir die Kinder {hinaus} in den Wald und {lassen|lassen} sie allein.“ Der Mann {wollte|wollen} es erst nicht, aber sie {ließ|lassen} ihm keine Ruhe. Die Kinder {hatten|hören} alles {gehört}, was die Stiefmutter zum Vater {gesagt} {hatte|sagen}.
+
+## Seite 3
+bild: nacht
+figuren: haensel, gretel
+Gretel {weinte|weinen} bittere Tränen. „Still, Gretel“, {sagte|sagen} Hänsel, „ich {werde|helfen} uns schon {helfen}.“ Als die Alten {eingeschlafen} {waren|einschlafen}, {schlich|hinausschleichen} er sich {hinaus}.
+
+## Seite 4
+bild: nacht
+figuren: haensel
+Der Mond {schien|scheinen} ganz hell, und die weißen Kieselsteine vor dem Haus {glänzten|glänzen} wie lauter Silbermünzen. Hänsel {bückte|bücken} sich und {steckte|einstecken} so viele {ein}, wie er nur {konnte|können}.
+
+## Seite 5
+bild: wald
+figuren: vater, haensel, gretel
+Am Morgen {gingen|gehen} alle zusammen in den Wald. Hänsel {warf|werfen} heimlich die Kieselsteine auf den Weg. Mitten im Wald {machte|anmachen} der Vater ein Feuer {an}. Dann {ließen|lassen} die Eltern die Kinder allein.
+
+## Seite 6
+bild: nacht
+figuren: haensel, gretel
+Als die Kinder {erwachten|erwachen}, {war|sein} es schon finstere Nacht. Nachdem der Vollmond {aufgestiegen} {war|aufsteigen}, {nahm|nehmen} Hänsel sein Schwesterchen an der Hand. Die Kieselsteine {schimmerten|schimmern} wie neue Silbermünzen und {zeigten|zeigen} ihnen den Weg nach Hause.
+
+## Seite 7
+bild: wald
+figuren: haensel, gretel
+Nicht lange danach {war|sein} wieder Not. Diesmal {schloss|zuschließen} die Frau die Tür {zu}, und Hänsel {konnte|können} keine Kiesel auflesen. Im Wald {streute|streuen} er Brotkrümel auf den Weg. Doch die Vögel {hatten|wegpicken} alle Krümel {weggepickt}, und die Kinder {verirrten|verirren} sich.
+
+## Seite 8
+bild: hexenhaus
+figuren: haensel, gretel
+Am dritten Tag {führte|führen} sie ein schneeweißes Vöglein zu einem Häuschen. Das {war|sein} aus Brot gebaut, das Dach aus Kuchen und die Fenster aus hellem Zucker. Hungrig {brachen|abbrechen} die Kinder Stücke davon {ab}. Da {rief|rufen} eine feine Stimme: „Knusper, knusper, Knäuschen, wer {knuspert|knuspern} an meinem Häuschen?“
+
+## Seite 9
+bild: hexenhaus
+figuren: haensel, gretel, hexe
+Auf einmal {ging|aufgehen} die Tür {auf}, und eine steinalte Frau {schlich|herausschleichen} {heraus}. Hänsel und Gretel {erschraken|erschrecken} gewaltig. Die Alte {nahm|nehmen} sie bei der Hand und {führte|führen} sie in ihr Häuschen. Sie {war|sein} aber eine böse Hexe.
+
+## Seite 10
+bild: hexenstube
+figuren: hexe, gretel
+Am Morgen {sperrte|einsperren} die Hexe Hänsel in einen Stall {ein}. Gretel {musste|müssen} kochen, damit Hänsel fett {wurde|werden}. Wenn die Alte fühlen {wollte|wollen}, ob er bald fett {war|sein}, {streckte|herausstrecken} Hänsel ihr ein Knöchlein {heraus}.
+
+## Seite 11
+bild: hexenstube
+figuren: hexe, gretel
+Nach vier Wochen {heizte|einheizen} die Hexe den Backofen {ein}. „Kriech hinein“, {sagte|sagen} sie zu Gretel, „und sieh nach, ob es heiß genug ist.“ Gretel aber {merkte|merken}, was sie im Sinn {hatte|haben}: „Ich {weiß|wissen} nicht, wie ich das machen {soll|sollen}.“
+
+## Seite 12
+bild: hexenstube
+figuren: hexe, gretel
+„Dumme Gans“, sagte die Alte, „die Öffnung {ist|sein} groß genug!“ Sie {steckte|hineinstecken} selbst den Kopf in den Ofen {hinein}. Da {gab|geben} ihr Gretel einen Stoß, dass sie weit {hineinfuhr|hineinfahren}. Dann {machte|zumachen} Gretel die eiserne Tür {zu} und {schob|vorschieben} den Riegel {vor}.
+
+## Seite 13
+bild: haus
+figuren: haensel, gretel, vater
+Gretel {befreite|befreien} Hänsel, und sie füllten sich die Taschen mit Perlen und Edelsteinen. Endlich {erblickten|erblicken} sie von weitem ihres Vaters Haus. Der Vater {hatte|haben} keine frohe Stunde {gehabt}, seitdem er die Kinder im Wald {gelassen} {hatte|lassen}. Die Frau aber {war|sterben} {gestorben}. Nun {hatten|haben} alle Sorgen ein Ende.
+
+# Rumpelstilzchen
+
+## Seite 1
+bild: muehle
+figuren: mueller, koenig
+Es {war|sein} einmal ein Müller, der war arm, aber er {hatte|haben} eine schöne Tochter. Einmal {sprach|sprechen} er mit dem König. Um sich ein Ansehen zu geben, {sagte|sagen} er: „Ich {habe|haben} eine Tochter, die {kann|können} Stroh zu Gold spinnen.“
+
+## Seite 2
+bild: kammer
+figuren: muellerin, koenig
+Der König {ließ|lassen} das Mädchen in eine Kammer voll Stroh bringen und {sprach|sprechen}: „Wenn du bis morgen früh dieses Stroh nicht zu Gold {versponnen} {hast|verspinnen}, so musst du sterben.“ Dann {schloss|zuschließen} er die Kammer selbst {zu}. Die arme Müllerstochter {fing|anfangen} {an} zu weinen.
+
+## Seite 3
+bild: kammer
+figuren: muellerin, maennchen
+Da {ging|aufgehen} die Tür {auf}, und ein kleines Männchen {trat|hereintreten} {herein}. „Was {gibst|geben} du mir, wenn ich dir das Stroh {spinne|spinnen}?“ – „Mein Halsband“, sagte das Mädchen. Das Männchen {setzte|setzen} sich vor das Rädchen, und schnurr, schnurr, schnurr, dreimal gezogen, {war|sein} die Spule voll.
+
+## Seite 4
+bild: goldkammer
+figuren: maennchen
+So {ging|gehen} es fort bis zum Morgen. Da war alles Stroh versponnen, und alle Spulen {waren|sein} voll Gold. Als der König das Gold {sah|sehen}, {staunte|staunen} er und {freute|freuen} sich. Aber sein Herz {wurde|werden} nur noch goldgieriger.
+
+## Seite 5
+bild: kammer
+figuren: muellerin, maennchen
+In der zweiten Nacht {half|helfen} das Männchen wieder, und das Mädchen {gab|geben} ihm seinen Ring. In der dritten Nacht aber {hatte|haben} es nichts mehr zu verschenken. „So versprich mir dein erstes Kind, wenn du Königin {wirst|werden}“, {sagte|sagen} das Männchen. In ihrer Not {versprach|versprechen} die Müllerstochter es ihm.
+
+## Seite 6
+bild: schloss
+figuren: koenig, koenigin
+Am Morgen {fand|finden} der König alles, wie er es {gewünscht} {hatte|wünschen}, und {hielt|halten} Hochzeit mit ihr. So {wurde|werden} die schöne Müllerstochter eine Königin. Über ein Jahr {brachte|bringen} sie ein schönes Kind zur Welt und {dachte|denken} nicht mehr an das Männchen.
+
+## Seite 7
+bild: schloss
+figuren: koenigin, maennchen
+Da {trat|treten} es plötzlich in ihre Kammer und sprach: „Nun gib mir, was du {versprochen} {hast|versprechen}.“ Die Königin {erschrak|erschrecken} und {bot|anbieten} ihm alle Reichtümer des Königreichs {an}. Aber das Männchen {sagte|sagen}: „Etwas Lebendes {ist|sein} mir lieber als alle Schätze der Welt.“
+
+## Seite 8
+bild: schloss
+figuren: koenigin, maennchen
+Da {fing|anfangen} die Königin so {an} zu jammern und zu weinen, dass das Männchen Mitleid mit ihr {hatte|haben}. „Drei Tage {will|wollen} ich dir Zeit lassen“, {sprach|sprechen} es. „{Weißt|wissen} du bis dahin meinen Namen, so {sollst|sollen} du dein Kind behalten.“
+
+## Seite 9
+bild: schloss
+figuren: koenigin, bote
+Die Königin {schickte|ausschicken} einen Boten {aus}. Er {sollte|sollen} im ganzen Land nach neuen Namen fragen. Zwei Tage lang {nannte|nennen} sie dem Männchen alle Namen, die sie {wusste|wissen}: Kaspar, Melchior, Balzer, Rippenbiest, Hammelswade, Schnürbein. Aber jedes Mal {antwortete|antworten} es: „So {heiße|heißen} ich nicht.“
+
+## Seite 10
+bild: feuer
+figuren: maennchen, bote
+Am dritten Tag {kam|zurückkommen} der Bote {zurück} und erzählte: „An einem hohen Berg {sah|sehen} ich ein kleines Haus. Vor dem Haus brannte ein Feuer, und um das Feuer sprang ein gar zu lächerliches Männchen. Es hüpfte auf einem Bein und schrie:
+
+„Heute {backe|backen} ich, morgen {braue|brauen} ich, übermorgen {hole|holen} ich der Königin ihr Kind. Ach, wie gut, dass niemand {weiß|wissen}, dass ich Rumpelstilzchen heiß!“
+
+## Seite 11
+bild: schloss
+figuren: koenigin, maennchen
+Als das Männchen {kam|kommen}, {fragte|fragen} die Königin erst: „{Heißt|heißen} du Kunz?“ – „Nein.“ – „{Heißt|heißen} du Heinz?“ – „Nein.“ – „{Heißt|heißen} du etwa Rumpelstilzchen?“ – „Das {hat|sagen} dir der Teufel {gesagt}!“, schrie das Männchen.
+
+## Seite 12
+bild: schloss
+figuren: koenigin, maennchen
+Vor Zorn {stieß|stoßen} es mit dem rechten Fuß so tief in die Erde, dass es bis an den Leib {hineinfuhr|hineinfahren}. Dann {packte|packen} es in seiner Wut den linken Fuß mit beiden Händen und {riss|reißen} sich selbst mitten entzwei.
+
+# Das Ende
+rolle: schluss
+
+## Seite 1
+bild: fest
+figuren: fee13, fee
+Alle Märchen {waren|sein} wieder heil. Die dreizehnte Fee {lächelte|lächeln}. „Morgen früh {werden|vergessen} alle meinen Fluch {vergessen} {haben}“, sagte sie. Und diesmal {bekam|bekommen} auch sie einen goldenen Teller.
+
+Und wenn sie nicht {gestorben} {sind|sterben}, dann {leben|leben} sie noch heute.
+
+</script>
+<script>
+/* Zeitfaden – Formen-Engine
+   Bildet alle Formen eines Verbs in sechs Tempora, erkennt Tempus und Person
+   einer Textform und erzeugt passende falsche Kärtchen mit Rückmeldung. */
+(function (root) {
+  'use strict';
+
+  const PERSONS = ['ich', 'du', 'er/sie/es', 'wir', 'ihr', 'sie'];
+  const TENSES = ['praes', 'praet', 'perf', 'plusq', 'fut1', 'fut2'];
+  const TNAME = {
+    praes: 'Präsens', praet: 'Präteritum', perf: 'Perfekt',
+    plusq: 'Plusquamperfekt', fut1: 'Futur I', fut2: 'Futur II'
+  };
+  const STAGES = {
+    1: ['praes', 'praet'],
+    2: ['praes', 'praet', 'perf', 'plusq'],
+    3: TENSES.slice()
+  };
+
+  /* ---------- Lexikon ---------- */
+  // Infinitiv Präteritum Partizip-II Hilfsverb [3. Person Singular Präsens bei Vokalwechsel]
+  const STRONG_SRC = `
+backen backte gebacken h
+befehlen befahl befohlen h befiehlt
+beginnen begann begonnen h
+beißen biss gebissen h
+betrügen betrog betrogen h
+biegen bog gebogen h
+bieten bot geboten h
+binden band gebunden h
+bitten bat gebeten h
+blasen blies geblasen h bläst
+bleiben blieb geblieben s
+braten briet gebraten h brät
+brechen brach gebrochen h bricht
+brennen brannte gebrannt h
+bringen brachte gebracht h
+denken dachte gedacht h
+empfehlen empfahl empfohlen h empfiehlt
+erschrecken erschrak erschrocken s erschrickt
+essen aß gegessen h isst
+fahren fuhr gefahren s fährt
+fallen fiel gefallen s fällt
+fangen fing gefangen h fängt
+finden fand gefunden h
+fliegen flog geflogen s
+fliehen floh geflohen s
+fließen floss geflossen s
+fressen fraß gefressen h frisst
+frieren fror gefroren h
+geben gab gegeben h gibt
+gehen ging gegangen s
+gelingen gelang gelungen s
+gelten galt gegolten h gilt
+genießen genoss genossen h
+geschehen geschah geschehen s geschieht
+gewinnen gewann gewonnen h
+gießen goss gegossen h
+gleiten glitt geglitten s
+graben grub gegraben h gräbt
+greifen griff gegriffen h
+halten hielt gehalten h hält
+hängen hing gehangen h
+heben hob gehoben h
+heißen hieß geheißen h
+helfen half geholfen h hilft
+kennen kannte gekannt h
+klingen klang geklungen h
+kommen kam gekommen s
+kriechen kroch gekrochen s
+laden lud geladen h lädt
+lassen ließ gelassen h lässt
+laufen lief gelaufen s läuft
+leiden litt gelitten h
+leihen lieh geliehen h
+lesen las gelesen h liest
+liegen lag gelegen hs
+lügen log gelogen h
+messen maß gemessen h misst
+nehmen nahm genommen h nimmt
+nennen nannte genannt h
+pfeifen pfiff gepfiffen h
+raten riet geraten h rät
+reiben rieb gerieben h
+reißen riss gerissen h
+reiten ritt geritten s
+rennen rannte gerannt s
+riechen roch gerochen h
+rufen rief gerufen h
+scheinen schien geschienen h
+schieben schob geschoben h
+schießen schoss geschossen h
+schlafen schlief geschlafen h schläft
+schlagen schlug geschlagen h schlägt
+schleichen schlich geschlichen s
+schließen schloss geschlossen h
+schmelzen schmolz geschmolzen s schmilzt
+schneiden schnitt geschnitten h
+schreiben schrieb geschrieben h
+schreien schrie geschrien h
+schweigen schwieg geschwiegen h
+schwimmen schwamm geschwommen sh
+sehen sah gesehen h sieht
+singen sang gesungen h
+sinken sank gesunken s
+sitzen saß gesessen hs
+sprechen sprach gesprochen h spricht
+spinnen spann gesponnen h
+schlingen schlang geschlungen h
+schelten schalt gescholten h schilt
+sprießen spross gesprossen s
+ringen rang gerungen h
+saufen soff gesoffen h säuft
+schmeißen schmiss geschmissen h
+schreiten schritt geschritten s
+schwingen schwang geschwungen h
+schwören schwor geschworen h
+stinken stank gestunken h
+meiden mied gemieden h
+weichen wich gewichen s
+winden wand gewunden h
+verzeihen verzieh verziehen h
+dringen drang gedrungen s
+springen sprang gesprungen s
+stechen stach gestochen h sticht
+stehen stand gestanden hs
+stehlen stahl gestohlen h stiehlt
+steigen stieg gestiegen s
+sterben starb gestorben s stirbt
+stoßen stieß gestoßen h stößt
+streiten stritt gestritten h
+tragen trug getragen h trägt
+treffen traf getroffen h trifft
+treiben trieb getrieben h
+treten trat getreten s tritt
+trinken trank getrunken h
+verbergen verbarg verborgen h verbirgt
+verderben verdarb verdorben h verdirbt
+vergessen vergaß vergessen h vergisst
+verlieren verlor verloren h
+verschwinden verschwand verschwunden s
+wachsen wuchs gewachsen s wächst
+waschen wusch gewaschen h wäscht
+weisen wies gewiesen h
+werfen warf geworfen h wirft
+wiegen wog gewogen h
+ziehen zog gezogen h
+zwingen zwang gezwungen h
+`;
+
+  // Doppelformen, die ebenfalls richtig sind (werden nie als Ablenker gezeigt)
+  const ALT = {
+    backen: { praet: 'buk', p3: 'bäckt' }
+  };
+
+  const IRREG = {
+    sein: { pres: ['bin', 'bist', 'ist', 'sind', 'seid', 'sind'], praet: 'war', p2: 'gewesen', aux: 's', kind: 'irreg' },
+    haben: { pres: ['habe', 'hast', 'hat', 'haben', 'habt', 'haben'], praet: 'hatte', p2: 'gehabt', aux: 'h', kind: 'irreg' },
+    werden: { pres: ['werde', 'wirst', 'wird', 'werden', 'werdet', 'werden'], praet: 'wurde', p2: 'geworden', aux: 's', kind: 'irreg' },
+    tun: { pres: ['tue', 'tust', 'tut', 'tun', 'tut', 'tun'], praet: 'tat', p2: 'getan', aux: 'h', kind: 'irreg' },
+    wissen: { pres: ['weiß', 'weißt', 'weiß', 'wissen', 'wisst', 'wissen'], praet: 'wusste', p2: 'gewusst', aux: 'h', kind: 'mixed' },
+    können: { pres: ['kann', 'kannst', 'kann', 'können', 'könnt', 'können'], praet: 'konnte', p2: 'gekonnt', aux: 'h', kind: 'modal' },
+    müssen: { pres: ['muss', 'musst', 'muss', 'müssen', 'müsst', 'müssen'], praet: 'musste', p2: 'gemusst', aux: 'h', kind: 'modal' },
+    dürfen: { pres: ['darf', 'darfst', 'darf', 'dürfen', 'dürft', 'dürfen'], praet: 'durfte', p2: 'gedurft', aux: 'h', kind: 'modal' },
+    wollen: { pres: ['will', 'willst', 'will', 'wollen', 'wollt', 'wollen'], praet: 'wollte', p2: 'gewollt', aux: 'h', kind: 'modal' },
+    sollen: { pres: ['soll', 'sollst', 'soll', 'sollen', 'sollt', 'sollen'], praet: 'sollte', p2: 'gesollt', aux: 'h', kind: 'modal' },
+    mögen: { pres: ['mag', 'magst', 'mag', 'mögen', 'mögt', 'mögen'], praet: 'mochte', p2: 'gemocht', aux: 'h', kind: 'modal' }
+  };
+
+  // Schwache Verben, die als Grundverb trennbarer Verben erkannt werden
+  const KNOWN_WEAK = new Set(`machen holen hören sagen fragen spielen legen stellen setzen packen picken sperren regnen
+    wachen schauen kaufen räumen passen lachen leben lernen warten zeigen suchen bauen füllen decken putzen kochen malen
+    fassen drehen führen kehren rechnen lösen wecken drücken stecken merken teilen zählen wischen klappen schalten tauchen
+    blicken kleben schicken schnappen stürzen wählen wandern reisen rollen rücken hüpfen klettern eilen jagen kriegen
+    hängen pusten blasen schütteln streuen fegen tanzen rennen räumen stoßen ziehen tragen bringen nehmen geben klopfen
+    schauen gucken atmen öffnen sammeln wickeln knoten binden schnüren jubeln lächeln winken fühlen kühlen heizen backen
+    brauen mischen rühren wiegen tauschen pflücken pflanzen gießen ernten graben hüten folgen danken hoffen glauben
+    feiern bellen stampfen knabbern krabbeln plaudern flüstern brummen schnarchen träumen lauschen staunen wundern
+    hören zaubern reichen retten richten`.split(/\s+/).filter(Boolean));
+
+  // Schwache Verben mit „sein“
+  const WEAK_AUX = {
+    aufwachen: 's', erwachen: 's', wandern: 's', reisen: 's', landen: 's', klettern: 's', stolpern: 's', eilen: 's',
+    folgen: 's', begegnen: 's', passieren: 's', hüpfen: 's', krabbeln: 's', rasen: 's', marschieren: 's', stürzen: 's',
+    tauchen: 'hs', segeln: 'hs', rudern: 'hs', rollen: 'hs', flattern: 'hs', joggen: 'hs', reiten: 's'
+  };
+
+  // Hilfsverb abgeleiteter Verben, wo es vom Grundverb abweicht oder sicher ist
+  const DERIVED_AUX = {
+    einschlafen: 's', aufstehen: 's', ankommen: 's', weggehen: 's', aufgehen: 's', herauskommen: 's', hereinkommen: 's',
+    zurückkommen: 's', davonlaufen: 's', abgehen: 's', hinterherspringen: 's', eintreten: 's', vergehen: 's',
+    verlaufen: 'h', bekommen: 'h', erraten: 'h', abschließen: 'h', festhalten: 'h', einladen: 'h', einsperren: 'h',
+    aufpicken: 'h', herausholen: 'h', herabregnen: 'hs', verbrennen: 'hs', entkommen: 's', gefallen: 'h',
+    versprechen: 'h', losgehen: 's', loslaufen: 's', weglaufen: 's', hinfallen: 's', umfallen: 's', aufwachen: 's',
+    zerbrechen: 'hs', verfließen: 's', hineinspringen: 's', herausspringen: 's', aufspringen: 's', abspringen: 's', niedersinken: 's', niederfallen: 's', herabfallen: 's', hinabfallen: 's', hinuntertauchen: 's', heraufkommen: 's', hineinfahren: 's', hinausgehen: 's', hereintreten: 's', hervortreten: 's', aufsteigen: 's', verstehen: 'h', entstehen: 's', bestehen: 'h', gestehen: 'h', erscheinen: 's', verschlafen: 'h',
+    hinaufsteigen: 's', aussteigen: 's', einsteigen: 's', abfahren: 's', wegfliegen: 's', davonfliegen: 's',
+    hinausgehen: 's', hineingehen: 's', zurückgehen: 's', vorbeikommen: 's', mitkommen: 's', heimkommen: 's'
+  };
+
+  const PARTICLES_CLEAR = ['zusammen', 'hinterher', 'entgegen', 'herunter', 'hinunter', 'herüber', 'hinüber',
+    'zurecht', 'vorbei', 'voraus', 'voran', 'weiter', 'zurück', 'herauf', 'hinauf', 'heraus', 'hinaus', 'herein',
+    'hinein', 'herbei', 'hervor', 'heran', 'herab', 'hinab', 'herum', 'empor', 'davon', 'dabei', 'dazu', 'fort',
+    'fest', 'heim', 'nieder', 'umher', 'nach', 'auf', 'aus', 'ein', 'mit', 'weg', 'los', 'vor', 'her', 'hin', 'ab', 'an', 'bei', 'zu'];
+  const PARTICLES_AMBIG = ['wieder', 'durch', 'unter', 'über', 'um'];
+  const UNTRENNBAR = ['miss', 'emp', 'ent', 'ver', 'zer', 'be', 'ge', 'er'];
+  const NOT_PREFIXED = new Set(['beten', 'bellen', 'betteln', 'beben', 'beugen', 'bergen', 'bersten', 'erben', 'ernten',
+    'erden', 'geigen', 'gerben', 'gären', 'gehen', 'geben', 'gelten', 'gießen', 'genesen', 'gewinnen', 'gelingen', 'geschehen', 'genießen']);
+
+  const STRONG = {};
+  STRONG_SRC.trim().split('\n').forEach(line => {
+    const t = line.trim().split(/\s+/);
+    if (t.length < 4) return;
+    STRONG[t[0]] = { praet: t[1], p2: t[2], aux: t[3], p3: t[4] || null };
+  });
+
+  /* ---------- Lautregeln ---------- */
+  const VOWELS = 'aeiouäöüy';
+  const isVowel = c => !!c && VOWELS.includes(c);
+
+  const isElEr = inf => /e[lr]n$/.test(inf) && inf.length > 4;
+  function stemOf(inf) {
+    if (isElEr(inf)) return inf.slice(0, -1); // wandern -> wander, sammeln -> sammel
+    if (/en$/.test(inf)) return inf.slice(0, -2);
+    if (/n$/.test(inf)) return inf.slice(0, -1);
+    return inf;
+  }
+
+  function needsE(stem) {
+    if (/[dt]$/.test(stem)) return true;
+    if (/[mn]$/.test(stem)) {
+      const c2 = stem[stem.length - 2], c3 = stem[stem.length - 3];
+      if (!c2 || isVowel(c2)) return false;
+      if ('lrmn'.includes(c2)) return false;
+      if (c2 === 'h') return !isVowel(c3);
+      return true;
+    }
+    return false;
+  }
+  const sibilant = s => /[sßxz]$/.test(s);
+
+  function presRegular(inf, stem) {
+    const el = isElEr(inf);
+    const e = !el && needsE(stem);
+    let ich = stem + 'e';
+    if (el && /eln$/.test(inf)) ich = stem.slice(0, -2) + 'le';
+    const wir = el ? inf : stem + 'en';
+    return [
+      ich,
+      e ? stem + 'est' : sibilant(stem) ? stem + 't' : stem + 'st',
+      e ? stem + 'et' : stem + 't',
+      wir,
+      e ? stem + 'et' : stem + 't',
+      wir
+    ];
+  }
+
+  function du2From3(t3, stem) {
+    if (/t$/.test(stem) && /t$/.test(t3)) return t3 + 'st';
+    if (/d$/.test(stem)) return t3.replace(/t$/, '') + 'st';
+    const base = t3.replace(/t$/, '');
+    return sibilant(base) ? base + 't' : base + 'st';
+  }
+
+  function praetStrong(P) {
+    if (/[td]e$/.test(P) && !/ie$/.test(P)) {
+      const b = P.slice(0, -1);
+      return [P, b + 'est', P, b + 'en', b + 'et', b + 'en'];
+    }
+    const dt = /[dt]$/.test(P);
+    return [
+      P,
+      dt || sibilant(P) ? P + 'est' : P + 'st',
+      P,
+      /e$/.test(P) ? P + 'n' : P + 'en',
+      dt ? P + 'et' : P + 't',
+      /e$/.test(P) ? P + 'n' : P + 'en'
+    ];
+  }
+  function praetWeak(inf, stem) {
+    const te = (!isElEr(inf) && needsE(stem)) ? 'ete' : 'te';
+    const b = stem + te;
+    return [b, b + 'st', b, b + 'n', b + 't', b + 'n'];
+  }
+  function weakP2(inf, stem, noGe) {
+    const t = (!isElEr(inf) && needsE(stem)) ? 'et' : 't';
+    return (noGe ? '' : 'ge') + stem + t;
+  }
+
+  function untrennbarPrefix(inf) {
+    if (NOT_PREFIXED.has(inf)) return '';
+    for (const p of UNTRENNBAR) {
+      if (inf.startsWith(p) && inf.length - p.length >= 4) {
+        const rest = inf.slice(p.length);
+        if (!isVowel(rest[0]) || p === 'miss' || p === 'ent' || p === 'emp') return p;
+        if (p === 'ver' || p === 'zer' || p === 'er' || p === 'be') return p; // verabreden, erarbeiten, beobachten
+      }
+    }
+    return '';
+  }
+
+  /* ---------- Lesarten ---------- */
+  function auxSetOf(code) { return code === 'hs' ? ['h', 's'] : code === 'sh' ? ['s', 'h'] : [code]; }
+
+  function buildDirect(inf) {
+    if (IRREG[inf]) {
+      const d = IRREG[inf];
+      return {
+        inf, base: inf, particle: '', prefix: '', kind: d.kind, stem: stemOf(inf),
+        pres: d.pres.slice(), praetForms: praetStrong(d.praet), praet1: d.praet, p2: d.p2,
+        auxSet: auxSetOf(d.aux), auxKnown: true, vowelChange: false, untrennbar: false, ieren: false
+      };
+    }
+    if (STRONG[inf]) {
+      const d = STRONG[inf];
+      const stem = stemOf(inf);
+      const pres = presRegular(inf, stem);
+      let vowelChange = false;
+      if (d.p3) { pres[2] = d.p3; pres[1] = du2From3(d.p3, stem); vowelChange = true; }
+      const kind = /te$/.test(d.praet) ? 'mixed' : 'strong';
+      const r = {
+        inf, base: inf, particle: '', prefix: '', kind, stem, pres, praetForms: praetStrong(d.praet), praet1: d.praet,
+        p2: d.p2, auxSet: auxSetOf(d.aux), auxKnown: true, vowelChange, untrennbar: !!untrennbarPrefix(inf) && !/^ge/.test(d.p2),
+        ieren: false, alt: ALT[inf] || null
+      };
+      return r;
+    }
+    return null;
+  }
+
+  function buildUntrennbarStrong(inf) {
+    const pre = untrennbarPrefix(inf);
+    if (!pre) return null;
+    const baseInf = inf.slice(pre.length);
+    const b = buildDirect(baseInf);
+    if (!b || b.kind === 'modal') return null;
+    const r = Object.assign({}, b);
+    r.inf = inf; r.base = baseInf; r.prefix = pre; r.untrennbar = true;
+    r.stem = pre + b.stem;
+    r.pres = b.pres.map(f => pre + f);
+    r.praetForms = b.praetForms.map(f => pre + f);
+    r.praet1 = pre + b.praet1;
+    r.p2 = pre + b.p2.replace(/^ge/, '');
+    const ex = DERIVED_AUX[inf];
+    r.auxSet = ex ? auxSetOf(ex) : ['h', 's'];
+    r.auxKnown = !!ex;
+    r.alt = null;
+    return r;
+  }
+
+  function buildWeak(inf) {
+    const stem = stemOf(inf);
+    const ieren = /ieren$/.test(inf);
+    // Als Ganzes gelesene Verben mit um-, über-, unter-, durch-, wider- sind untrennbar: umarmt, übersetzt
+    const amb = ['wider', 'durch', 'unter', 'über', 'um'].find(p => inf.startsWith(p) && inf.length - p.length >= 4);
+    const pre = untrennbarPrefix(inf) || amb || '';
+    const auxCode = WEAK_AUX[inf] || DERIVED_AUX[inf];
+    return {
+      inf, base: inf, particle: '', prefix: pre, kind: 'weak', stem,
+      pres: presRegular(inf, stem), praetForms: praetWeak(inf, stem), praet1: praetWeak(inf, stem)[0],
+      p2: weakP2(inf, stem, !!pre || ieren),
+      auxSet: auxCode ? auxSetOf(auxCode) : ['h', 's'], auxKnown: !!auxCode, auxDefault: auxCode ? null : 'h',
+      vowelChange: false, untrennbar: !!pre, ieren
+    };
+  }
+
+  function withParticle(b, pt, inf) {
+    const r = Object.assign({}, b);
+    r.inf = inf; r.particle = pt; r.base = b.inf;
+    r.p2 = pt + b.p2;
+    const ex = DERIVED_AUX[inf];
+    if (ex) { r.auxSet = auxSetOf(ex); r.auxKnown = true; }
+    else { r.auxSet = ['h', 's']; r.auxKnown = false; }
+    r.alt = b.alt;
+    return r;
+  }
+
+  function baseReading(base) {
+    return buildDirect(base) || buildUntrennbarStrong(base) || (KNOWN_WEAK.has(base) ? buildWeak(base) : null);
+  }
+
+  const readingCache = new Map();
+  function readings(infRaw) {
+    const key = infRaw;
+    if (readingCache.has(key)) return readingCache.get(key);
+    let inf = infRaw.trim().toLowerCase();
+    const out = [];
+    if (inf.includes('+')) {
+      const [pt, base] = inf.split('+');
+      inf = pt + base;
+      const b = buildDirect(base) || buildUntrennbarStrong(base) || buildWeak(base);
+      out.push(withParticle(b, pt, inf));
+    } else {
+      const direct = buildDirect(inf);
+      if (direct) out.push(direct);
+      else {
+        const clear = [], ambig = [];
+        for (const pt of PARTICLES_CLEAR) {
+          if (inf.startsWith(pt) && inf.length - pt.length >= 3) {
+            const b = baseReading(inf.slice(pt.length));
+            if (b) clear.push(withParticle(b, pt, inf));
+          }
+        }
+        for (const pt of PARTICLES_AMBIG) {
+          if (inf.startsWith(pt) && inf.length - pt.length >= 3) {
+            const b = baseReading(inf.slice(pt.length));
+            if (b) ambig.push(withParticle(b, pt, inf));
+          }
+        }
+        out.push(...clear);
+        const u = buildUntrennbarStrong(inf);
+        if (u) out.push(u);
+        out.push(buildWeak(inf));
+        out.push(...ambig);
+        // Zuletzt: trennbare Lesart mit unbekanntem schwachem Grundverb (z. B. herausstrecken)
+        for (const pt of PARTICLES_CLEAR) {
+          const base = inf.slice(pt.length);
+          if (inf.startsWith(pt) && base.length >= 4 && /(en|ern|eln)$/.test(base) && !clear.some(r => r.particle === pt)) {
+            out.push(withParticle(buildWeak(base), pt, inf));
+          }
+        }
+      }
+    }
+    out.forEach(r => { r.cells = paradigm(r); });
+    readingCache.set(key, out);
+    return out;
+  }
+
+  /* ---------- Paradigma ---------- */
+  const AUX = {
+    h: { pres: IRREG.haben.pres, praet: praetStrong('hatte'), inf: 'haben' },
+    s: { pres: IRREG.sein.pres, praet: praetStrong('war'), inf: 'sein' }
+  };
+  const WERDEN = IRREG.werden.pres;
+
+  function simpleVariants(r, form, alt) {
+    if (r.particle) {
+      return [{ vals: [form, r.particle], split: true, alt }, { vals: [r.particle + form], joined: true, alt }];
+    }
+    return [{ vals: [form], alt }];
+  }
+
+  function paradigm(r) {
+    const cells = {};
+    TENSES.forEach(t => { cells[t] = [[], [], [], [], [], []]; });
+    for (let p = 0; p < 6; p++) {
+      cells.praes[p].push(...simpleVariants(r, r.pres[p], false));
+      cells.praet[p].push(...simpleVariants(r, r.praetForms[p], false));
+      if (r.alt && r.alt.p3 && (p === 2)) cells.praes[p].push(...simpleVariants(r, r.alt.p3, true));
+      if (r.alt && r.alt.p3 && (p === 1)) cells.praes[p].push(...simpleVariants(r, du2From3(r.alt.p3, r.stem), true));
+      if (r.alt && r.alt.praet) cells.praet[p].push(...simpleVariants(r, praetStrong(r.alt.praet)[p], true));
+      // Präteritum 2. Person: „du last“ neben „du lasest“
+      if (p === 1 && r.kind === 'strong' && sibilant(r.praet1)) cells.praet[p].push(...simpleVariants(r, r.praet1 + 't', true));
+      r.auxSet.forEach((a, i) => {
+        const alt = i > 0;
+        cells.perf[p].push({ vals: [AUX[a].pres[p], r.p2], aux: a, alt });
+        cells.plusq[p].push({ vals: [AUX[a].praet[p], r.p2], aux: a, alt });
+        cells.fut2[p].push({ vals: [WERDEN[p], r.p2, AUX[a].inf], aux: a, alt });
+      });
+      cells.fut1[p].push({ vals: [WERDEN[p], r.inf] });
+    }
+    return cells;
+  }
+
+  /* ---------- Erkennen ---------- */
+  const lc = s => s.toLowerCase();
+  const sig = arr => arr.map(lc).slice().sort().join('|');
+
+  function isSubMultiset(small, big) {
+    const pool = big.map(lc);
+    for (const s of small.map(lc)) {
+      const i = pool.indexOf(s);
+      if (i < 0) return false;
+      pool.splice(i, 1);
+    }
+    return true;
+  }
+
+  // Passen diese Teile zu irgendeiner Form des Verbs? (für die Zuordnung abgetrennter Teile)
+  function partialFits(inf, parts) {
+    for (const r of readings(inf)) {
+      for (const t of TENSES) for (let p = 0; p < 6; p++) {
+        for (const v of r.cells[t][p]) if (v.vals.length >= parts.length && isSubMultiset(parts, v.vals)) return true;
+      }
+    }
+    return false;
+  }
+
+  function identify(inf, slotsText) {
+    const s = sig(slotsText);
+    for (const r of readings(inf)) {
+      let found = null;
+      for (const t of TENSES) {
+        const persons = [];
+        let variant = null;
+        for (let p = 0; p < 6; p++) {
+          for (const v of r.cells[t][p]) {
+            if (v.vals.length === slotsText.length && sig(v.vals) === s) {
+              persons.push(p);
+              if (!variant || (variant.alt && !v.alt)) variant = v;
+              break;
+            }
+          }
+        }
+        if (persons.length) { found = { reading: r, tense: t, persons, variant }; break; }
+      }
+      if (found) return found;
+    }
+    return null;
+  }
+
+  /* ---------- Ablenker ---------- */
+  const PARTNER = { praes: 'praet', praet: 'praes', perf: 'plusq', plusq: 'perf', fut1: 'perf', fut2: null };
+  const PERSON_PREF = [[2, 1, 3], [2, 0, 4], [1, 5, 0], [2, 4, 1], [1, 3, 2], [2, 4, 1]];
+
+  function sameShape(a, b) { return a.vals.length === b.vals.length && !!a.joined === !!b.joined && !!a.split === !!b.split; }
+
+  function personsOf(r, t, vals) {
+    const s = sig(vals), out = [];
+    for (let p = 0; p < 6; p++) if (r.cells[t][p].some(v => sig(v.vals) === s)) out.push(p);
+    return out;
+  }
+  function personLabel(ps) {
+    const names = ps.map(p => PERSONS[p] === 'sie' ? 'sie (Plural)' : PERSONS[p]);
+    if (names.length <= 1) return names[0] || '';
+    return names.slice(0, -1).join(', ') + ' oder ' + names[names.length - 1];
+  }
+  const q = s => '„' + s + '“';
+  const EXAMPLE_E = inf => (inf === 'reden' ? 'du arbeitest' : 'du redest');
+
+  function errorCandidates(r, t, p, V) {
+    const out = [];
+    const shapeFin = f => {
+      if (V.joined) return [r.particle + f];
+      if (V.split) return [f, r.particle];
+      return [f];
+    };
+    const inf = r.inf;
+    if (t === 'praes') {
+      if (r.vowelChange && (p === 1 || p === 2)) {
+        const f = presRegular(r.particle ? r.base : r.inf, r.stem)[p];
+        out.push({ vals: shapeFin(f), type: 'vokal', fb: `Bei ${q(inf)} ändert sich in der du- und er/sie/es-Form der Stammvokal.` });
+      }
+      if (p === 1 && !r.vowelChange && (r.kind === 'weak' || r.kind === 'strong' || r.kind === 'mixed') && needsE(r.stem) && !isElEr(r.base)) {
+        out.push({ vals: shapeFin(r.stem + 'st'), type: 'eEinschub', fb: `Endet der Stamm auf -d, -t oder auf -m/-n nach einem Mitlaut, kommt ein -e- dazu: ${EXAMPLE_E(inf)}.` });
+      }
+    }
+    if (t === 'praet') {
+      if (r.kind === 'strong') {
+        out.push({ vals: shapeFin(praetWeak(r.base, r.stem)[p]), type: 'stark', fb: `${q(inf)} ist ein starkes Verb: Im Präteritum ändert sich der Stammvokal, und es gibt kein -te.` });
+      } else if (r.kind === 'mixed') {
+        out.push({ vals: shapeFin(praetWeak(r.base, r.stem)[p]), type: 'gemischt', fb: `${q(inf)} ist ein gemischtes Verb: Der Stamm ändert sich, und trotzdem kommt -te dazu.` });
+      } else if (r.base === 'haben') {
+        out.push({ vals: shapeFin(praetWeak('haben', 'hab')[p]), type: 'unregel', fb: `${q('haben')} ist unregelmäßig: Im Präteritum heißt der Stamm hatt-.` });
+      }
+    }
+    const p2Errors = () => {
+      const res = [];
+      if (r.kind === 'strong' || r.kind === 'mixed') {
+        let wp;
+        if (r.particle) wp = r.particle + 'ge' + stemOf(r.base) + (needsE(stemOf(r.base)) ? 'et' : 't');
+        else wp = (r.untrennbar ? '' : 'ge') + r.stem + (needsE(r.stem) ? 'et' : 't');
+        if (r.base !== 'sein' && r.base !== 'werden') {
+          res.push({ p2: wp, type: r.kind === 'strong' ? 'partizipStark' : 'partizipGemischt',
+            fb: r.kind === 'strong'
+              ? `${q(inf)} ist ein starkes Verb: Das Partizip II endet auf -en, oft mit anderem Stammvokal.`
+              : `${q(inf)} ist ein gemischtes Verb: Das Partizip II hat einen neuen Stamm und endet auf -t.` });
+        }
+      }
+      if (r.particle) {
+        const rest = r.p2.slice(r.particle.length).replace(/^ge/, '');
+        res.push({ p2: 'ge' + r.particle + rest, type: 'geTrennbar', fb: 'Bei trennbaren Verben steht ge- zwischen Vorsilbe und Stamm.' });
+      } else if (r.ieren) {
+        res.push({ p2: 'ge' + r.p2, type: 'ieren', fb: 'Verben auf -ieren bekommen im Partizip II kein ge-.' });
+      } else if (r.untrennbar) {
+        res.push({ p2: 'ge' + r.p2, type: 'geVorsilbe', fb: 'Verben mit be-, ge-, er-, ver-, zer-, ent-, emp- oder miss- bekommen im Partizip II kein ge-.' });
+      }
+      return res;
+    };
+    const auxIsS = r.auxKnown && r.auxSet.length === 1 && r.auxSet[0] === 's';
+    const auxFb = ['sein', 'werden', 'bleiben'].includes(r.base)
+      ? `${q('sein')}, ${q('werden')} und ${q('bleiben')} bilden Perfekt und Plusquamperfekt mit ${q('sein')}.`
+      : `${q(inf)} beschreibt eine Bewegung oder Veränderung. Dann steht ${q('sein')}.`;
+    if (t === 'perf' || t === 'plusq') {
+      if (auxIsS) {
+        const f = t === 'perf' ? AUX.h.pres[p] : AUX.h.praet[p];
+        out.push({ vals: [f, V.vals[1]], type: 'hilfsverb', fb: auxFb });
+      }
+      p2Errors().forEach(e => out.push({ vals: [V.vals[0], e.p2], type: e.type, fb: e.fb }));
+    }
+    if (t === 'fut1') {
+      out.push({ vals: [V.vals[0], r.p2], type: 'futurInf', fb: `Das Futur I bildest du mit ${q('werden')} und dem Infinitiv.` });
+    }
+    if (t === 'fut2') {
+      if (auxIsS) out.push({ vals: [V.vals[0], V.vals[1], 'haben'], type: 'hilfsverb', fb: auxFb });
+      p2Errors().forEach(e => out.push({ vals: [V.vals[0], e.p2, V.vals[2]], type: e.type, fb: e.fb }));
+      out.push({ vals: [V.vals[0], r.inf, V.vals[2]], type: 'futur2', fb: `Das Futur II bildest du mit ${q('werden')}, dem Partizip II und ${q('haben')} oder ${q('sein')}.` });
+    }
+    return out;
+  }
+
+  /* Baut aus einer Erkennung Kärtchen.
+     slots: Texte der Teile in Textreihenfolge; adj: true, wenn Teil i und i+1 direkt nebeneinanderstehen. */
+  function pickPerson(persons, sentenceWords, headNeighbours) {
+    if (persons.length === 1) return persons[0];
+    const pron = { 0: 'ich', 1: 'du', 3: 'wir' };
+    for (const p of persons) if (pron[p] && sentenceWords.includes(pron[p])) return p;
+    if (persons.includes(4) && headNeighbours.includes('ihr')) return 4;
+    if (persons.includes(2)) return 2;
+    if (persons.includes(5)) return 5;
+    return persons[0];
+  }
+
+  function buildCards(found, slots, adj, p0) {
+    const { reading: r, tense: t, persons, variant: V } = found;
+    if (p0 === undefined || !persons.includes(p0)) p0 = persons[0];
+    // Zuordnung Teil -> Position in V.vals
+    const used = new Set();
+    const slotRole = slots.map(s => {
+      for (let j = 0; j < V.vals.length; j++) if (!used.has(j) && lc(V.vals[j]) === lc(s)) { used.add(j); return j; }
+      return -1;
+    });
+    const toSlots = vals => slots.map((s, i) => {
+      let v = vals[slotRole[i]];
+      if (v && /^[A-ZÄÖÜ]/.test(s)) v = v[0].toUpperCase() + v.slice(1);
+      return v;
+    });
+    const correctSig = sig(slots);
+    const forbidden = new Set();
+    persons.forEach(p => r.cells[t][p].forEach(v => forbidden.add(sig(v.vals))));
+    forbidden.add(correctSig);
+    const chosen = [];
+    const ok = vals => {
+      if (!vals || vals.some(v => !v)) return false;
+      const sg = sig(vals);
+      if (forbidden.has(sg)) return false;
+      if (chosen.some(c => sig(c.vals) === sg)) return false;
+      return true;
+    };
+
+    const errs = errorCandidates(r, t, p0, V);
+    const otherPersonCands = () => {
+      const pref = PERSON_PREF[p0].concat([0, 1, 2, 3, 4, 5]);
+      const res = [];
+      for (const p of pref) {
+        if (persons.includes(p)) continue;
+        const v = r.cells[t][p].find(w => sameShape(w, V) && !w.alt && (!V.aux || w.aux === V.aux));
+        if (v && !res.some(x => sig(x.vals) === sig(v.vals))) {
+          const ps = personsOf(r, t, v.vals);
+          res.push({ vals: v.vals, type: 'person', fb: `${q(joinLabel(toSlots(v.vals), adj))} passt zu ${personLabel(ps)}. Schau, wer hier handelt.` });
+        }
+      }
+      return res;
+    };
+    const otherTense = () => {
+      const t2 = PARTNER[t];
+      if (!t2) return null;
+      const v = (V.aux && r.cells[t2][p0].find(w => sameShape(w, V) && w.aux === V.aux)) ||
+        r.cells[t2][p0].find(w => sameShape(w, V) && !w.alt);
+      if (!v) return null;
+      return { vals: v.vals, type: 'tempus', fb: `${q(joinLabel(toSlots(v.vals), adj))} steht im ${TNAME[t2]}. Hier ist das ${TNAME[t]} gesucht.` };
+    };
+
+    const first = errs.find(e => ok(e.vals));
+    if (first) chosen.push(first);
+    const ot = otherTense();
+    if (ot && ok(ot.vals)) chosen.push(ot);
+    for (const c of otherPersonCands()) { if (chosen.length >= 2) break; if (ok(c.vals)) chosen.push(c); }
+    for (const e of errs) { if (chosen.length >= 2) break; if (ok(e.vals)) chosen.push(e); }
+
+    return chosen.slice(0, 2).map(c => ({ label: joinLabel(toSlots(c.vals), adj), type: c.type, feedback: c.fb }));
+  }
+
+  function joinLabel(parts, adj) {
+    let s = parts[0] || '';
+    for (let i = 1; i < parts.length; i++) s += (adj && adj[i - 1] ? ' ' : ' … ') + parts[i];
+    return s;
+  }
+
+  /* ---------- Markdown ---------- */
+  const SENT_END = /[.!?]/;
+  const CLOSERS = '“”"»«‘’\')';
+
+  function parseInline(text, ctx) {
+    // Zerlegt einen Absatz in Text- und Klammerteile und merkt sich die Satznummer.
+    const tokens = [];
+    let sentence = 0, i = 0, buf = '';
+    const flush = () => { if (buf) { tokens.push({ type: 'text', text: buf, sentence }); buf = ''; } };
+    while (i < text.length) {
+      const ch = text[i];
+      if (ch === '{') {
+        const j = text.indexOf('}', i);
+        if (j < 0) { buf += ch; i++; continue; }
+        flush();
+        const inner = text.slice(i + 1, j);
+        const parts = inner.split('|').map(s => s.trim());
+        tokens.push({ type: 'brace', form: parts[0], inf: parts[1] || '', extra: parts.slice(2).filter(Boolean), sentence });
+        i = j + 1;
+        continue;
+      }
+      buf += ch;
+      if (SENT_END.test(ch)) {
+        const nx = text[i + 1];
+        if (nx === undefined || /\s/.test(nx) || CLOSERS.includes(nx)) {
+          // Schließende Anführungszeichen gehören noch zum Satz
+          let k = i + 1;
+          while (k < text.length && CLOSERS.includes(text[k])) { buf += text[k]; k++; }
+          i = k;
+          flush();
+          sentence++;
+          continue;
+        }
+      }
+      i++;
+    }
+    flush();
+    return tokens;
+  }
+
+  function groupItems(tokens) {
+    const heads = [], bares = [];
+    tokens.forEach((tk, idx) => {
+      if (tk.type !== 'brace') return;
+      if (tk.inf) heads.push({ idx, tk, parts: [idx] });
+      else bares.push({ idx, tk });
+    });
+    for (const b of bares) {
+      const same = heads.filter(h => h.tk.sentence === b.tk.sentence);
+      const before = same.filter(h => h.idx < b.idx).sort((x, y) => y.idx - x.idx);
+      const after = same.filter(h => h.idx > b.idx).sort((x, y) => x.idx - y.idx);
+      const cands = before.concat(after);
+      let target = null;
+      for (const h of cands) {
+        const parts = h.parts.map(k => tokens[k].form).concat([b.tk.form]);
+        if (partialFits(h.tk.inf, parts)) { target = h; break; }
+      }
+      if (!target) target = cands[0] || null;
+      if (target) { target.parts.push(b.idx); target.parts.sort((x, y) => x - y); }
+      else { tokens[b.idx] = { type: 'text', text: b.tk.form, sentence: b.tk.sentence }; }
+    }
+    return heads;
+  }
+
+  function makeItem(heads, tokens, key, warnings) {
+    const items = [];
+    const sentWords = {};
+    tokens.forEach(t => {
+      const w = (t.type === 'text' ? t.text : t.form || '').toLowerCase().split(/[^a-zäöüß]+/).filter(Boolean);
+      (sentWords[t.sentence] = sentWords[t.sentence] || []).push(...w);
+    });
+    heads.forEach((h, n) => {
+      const order = h.parts;
+      const slots = order.map(k => tokens[k].form);
+      const adj = [];
+      for (let i = 0; i + 1 < order.length; i++) {
+        const between = tokens.slice(order[i] + 1, order[i + 1]);
+        adj.push(between.every(t => t.type === 'text' && /^\s*$/.test(t.text)));
+      }
+      const inf = h.tk.inf;
+      const item = { key: key + '.' + n, inf: inf.replace('+', ''), slots, adj, headPos: order.indexOf(h.idx) };
+      let found = identify(inf, slots);
+      if (!found && !inf.includes('+')) {
+        // Abgetrennte Vorsilbe im Text, aber Infinitiv ohne sie angegeben: „{lief|laufen} … {fort}“
+        const pt = slots.map(lc).find(x => PARTICLES_CLEAR.includes(x) || PARTICLES_AMBIG.includes(x));
+        if (pt) found = identify(pt + '+' + inf.toLowerCase(), slots);
+      }
+      const words = sentWords[tokens[h.idx].sentence] || [];
+      const neigh = [];
+      const prevT = tokens[h.idx - 1], nextT = tokens[h.idx + 1];
+      if (prevT && prevT.type === 'text') { const w = prevT.text.toLowerCase().split(/[^a-zäöüß]+/).filter(Boolean); if (w.length) neigh.push(w[w.length - 1]); }
+      if (nextT && nextT.type === 'text') { const w = nextT.text.toLowerCase().split(/[^a-zäöüß]+/).filter(Boolean); if (w.length) neigh.push(w[0]); }
+      const custom = h.tk.extra.map(d => d.split(/\s*(?:…|\.\.\.)\s*/)).filter(d => d.length === slots.length);
+      if (found) {
+        item.tense = found.tense;
+        item.persons = found.persons;
+        item.person = pickPerson(found.persons, words, neigh);
+        item.kind = found.reading.kind;
+        item.cards = buildCards(found, slots, adj, item.person);
+        item.info = verbInfo(found);
+      } else {
+        item.tense = null;
+        item.persons = [];
+        item.cards = [];
+        warnings.push(`Unbekannte Form: ${joinLabel(slots, adj)} (${inf})`);
+      }
+      if (custom.length) {
+        item.cards = custom.slice(0, 2).map(d => ({ label: joinLabel(d, adj), type: 'eigen', feedback: 'Schau noch einmal genau hin: Passt die Form zu Person und Zeit?' }));
+      }
+      if (item.cards.length < 2) item.cards = item.cards.concat(fallbackCards(item, slots, adj).filter(c => !item.cards.some(x => x.label === c.label))).slice(0, 2);
+      item.correct = joinLabel(slots, adj);
+      item.display = inf.replace('+', '');
+      order.forEach((k, si) => { tokens[k] = { type: 'slot', item: item.key, slot: si, sentence: tokens[k].sentence }; });
+      items.push(item);
+    });
+    return items;
+  }
+
+  function fallbackCards(item, slots, adj) {
+    const fb = 'Schau noch einmal genau hin: Passt die Form zu Person und Zeit?';
+    const out = [];
+    const inf = item.inf.toLowerCase();
+    const auxSwap = { hat: 'ist', ist: 'hat', hatte: 'war', war: 'hatte', habe: 'bin', bin: 'habe', haben: 'sind', sind: 'haben', hatten: 'waren', waren: 'hatten', hast: 'bist', bist: 'hast' };
+    if (slots.length === 1) {
+      const f = slots[0];
+      const cap = /^[A-ZÄÖÜ]/.test(f) ? (s => s[0].toUpperCase() + s.slice(1)) : (s => s);
+      out.push({ label: cap(inf), type: 'eigen', feedback: 'Das ist der Infinitiv. Im Satz braucht das Verb Person und Zeit.' });
+      const g = /te$/.test(f) ? f.slice(0, -1) : /t$/.test(f) ? f + 'e' : f + 'te';
+      out.push({ label: g, type: 'eigen', feedback: fb });
+    } else {
+      const a = slots.map(s => auxSwap[lc(s)] ? (/^[A-Z]/.test(s) ? auxSwap[lc(s)][0].toUpperCase() + auxSwap[lc(s)].slice(1) : auxSwap[lc(s)]) : s);
+      if (sig(a) !== sig(slots)) out.push({ label: joinLabel(a, adj), type: 'eigen', feedback: fb });
+      const b = slots.slice(); b[b.length - 1] = inf;
+      if (sig(b) !== sig(slots)) out.push({ label: joinLabel(b, adj), type: 'eigen', feedback: 'Das ist der Infinitiv. Schau, welche Form das Tempus braucht.' });
+    }
+    return out;
+  }
+
+  function slug(s) {
+    return s.toLowerCase().replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'maerchen';
+  }
+
+  function parseBook(md, opts) {
+    opts = opts || {};
+    const warnings = [];
+    const stories = [];
+    let story = null, page = null, para = [];
+    const lines = md.replace(/\r\n?/g, '\n').split('\n');
+    const endPara = () => {
+      if (page && para.length) { page.rawParas.push(para.join(' ').replace(/\s+/g, ' ').trim()); }
+      para = [];
+    };
+    for (const raw of lines) {
+      const line = raw.trim();
+      if (/^<!--.*-->$/.test(line)) continue;
+      let m;
+      if ((m = line.match(/^#\s+(.+)$/))) {
+        endPara();
+        story = { title: m[1].trim(), id: (opts.prefix || '') + slug(m[1]), role: '', pages: [], custom: !!opts.custom };
+        stories.push(story); page = null; continue;
+      }
+      if ((m = line.match(/^##\s+(.*)$/))) {
+        endPara();
+        if (!story) { story = { title: 'Ohne Titel', id: (opts.prefix || '') + 'ohne-titel', role: '', pages: [], custom: !!opts.custom }; stories.push(story); }
+        page = { heading: m[1].trim(), bild: '', figuren: [], rawParas: [] };
+        story.pages.push(page); continue;
+      }
+      if ((m = line.match(/^(bild|figuren|rolle)\s*:\s*(.*)$/i))) {
+        const k = m[1].toLowerCase(), v = m[2].trim();
+        if (k === 'rolle' && story) { story.role = v.toLowerCase(); continue; }
+        if (!page && story) { page = { heading: '', bild: '', figuren: [], rawParas: [] }; story.pages.push(page); }
+        if (k === 'bild') page.bild = v.toLowerCase();
+        if (k === 'figuren') page.figuren = v.split(/[,;]/).map(s => s.trim().toLowerCase()).filter(Boolean);
+        continue;
+      }
+      if (!line) { endPara(); continue; }
+      if (!story) { story = { title: 'Ohne Titel', id: (opts.prefix || '') + 'ohne-titel', role: '', pages: [], custom: !!opts.custom }; stories.push(story); }
+      if (!page) { page = { heading: '', bild: '', figuren: [], rawParas: [] }; story.pages.push(page); }
+      para.push(line);
+    }
+    endPara();
+
+    stories.forEach(st => {
+      st.pages = st.pages.filter(pg => pg.rawParas.length);
+      st.pages.forEach((pg, pi) => {
+        pg.items = [];
+        pg.paras = pg.rawParas.map((txt, ai) => {
+          const tokens = parseInline(txt);
+          const heads = groupItems(tokens);
+          const items = makeItem(heads, tokens, `${st.id}.${pi}.${ai}`, warnings);
+          pg.items.push(...items);
+          return tokens;
+        });
+        delete pg.rawParas;
+      });
+    });
+    return { stories: stories.filter(s => s.pages.length), warnings };
+  }
+
+  // Lernhinweis-Daten zu einem erkannten Verb (Art, Stammformen, Besonderheiten)
+  function verbInfo(found) {
+    const r = found.reading;
+    let aux = found.variant && found.variant.aux;
+    if (!aux) {
+      if (r.auxKnown) aux = r.auxSet[0];
+      else {
+        const b = buildDirect(r.base) || null;
+        aux = (b && b.auxKnown && b.auxSet.length === 1) ? b.auxSet[0] : 'h';
+        if (DERIVED_AUX[r.inf]) aux = auxSetOf(DERIVED_AUX[r.inf])[0];
+      }
+    }
+    return {
+      kind: r.kind, inf: r.inf, base: r.base, particle: r.particle || '',
+      prefix: r.prefix || (r.untrennbar ? untrennbarPrefix(r.inf) : ''),
+      untrennbar: !!r.untrennbar, ieren: !!r.ieren, vowelChange: !!r.vowelChange,
+      ich: r.pres[0], du: r.pres[1], er: r.pres[2], praet: r.praetForms[2], p2: r.p2, aux,
+      eIns: r.kind === 'weak' && !isElEr(r.base) && needsE(r.stem)
+    };
+  }
+
+  const API = { PERSONS, TENSES, TNAME, STAGES, readings, identify, buildCards, parseBook, joinLabel, slug };
+  if (typeof module !== 'undefined' && module.exports) module.exports = API;
+  else root.ZeitEngine = API;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* Zeitfaden – Pixelgrafik: Szenen (160 × 90), Figuren und Pixelschrift */
+(function (root) {
+  'use strict';
+  const W = 160, H = 90;
+
+  const C = {
+    ink: '#3b3355', ink2: '#5d527c',
+    sky: '#bfe4f2', sky2: '#daf1f8', sky3: '#a6d6ea',
+    night: '#3a3470', night2: '#4d4689', night3: '#2c275a',
+    cloud: '#ffffff', cloud2: '#e4eef8',
+    grass: '#addfa2', grass2: '#8dca93', grass3: '#6caf86',
+    leaf: '#7fc7a2', leaf2: '#5eab8c', leaf3: '#468f78',
+    trunk: '#9b7464', trunk2: '#78594f',
+    wood: '#e4b88f', wood2: '#c6946f', wood3: '#a07257',
+    stone: '#e3dcf2', stone2: '#c9bfe3', stone3: '#a99ccc',
+    roof: '#f0a2b2', roof2: '#d98199', roof3: '#bd6681',
+    wall: '#fff3e6', wall2: '#f4dfcc', wall3: '#e3c6ad',
+    water: '#9ad6ef', water2: '#71b8de',
+    red: '#ef6f86', red2: '#c95270',
+    skin: '#f8d9c3', skin2: '#eabba0', cheek: '#f6a7b5',
+    hairY: '#f7d978', hairY2: '#e1b952', hairB: '#a06a4c', hairB2: '#7e4f39', hairD: '#5a4566', hairG: '#e7e3ef', hairR: '#eb9562',
+    gold: '#f8d35a', gold2: '#e3ab3c', gold3: '#c88a2c',
+    pink: '#f8b9cb', pink2: '#ec93ad', lav: '#d2bff5', lav2: '#ab92e3', mint: '#a8e8cf', mint2: '#7fcfb1',
+    peach: '#ffcda9', peach2: '#f4a97f', butter: '#fce792', blue: '#acd8f6', blue2: '#80b8e5', blue3: '#5d93c9',
+    green: '#a2d97e', green2: '#76b85c', green3: '#55964a',
+    grey: '#a29fb6', grey2: '#7d7a96', grey3: '#5f5c79',
+    white: '#fffdf9', black: '#2d2742',
+    fire1: '#ffe07a', fire2: '#ffa45e', fire3: '#f26e80',
+    violet: '#8a68dc', violet2: '#6446b8', violet3: '#4a3290',
+    silver: '#dcd9ec', silver2: '#b9b4d2',
+    bread: '#eaae6e', bread2: '#c98848',
+    straw: '#efe0ab', straw2: '#d8c182', straw3: '#b39a5c',
+    brick: '#e39a8a', brick2: '#c47a6d',
+    candy: '#f7a8c4', candy2: '#a8dff0', candy3: '#fbe39a'
+  };
+
+  function rng(seed) {
+    let a = seed >>> 0;
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      let t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  function hash(s) { let h = 2166136261; for (const ch of s) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+
+  /* ---------- Zeichenhilfen ---------- */
+  function G(ctx, seed) {
+    const R = rng(seed || 1);
+    const g = {
+      ctx, R,
+      r(x, y, w, h, c) { if (w <= 0 || h <= 0) return; ctx.fillStyle = c; ctx.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h)); },
+      p(x, y, c) { ctx.fillStyle = c; ctx.fillRect(Math.round(x), Math.round(y), 1, 1); },
+      ell(cx, cy, rx, ry, c) {
+        for (let y = -ry; y <= ry; y++) {
+          const w = Math.round(rx * Math.sqrt(Math.max(0, 1 - (y * y) / ((ry + 0.5) * (ry + 0.5)))));
+          g.r(cx - w, cy + y, w * 2 + 1, 1, c);
+        }
+      },
+      circ(cx, cy, rad, c) { g.ell(cx, cy, rad, rad, c); },
+      line(x0, y0, x1, y1, c) {
+        x0 = Math.round(x0); y0 = Math.round(y0); x1 = Math.round(x1); y1 = Math.round(y1);
+        const dx = Math.abs(x1 - x0), sx = x0 < x1 ? 1 : -1, dy = -Math.abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+        let err = dx + dy;
+        for (;;) { g.p(x0, y0, c); if (x0 === x1 && y0 === y1) break; const e2 = 2 * err; if (e2 >= dy) { err += dy; x0 += sx; } if (e2 <= dx) { err += dx; y0 += sy; } }
+      },
+      dither(x, y, w, h, c, phase) {
+        for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) if (((i + j + (phase || 0)) & 1) === 0) g.p(x + i, y + j, c);
+      },
+      roofTri(x, yTop, w, h, c, c2) {
+        for (let j = 0; j < h; j++) {
+          const half = Math.round((j + 1) / h * w / 2);
+          g.r(x + w / 2 - half, yTop + j, half * 2, 1, c);
+          if (c2 && j % 3 === 2) g.r(x + w / 2 - half + 1, yTop + j, half * 2 - 2, 1, c2);
+        }
+      },
+      sky(top, bottom, y0, y1) {
+        g.r(0, y0, W, y1 - y0, top);
+        const mid = Math.round((y0 + y1) / 2);
+        g.r(0, mid, W, y1 - mid, bottom);
+        g.dither(0, mid - 3, W, 3, bottom, 0);
+      },
+      cloud(x, y, w) {
+        g.ell(x, y, Math.round(w / 2), 3, C.cloud);
+        g.ell(x - Math.round(w / 4), y + 1, Math.round(w / 4), 2, C.cloud);
+        g.ell(x + Math.round(w / 5), y - 2, Math.round(w / 4), 3, C.cloud);
+        g.r(x - Math.round(w / 2), y + 3, w, 1, C.cloud2);
+      },
+      hills(y, c, amp, freq, phase) {
+        for (let x = 0; x < W; x++) {
+          const h = Math.round(Math.sin(x * freq + phase) * amp + Math.sin(x * freq * 2.3 + phase * 2) * amp * 0.35);
+          g.r(x, y + h, 1, H - (y + h), c);
+        }
+      },
+      ground(y, c1, c2, c3) {
+        g.r(0, y, W, H - y, c1);
+        for (let i = 0; i < 70; i++) { const x = Math.floor(R() * W), yy = y + 2 + Math.floor(R() * (H - y - 2)); g.p(x, yy, c2); if (R() < 0.4) g.p(x + 1, yy - 1, c2); }
+        if (c3) for (let i = 0; i < 25; i++) { const x = Math.floor(R() * W), yy = y + 4 + Math.floor(R() * (H - y - 4)); g.p(x, yy, c3); }
+        g.r(0, y, W, 1, c2);
+      },
+      tree(x, yb, h, pal) {
+        pal = pal || [C.leaf, C.leaf2, C.leaf3];
+        const tw = Math.max(2, Math.round(h / 8));
+        g.r(x - tw / 2, yb - h * 0.45, tw, h * 0.45, C.trunk);
+        g.r(x - tw / 2, yb - h * 0.45, 1, h * 0.45, C.trunk2);
+        const cy = yb - h * 0.6, rr = Math.round(h * 0.32);
+        g.circ(x, cy + 2, rr, pal[2]);
+        g.circ(x - rr * 0.55, cy + 1, rr * 0.75, pal[1]);
+        g.circ(x + rr * 0.5, cy, rr * 0.8, pal[1]);
+        g.circ(x - 1, cy - rr * 0.35, rr * 0.75, pal[0]);
+        for (let i = 0; i < rr * 2; i++) g.p(x - rr + Math.floor(R() * rr * 2), cy - rr * 0.6 + Math.floor(R() * rr), pal[1]);
+      },
+      pine(x, yb, h, dark) {
+        const lit = dark ? C.leaf2 : C.leaf, mid = dark ? C.leaf3 : C.leaf2, sh = dark ? C.night2 : C.leaf3;
+        g.r(x - 1, yb - 4, 2, 4, C.trunk2);
+        const tiers = 3, th = Math.round((h - 4) / 2.2);
+        for (let t = 0; t < tiers; t++) {
+          const top = yb - h + t * Math.round((h - 4 - th) / (tiers - 1));
+          const maxW = Math.round(h * (0.2 + 0.08 * t));
+          for (let j = 0; j < th; j++) {
+            const w = Math.max(1, Math.round((j + 1) / th * maxW));
+            g.r(x - w, top + j, w, 1, mid);
+            g.r(x, top + j, w, 1, sh);
+            if (j > 1 && w > 2) g.r(x - w, top + j, Math.ceil(w / 2), 1, lit);
+          }
+        }
+      },
+      bush(x, yb, w, c1, c2) {
+        g.ell(x, yb - 3, Math.round(w / 2), 4, c2 || C.leaf2);
+        g.ell(x - 1, yb - 5, Math.round(w / 2) - 1, 3, c1 || C.leaf);
+      },
+      flowers(x0, y0, w, h, n, cols) {
+        for (let i = 0; i < n; i++) {
+          const x = x0 + Math.floor(R() * w), y = y0 + Math.floor(R() * h), c = cols[Math.floor(R() * cols.length)];
+          g.p(x, y + 1, C.leaf3); g.p(x, y, c); g.p(x - 1, y, c); g.p(x + 1, y, c); g.p(x, y - 1, c); g.p(x, y, C.butter);
+        }
+      },
+      window(x, y, w, h, lit) {
+        g.r(x - 1, y - 1, w + 2, h + 2, C.ink2);
+        g.r(x, y, w, h, lit ? C.butter : C.sky);
+        if (!lit) g.r(x, y, Math.max(1, Math.floor(w / 3)), h, C.sky2);
+        g.r(x + Math.floor(w / 2), y, 1, h, C.ink2);
+        g.r(x, y + Math.floor(h / 2), w, 1, C.ink2);
+      },
+      door(x, yb, w, h, c) {
+        g.r(x - 1, yb - h - 1, w + 2, h + 1, C.ink2);
+        g.r(x, yb - h, w, h, c || C.wood2);
+        g.r(x + 1, yb - h + 1, w - 2, h - 1, c ? c : C.wood);
+        g.p(x + w - 2, yb - Math.round(h / 2), C.gold);
+      },
+      cottage(x, yb, w, h, opt) {
+        opt = opt || {};
+        const wall = opt.wall || C.wall, roof = opt.roof || C.roof, roof2 = opt.roof2 || C.roof2;
+        g.r(x, yb - h, w, h, wall);
+        g.r(x, yb - h, 1, h, C.wall3); g.r(x + w - 1, yb - h, 1, h, C.wall3);
+        for (let j = yb - h + 3; j < yb; j += 4) g.dither(x + 1, j, w - 2, 1, C.wall2, j);
+        const rh = Math.round(w * 0.45);
+        if (opt.chimney) { g.r(x + w - 9, yb - h - rh + 4, 4, rh - 2, C.brick); g.r(x + w - 10, yb - h - rh + 3, 6, 2, C.brick2); }
+        g.roofTri(x - 3, yb - h - rh, w + 6, rh + 1, roof, roof2);
+        g.r(x - 3, yb - h, w + 6, 1, C.roof3);
+        g.door(x + Math.round(w / 2) - 3, yb, 7, 11, opt.doorColor);
+        g.window(x + 3, yb - h + 4, 6, 5, opt.lit);
+        g.window(x + w - 9, yb - h + 4, 6, 5, opt.lit);
+      },
+      castle(x, yb, s, opt) {
+        opt = opt || {};
+        const st = opt.stone || C.stone, st2 = C.stone2, st3 = C.stone3;
+        const tower = (tx, tw, th, roofC) => {
+          g.r(tx, yb - th, tw, th, st); g.r(tx, yb - th, 1, th, st3); g.r(tx + tw - 1, yb - th, 1, th, st2);
+          for (let j = yb - th + 4; j < yb; j += 5) g.r(tx + 1, j, tw - 2, 1, st2);
+          g.roofTri(tx - 2, yb - th - tw, tw + 4, tw + 1, roofC || C.lav2, C.violet);
+          g.r(tx + tw / 2, yb - th - tw - 5, 1, 5, C.ink2);
+          g.r(tx + tw / 2 + 1, yb - th - tw - 5, 4, 2, opt.flag || C.pink2);
+          g.window(tx + Math.round(tw / 2) - 1, yb - th + 6, 3, 4, opt.lit);
+        };
+        const w = Math.round(60 * s), h = Math.round(26 * s);
+        g.r(x, yb - h, w, h, st); g.r(x, yb - h, w, 1, st3);
+        for (let i = x; i < x + w; i += 4) g.r(i, yb - h - 3, 2, 3, st);
+        for (let j = yb - h + 4; j < yb; j += 5) g.dither(x + 1, j, w - 2, 1, st2, j);
+        tower(x - Math.round(8 * s), Math.round(12 * s), Math.round(40 * s), C.roof);
+        tower(x + w - Math.round(4 * s), Math.round(12 * s), Math.round(40 * s), C.roof);
+        tower(x + Math.round(w / 2) - Math.round(7 * s), Math.round(14 * s), Math.round(52 * s), C.lav2);
+        g.r(x + Math.round(w / 2) - 5, yb - 13, 10, 13, C.ink2);
+        g.r(x + Math.round(w / 2) - 4, yb - 12, 8, 12, C.wood3);
+        g.ell(x + Math.round(w / 2), yb - 12, 4, 2, C.wood3);
+        g.window(x + 8, yb - h + 6, 4, 5, opt.lit); g.window(x + w - 12, yb - h + 6, 4, 5, opt.lit);
+      },
+      well(x, yb) {
+        g.r(x - 13, yb - 9, 26, 9, C.stone2);
+        for (let j = 0; j < 9; j += 3) for (let i = (j % 6 ? 0 : 3); i < 26; i += 6) g.r(x - 13 + i, yb - 9 + j, 5, 2, C.stone);
+        g.r(x - 13, yb - 10, 26, 2, C.stone3);
+        g.r(x - 11, yb - 30, 2, 21, C.wood3); g.r(x + 9, yb - 30, 2, 21, C.wood3);
+        g.roofTri(x - 16, yb - 40, 32, 11, C.roof, C.roof2);
+        g.r(x - 9, yb - 26, 18, 1, C.wood3);
+        g.r(x, yb - 26, 1, 8, C.ink2); g.r(x - 2, yb - 18, 5, 4, C.wood2);
+      },
+      bed(x, yb, w, blanket) {
+        g.r(x, yb - 14, 3, 14, C.wood3); g.r(x + w - 3, yb - 10, 3, 10, C.wood3);
+        g.r(x, yb - 8, w, 4, C.wood2);
+        g.r(x + 3, yb - 11, w - 6, 3, C.white);
+        g.r(x + 3, yb - 12, 9, 3, C.white); g.r(x + 4, yb - 13, 7, 1, C.white);
+        g.r(x + 10, yb - 12, w - 13, 5, blanket || C.pink);
+        g.dither(x + 10, yb - 10, w - 13, 3, C.pink2, 0);
+      },
+      table(x, yb, w, cloth) {
+        g.r(x, yb - 12, w, 3, cloth || C.wood2);
+        if (cloth) g.dither(x, yb - 9, w, 2, cloth, 1);
+        g.r(x + 2, yb - 9, 2, 9, C.wood3); g.r(x + w - 4, yb - 9, 2, 9, C.wood3);
+      },
+      wheel(x, yb) {
+        g.r(x - 8, yb - 3, 18, 3, C.wood3);
+        g.r(x - 7, yb - 8, 2, 5, C.wood3); g.r(x + 7, yb - 12, 2, 9, C.wood3);
+        const cx = x - 2, cy = yb - 14;
+        for (let a = 0; a < 40; a++) { const t = a / 40 * Math.PI * 2; g.p(cx + Math.round(Math.cos(t) * 7), cy + Math.round(Math.sin(t) * 7), C.wood2); }
+        for (let a = 0; a < 6; a++) { const t = a / 6 * Math.PI * 2; g.line(cx, cy, cx + Math.cos(t) * 6, cy + Math.sin(t) * 6, C.wood3); }
+        g.p(cx, cy, C.ink2);
+        g.r(x + 7, yb - 18, 1, 6, C.wood3); g.r(x + 6, yb - 20, 3, 2, C.white);
+        g.line(cx, cy - 7, x + 7, yb - 19, C.silver2);
+      },
+      oven(x, yb) {
+        g.r(x - 16, yb - 6, 32, 6, C.brick2);
+        g.ell(x, yb - 10, 16, 10, C.brick);
+        for (let j = -8; j < 0; j += 3) g.dither(x - 14, yb - 10 + j, 28, 1, C.brick2, j);
+        g.r(x - 16, yb - 10, 32, 5, C.brick);
+        g.ell(x, yb - 9, 7, 5, C.ink);
+        g.r(x - 7, yb - 9, 15, 6, C.ink);
+        g.ell(x - 3, yb - 6, 2, 1, C.bread); g.ell(x + 3, yb - 6, 2, 1, C.bread); g.ell(x, yb - 8, 2, 1, C.bread2);
+        g.r(x - 6, yb - 4, 13, 1, C.fire2);
+        g.r(x + 9, yb - 25, 4, 8, C.brick2);
+      },
+      appleTree(x, yb, h) {
+        g.tree(x, yb, h, [C.leaf, C.leaf2, C.leaf3]);
+        for (let i = 0; i < 12; i++) { const ax = x - 10 + Math.floor(R() * 20), ay = yb - h * 0.8 + Math.floor(R() * h * 0.38); g.r(ax, ay, 2, 2, C.red); g.p(ax, ay, C.pink); }
+      },
+      moon(x, y, r) { g.circ(x, y, r, C.butter); g.circ(x + 2, y - 1, r - 1, C.night); },
+      stars(n, y0, y1, c) { for (let i = 0; i < n; i++) { const x = Math.floor(R() * W), y = y0 + Math.floor(R() * (y1 - y0)); g.p(x, y, c || C.butter); if (R() < 0.25) { g.p(x - 1, y, c || C.butter); g.p(x + 1, y, c || C.butter); g.p(x, y - 1, c || C.butter); g.p(x, y + 1, c || C.butter); } } },
+      fire(x, yb) {
+        g.r(x - 9, yb - 3, 18, 3, C.trunk2); g.r(x - 7, yb - 5, 14, 2, C.trunk);
+        g.ell(x, yb - 9, 6, 6, C.fire3); g.ell(x, yb - 9, 4, 5, C.fire2); g.ell(x, yb - 8, 2, 3, C.fire1);
+        g.r(x - 1, yb - 18, 2, 4, C.fire2); g.p(x + 3, yb - 16, C.fire1); g.p(x - 4, yb - 15, C.fire2);
+      },
+      gate(x, yb, w, h, gold) {
+        const c = gold ? C.gold : C.stone2, c2 = gold ? C.gold2 : C.stone3;
+        g.r(x, yb - h, 5, h, c); g.r(x + w - 5, yb - h, 5, h, c);
+        g.r(x + 4, yb - h, 1, h, c2); g.r(x + w - 5, yb - h, 1, h, c2);
+        for (let i = 0; i < w; i++) { const yy = yb - h - Math.round(Math.sin(i / w * Math.PI) * 10); g.r(x + i, yy - 4, 1, 4, c); g.p(x + i, yy, c2); }
+      },
+      plank(y0, y1, c1, c2) {
+        g.r(0, y0, W, y1 - y0, c1);
+        for (let y = y0 + 3; y < y1; y += 4) g.r(0, y, W, 1, c2);
+        for (let y = y0; y < y1; y += 4) for (let x = (y * 7) % 23; x < W; x += 23) g.r(x, y, 1, 3, c2);
+      },
+      wallpaper(y0, y1, c1, c2) {
+        g.r(0, y0, W, y1 - y0, c1);
+        for (let y = y0 + 3; y < y1; y += 8) for (let x = ((y / 8) % 2) * 6 + 3; x < W; x += 12) { g.p(x, y, c2); g.p(x - 1, y + 1, c2); g.p(x + 1, y + 1, c2); g.p(x, y + 2, c2); }
+      },
+      banner(x, y, h, c) { g.r(x, y, 8, h, c); for (let i = 0; i < 4; i++) g.r(x + i, y + h + i, 8 - i * 2, 1, c); g.r(x + 3, y + 3, 2, 2, C.gold); },
+      thorn(x0, y0, w, h, roses) {
+        for (let i = 0; i < w * h / 7; i++) {
+          const x = x0 + Math.floor(R() * w), y = y0 + Math.floor(R() * h);
+          g.line(x, y, x + Math.round((R() - 0.5) * 10), y - Math.round(R() * 7), roses ? C.leaf3 : C.trunk2);
+        }
+        for (let i = 0; i < w * h / 25; i++) { const x = x0 + Math.floor(R() * w), y = y0 + Math.floor(R() * h); g.p(x, y, roses ? C.leaf2 : C.trunk); g.p(x + 1, y - 1, C.ink2); }
+        if (roses) for (let i = 0; i < w * h / 40; i++) { const x = x0 + Math.floor(R() * w), y = y0 + Math.floor(R() * h); g.r(x, y, 3, 3, C.pink2); g.p(x + 1, y + 1, C.red); g.p(x, y, C.pink); }
+      }
+    };
+    return g;
+  }
+
+  /* ---------- Szenen ---------- */
+  const daySky = g => { g.sky(C.sky, C.sky2, 0, 60); g.cloud(28, 12, 18); g.cloud(118, 8, 22); g.cloud(80, 20, 12); };
+  const SCENES = {
+    fluch(g) {
+      g.sky(C.night3, C.night, 0, 90);
+      g.stars(60, 0, 70, C.lav);
+      g.stars(20, 0, 60, C.butter);
+      g.ell(80, 82, 70, 10, C.night2);
+      // aufgeschlagenes Buch
+      const bx = 44, by = 62;
+      g.r(bx - 2, by + 2, 76, 14, C.violet3);
+      g.r(bx, by - 2, 36, 16, C.white); g.r(bx + 36, by - 2, 36, 16, C.white);
+      g.r(bx + 35, by - 2, 2, 17, C.silver2);
+      for (let i = 0; i < 4; i++) { g.dither(bx + 4, by + 1 + i * 3, 28, 1, C.grey, i); g.dither(bx + 40, by + 1 + i * 3, 28, 1, C.grey, i + 1); }
+      for (let i = 0; i < 18; i++) { const t = i / 18; g.p(bx + 36 + Math.round(Math.sin(t * 9) * 8), by - 4 - i * 2, i % 2 ? C.lav : C.violet); }
+      g.circ(78, 28, 9, C.violet3); g.circ(78, 28, 6, C.night);
+    },
+    haus(g) {
+      daySky(g); g.hills(56, C.grass2, 3, 0.05, 1); g.ground(70, C.grass, C.grass2, C.grass3);
+      g.tree(18, 72, 34); g.pine(146, 72, 30);
+      g.cottage(70, 72, 44, 24, { chimney: true });
+      g.r(114, 66, 30, 1, C.wood3); for (let x = 116; x < 144; x += 5) g.r(x, 64, 2, 8, C.wood2);
+      g.flowers(0, 74, 160, 12, 18, [C.pink, C.lav, C.white, C.butter]);
+    },
+    wald(g) {
+      g.sky(C.sky3, C.sky, 0, 50);
+      for (let i = 0; i < 10; i++) g.pine(8 + i * 16, 58, 30 + (i % 3) * 6, true);
+      g.ground(60, C.grass2, C.grass3, C.leaf3);
+      g.r(0, 72, 160, 8, C.peach); g.dither(0, 71, 160, 1, C.peach, 0); g.dither(0, 80, 160, 1, C.peach, 1);
+      g.tree(14, 74, 40); g.tree(146, 74, 44); g.tree(100, 66, 28, [C.leaf2, C.leaf3, C.ink2]);
+      g.bush(56, 68, 14); g.bush(124, 70, 12);
+      g.flowers(0, 82, 160, 6, 10, [C.pink, C.white, C.butter]);
+      for (let i = 0; i < 6; i++) g.r(20 + i * 22, 75 + (i % 2), 2, 1, C.white);
+    },
+    wiese(g) {
+      daySky(g); g.hills(52, C.grass2, 4, 0.04, 2); g.ground(64, C.grass, C.grass2, C.grass3);
+      g.tree(140, 66, 30);
+      g.flowers(0, 66, 160, 22, 80, [C.pink, C.lav, C.white, C.butter, C.red, C.peach]);
+      for (let i = 0; i < 3; i++) { const x = 40 + i * 30; g.p(x, 34 + i * 3, C.lav2); g.p(x + 1, 33 + i * 3, C.pink2); }
+    },
+    stube(g) {
+      g.wallpaper(0, 66, C.wall, C.wall2);
+      g.plank(66, 90, C.wood, C.wood2);
+      g.window(22, 18, 18, 14, false);
+      g.r(20, 32, 22, 2, C.wood3);
+      g.bed(104, 84, 46, C.pink);
+      g.r(60, 30, 18, 24, C.wood2); g.r(61, 31, 16, 22, C.wood); g.r(68, 31, 1, 22, C.wood3); g.p(66, 42, C.gold); g.p(70, 42, C.gold); g.r(60, 54, 2, 12, C.wood3); g.r(76, 54, 2, 12, C.wood3);
+      g.r(84, 24, 10, 8, C.wood3); g.r(85, 25, 8, 6, C.sky2); g.circ(89, 28, 2, C.leaf2);
+    },
+    schloss(g) {
+      daySky(g); g.hills(58, C.grass2, 3, 0.05, 3); g.ground(70, C.grass, C.grass2, C.grass3);
+      g.castle(50, 72, 1);
+      g.r(0, 76, 160, 3, C.water); g.dither(0, 76, 160, 1, C.water2, 0);
+      g.r(70, 74, 20, 6, C.wood2);
+      g.bush(16, 72, 14); g.bush(146, 72, 16);
+      g.flowers(0, 80, 160, 8, 16, [C.pink, C.lav, C.butter]);
+    },
+    brunnen(g) {
+      daySky(g); g.hills(54, C.grass2, 3, 0.06, 4); g.ground(66, C.grass, C.grass2, C.grass3);
+      g.castle(110, 60, 0.55, {});
+      g.tree(18, 70, 38);
+      g.well(70, 80);
+      g.flowers(0, 72, 160, 16, 26, [C.pink, C.white, C.butter, C.lav]);
+    },
+    saal(g) {
+      g.r(0, 0, W, 64, C.stone);
+      for (let y = 4; y < 64; y += 6) for (let x = (y % 12 ? 0 : 6); x < W; x += 12) g.r(x, y, 11, 1, C.stone2);
+      g.r(22, 6, 14, 26, C.ink2); g.r(23, 7, 12, 25, C.sky); g.ell(29, 8, 6, 3, C.sky2);
+      g.r(124, 6, 14, 26, C.ink2); g.r(125, 7, 12, 25, C.sky); g.ell(131, 8, 6, 3, C.sky2);
+      g.banner(56, 4, 18, C.pink2); g.banner(96, 4, 18, C.lav2);
+      g.r(0, 64, W, 26, C.red2); g.dither(0, 64, W, 26, C.red, 0);
+      g.r(52, 64, 56, 26, C.pink2);
+      g.table(40, 60, 80, C.white);
+      for (let i = 0; i < 6; i++) { g.ell(48 + i * 13, 47, 3, 1, C.gold); g.p(48 + i * 13, 46, C.butter); }
+      g.r(76, 40, 2, 6, C.gold2); g.p(76, 39, C.fire1);
+    },
+    turm(g) {
+      g.r(0, 0, W, 70, C.stone2);
+      for (let y = 2; y < 70; y += 6) for (let x = (y % 12 ? 0 : 7); x < W; x += 14) { g.r(x, y, 13, 5, C.stone); }
+      g.ell(80, 26, 9, 12, C.ink2); g.ell(80, 26, 8, 11, C.night2); g.stars(8, 18, 34, C.butter);
+      g.plank(70, 90, C.wood2, C.wood3);
+      g.wheel(112, 84);
+      g.r(30, 58, 12, 26, C.wood3); g.r(31, 59, 10, 6, C.wood);
+      g.r(130, 40, 2, 10, C.trunk2); g.p(131, 39, C.fire1); g.p(131, 38, C.fire2);
+    },
+    hecke(g) {
+      g.sky(C.sky3, C.sky, 0, 60);
+      g.castle(52, 46, 0.6, {});
+      g.ground(54, C.grass3, C.leaf3, C.ink2);
+      g.thorn(0, 40, 160, 42, false);
+      g.r(0, 82, 160, 8, C.grass3); g.dither(0, 82, 160, 8, C.leaf3, 0);
+    },
+    rosen(g) {
+      g.sky(C.sky, C.sky2, 0, 60);
+      g.castle(52, 46, 0.6, {});
+      g.ground(54, C.grass2, C.leaf2, C.grass3);
+      g.thorn(0, 40, 160, 42, true);
+      g.r(0, 82, 160, 8, C.grass2); g.dither(0, 82, 160, 8, C.grass, 0);
+    },
+    fest(g) {
+      SCENES.saal(g);
+      for (let i = 0; i < 10; i++) { const x = 8 + i * 16; g.r(x, 2, 2, 2, [C.pink, C.butter, C.mint, C.lav][i % 4]); g.line(x, 3, x + 16, 3, C.gold2); }
+      g.ell(102, 47, 4, 1, C.gold); g.p(102, 45, C.white);
+      g.stars(16, 2, 30, C.butter);
+    },
+    ofen(g) {
+      daySky(g); g.ground(62, C.grass, C.grass2, C.grass3);
+      g.oven(118, 82);
+      g.flowers(0, 66, 90, 22, 34, [C.pink, C.white, C.butter, C.lav]);
+      g.tree(20, 66, 28);
+    },
+    apfelbaum(g) {
+      daySky(g); g.hills(54, C.grass2, 3, 0.05, 6); g.ground(66, C.grass, C.grass2, C.grass3);
+      g.appleTree(112, 84, 64);
+      for (let i = 0; i < 9; i++) g.r(92 + i * 5, 82 + (i % 2), 2, 2, C.red);
+      g.flowers(0, 70, 80, 18, 20, [C.pink, C.white, C.butter]);
+    },
+    holle(g) {
+      g.sky(C.sky3, C.sky2, 0, 90);
+      g.stars(70, 0, 90, C.white);
+      g.cottage(96, 76, 48, 26, { wall: C.wall, roof: C.blue, roof2: C.blue2, chimney: true });
+      g.r(98, 44, 22, 4, C.white); g.r(98, 43, 22, 1, C.pink);
+      g.ell(80, 90, 90, 12, C.white); g.dither(0, 80, 160, 10, C.cloud2, 0);
+      for (let i = 0; i < 6; i++) g.cloud(10 + i * 30, 84, 20);
+    },
+    tor(g) {
+      g.sky(C.sky, C.sky2, 0, 60); g.ground(68, C.grass, C.grass2, C.grass3);
+      g.gate(56, 82, 48, 46, true);
+      for (let i = 0; i < 36; i++) { const x = 62 + Math.floor(g.R() * 36), y = 34 + Math.floor(g.R() * 44); g.p(x, y, i % 3 ? C.gold : C.butter); }
+      g.tree(20, 72, 34); g.tree(140, 72, 30);
+    },
+    nacht(g) {
+      g.sky(C.night3, C.night, 0, 64); g.stars(50, 0, 50, C.butter); g.moon(132, 14, 7);
+      g.hills(54, C.night2, 3, 0.05, 1); g.ground(66, C.grass3, C.leaf3, C.ink2);
+      g.cottage(44, 70, 44, 24, { lit: true, chimney: true, roof: C.roof2, roof2: C.roof3 });
+      g.pine(14, 72, 32, true); g.pine(146, 72, 30, true);
+      for (let i = 0; i < 9; i++) g.r(100 + i * 6, 80 + (i % 2) * 2, 2, 1, C.white);
+    },
+    hexenhaus(g) {
+      g.sky(C.sky3, C.sky, 0, 50);
+      for (let i = 0; i < 10; i++) g.pine(8 + i * 16, 58, 30, true);
+      g.ground(62, C.grass2, C.grass3, C.leaf3);
+      const x = 70, yb = 80, w = 46, h = 26;
+      g.r(x, yb - h, w, h, C.bread);
+      for (let j = yb - h + 3; j < yb; j += 6) for (let i = x + 2; i < x + w - 2; i += 6) { g.r(i, j, 3, 3, [C.candy, C.candy2, C.candy3][(i + j) % 3]); }
+      g.roofTri(x - 4, yb - h - 20, w + 8, 21, C.candy, C.white);
+      for (let i = x - 3; i < x + w + 3; i += 3) g.r(i, yb - h, 2, 3, C.white);
+      g.door(x + 19, yb, 8, 13, C.bread2);
+      g.window(x + 5, yb - h + 6, 7, 6, true); g.window(x + w - 12, yb - h + 6, 7, 6, true);
+      g.r(x + w - 8, yb - h - 18, 5, 10, C.candy2);
+      g.r(22, 66, 26, 16, C.wood2); for (let i = 22; i < 48; i += 4) g.r(i, 66, 1, 16, C.wood3); g.r(22, 64, 26, 2, C.wood3);
+    },
+    muehle(g) {
+      daySky(g); g.hills(56, C.grass2, 4, 0.04, 2); g.ground(70, C.grass, C.grass2, C.grass3);
+      const x = 104, yb = 76;
+      g.r(x - 12, yb - 30, 24, 30, C.wall); g.r(x - 12, yb - 30, 2, 30, C.wall3);
+      g.roofTri(x - 15, yb - 44, 30, 15, C.roof, C.roof2);
+      g.door(x - 3, yb, 7, 11);
+      g.window(x - 3, yb - 24, 6, 5, false);
+      const cx = x, cy = yb - 40;
+      for (let a = 0; a < 4; a++) { const t = a * Math.PI / 2 + 0.4; g.line(cx, cy, cx + Math.cos(t) * 26, cy + Math.sin(t) * 26, C.wood3); for (let k = 8; k < 25; k++) g.r(cx + Math.cos(t) * k - Math.sin(t) * 2, cy + Math.sin(t) * k + Math.cos(t) * 2, 3, 1, C.white); }
+      g.circ(cx, cy, 2, C.ink2);
+      g.flowers(0, 74, 160, 14, 16, [C.butter, C.white]);
+      for (let i = 0; i < 3; i++) g.r(20 + i * 12, 78, 8, 7, C.straw2);
+    },
+    kammer(g) {
+      g.r(0, 0, W, 66, C.stone2);
+      for (let y = 2; y < 66; y += 6) for (let x = (y % 12 ? 0 : 7); x < W; x += 14) g.r(x, y, 13, 5, C.stone);
+      g.r(70, 10, 16, 18, C.ink2); g.r(71, 11, 14, 16, C.night2); g.r(77, 11, 1, 16, C.ink2); g.stars(4, 12, 24, C.butter);
+      g.plank(66, 90, C.wood2, C.wood3);
+      for (let i = 0; i < 4; i++) { const x = 104 + i * 13; g.ell(x, 78 - (i % 2) * 4, 12, 9, C.straw2); g.ell(x, 76 - (i % 2) * 4, 10, 7, C.straw); }
+      for (let i = 0; i < 70; i++) { const x = 94 + Math.floor(g.R() * 62), y = 64 + Math.floor(g.R() * 22); g.line(x, y, x + 3 + Math.floor(g.R() * 3), y - 1 - Math.floor(g.R() * 2), i % 3 ? C.straw3 : C.straw2); }
+      g.wheel(44, 84);
+    },
+    goldkammer(g) {
+      SCENES.kammer(g);
+      for (let i = 0; i < 4; i++) { const x = 104 + i * 13; g.ell(x, 78 - (i % 2) * 4, 12, 9, C.gold2); g.ell(x, 76 - (i % 2) * 4, 10, 7, C.gold); }
+      for (let i = 0; i < 26; i++) { const x = 96 + Math.floor(g.R() * 60), y = 62 + Math.floor(g.R() * 24); g.p(x, y, C.white); }
+      for (let i = 0; i < 18; i++) { const x = 30 + Math.floor(g.R() * 30), y = 58 + Math.floor(g.R() * 22); g.p(x, y, C.butter); }
+    },
+    hexenstube(g) {
+      g.wallpaper(0, 66, C.bread, C.bread2);
+      g.plank(66, 90, C.wood2, C.wood3);
+      g.window(14, 14, 14, 12, false);
+      // großer Backofen
+      g.r(100, 22, 50, 44, C.brick2); g.r(102, 24, 46, 42, C.brick);
+      for (let y = 26; y < 64; y += 5) for (let x = 102 + ((y / 5) % 2) * 5; x < 146; x += 10) g.r(x, y, 8, 1, C.brick2);
+      g.ell(125, 50, 12, 10, C.ink); g.r(113, 50, 25, 14, C.ink);
+      g.r(116, 56, 19, 6, C.fire2); g.r(119, 54, 13, 3, C.fire1); g.p(121, 52, C.fire3); g.p(128, 53, C.fire3);
+      g.r(110, 49, 4, 15, C.grey2); g.r(110, 57, 4, 1, C.grey3);
+      g.r(118, 8, 14, 14, C.brick2);
+      // Stall mit Gitter
+      g.r(40, 40, 28, 26, C.wood3); g.r(42, 42, 24, 24, C.wood);
+      for (let x = 44; x < 66; x += 4) g.r(x, 42, 1, 24, C.trunk2);
+      g.r(42, 52, 24, 1, C.trunk2);
+      g.r(76, 54, 16, 3, C.wood3); g.r(78, 57, 2, 9, C.wood3); g.r(88, 57, 2, 9, C.wood3); g.ell(82, 52, 3, 2, C.grey);
+    },
+    feuer(g) {
+      g.sky(C.night3, C.night, 0, 60); g.stars(40, 0, 40, C.butter); g.moon(26, 12, 6);
+      for (let i = 0; i < 10; i++) g.pine(8 + i * 16, 60, 32, true);
+      g.ground(62, C.grass3, C.leaf3, C.ink2);
+      g.ell(84, 80, 30, 7, C.peach2); g.dither(54, 74, 60, 12, C.fire2, 0);
+      g.fire(84, 82);
+      g.tree(146, 76, 40, [C.leaf3, C.ink2, C.night3]);
+    },
+    cover(g) {
+      g.sky(C.night3, C.night, 0, 90);
+      g.stars(80, 0, 90, C.lav); g.stars(30, 0, 90, C.butter);
+      g.moon(130, 18, 8);
+      g.ell(80, 92, 90, 16, C.night2);
+      const bx = 34, by = 58;
+      g.r(bx - 3, by + 4, 98, 16, C.violet3);
+      g.r(bx, by - 4, 46, 20, C.white); g.r(bx + 46, by - 4, 46, 20, C.white);
+      g.r(bx + 45, by - 4, 2, 21, C.silver2);
+      for (let i = 0; i < 5; i++) { g.dither(bx + 5, by - 1 + i * 3, 36, 1, C.grey, i); g.dither(bx + 51, by - 1 + i * 3, 36, 1, C.grey, i + 1); }
+      for (let i = 0; i < 30; i++) { const t = i / 30; g.p(bx + 46 + Math.round(Math.sin(t * 10) * 12), by - 6 - i * 1.4, [C.gold, C.butter, C.lav][i % 3]); }
+    }
+  };
+
+  /* ---------- Figuren ---------- */
+  // Halbe Zeilen werden gespiegelt. Rollen: k Umriss, s Haut, h Haar, c Kleid, C Schatten, d Hose, f Schuh, a Zubehör, A Zubehör dunkel, e Auge, p Wange, w Weiß, b Bart, g/G Fell
+  const HALF = {
+    child: ['....kk', '...khh', '..khhh', '..khss', '..kses', '..kpss', '...kss', '....kc', '...kcc', '..kccc', '.kscCc', '.kscCc',
+      '..kcCc', '..kccc', '.kcccc', 'kccccC', 'kCCCCC', '..kks.', '...ks.', '..kff.'],
+    boy: ['....kk', '...khh', '..khhh', '..khss', '..kses', '..kpss', '...kss', '....kc', '...kcc', '..kccc', '.kscCc', '.kscCc',
+      '..kAAA', '..kddd', '..kddd', '..kdd.', '..kdd.', '...kd.', '...kd.', '..kff.'],
+    woman: ['....kk', '...khh', '..khhh', '..khss', '..kses', '..kpss', '...kss', '....kc', '...kcc', '..kccc', '.kcccc', '.kscCc',
+      '.kscCc', '.kscCc', '..kcCc', '..kccc', '..kccc', '.kcccc', '.kcccc', 'kccccC', 'kccccC', 'kCCCCC', '.kkkf.', '..kff.'],
+    man: ['....kk', '...khh', '..khhh', '..khss', '..kses', '..kpss', '...kss', '....kc', '..kccc', '.kcccc', '.kcccc', '.kscCc',
+      '.kscCc', '.kscCc', '..kAAA', '..kddd', '..kddd', '..kddd', '..kdd.', '..kdd.', '..kdd.', '..kdd.', '..kff.', '.kfff.'],
+    dwarf: ['....a', '....a', '...aa', '...aa', '..aaa', '.aAAA', '..kss', '..kes', '..bbb', '..bbb', '...bb', '..ccc', '.sccc', '..ccc', '..kd.', '..ff.'],
+    wings: ['.kk......', 'kwwk.....', 'kwwwk....', 'kwwwk....', '.kwwk....', '..kk.....']
+  };
+  const OVER = {
+    hood: { y: -1, rows: ['....kk', '...kaa', '..kaaa', '.kaaaa', '.ka...', '.ka...', '.ka...', '..ka..', '..kaa.'] },
+    scarf: { y: -1, rows: ['....kk', '...kaa', '..kaaa', '..kaaa', '..ka..', '..ka..'] },
+    crown: { y: -3, rows: ['...a.a', '...aaa', '...aAa'] },
+    braids: { y: 4, rows: ['.h....', '.h....', '.h....', '.h....', '.a....'] },
+    hat: { y: -2, rows: ['...aaa', '...aaa', '.aaaaa'] },
+    witch: { y: -9, rows: ['.....a', '.....a', '....aa', '....aa', '...aaa', '...aaa', '..aaaa', '..aaaa', '.aaaaa', 'aaaaaa', '..AAAA'] },
+    bun: { y: -2, rows: ['....hh', '....hh'] },
+    cap: { y: -1, rows: ['....aa', '..aaaa', '.aaaaa'] },
+    beard: { y: 5, rows: ['...bbb', '..bbbb', '..bbbb', '...bbb'] },
+    apron: { y: 13, rows: ['....ww', '...www', '...www', '...www', '...www', '...www'] },
+    cape: { y: 9, rows: ['.a....', '.a....', '.a....', '.a....', '.a....', '.a....', '.a....', '.a....', '.a....', '.a....', '.a....', '.a....'] },
+    glasses: { y: 4, rows: ['...ww.'] }
+  };
+  const FULL = {
+    wolf: ['...............kk...', '..............kgk...', '.............kggk...', '............kgggkk..', '...........kggggggk.',
+      '...........kggegggGk', '...........kgggggggk', '..k........kggwwkkk.', '.kgk......kgggk.....', '.kggk....kggggk.....',
+      '..kggkkkkgggggk.....', '...kggggggggggk.....', '...kgGgggggGggk.....', '...kgk.kgk.kgk......', '...kk..kk..kk.......'],
+    frog: ['..kk....kk..', '.kwek..kwek.', '.kggkkkkggk.', 'kggggggggggk', 'kgGGGGGGGGgk', 'kggggggggggk', '.kggppppggk.', 'kgk.kkkk.kgk', 'kk........kk']
+  };
+
+  // Figurenbeschreibungen: Grundform, Farben, Zubehör
+  const BASE_PAL = { k: C.ink, s: C.skin, S: C.skin2, e: C.ink, p: C.cheek, w: C.white, f: C.ink2 };
+  const FIG = {
+    rotkaeppchen: { base: 'child', pal: { h: C.hairB, c: C.white, C: C.silver2, a: C.red, A: C.red2 }, over: ['hood'] },
+    mutter: { base: 'woman', pal: { h: C.hairB, c: C.blue, C: C.blue2, a: C.peach, A: C.peach2 }, over: ['scarf', 'apron'] },
+    grossmutter: { base: 'woman', pal: { h: C.hairG, c: C.lav, C: C.lav2, a: C.lav, A: C.lav2 }, over: ['bun', 'glasses'] },
+    jaeger: { base: 'man', pal: { h: C.hairB2, c: C.green2, C: C.green3, d: C.trunk, a: C.green3, A: C.trunk2, b: C.hairB2 }, over: ['hat', 'beard'] },
+    wolf: { full: 'wolf', pal: { g: C.grey, G: C.grey2, e: C.ink, w: C.white, k: C.ink } },
+    prinzessin: { base: 'child', pal: { h: C.hairY, c: C.pink, C: C.pink2, a: C.gold, A: C.gold2 }, over: ['crown'] },
+    frosch: { full: 'frog', pal: { g: C.green, G: C.green2, e: C.ink, w: C.white, p: C.green3, k: C.ink, a: C.gold, A: C.gold2 }, crownFrog: true },
+    koenig: { base: 'man', pal: { h: C.hairG, c: C.red, C: C.red2, d: C.violet2, a: C.gold, A: C.gold2, b: C.hairG }, over: ['cape', 'crown', 'beard'], capeColor: C.violet },
+    koenigin: { base: 'woman', pal: { h: C.hairB, c: C.lav, C: C.lav2, a: C.gold, A: C.gold2 }, over: ['crown'] },
+    prinz: { base: 'man', pal: { h: C.hairY2, c: C.blue, C: C.blue2, d: C.white, a: C.gold, A: C.gold2 }, over: ['crown'] },
+    fee: { base: 'child', pal: { h: C.hairY, c: C.mint, C: C.mint2, a: C.gold, A: C.gold2, w: C.white }, wings: C.white, float: 5, wand: C.butter },
+    fee13: { base: 'child', pal: { h: C.hairD, c: C.violet, C: C.violet2, a: C.silver, A: C.silver2, w: C.lav }, wings: C.lav, float: 5, wand: C.lav, over: ['crown'] },
+    alte: { base: 'woman', pal: { h: C.hairG, c: C.grey, C: C.grey2, a: C.grey2, A: C.grey3 }, over: ['scarf'] },
+    goldmarie: { base: 'child', pal: { h: C.hairY, c: C.gold, C: C.gold2, a: C.white, A: C.silver2 }, over: ['apron'] },
+    pechmarie: { base: 'child', pal: { h: C.hairD, c: C.grey2, C: C.grey3, a: C.ink2, A: C.ink } },
+    frauholle: { base: 'woman', pal: { h: C.hairG, c: C.white, C: C.silver2, a: C.blue, A: C.blue2 }, over: ['bun', 'apron'] },
+    haensel: { base: 'boy', pal: { h: C.hairY2, c: C.mint, C: C.mint2, d: C.blue3, A: C.trunk } },
+    gretel: { base: 'child', pal: { h: C.hairY, c: C.blue, C: C.blue2, a: C.pink2 }, over: ['braids'] },
+    vater: { base: 'man', pal: { h: C.hairB2, c: C.peach, C: C.peach2, d: C.trunk, A: C.trunk2, b: C.hairB2 }, over: ['beard'] },
+    hexe: { base: 'woman', pal: { h: C.hairG, c: C.violet2, C: C.violet3, a: C.ink2, A: C.ink }, over: ['witch'] },
+    mueller: { base: 'man', pal: { h: C.hairB, c: C.white, C: C.silver2, d: C.wood3, a: C.white, A: C.silver2 }, over: ['cap'] },
+    muellerin: { base: 'woman', pal: { h: C.hairR, c: C.peach, C: C.peach2, a: C.white } , over: ['apron'] },
+    maennchen: { base: 'dwarf', pal: { a: C.red, A: C.red2, b: C.hairG, c: C.green2, d: C.trunk, f: C.ink2, h: C.hairG } },
+    heinrich: { base: 'man', pal: { h: C.hairB, c: C.blue2, C: C.blue3, d: C.grey2, A: C.trunk2, a: C.blue3, b: C.hairB }, over: ['cap'] },
+    bote: { base: 'boy', pal: { h: C.hairB, c: C.blue2, C: C.blue3, d: C.grey2, A: C.trunk2, a: C.blue3 }, over: ['cap'] }
+  };
+
+  function mirror(rows) { return rows.map(r => r + r.split('').reverse().join('')); }
+
+  function drawRows(ctx, rows, x, y, pal, flip) {
+    rows.forEach((row, j) => {
+      const s = flip ? row.split('').reverse().join('') : row;
+      for (let i = 0; i < s.length; i++) {
+        const ch = s[i];
+        if (ch === '.' || ch === ' ') continue;
+        const col = pal[ch];
+        if (!col) continue;
+        ctx.fillStyle = col; ctx.fillRect(x + i, y + j, 1, 1);
+      }
+    });
+  }
+
+  function figureSize(name) {
+    const f = FIG[name];
+    if (!f) return { w: 12, h: 20 };
+    if (f.full) return { w: FULL[f.full][0].length, h: FULL[f.full].length };
+    const rows = HALF[f.base];
+    return { w: rows[0].length * 2, h: rows.length };
+  }
+
+  function drawFigure(ctx, name, cx, yb, flip) {
+    const f = FIG[name];
+    if (!f) return;
+    const pal = Object.assign({}, BASE_PAL, f.pal);
+    if (f.full) {
+      const rows = FULL[f.full];
+      const w = rows[0].length, h = rows.length;
+      const x = Math.round(cx - w / 2), y = yb - h;
+      drawRows(ctx, rows, x, y, pal, flip);
+      if (f.crownFrog) drawRows(ctx, ['....a.a.a...', '....aaaaa...'], x, y - 2, pal, false);
+      return;
+    }
+    const rows = mirror(HALF[f.base]);
+    const w = rows[0].length, h = rows.length;
+    const lift = f.float || 0;
+    const x = Math.round(cx - w / 2), y = yb - h - lift;
+    if (f.float) {
+      ctx.fillStyle = 'rgba(59,51,85,0.18)'; ctx.fillRect(x + 2, yb - 1, w - 4, 1);
+    }
+    if (f.wings) {
+      const wr = mirror(HALF.wings);
+      drawRows(ctx, wr, x - 3, y + 8, { k: C.ink, w: f.wings }, false);
+    }
+    drawRows(ctx, rows, x, y, pal, false);
+    (f.over || []).forEach(o => {
+      const ov = OVER[o];
+      const opal = Object.assign({}, pal);
+      if (o === 'cape' && f.capeColor) opal.a = f.capeColor;
+      drawRows(ctx, mirror(ov.rows), x, y + ov.y, opal, false);
+    });
+    if (f.wand) {
+      const hx = flip ? x + 1 : x + w - 2, hy = y + 10;
+      ctx.fillStyle = C.wood3; ctx.fillRect(hx, hy - 5, 1, 5);
+      ctx.fillStyle = f.wand; ctx.fillRect(hx - 1, hy - 7, 3, 1); ctx.fillRect(hx, hy - 8, 1, 3);
+    }
+  }
+
+  const LAYOUT = {
+    stube: { x0: 14, x1: 100, y: 86 }, saal: { x0: 20, x1: 140, y: 86 }, fest: { x0: 20, x1: 140, y: 86 },
+    turm: { x0: 50, x1: 100, y: 86 }, brunnen: { x0: 26, x1: 140, y: 84 }, ofen: { x0: 30, x1: 96, y: 84 },
+    apfelbaum: { x0: 20, x1: 92, y: 84 }, tor: { x0: 50, x1: 110, y: 84 }, holle: { x0: 20, x1: 92, y: 84 },
+    kammer: { x0: 62, x1: 100, y: 86 }, hexenstube: { x0: 14, x1: 100, y: 86 }, goldkammer: { x0: 62, x1: 100, y: 86 }, feuer: { x0: 40, x1: 130, y: 84 },
+    haus: { x0: 20, x1: 66, y: 84 }, nacht: { x0: 96, x1: 140, y: 84 }, hexenhaus: { x0: 52, x1: 140, y: 86 },
+    muehle: { x0: 20, x1: 86, y: 84 }, schloss: { x0: 20, x1: 140, y: 86 }, fluch: { x0: 60, x1: 100, y: 48 },
+    hecke: { x0: 60, x1: 100, y: 86 }, cover: { x0: 14, x1: 40, y: 50 }, rosen: { x0: 50, x1: 110, y: 86 }, wald: { x0: 30, x1: 130, y: 82 }, wiese: { x0: 30, x1: 120, y: 84 }
+  };
+
+  function drawScene(canvas, bild, figuren) {
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+    const key = SCENES[bild] ? bild : 'wiese';
+    const g = G(ctx, hash(key));
+    SCENES[key](g);
+    const list = (figuren || []).filter(n => FIG[n]);
+    const L = LAYOUT[key] || { x0: 30, x1: 130, y: 84 };
+    const n = list.length;
+    list.forEach((name, i) => {
+      const cx = n === 1 ? (L.x0 + L.x1) / 2 : L.x0 + (i + 0.5) * (L.x1 - L.x0) / n;
+      drawFigure(ctx, name, cx, L.y, cx > 80);
+    });
+    return canvas;
+  }
+
+  /* ---------- Pixelschrift 5 × 7 ---------- */
+  const GLYPHS = {
+    A: '01110100011000111111100011000110001', B: '11110100011000111110100011000111110', C: '01110100011000010000100001000101110',
+    D: '11110100011000110001100011000111110', E: '11111100001000011110100001000011111', F: '11111100001000011110100001000010000',
+    G: '01110100011000010111100011000101111', H: '10001100011000111111100011000110001', I: '01110001000010000100001000010001110',
+    J: '00111000100001000010000101001001100', K: '10001100101010011000101001001010001', L: '10000100001000010000100001000011111',
+    M: '10001110111010110101100011000110001', N: '10001100011100110101100111000110001', O: '01110100011000110001100011000101110',
+    P: '11110100011000111110100001000010000', Q: '01110100011000110001101011001001101', R: '11110100011000111110101001001010001',
+    S: '01111100001000001110000010000111110', T: '11111001000010000100001000010000100', U: '10001100011000110001100011000101110',
+    V: '10001100011000110001100010101000100', W: '10001100011000110101101011010101010', X: '10001100010101000100010101000110001',
+    Y: '10001100010101000100001000010000100', Z: '11111000010001000100010001000011111',
+    'Ä': '01010000000111010001111111000110001', 'Ö': '01010000000111010001100011000101110', 'Ü': '01010000001000110001100011000101110',
+    'ß': '01110100011001010110100011000110110',
+    '0': '01110100111010110101101011100101110', '1': '00100011000010000100001000010001110', '2': '01110100010000100010001000100011111',
+    '3': '11110000010000101110000010000111110', '4': '00010001100101010010111110001000010', '5': '11111100001111000001000011000101110',
+    '6': '00110010001000011110100011000101110', '7': '11111000010001000100010000100001000', '8': '01110100011000101110100011000101110',
+    '9': '01110100011000101111000010001001100',
+    '!': '00100001000010000100001000000000100', '?': '01110100010000100010001000000000100', '.': '00000000000000000000000000110001100',
+    ',': '00000000000000000000011000010001000', '-': '00000000000000011111000000000000000', ':': '00000011000110000000011000110000000',
+    "'": '00100001000100000000000000000000000', ' ': '00000000000000000000000000000000000'
+  };
+
+  function pixelText(canvas, text, opts) {
+    opts = opts || {};
+    const t = String(text).toUpperCase();
+    const fill = opts.fill || C.butter, shadow = opts.shadow || C.ink, outline = opts.outline || null;
+    const cw = 6, w = Math.max(1, t.length * cw + 1), h = 9;
+    canvas.width = w + 2; canvas.height = h + 1;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const drawPass = (dx, dy, col) => {
+      ctx.fillStyle = col;
+      for (let n = 0; n < t.length; n++) {
+        const gph = GLYPHS[t[n]] || GLYPHS['?'];
+        for (let j = 0; j < 7; j++) for (let i = 0; i < 5; i++) if (gph[j * 5 + i] === '1') ctx.fillRect(1 + n * cw + i + dx, 1 + j + dy, 1, 1);
+      }
+    };
+    if (outline) { drawPass(-1, 0, outline); drawPass(1, 0, outline); drawPass(0, -1, outline); drawPass(0, 1, outline); }
+    drawPass(1, 1, shadow);
+    drawPass(0, 0, fill);
+    return canvas;
+  }
+
+  /* ---------- Sticker (40 × 40 mit weißem Stanzrand) ---------- */
+  const SS = 40;
+  function fillPoly(g, pts, col) {
+    const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+    for (let y = Math.floor(Math.min(...ys)); y <= Math.ceil(Math.max(...ys)); y++) {
+      for (let x = Math.floor(Math.min(...xs)); x <= Math.ceil(Math.max(...xs)); x++) {
+        let inside = false;
+        for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+          const [xi, yi] = pts[i], [xj, yj] = pts[j];
+          if ((yi > y + 0.5) !== (yj > y + 0.5) && x + 0.5 < (xj - xi) * (y + 0.5 - yi) / (yj - yi) + xi) inside = !inside;
+        }
+        if (inside) g.p(x, y, col);
+      }
+    }
+  }
+  function starPts(cx, cy, R, r) {
+    const pts = [];
+    for (let i = 0; i < 10; i++) {
+      const a = -Math.PI / 2 + i * Math.PI / 5, rad = i % 2 ? r : R;
+      pts.push([cx + Math.cos(a) * rad, cy + Math.sin(a) * rad]);
+    }
+    return pts;
+  }
+  function tinyText(ctx, text, cx, y, col) {
+    const t = text.toUpperCase(), w = t.length * 6 - 1;
+    let x = Math.round(cx - w / 2);
+    ctx.fillStyle = col;
+    for (const ch of t) {
+      const gph = GLYPHS[ch] || GLYPHS['?'];
+      for (let j = 0; j < 7; j++) for (let i = 0; i < 5; i++) if (gph[j * 5 + i] === '1') ctx.fillRect(x + i, y + j, 1, 1);
+      x += 6;
+    }
+  }
+  const STAR_COL = { bronze: [C.peach2, '#c9784f'], silber: [C.silver, C.silver2], gold: [C.gold, C.gold2] };
+  const OBJ = {
+    wand(g) {
+      g.line(10, 33, 23, 18, C.ink); g.line(11, 33, 24, 18, C.wood3); g.line(11, 32, 23, 19, C.wood2);
+      fillPoly(g, starPts(25, 14, 8, 3.4), C.ink); fillPoly(g, starPts(25, 14, 6.5, 2.6), C.gold);
+      g.p(24, 12, C.white); g.p(9, 14, C.butter); g.p(14, 9, C.lav); g.p(31, 26, C.pink);
+    },
+    pebble(g) {
+      g.ell(20, 23, 11, 7, C.ink); g.ell(20, 23, 10, 6, C.white);
+      g.dither(11, 25, 19, 4, C.silver2, 0); g.r(15, 19, 3, 1, C.white); g.p(14, 20, C.white);
+      g.ell(30, 13, 3, 2, C.ink); g.ell(30, 13, 2, 1, C.white); g.p(8, 12, C.butter); g.p(7, 12, C.butter);
+    },
+    apple(g) {
+      g.circ(20, 23, 10, C.ink); g.circ(20, 23, 9, C.red); g.dither(12, 25, 17, 6, C.red2, 1);
+      g.ell(16, 19, 2, 2, C.pink); g.r(20, 9, 2, 6, C.trunk2);
+      g.ell(25, 11, 4, 2, C.ink); g.ell(25, 11, 3, 1, C.leaf2);
+    },
+    bread(g) {
+      g.ell(20, 23, 14, 8, C.ink); g.ell(20, 23, 13, 7, C.bread); g.ell(20, 21, 11, 4, '#f3c78f');
+      for (let i = 0; i < 3; i++) g.line(13 + i * 6, 19, 16 + i * 6, 25, C.bread2);
+      g.dither(9, 27, 22, 2, C.bread2, 0);
+    },
+    ball(g) {
+      g.circ(20, 21, 11, C.ink); g.circ(20, 21, 10, C.gold); g.dither(12, 24, 17, 6, C.gold2, 0);
+      g.ell(16, 16, 3, 2, C.butter); g.p(15, 15, C.white); g.p(16, 15, C.white);
+    },
+    spindle(g) {
+      g.r(19, 4, 3, 32, C.ink); g.r(20, 5, 1, 30, C.wood2);
+      g.ell(20, 20, 7, 9, C.ink); g.ell(20, 20, 6, 8, C.silver);
+      for (let y = 13; y < 28; y += 2) g.r(15, y, 11, 1, C.silver2);
+      g.p(20, 3, C.ink); g.line(26, 16, 34, 9, C.gold2);
+    },
+    rose(g) {
+      g.line(20, 22, 20, 36, C.ink); g.line(21, 22, 21, 36, C.leaf3);
+      g.ell(15, 30, 4, 2, C.ink); g.ell(15, 30, 3, 1, C.leaf2); g.ell(26, 27, 4, 2, C.ink); g.ell(26, 27, 3, 1, C.leaf2);
+      g.circ(20, 15, 9, C.ink); g.circ(20, 15, 8, C.pink2); g.circ(20, 14, 5, C.red); g.circ(20, 13, 3, C.pink2); g.p(20, 13, C.red2);
+      g.p(14, 12, C.pink); g.p(15, 11, C.pink);
+    },
+    plate(g) {
+      g.ell(20, 22, 15, 8, C.ink); g.ell(20, 22, 14, 7, C.gold); g.ell(20, 22, 10, 4, C.gold2); g.ell(20, 21, 9, 3, C.gold);
+      g.r(12, 18, 4, 1, C.white); g.p(29, 25, C.butter);
+    }
+  };
+
+  function drawSticker(canvas, spec, silhouette) {
+    canvas.width = SS; canvas.height = SS;
+    const src = document.createElement('canvas'); src.width = SS; src.height = SS;
+    const sx = src.getContext('2d');
+    const g = G(sx, 7);
+    if (spec.fig) {
+      const n = spec.fig.length;
+      spec.fig.forEach((name, i) => {
+        if (spec.scale) {
+          const tmp = document.createElement('canvas'); tmp.width = SS; tmp.height = SS;
+          drawFigure(tmp.getContext('2d'), name, SS / 2, SS - 4, false);
+          sx.imageSmoothingEnabled = false;
+          sx.drawImage(tmp, 0, 0, SS, SS, -SS / 2 * (spec.scale - 1), -(SS - 4) * (spec.scale - 1) + 2, SS * spec.scale, SS * spec.scale);
+        } else {
+          const cx = n === 1 ? SS / 2 : SS / 2 + (i - (n - 1) / 2) * 13;
+          drawFigure(sx, name, cx, SS - 5, false);
+        }
+      });
+    } else if (spec.obj && OBJ[spec.obj]) {
+      OBJ[spec.obj](g);
+    } else if (spec.star) {
+      const [c1, c2] = STAR_COL[spec.star] || STAR_COL.gold;
+      fillPoly(g, starPts(20, 21, 16, 7), C.ink);
+      fillPoly(g, starPts(20, 21, 14.5, 6), c1);
+      fillPoly(g, starPts(20, 23, 8, 3.5), c2);
+      g.p(17, 14, C.white); g.p(18, 13, C.white);
+    } else if (spec.badge) {
+      g.r(4, 9, 32, 22, C.ink); g.r(5, 8, 30, 24, C.ink);
+      g.r(5, 10, 30, 20, spec.color); g.r(6, 9, 28, 22, spec.color);
+      g.dither(6, 24, 28, 6, 'rgba(59,51,85,0.18)', 0);
+      tinyText(sx, spec.badge, 20, 12, C.ink);
+      g.r(9, 22, 22, 1, C.ink); g.p(20, 25, C.ink); g.p(20, 26, C.ink); g.r(20, 26, 3, 1, C.ink);
+      g.circ(20, 26, 3, C.ink); g.circ(20, 26, 2, C.white); g.p(20, 25, C.ink); g.p(21, 26, C.ink);
+    }
+    const d = sx.getImageData(0, 0, SS, SS).data;
+    const op = (x, y) => x >= 0 && y >= 0 && x < SS && y < SS && d[(y * SS + x) * 4 + 3] > 40;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, SS, SS);
+    if (silhouette) {
+      ctx.fillStyle = '#cfc8de';
+      for (let y = 0; y < SS; y++) for (let x = 0; x < SS; x++) if (op(x, y)) ctx.fillRect(x, y, 1, 1);
+      return canvas;
+    }
+    const ring = (r, col, oy) => {
+      ctx.fillStyle = col;
+      for (let y = 0; y < SS; y++) for (let x = 0; x < SS; x++) {
+        let hit = false;
+        for (let dy = -r; dy <= r && !hit; dy++) for (let dx = -r; dx <= r && !hit; dx++) {
+          if (Math.abs(dx) + Math.abs(dy) > r + 1) continue;
+          if (op(x + dx, y + dy - (oy || 0))) hit = true;
+        }
+        if (hit) ctx.fillRect(x, y, 1, 1);
+      }
+    };
+    ring(2, 'rgba(59,51,85,0.22)', 1);
+    ring(2, '#ffffff', 0);
+    ctx.drawImage(src, 0, 0);
+    return canvas;
+  }
+
+  root.ZeitArt = { W, H, C, drawScene, drawFigure, pixelText, drawSticker, SCENES: Object.keys(SCENES), FIGURES: Object.keys(FIG) };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* Zeitfaden – kleine Klänge mit Web Audio (Glöckchen, Zupfen, Blättern) */
+(function (root) {
+  'use strict';
+  const S = { ctx: null, on: true, master: null };
+
+  function ctx() {
+    if (!S.on) return null;
+    try {
+      if (!S.ctx) {
+        const AC = root.AudioContext || root.webkitAudioContext;
+        if (!AC) return null;
+        S.ctx = new AC();
+        S.master = S.ctx.createGain();
+        S.master.gain.value = 0.22;
+        S.master.connect(S.ctx.destination);
+      }
+      if (S.ctx.state === 'suspended') S.ctx.resume();
+      return S.ctx;
+    } catch (e) { return null; }
+  }
+
+  function tone(freq, start, dur, type, vol, glideTo) {
+    const c = ctx(); if (!c) return;
+    const t0 = c.currentTime + start;
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = type || 'sine';
+    o.frequency.setValueAtTime(freq, t0);
+    if (glideTo) o.frequency.exponentialRampToValueAtTime(glideTo, t0 + dur);
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(vol || 0.5, t0 + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g); g.connect(S.master);
+    o.start(t0); o.stop(t0 + dur + 0.05);
+  }
+
+  function noise(start, dur, vol, freq) {
+    const c = ctx(); if (!c) return;
+    const t0 = c.currentTime + start;
+    const len = Math.floor(c.sampleRate * dur);
+    const buf = c.createBuffer(1, len, c.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
+    const src = c.createBufferSource(); src.buffer = buf;
+    const f = c.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = freq || 1800; f.Q.value = 0.8;
+    const g = c.createGain(); g.gain.value = vol || 0.3;
+    src.connect(f); f.connect(g); g.connect(S.master);
+    src.start(t0);
+  }
+
+  const bell = (f, s, v) => { tone(f, s, 0.9, 'sine', v || 0.45); tone(f * 2.76, s, 0.45, 'sine', (v || 0.45) * 0.25); tone(f * 5.4, s, 0.2, 'sine', (v || 0.45) * 0.08); };
+
+  root.ZeitSound = {
+    get on() { return S.on; },
+    set on(v) { S.on = !!v; },
+    unlock() { ctx(); },
+    tap() { tone(880, 0, 0.06, 'square', 0.08); },
+    right() { bell(1046.5, 0, 0.42); bell(1318.5, 0.08, 0.32); },
+    wrong() { tone(196, 0, 0.32, 'triangle', 0.4, 150); tone(147, 0.05, 0.3, 'triangle', 0.18); },
+    reveal() { bell(784, 0, 0.3); bell(659.3, 0.12, 0.25); },
+    page() { noise(0, 0.22, 0.35, 2400); noise(0.08, 0.16, 0.2, 1400); },
+    done() {
+      [523.3, 659.3, 784, 1046.5].forEach((f, i) => tone(f, i * 0.09, 0.22, 'square', 0.1));
+      [1318.5, 1568, 2093].forEach((f, i) => bell(f, 0.4 + i * 0.09, 0.22));
+    },
+    sticker() {
+      [784, 988, 1175, 1568].forEach((f, i) => tone(f, i * 0.07, 0.18, 'square', 0.09));
+      [2093, 2637].forEach((f, i) => bell(f, 0.32 + i * 0.1, 0.22));
+    },
+    fanfare() {
+      [392, 523.3, 659.3, 784, 659.3, 784, 1046.5].forEach((f, i) => tone(f, i * 0.12, 0.26, 'square', 0.11));
+      [1046.5, 1318.5, 1568].forEach((f, i) => bell(f, 0.9 + i * 0.1, 0.25));
+    }
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* Zeitfaden – Spieloberfläche */
+(function () {
+  'use strict';
+  const E = window.ZeitEngine, A = window.ZeitArt, S = window.ZeitSound;
+  const screen = document.getElementById('screen');
+  const bar = document.getElementById('bar');
+
+  /* ---------- kleine Helfer ---------- */
+  function h(sel, attrs, ...kids) {
+    const m = sel.match(/^([a-z0-9]+)((?:[.#][\w-]+)*)$/i);
+    const el = document.createElement(m ? m[1] : 'div');
+    if (m && m[2]) m[2].replace(/([.#])([\w-]+)/g, (_, t, n) => { if (t === '.') el.classList.add(n); else el.id = n; });
+    if (attrs) for (const k in attrs) {
+      const v = attrs[k];
+      if (v === undefined || v === null || v === false) continue;
+      if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+      else if (k === 'html') el.innerHTML = v;
+      else if (k === 'text') el.textContent = v;
+      else el.setAttribute(k, v === true ? '' : v);
+    }
+    kids.flat().forEach(k => { if (k === null || k === undefined || k === false) return; el.append(k.nodeType ? k : document.createTextNode(String(k))); });
+    return el;
+  }
+  const ICON_ROWS = {
+    book: ['............', '.kkkk..kkkk.', 'k....kk....k', 'k.kk.kk.kk.k', 'k....kk....k', 'k.kk.kk.kk.k', 'k....kk....k', 'k.kk.kk.kk.k', 'k....kk....k', '.kkkkkkkkkk.', '............', '............'],
+    soundOn: ['............', '....k.......', '...kk...k...', '..kkk..k..k.', 'kkkkk...k..k', 'kkkkk...k..k', 'kkkkk...k..k', 'kkkkk...k..k', '..kkk..k..k.', '...kk...k...', '....k.......', '............'],
+    soundOff: ['............', '....k.......', '...kk.......', '..kkk.......', 'kkkkk.k...k.', 'kkkkk..k.k..', 'kkkkk...k...', 'kkkkk..k.k..', '..kkk.k...k.', '...kk.......', '....k.......', '............'],
+    expand: ['kkkkk..kkkkk', 'kkkkk..kkkkk', 'kk........kk', 'kk........kk', 'kk........kk', '............', '............', 'kk........kk', 'kk........kk', 'kk........kk', 'kkkkk..kkkkk', 'kkkkk..kkkkk'],
+    compress: ['...kk..kk...', '...kk..kk...', '...kk..kk...', 'kkkkk..kkkkk', 'kkkkk..kkkkk', '............', '............', 'kkkkk..kkkkk', 'kkkkk..kkkkk', '...kk..kk...', '...kk..kk...', '...kk..kk...'],
+    gear: ['.....kk.....', '..k..kk..k..', '.kkkkkkkkkk.', '..kkkkkkkk..', '..kkk..kkk..', 'kkkk....kkkk', 'kkkk....kkkk', '..kkk..kkk..', '..kkkkkkkk..', '.kkkkkkkkkk.', '..k..kk..k..', '.....kk.....'],
+    right: ['............', '......k.....', '......kk....', '......kkk...', 'kkkkkkkkkk..', 'kkkkkkkkkkk.', 'kkkkkkkkkkk.', 'kkkkkkkkkk..', '......kkk...', '......kk....', '......k.....', '............'],
+    hand: ['....kk......', '...k..k.....', '...k..k.....', '...k..kkk...', '...k..k..kk.', '.kkk..k..k.k', 'k..k.......k', 'k..........k', '.k.........k', '..k.......k.', '...k.....k..', '....kkkkk...'],
+    star: ['.....kk.....', '.....kk.....', '....kkkk....', 'kkkkkkkkkkkk', '.kkkkkkkkkk.', '..kkkkkkkk..', '...kkkkkk...', '..kkkkkkkk..', '..kkk..kkk..', '.kkk....kkk.', '.kk......kk.', '............'],
+    album: ['.kkkkkkkkkk.', 'k..........k', 'k....kk....k', 'k...kkkk...k', 'k.kkkkkkkk.k', 'k..kkkkkk..k', 'k..kk..kk..k', 'k..........k', 'k.......kkk.', 'k.......k.k.', 'k.......kk..', '.kkkkkkkk...'],
+    close: ['............', '.kk......kk.', '.kkk....kkk.', '..kkk..kkk..', '...kkkkkk...', '....kkkk....', '....kkkk....', '...kkkkkk...', '..kkk..kkk..', '.kkk....kkk.', '.kk......kk.', '............']
+  };
+  function icon(name, flip) {
+    const rows = ICON_ROWS[name];
+    let r = '';
+    rows.forEach((row, y) => {
+      const s = flip ? row.split('').reverse().join('') : row;
+      let x = 0;
+      while (x < s.length) {
+        if (s[x] === 'k') { let w = 1; while (s[x + w] === 'k') w++; r += `<rect x="${x}" y="${y}" width="${w}" height="1"/>`; x += w; } else x++;
+      }
+    });
+    const span = document.createElement('span');
+    span.innerHTML = `<svg viewBox="0 0 12 12" aria-hidden="true" fill="currentColor">${r}</svg>`;
+    return span.firstChild;
+  }
+  function pixelTitle(text, opts) {
+    const c = document.createElement('canvas');
+    A.pixelText(c, text, opts);
+    c.className = 'pixeltitle';
+    c.setAttribute('role', 'img');
+    c.setAttribute('aria-label', text);
+    return c;
+  }
+  const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const q = s => '„' + s + '“';
+  const capLike = (word, model) => (/^[A-ZÄÖÜ]/.test(model || '') ? word.charAt(0).toUpperCase() + word.slice(1) : word);
+
+  /* ---------- Buch ---------- */
+  const BUILTIN_MD = document.getElementById('book-md').textContent;
+  const builtin = E.parseBook(BUILTIN_MD).stories;
+  let customSources = [];
+  let custom = [];
+  const items = new Map();
+
+  function rebuildIndex() {
+    items.clear();
+    allStories().forEach(st => st.pages.forEach((pg, pi) => pg.items.forEach(it => { it.sid = st.id; it.page = pi; items.set(it.key, it); })));
+  }
+  function allStories() {
+    const intro = builtin.filter(s => s.role === 'einleitung');
+    const tales = builtin.filter(s => !s.role);
+    const end = builtin.filter(s => s.role === 'schluss');
+    return intro.concat(tales, custom, end);
+  }
+  const story = id => allStories().find(s => s.id === id);
+
+  /* ---------- Zustand ---------- */
+  const state = {
+    screen: 'cover', sid: null, page: 0, stage: 1,
+    repaired: new Set(), revealed: new Set(), wrong: new Map(),
+    sel: null, tray: { mode: 'idle' }, introDone: false,
+    stickers: new Set(), prevScreen: 'cover'
+  };
+  const active = it => it.tense === null || E.STAGES[state.stage].includes(it.tense);
+  const isDone = it => !active(it) || state.repaired.has(it.key);
+  function stat(list) {
+    let n = 0, d = 0;
+    list.forEach(it => { if (active(it)) { n++; if (state.repaired.has(it.key)) d++; } });
+    return { n, d, complete: d === n };
+  }
+  const pageStat = pg => stat(pg.items);
+  const storyStat = st => stat(st.pages.flatMap(p => p.items));
+
+  /* ---------- Stickeralbum ---------- */
+  const TCOL = { praes: '#a8e8cf', praet: '#f8b9cb', perf: '#d2bff5', plusq: '#ffcda9', fut1: '#fce792', fut2: '#acd8f6' };
+  const TSHORT = { praes: 'PRÄS', praet: 'PRÄT', perf: 'PERF', plusq: 'PLUS', fut1: 'FUT1', fut2: 'FUT2' };
+  const storyDone = id => { const st = story(id); if (!st) return false; const s = storyStat(st); return s.n > 0 && s.complete; };
+  const solvedKeys = () => [...state.repaired].filter(k => !state.revealed.has(k) && items.has(k));
+  const builtinTenseCount = t => builtin.reduce((a, st) => a + st.pages.reduce((b, pg) => b + pg.items.filter(it => it.tense === t).length, 0), 0);
+  function perfectPages() {
+    let n = 0;
+    allStories().forEach(st => st.pages.forEach(pg => {
+      const act = pg.items.filter(active);
+      if (act.length && act.every(it => state.repaired.has(it.key) && !state.revealed.has(it.key) && !state.wrong.get(it.key))) n++;
+    }));
+    return n;
+  }
+  const ALBUM = [
+    { id: 'figuren', title: 'Märchenfiguren', note: 'Für jedes entfluchte Märchen gibt es seine Hauptfigur.' },
+    { id: 'zauber', title: 'Zauberdinge', note: 'Für richtig gelöste Verben. Aufgedeckte Lösungen zählen nicht mit.' },
+    { id: 'tempus', title: 'Tempus-Meister', note: 'Für richtig gelöste Verben in jedem Tempus. Manche Tempora gibt es erst auf Stufe 2 und 3.' },
+    { id: 'fehlerfrei', title: 'Fehlerfrei', note: 'Für Seiten, auf denen jedes Verb beim ersten Versuch stimmte.' }
+  ];
+  const STICKERS = [
+    { id: 'fluch', page: 'figuren', name: 'Die dreizehnte Fee', spec: { fig: ['fee13'] }, how: 'Löse den Anfang „Der Fluch“.', test: () => storyDone('der-fluch') },
+    { id: 'rotkaeppchen', page: 'figuren', name: 'Rotkäppchen', spec: { fig: ['rotkaeppchen'] }, how: 'Entfluche „Rotkäppchen“.', test: () => storyDone('rotkaeppchen') },
+    { id: 'frosch', page: 'figuren', name: 'Froschkönig', spec: { fig: ['frosch'], scale: 2 }, how: 'Entfluche „Der Froschkönig“.', test: () => storyDone('der-froschkoenig') },
+    { id: 'dornroeschen', page: 'figuren', name: 'Dornröschen', spec: { fig: ['prinzessin'] }, how: 'Entfluche „Dornröschen“.', test: () => storyDone('dornroeschen') },
+    { id: 'holle', page: 'figuren', name: 'Frau Holle', spec: { fig: ['frauholle'] }, how: 'Entfluche „Frau Holle“.', test: () => storyDone('frau-holle') },
+    { id: 'haensel', page: 'figuren', name: 'Hänsel und Gretel', spec: { fig: ['haensel', 'gretel'] }, how: 'Entfluche „Hänsel und Gretel“.', test: () => storyDone('haensel-und-gretel') },
+    { id: 'rumpel', page: 'figuren', name: 'Rumpelstilzchen', spec: { fig: ['maennchen'] }, how: 'Entfluche „Rumpelstilzchen“.', test: () => storyDone('rumpelstilzchen') },
+    { id: 'fee', page: 'figuren', name: 'Die gute Fee', spec: { fig: ['fee'] }, how: 'Lies das Ende des Märchenbuchs.', test: () => storyDone('das-ende') },
+    { id: 'z1', page: 'zauber', name: 'Zauberstab', spec: { obj: 'wand' }, how: 'Löse dein erstes Verb.', test: st => st.solved >= 1 },
+    { id: 'z10', page: 'zauber', name: 'Kieselstein', spec: { obj: 'pebble' }, how: 'Löse 10 Verben richtig.', test: st => st.solved >= 10 },
+    { id: 'z25', page: 'zauber', name: 'Roter Apfel', spec: { obj: 'apple' }, how: 'Löse 25 Verben richtig.', test: st => st.solved >= 25 },
+    { id: 'z50', page: 'zauber', name: 'Frisches Brot', spec: { obj: 'bread' }, how: 'Löse 50 Verben richtig.', test: st => st.solved >= 50 },
+    { id: 'z75', page: 'zauber', name: 'Goldene Kugel', spec: { obj: 'ball' }, how: 'Löse 75 Verben richtig.', test: st => st.solved >= 75 },
+    { id: 'z100', page: 'zauber', name: 'Spindel', spec: { obj: 'spindle' }, how: 'Löse 100 Verben richtig.', test: st => st.solved >= 100 },
+    { id: 'z150', page: 'zauber', name: 'Rose', spec: { obj: 'rose' }, how: 'Löse 150 Verben richtig.', test: st => st.solved >= 150 },
+    { id: 'z175', page: 'zauber', name: 'Goldener Teller', spec: { obj: 'plate' }, how: 'Löse 175 Verben richtig.', test: st => st.solved >= 175 }
+  ].concat(E.TENSES.map(t => {
+    const need = Math.max(1, Math.min(5, builtinTenseCount(t)));
+    return { id: 't-' + t, page: 'tempus', name: E.TNAME[t], spec: { badge: TSHORT[t], color: TCOL[t] },
+      how: need === 1 ? `Löse ein Verb im ${E.TNAME[t]} richtig.` : `Löse ${need} Verben im ${E.TNAME[t]} richtig.`, test: st => (st.byTense[t] || 0) >= need };
+  })).concat([
+    { id: 'f1', page: 'fehlerfrei', name: 'Bronzestern', spec: { star: 'bronze' }, how: 'Schaffe 1 Seite ohne Fehler.', test: st => st.perfect >= 1 },
+    { id: 'f5', page: 'fehlerfrei', name: 'Silberstern', spec: { star: 'silber' }, how: 'Schaffe 5 Seiten ohne Fehler.', test: st => st.perfect >= 5 },
+    { id: 'f15', page: 'fehlerfrei', name: 'Goldstern', spec: { star: 'gold' }, how: 'Schaffe 15 Seiten ohne Fehler.', test: st => st.perfect >= 15 }
+  ]);
+  function stickerStats() {
+    const keys = solvedKeys(), byTense = {};
+    keys.forEach(k => { const t = items.get(k).tense; if (t) byTense[t] = (byTense[t] || 0) + 1; });
+    return { solved: keys.length, byTense, perfect: perfectPages() };
+  }
+  function stickerCanvas(st, owned) {
+    const c = document.createElement('canvas');
+    A.drawSticker(c, st.spec, !owned);
+    c.setAttribute('aria-hidden', 'true');
+    return c;
+  }
+  let stickerQueue = [], stickerTimer = null;
+  function checkStickers() {
+    const stt = stickerStats();
+    const fresh = STICKERS.filter(x => !state.stickers.has(x.id) && x.test(stt));
+    if (!fresh.length) return;
+    fresh.forEach(x => state.stickers.add(x.id));
+    stickerQueue.push(...fresh);
+    renderBar();
+    clearTimeout(stickerTimer);
+    stickerTimer = setTimeout(showStickerPop, 1100);
+  }
+  function showStickerPop() {
+    if (!stickerQueue.length || document.querySelector('.sticker-pop') || overlay) return;
+    // Nicht mitten in eine Auswahl platzen: dann erst nach der nächsten Antwort zeigen
+    if (state.screen === 'page' && state.tray.mode === 'choose' && state.sel) return;
+    const list = stickerQueue.splice(0);
+    S.sticker();
+    const close = () => { pop.remove(); const nb = document.getElementById('nextBtn'); if (nb && document.activeElement === document.body) nb.focus({ preventScroll: true }); };
+    const pop = h('div.overlay.sticker-pop', { onclick: e => { if (e.target === pop) close(); } },
+      h('div.panel.px.pop-card', { role: 'dialog', 'aria-modal': 'true', 'aria-label': list.length === 1 ? 'Neuer Sticker' : 'Neue Sticker' },
+        pixelTitle(list.length === 1 ? 'Neuer Sticker!' : 'Neue Sticker!', { fill: '#f8d35a', shadow: '#3b3355', outline: '#4a3290' }),
+        h('div.pop-row', null, list.map(x => h('figure.pop-sticker', null, stickerCanvas(x, true), h('figcaption', null, h('b', null, x.name), h('span', null, x.how))))),
+        h('div.row-btns', null,
+          h('button.btn.px.primary', { type: 'button', onclick: close }, 'Weiter'),
+          h('button.btn.px', { type: 'button', onclick: () => { close(); openAlbum(); } }, icon('album'), 'Zum Album'))));
+    document.body.append(pop);
+    pop.querySelector('.btn.primary').focus({ preventScroll: true });
+  }
+  function openAlbum() {
+    if (state.screen !== 'album') state.prevScreen = state.screen;
+    S.unlock(); S.page();
+    hideTip();
+    state.screen = 'album';
+    render();
+  }
+
+  /* Sticker-Code: enthält nur, welche Sticker gesammelt sind – keine Namen, keine Daten */
+  const CODE_ABC = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  function stickerCode() {
+    let v = 0;
+    STICKERS.forEach((x, i) => { if (state.stickers.has(x.id)) v += 2 ** i; });
+    const ch = [];
+    for (let i = 0; i < 5; i++) { ch.push(v % 32); v = Math.floor(v / 32); }
+    let chk = 0; ch.forEach((c, i) => { chk = (chk + c * (i + 3)) % 32; });
+    ch.push(chk);
+    const str = ch.map(c => CODE_ABC[c]).join('');
+    return str.slice(0, 3) + '-' + str.slice(3);
+  }
+  function readStickerCode(code) {
+    const clean = String(code || '').toUpperCase().replace(/0/g, 'O').replace(/1/g, 'I').replace(/[^A-Z0-9]/g, '');
+    if (clean.length !== 6) return null;
+    const vals = clean.split('').map(c => CODE_ABC.indexOf(c));
+    if (vals.some(x => x < 0)) return null;
+    let chk = 0; vals.slice(0, 5).forEach((c, i) => { chk = (chk + c * (i + 3)) % 32; });
+    if (chk !== vals[5]) return null;
+    let v = 0; for (let i = 4; i >= 0; i--) v = v * 32 + vals[i];
+    const ids = [];
+    STICKERS.forEach((x, i) => { if (Math.floor(v / 2 ** i) % 2 === 1) ids.push(x.id); });
+    return ids;
+  }
+
+  /* ---------- Kopfleiste ---------- */
+  const fsTarget = document.documentElement;
+  const fsActive = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
+  function renderBar() {
+    bar.innerHTML = '';
+    const left = [];
+    if (state.screen === 'page' || state.screen === 'finish') {
+      left.push(h('button.btn.px', { type: 'button', onclick: () => go('toc'), 'aria-label': 'Inhaltsverzeichnis' }, icon('book'), h('span.lbl', null, 'Inhalt')));
+    } else if (state.screen === 'toc') {
+      left.push(h('button.btn.px', { type: 'button', onclick: () => go('cover'), 'aria-label': 'Zum Titelbild' }, icon('star'), h('span.lbl', null, 'Titel')));
+    } else if (state.screen === 'album') {
+      left.push(h('button.btn.px', { type: 'button', onclick: () => go(state.prevScreen === 'album' ? 'toc' : state.prevScreen), 'aria-label': 'Zurück' }, icon('right', true), h('span.lbl', null, 'Zurück')));
+    }
+    let where = '';
+    if (state.screen === 'page') {
+      const st = story(state.sid);
+      where = h('div.where', null, st.title, h('small', null, `Seite ${state.page + 1} von ${st.pages.length}`));
+    } else if (state.screen === 'toc') where = h('div.where', null, 'Inhalt');
+    else if (state.screen === 'album') where = h('div.where', null, 'Stickeralbum');
+    else where = h('div.where', null, '');
+    const right = [];
+    if (state.screen !== 'album') {
+      right.push(h('button.btn.px.album-btn', { type: 'button', onclick: openAlbum, 'aria-label': `Stickeralbum, ${state.stickers.size} von ${STICKERS.length} Stickern` }, icon('album'), h('span.lbl', null, 'Sticker'), h('span.num', null, String(state.stickers.size))));
+    }
+    if (state.screen !== 'cover') {
+      right.push(h('span.btn.px.stage-chip', { title: 'Tempus-Stufe (im Lehrkraft-Menü einstellbar)' }, h('span.lbl', null, 'Stufe '), String(state.stage)));
+    }
+    right.push(h('button.btn.px.icon', { type: 'button', onclick: toggleSound, 'aria-label': S.on ? 'Ton ausschalten' : 'Ton einschalten', 'aria-pressed': String(S.on) }, icon(S.on ? 'soundOn' : 'soundOff')));
+    right.push(h('button.btn.px.icon', { type: 'button', onclick: toggleFullscreen, 'aria-label': fsActive() ? 'Vollbild beenden' : 'Vollbild' }, icon(fsActive() ? 'compress' : 'expand'), h('span.lbl', null, fsActive() ? 'Fenster' : 'Vollbild')));
+    right.push(h('button.btn.px', { type: 'button', onclick: openTeacher, 'aria-label': 'Lehrkraft-Menü' }, icon('gear'), h('span.lbl', null, 'Lehrkraft')));
+    bar.append(...left, where, ...right);
+  }
+
+  function toggleSound() {
+    S.on = !S.on;
+    if (S.on) { S.unlock(); S.tap(); }
+    renderBar();
+  }
+
+  /* ---------- Vollbild ---------- */
+  let wakeLock = null;
+  async function toggleFullscreen() {
+    S.unlock();
+    try {
+      if (fsActive()) {
+        const ex = document.exitFullscreen || document.webkitExitFullscreen;
+        if (ex) await ex.call(document);
+        return;
+      }
+      const req = fsTarget.requestFullscreen || fsTarget.webkitRequestFullscreen;
+      if (!req) { toast('Dieses Gerät erlaubt im Browser kein Vollbild. Tipp: Über „Teilen → Zum Home-Bildschirm“ startet das Spiel ohne Leisten.'); return; }
+      await req.call(fsTarget, { navigationUI: 'hide' });
+      setTimeout(() => { if (!fsActive()) toast('Vollbild ist in dieser Ansicht gesperrt. Öffne die HTML-Datei direkt im Browser, dann klappt es.'); }, 600);
+    } catch (e) {
+      toast('Vollbild ist in dieser Ansicht gesperrt. Öffne die HTML-Datei direkt im Browser, dann klappt es.');
+    }
+  }
+  async function onFsChange() {
+    renderBar();
+    requestAnimationFrame(fitPic);
+    try {
+      if (fsActive() && navigator.wakeLock) wakeLock = await navigator.wakeLock.request('screen');
+      else if (wakeLock) { await wakeLock.release(); wakeLock = null; }
+    } catch (e) { wakeLock = null; }
+  }
+  document.addEventListener('fullscreenchange', onFsChange);
+  document.addEventListener('webkitfullscreenchange', onFsChange);
+
+  /* ---------- Hinweis ---------- */
+  let toastTimer = null;
+  function toast(msg) {
+    let t = document.querySelector('.toast');
+    if (!t) { t = h('div.toast.px', { role: 'status' }); document.body.append(t); }
+    t.textContent = msg;
+    t.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { t.hidden = true; }, 4200);
+  }
+
+  /* ---------- Navigation ---------- */
+  function go(where, sid, page) {
+    hideTip();
+    state.screen = where;
+    if (sid !== undefined) state.sid = sid;
+    if (page !== undefined) state.page = page;
+    state.sel = null;
+    state.tray = { mode: 'idle' };
+    render();
+  }
+  function render() {
+    renderBar();
+    screen.innerHTML = '';
+    if (state.screen === 'cover') renderCover();
+    else if (state.screen === 'toc') renderToc();
+    else if (state.screen === 'page') renderPage();
+    else if (state.screen === 'finish') renderFinish();
+    else if (state.screen === 'album') renderAlbum();
+  }
+
+  function renderAlbum() {
+    const stt = stickerStats();
+    const wrap = h('section.album');
+    wrap.append(h('div.toc-head', null,
+      h('h1.sr', null, 'Stickeralbum'),
+      pixelTitle('Stickeralbum', { fill: '#4a3290', shadow: '#fdfaff' }),
+      h('p', null, `${state.stickers.size} von ${STICKERS.length} Stickern gesammelt`)));
+    ALBUM.forEach(pgDef => {
+      const list = STICKERS.filter(x => x.page === pgDef.id);
+      const have = list.filter(x => state.stickers.has(x.id)).length;
+      const grid = h('div.sticker-grid');
+      list.forEach(x => {
+        const owned = state.stickers.has(x.id);
+        let progress = '';
+        if (!owned && x.page === 'zauber') { const need = +x.id.slice(1); progress = ` (${Math.min(stt.solved, need)}/${need})`; }
+        if (!owned && x.page === 'fehlerfrei') { const need = +x.id.slice(1); progress = ` (${Math.min(stt.perfect, need)}/${need})`; }
+        grid.append(h(`figure.slot${owned ? '.owned' : ''}`, null,
+          stickerCanvas(x, owned),
+          h('figcaption', null, h('b', null, owned ? x.name : '???'), h('span', null, owned ? x.how.replace(/\.$/, '') + ' – geschafft!' : x.how + progress))));
+      });
+      wrap.append(h('section.album-page.px', null,
+        h('div.album-head', null, h('h2', null, pgDef.title), h('span.count', null, `${have}/${list.length}`)),
+        h('p.small', null, pgDef.note), grid));
+    });
+    // Code zum Mitnehmen
+    const msg = h('p.small', { 'aria-live': 'polite' });
+    const inp = h('input', { id: 'code-in', type: 'text', inputmode: 'text', autocomplete: 'off', autocapitalize: 'characters', spellcheck: 'false', maxlength: '9', placeholder: 'z. B. ABC-DEF', 'aria-label': 'Sticker-Code eingeben' });
+    const redeem = () => {
+      const ids = readStickerCode(inp.value);
+      if (!ids) { msg.textContent = 'Dieser Code stimmt nicht. Prüfe die sechs Zeichen.'; return; }
+      const before = state.stickers.size;
+      ids.forEach(id => state.stickers.add(id));
+      const added = state.stickers.size - before;
+      render();
+      toast(added ? `${added} ${added === 1 ? 'Sticker ist' : 'Sticker sind'} wieder im Album.` : 'Diese Sticker hast du schon alle.');
+    };
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') redeem(); });
+    wrap.append(h('section.album-page.px.code-box', null,
+      h('div.album-head', null, h('h2', null, 'Sticker mitnehmen')),
+      h('p', null, 'Das Spiel speichert nichts. Schreib dir diesen Code auf, dann bekommst du deine Sticker beim nächsten Mal zurück. Er verrät nur, welche Sticker du hast.'),
+      h('p.code', { 'aria-label': 'Dein Sticker-Code' }, state.stickers.size ? stickerCode() : '—'),
+      h('div.row-btns', null, inp, h('button.btn.px.fairy', { type: 'button', onclick: redeem }, 'Code einlösen')),
+      msg));
+    screen.append(wrap);
+  }
+
+  function openStory(sid) {
+    const st = story(sid);
+    let p = st.pages.findIndex(pg => !pageStat(pg).complete);
+    if (p < 0) p = 0;
+    S.page();
+    go('page', sid, p);
+  }
+
+  /* ---------- Titelbild ---------- */
+  function renderCover() {
+    const art = document.createElement('canvas');
+    A.drawScene(art, 'cover', ['fee13']);
+    art.className = 'cover-art';
+    art.setAttribute('aria-hidden', 'true');
+    const intro = allStories().find(s => s.role === 'einleitung');
+    const start = () => {
+      S.unlock(); S.page();
+      if (!state.introDone && intro && !storyStat(intro).complete) go('page', intro.id, 0);
+      else go('toc');
+    };
+    screen.append(h('section.cover', null, art,
+      h('div.cover-inner', null,
+        h('h1.sr', null, 'Der Zeitfaden'),
+        pixelTitle('Der Zeitfaden', { fill: '#f8d35a', shadow: '#3b3355', outline: '#4a3290' }),
+        h('p', null, 'Ein verfluchtes Märchenbuch. Tippe die grauen Verben an und gib ihnen ihre Zeit zurück.'),
+        h('button.btn.px.primary', { type: 'button', onclick: start }, 'Buch öffnen', icon('right'))
+      )));
+  }
+
+  /* ---------- Inhaltsverzeichnis ---------- */
+  function renderToc() {
+    const stages = { 1: 'Präsens und Präteritum', 2: 'dazu Perfekt und Plusquamperfekt', 3: 'alle sechs Tempora' };
+    const grid = h('div.toc-grid');
+    allStories().forEach(st => {
+      const s = storyStat(st);
+      const c = document.createElement('canvas');
+      A.drawScene(c, st.pages[0].bild, st.pages[0].figuren);
+      const g = s.n ? 1 - s.d / s.n : 0;
+      c.style.filter = `grayscale(${g.toFixed(2)})`;
+      c.setAttribute('aria-hidden', 'true');
+      const frame = !!st.role;
+      const badge = s.complete && s.n ? h('span.badge', null, 'entflucht') : frame ? h('span.badge', null, st.role === 'einleitung' ? 'Vorwort' : 'Schluss') : st.custom ? h('span.badge', null, 'eigenes Material') : null;
+      grid.append(h(`button.story.px${s.complete && s.n ? '.done' : ''}${frame ? '.frame' : ''}`, { type: 'button', onclick: () => openStory(st.id) },
+        c,
+        h('div.info', null,
+          h('h3', null, st.title),
+          h('div.meta', null, s.n ? `${s.d} von ${s.n} Verben repariert · ${st.pages.length} ${st.pages.length === 1 ? 'Seite' : 'Seiten'}` : 'Auf dieser Stufe nichts verflucht'),
+          h('div.meter', { 'aria-hidden': 'true' }, h('i', { style: `width:${s.n ? Math.round(s.d / s.n * 100) : 100}%` })),
+          badge)));
+    });
+    screen.append(h('section.toc', null,
+      h('div.toc-head', null,
+        h('h1.sr', null, 'Inhalt'),
+        pixelTitle('Inhalt', { fill: '#4a3290', shadow: '#fdfaff' }),
+        h('p', null, `Stufe ${state.stage}: ${stages[state.stage]}`)),
+      grid));
+  }
+
+  /* ---------- Buchseite ---------- */
+  let picCanvas = null, picFig = null;
+  const MQ_STACK = window.matchMedia('(max-aspect-ratio: 5/4), (max-width: 720px)');
+
+  function renderPage() {
+    const st = story(state.sid);
+    if (!st) return go('toc');
+    const pg = st.pages[state.page];
+    picCanvas = document.createElement('canvas');
+    A.drawScene(picCanvas, pg.bild, pg.figuren);
+    picCanvas.className = 'px';
+    picCanvas.setAttribute('role', 'img');
+    picCanvas.setAttribute('aria-label', 'Bild zur Seite');
+    picFig = h('figure.pic', null, picCanvas, h('div.sparkles'));
+
+    const text = h('div.text.px', { lang: 'de' });
+    if (state.page === 0) text.append(h('span.heading', null, h('span.sr', null, st.title), (() => { const c = pixelTitle(st.title, { fill: '#7a5cd6', shadow: '#d2bff5' }); c.setAttribute('aria-hidden', 'true'); return c; })()));
+    pg.paras.forEach(tokens => {
+      const p = h('p');
+      tokens.forEach(tk => {
+        if (tk.type === 'text') p.append(tk.text);
+        else if (tk.type === 'slot') p.append(verbButton(tk));
+      });
+      text.append(p);
+    });
+    const tray = h('div.tray.px', { id: 'tray', 'aria-live': 'polite' });
+    const last = state.page === st.pages.length - 1;
+    const ps = pageStat(pg);
+    const pager = h('nav.pager', { 'aria-label': 'Seiten' },
+      h('button.btn.px', { type: 'button', onclick: prevPage, disabled: state.page === 0 ? true : null, 'aria-label': 'Vorige Seite' }, icon('right', true), h('span.lbl', null, 'Zurück')),
+      h('span.count', null, `${state.page + 1} / ${st.pages.length}`),
+      h(`button.btn.px${ps.complete ? '.glow' : ''}`, { type: 'button', id: 'nextBtn', onclick: nextPage, 'aria-label': last ? lastLabel(st) : 'Nächste Seite' }, h('span.lbl', null, last ? 'Fertig' : 'Weiter'), icon('right')));
+    screen.append(h('section.page', null, picFig, h('div.textcol', null, h('div.stack', null, text, tray), pager)));
+    updatePic(false);
+    renderTray();
+    fitPic();
+  }
+
+  function lastLabel(st) { return st.role === 'einleitung' ? 'Los geht es' : st.role === 'schluss' ? 'Zum Ende' : 'Märchen beenden'; }
+
+  function fitPic() {
+    if (!picCanvas || !picFig || !picFig.isConnected) return;
+    const stacked = MQ_STACK.matches;
+    const b = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--b')) || 3;
+    let w = picFig.clientWidth - 6 * b;
+    let hgt = stacked ? Math.max(120, window.innerHeight * 0.38) : picFig.clientHeight - 8 * b;
+    if (w <= 0 || hgt <= 0) return;
+    let cw = w, ch = w * 9 / 16;
+    if (ch > hgt) { ch = hgt; cw = ch * 16 / 9; }
+    picCanvas.style.width = Math.floor(cw) + 'px';
+    picCanvas.style.height = Math.floor(ch) + 'px';
+    picFig.style.height = stacked ? Math.floor(ch + 5 * b) + 'px' : '';
+  }
+  if (window.ResizeObserver) new ResizeObserver(() => fitPic()).observe(screen);
+  window.addEventListener('resize', fitPic);
+
+  function verbButton(tk) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.dataset.key = tk.item;
+    b.dataset.slot = tk.slot;
+    updateVerb(b);
+    return b;
+  }
+  function updateVerb(b, pop) {
+    const it = items.get(b.dataset.key), i = +b.dataset.slot;
+    const done = isDone(it);
+    b.className = 'verb';
+    if (done) {
+      b.classList.add('done', 't-' + (it.tense || 'none'));
+      if (pop) b.classList.add('pop');
+      b.textContent = it.slots[i];
+      b.setAttribute('aria-label', `${it.correct}, ${it.tense ? E.TNAME[it.tense] : 'Verb'}`);
+    } else {
+      b.classList.add('cursed');
+      const lastSlot = i === it.slots.length - 1;
+      if (lastSlot) b.textContent = capLike(it.display, it.slots.length === 1 ? it.slots[0] : '');
+      else { b.textContent = '···'; b.classList.add('gap'); }
+      if (state.sel === it.key) b.classList.add('sel');
+      b.setAttribute('aria-label', `verflucht: ${it.display}. Antippen und Form wählen.`);
+    }
+  }
+  function updateItem(key, pop) { screen.querySelectorAll(`.verb[data-key="${CSS.escape(key)}"]`).forEach(b => updateVerb(b, pop)); }
+  function updateAllVerbs() { screen.querySelectorAll('.verb').forEach(b => updateVerb(b)); }
+
+  function updatePic(animate) {
+    const st = story(state.sid); if (!st || !picCanvas) return;
+    const s = pageStat(st.pages[state.page]);
+    const g = s.n ? 1 - s.d / s.n : 0;
+    picCanvas.style.filter = g > 0.001 ? `grayscale(${g.toFixed(3)}) brightness(${(1 + g * 0.05).toFixed(3)})` : 'none';
+    const nb = document.getElementById('nextBtn');
+    if (nb) nb.classList.toggle('glow', s.complete);
+    if (animate && s.complete) sparkle();
+  }
+  function sparkle() {
+    if (!picFig || !picCanvas) return;
+    const box = picFig.querySelector('.sparkles');
+    box.style.inset = 'auto';
+    box.style.left = picCanvas.offsetLeft + 'px';
+    box.style.top = picCanvas.offsetTop + 'px';
+    box.style.width = picCanvas.offsetWidth + 'px';
+    box.style.height = picCanvas.offsetHeight + 'px';
+    for (let i = 0; i < 16; i++) {
+      const sp = h('i.spark');
+      sp.style.left = (8 + Math.random() * 84) + '%';
+      sp.style.top = (30 + Math.random() * 60) + '%';
+      sp.style.animationDelay = (Math.random() * 0.5) + 's';
+      sp.style.background = ['#f8d35a', '#f8b9cb', '#a8e8cf', '#d2bff5', '#acd8f6'][i % 5];
+      box.append(sp);
+      setTimeout(() => sp.remove(), 2200);
+    }
+  }
+
+  /* Kartenablage */
+  function legendFor(pg) {
+    const ts = [];
+    pg.items.forEach(it => { if (it.tense && isDone(it) && !ts.includes(it.tense)) ts.push(it.tense); });
+    ts.sort((a, b) => E.TENSES.indexOf(a) - E.TENSES.indexOf(b));
+    if (!ts.length) return null;
+    return h('div.legend', { 'aria-label': 'Farben der Tempora' }, ts.map(t => h(`span.t-${t}`, null, E.TNAME[t])));
+  }
+
+  /* Lernhinweise */
+  const KIND_TITLE = { strong: 'Starkes Verb', weak: 'Schwaches Verb', mixed: 'Gemischtes Verb', irreg: 'Unregelmäßiges Verb', modal: 'Modalverb' };
+  function verbTip(it) {
+    const I = it.info;
+    if (!I) return null;
+    const praet = I.particle ? `${I.praet} ${I.particle}` : I.praet;
+    const forms = `${I.inf} – ${praet} – ${I.aux === 's' ? 'ist' : 'hat'} ${I.p2}`;
+    let title = KIND_TITLE[I.kind] || 'Verb', text = '';
+    if (I.base === 'backen') {
+      title = 'Sonderfall';
+      text = 'Backen hat heute ein schwaches Präteritum mit -te (früher: buk), aber ein starkes Partizip II.';
+    } else if (I.kind === 'strong') {
+      text = 'Starke Verben sind unregelmäßig: Der Stammvokal wechselt, und das Präteritum hat kein -te.';
+    } else if (I.kind === 'mixed') {
+      text = 'Gemischte Verben ändern den Stamm wie starke Verben und bekommen trotzdem -te wie schwache.';
+    } else if (I.kind === 'weak') {
+      text = 'Schwache Verben sind regelmäßig: Der Stamm bleibt gleich, das Präteritum bekommt -te.';
+      if (I.eIns) text += ` Nach -d, -t oder -m/-n mit Mitlaut davor kommt ein -e- dazu: ${I.praet}.`;
+    } else if (I.kind === 'modal') {
+      text = `Bei Modalverben haben ich und er/sie/es im Präsens dieselbe Form ohne Endung: ich ${I.ich}, er ${I.er}.`;
+    } else {
+      text = `${q(I.base)} ist ganz unregelmäßig. Seine Formen lernt man am besten auswendig.`;
+    }
+    let extra = '';
+    const t = it.tense;
+    if ((t === 'perf' || t === 'plusq' || t === 'fut2') && I.aux === 's') {
+      extra = ['sein', 'werden', 'bleiben'].includes(I.base)
+        ? '„sein“, „werden“ und „bleiben“ bilden das Perfekt mit „sein“.'
+        : 'Bei Bewegung oder Veränderung steht „sein“, nicht „haben“.';
+    } else if (t === 'perf') extra = 'Perfekt = „haben“ oder „sein“ + Partizip II.';
+    else if (t === 'plusq') extra = 'Plusquamperfekt = „hatte“ oder „war“ + Partizip II: Es geschah noch früher.';
+    else if (t === 'fut1') extra = 'Futur I = „werden“ + Infinitiv.';
+    else if (t === 'fut2') extra = 'Futur II = „werden“ + Partizip II + „haben“ oder „sein“.';
+    else if (I.particle) extra = `${q(I.particle)} ist trennbar: Im Satz steht es am Ende, im Partizip II steht ge- in der Mitte.`;
+    else if (I.ieren) extra = 'Verben auf -ieren bekommen im Partizip II kein ge-.';
+    else if (I.prefix) extra = `Die Vorsilbe ${I.prefix}- bleibt am Verb, darum bekommt das Partizip II kein ge-.`;
+    else if (I.vowelChange && t === 'praes') extra = `Auch im Präsens wechselt der Vokal: du ${I.du}, er ${I.er}.`;
+    return { title, forms, text: extra ? text + ' ' + extra : text };
+  }
+
+  const GENERAL_TIPS = [
+    [1, 'Erzähltempus', 'Märchen erzählen meist im Präteritum: „Ein Kaiser regierte ein großes Land.“ In der wörtlichen Rede sprechen die Figuren oft im Präsens.'],
+    [1, 'Schwache Verben', 'Regelmäßige Verben heißen schwach. Ihr Präteritum bekommt -te: lachen – lachte – hat gelacht.'],
+    [1, 'Starke Verben', 'Unregelmäßige Verben heißen stark. Im Präteritum wechselt der Stammvokal: binden – band – hat gebunden.'],
+    [1, 'Gemischte Verben', 'Kennen, nennen, rennen, brennen, denken und bringen mischen beides: neuer Stamm und -te. kennen – kannte – hat gekannt.'],
+    [1, 'Personalendungen', 'Die Endung verrät die Person: ich lern-e, du lern-st, er lern-t, wir lern-en, ihr lern-t, sie lern-en.'],
+    [1, 'Trennbare Verben', 'Bei Verben wie einkaufen wandert die Vorsilbe im Satz ans Ende: Er kauft ein. Er kaufte ein.'],
+    [1, 'Vokalwechsel', 'Viele starke Verben wechseln schon im Präsens den Vokal, aber nur bei du und er/sie/es: ich fahre, du fährst, er fährt.'],
+    [1, 'Stammformen', 'Mit drei Formen kennst du ein Verb ganz: Infinitiv, Präteritum und Partizip II: binden – band – gebunden.'],
+    [2, 'Perfekt', 'Perfekt = „haben“ oder „sein“ im Präsens + Partizip II: Sie hat gelacht. Er ist gerannt.'],
+    [2, 'haben oder sein?', 'Verben der Bewegung oder Veränderung bilden das Perfekt mit „sein“: Er ist gestolpert. Sie ist gewachsen.'],
+    [2, 'Plusquamperfekt', 'Was noch früher geschah, steht im Plusquamperfekt: Nachdem es geregnet hatte, schien die Sonne.'],
+    [2, 'Satzklammer', 'Bei zusammengesetzten Formen umschließen die zwei Verbteile den Satz wie eine Klammer: Ich habe den Kuchen gebacken.'],
+    [3, 'Futur I', 'Futur I = „werden“ + Infinitiv: Morgen wird es schneien.'],
+    [3, 'Futur II', 'Futur II = „werden“ + Partizip II + „haben“ oder „sein“: Bis morgen wird er das Buch gelesen haben.'],
+    [3, 'Tempus ist nicht Zeit', 'Auch das Präsens kann von der Zukunft erzählen: Morgen fahre ich los. Bestimme deshalb immer die Form.']
+  ];
+  function generalTip(st, page) {
+    if (st.role === 'einleitung' && !st.pages[page].items.some(it => state.repaired.has(it.key))) {
+      return { title: 'So geht es', text: 'Tippe auf ein graues Verb und wähle unten die Form, die in den Satz passt.' };
+    }
+    const list = GENERAL_TIPS.filter(t => t[0] <= state.stage);
+    let hsh = 0; for (const ch of st.id) hsh = (hsh * 31 + ch.charCodeAt(0)) >>> 0;
+    const t = list[(hsh + page * 3) % list.length];
+    return { title: 'Tipp · ' + t[1], text: t[2] };
+  }
+  function infoBox(tip) {
+    return h('div.info', null,
+      h('span.kicker', null, tip.title),
+      tip.forms ? h('span.forms', null, tip.forms) : null,
+      h('p', null, tip.text));
+  }
+  function countChip(ps) {
+    return h('span.count', { 'aria-label': `${ps.d} von ${ps.n} Verben auf dieser Seite repariert` }, `${ps.d}/${ps.n}`);
+  }
+
+  function renderTray() {
+    const tray = document.getElementById('tray');
+    if (!tray) return;
+    const st = story(state.sid), pg = st.pages[state.page];
+    const ps = pageStat(pg);
+    const T = state.tray;
+    tray.innerHTML = '';
+
+    if (T.mode === 'choose' && state.sel) {
+      const it = items.get(state.sel);
+      tray.append(h('div.tray-head', null,
+        h('p.prompt', null, icon('star'), h('span', null, 'Welche Form passt für ', h('b', null, q(it.display)), '?')),
+        countChip(ps)));
+      const cards = h('div.cards', { role: 'group', 'aria-label': 'Kärtchen' });
+      T.options.forEach((o, idx) => {
+        cards.append(h(`button.card.px${T.shake === idx ? '.shake' : ''}`, { type: 'button', onclick: () => choose(idx), disabled: o.disabled ? true : null, 'aria-label': `${idx + 1}: ${o.label}` }, o.label));
+      });
+      tray.append(cards);
+      if (T.note) tray.append(h('p.note', null, T.note));
+      T.shake = null;
+      return;
+    }
+
+    // Ergebniszeile nach einer Antwort
+    const last = T.last ? items.get(T.last) : null;
+    if (last) {
+      const tname = last.tense ? E.TNAME[last.tense] : '';
+      tray.append(h('div.tray-head', null,
+        h(`p.result${T.revealed ? '.reveal' : ''}`, null, icon('star'),
+          h('span', null, T.revealed ? 'Richtig ist ' : 'Richtig: ', h('b', null, q(last.correct))),
+          tname ? h(`span.tchip.t-${last.tense}`, null, tname) : null),
+        countChip(ps)));
+      const tip = verbTip(last);
+      if (tip) tray.append(infoBox(tip));
+    } else if (!ps.complete) {
+      const tip = generalTip(st, state.page);
+      tray.append(h('div.tray-head', null, h('span.kicker', null, tip.title), countChip(ps)));
+      tray.append(h('div.info', null, h('p', null, tip.text)));
+    }
+
+    if (ps.complete) {
+      const isLast = state.page === st.pages.length - 1;
+      if (!last && ps.n === 0) tray.append(h('p.prompt', null, 'Auf dieser Stufe ist hier nichts verflucht.'));
+      tray.append(h('div.done-row', null,
+        h('p', null, ps.n ? 'Seite repariert!' : ''),
+        h('button.btn.px.primary', { type: 'button', onclick: nextPage }, isLast ? lastLabel(st) : 'Umblättern', icon('right'))));
+      if (!last) { const lg = legendFor(pg); if (lg) tray.append(lg); }
+    }
+  }
+
+  function selectItem(it) {
+    state.sel = it.key;
+    const opts = [{ label: it.correct, right: true }].concat(it.cards.map(c => ({ label: c.label, right: false, fb: c.feedback, type: c.type })));
+    state.tray = { mode: 'choose', options: shuffle(opts), note: null };
+    updateAllVerbs();
+    renderTray();
+  }
+
+  function choose(idx) {
+    const T = state.tray;
+    if (T.mode !== 'choose' || !state.sel) return;
+    const o = T.options[idx];
+    if (!o || o.disabled) return;
+    const it = items.get(state.sel);
+    if (o.right) {
+      state.repaired.add(it.key);
+      state.sel = null;
+      S.right();
+      updateItem(it.key, true);
+      updateAllVerbs();
+      state.tray = { mode: 'idle', last: it.key };
+      afterRepair();
+      return;
+    }
+    o.disabled = true;
+    const n = (state.wrong.get(it.key) || 0) + 1;
+    state.wrong.set(it.key, n);
+    S.wrong();
+    if (n >= 2) {
+      state.repaired.add(it.key);
+      state.revealed.add(it.key);
+      state.sel = null;
+      setTimeout(() => S.reveal(), 350);
+      updateItem(it.key, true);
+      updateAllVerbs();
+      state.tray = { mode: 'idle', last: it.key, revealed: true };
+      afterRepair();
+      return;
+    }
+    T.note = o.fb || 'Schau noch einmal genau hin.';
+    T.shake = idx;
+    renderTray();
+    const cards = document.querySelectorAll('.tray .card:not(:disabled)');
+    if (cards[0] && document.activeElement && document.activeElement.classList.contains('card')) cards[0].focus();
+  }
+
+  function afterRepair() {
+    const st = story(state.sid);
+    const ps = pageStat(st.pages[state.page]);
+    updatePic(true);
+    renderTray();
+    if (ps.complete) setTimeout(() => S.done(), 380);
+    checkStickers();
+    if (stickerQueue.length) { clearTimeout(stickerTimer); stickerTimer = setTimeout(showStickerPop, 1100); }
+  }
+
+  function prevPage() {
+    if (state.page > 0) { S.page(); go('page', state.sid, state.page - 1); }
+  }
+  function nextPage() {
+    const st = story(state.sid);
+    if (state.page < st.pages.length - 1) { S.page(); go('page', state.sid, state.page + 1); }
+    else go('finish');
+  }
+
+  /* Tooltip für reparierte Verben */
+  let tipEl = null, tipTimer = null;
+  function showTip(btn, text) {
+    hideTip();
+    const r = btn.getBoundingClientRect();
+    tipEl = h('div.tip.px', { role: 'status' }, text);
+    tipEl.style.left = (r.left + r.width / 2) + 'px';
+    tipEl.style.top = r.top + 'px';
+    document.body.append(tipEl);
+    const tr = tipEl.getBoundingClientRect();
+    if (tr.left < 8) tipEl.style.left = (r.left + r.width / 2 + (8 - tr.left)) + 'px';
+    if (tr.right > window.innerWidth - 8) tipEl.style.left = (r.left + r.width / 2 - (tr.right - window.innerWidth + 8)) + 'px';
+    tipTimer = setTimeout(hideTip, 1800);
+  }
+  function hideTip() { if (tipEl) { tipEl.remove(); tipEl = null; } clearTimeout(tipTimer); }
+
+  screen.addEventListener('click', e => {
+    const b = e.target.closest('.verb');
+    if (!b) return;
+    S.unlock();
+    const it = items.get(b.dataset.key);
+    if (isDone(it)) { showTip(b, it.tense ? E.TNAME[it.tense] : 'Verb'); return; }
+    if (state.sel === it.key) return;
+    S.tap();
+    selectItem(it);
+  });
+
+  /* ---------- Abschluss ---------- */
+  function renderFinish() {
+    if (stickerQueue.length) setTimeout(showStickerPop, 900);
+    const st = story(state.sid);
+    const s = storyStat(st);
+    const all = allStories();
+    const tales = all.filter(x => !x.role);
+    const idx = all.indexOf(st);
+    const next = all.slice(idx + 1).find(x => !storyStat(x).complete || x.role === 'schluss') || null;
+    const thumb = document.createElement('canvas');
+    const lastPg = st.pages[st.pages.length - 1];
+    A.drawScene(thumb, lastPg.bild, lastPg.figuren);
+    thumb.className = 'thumb px';
+    thumb.setAttribute('aria-hidden', 'true');
+    let title, text, buttons = [];
+    if (!s.complete) {
+      thumb.style.filter = `grayscale(${(1 - s.d / Math.max(1, s.n)).toFixed(2)})`;
+      title = pixelTitle('Fast geschafft', { fill: '#fdfaff', shadow: '#3b3355', outline: '#7a5cd6' });
+      text = `In ${q(st.title)} ${s.n - s.d === 1 ? 'ist noch 1 Verb' : 'sind noch ' + (s.n - s.d) + ' Verben'} grau.`;
+      buttons.push(h('button.btn.px.primary', { type: 'button', onclick: () => openStory(st.id) }, 'Zurück ins Märchen'));
+      buttons.push(h('button.btn.px', { type: 'button', onclick: () => go('toc') }, icon('book'), 'Zum Inhalt'));
+    } else if (st.role === 'einleitung') {
+      state.introDone = true;
+      title = pixelTitle('Los geht es!', { fill: '#f8d35a', shadow: '#3b3355', outline: '#4a3290' });
+      text = `Du weißt jetzt, wie es geht. ${tales.length} Märchen warten im Inhaltsverzeichnis auf dich.`;
+      buttons.push(h('button.btn.px.primary', { type: 'button', onclick: () => go('toc') }, icon('book'), 'Zum Inhalt'));
+      setTimeout(() => S.done(), 120);
+    } else if (st.role === 'schluss') {
+      title = pixelTitle('Ende', { fill: '#f8d35a', shadow: '#3b3355', outline: '#4a3290' });
+      text = 'Der Fluch ist gebrochen. Das Märchenbuch ist wieder heil, und die dreizehnte Fee sitzt mit am Tisch.';
+      buttons.push(h('button.btn.px.primary', { type: 'button', onclick: () => go('cover') }, icon('star'), 'Zum Titelbild'));
+      buttons.push(h('button.btn.px', { type: 'button', onclick: () => go('toc') }, icon('book'), 'Zum Inhalt'));
+      setTimeout(() => S.fanfare(), 120);
+    } else {
+      title = pixelTitle('Entflucht!', { fill: '#f8d35a', shadow: '#3b3355', outline: '#4a3290' });
+      text = `${st.title} ist wieder heil. ${s.n} ${s.n === 1 ? 'Verb hat' : 'Verben haben'} ihre Zeit zurück.`;
+      if (next) buttons.push(h('button.btn.px.primary', { type: 'button', onclick: () => openStory(next.id) }, next.role === 'schluss' ? 'Zum Schluss' : 'Weiter: ' + next.title, icon('right')));
+      buttons.push(h('button.btn.px', { type: 'button', onclick: () => go('toc') }, icon('book'), 'Zum Inhalt'));
+      setTimeout(() => S.fanfare(), 120);
+    }
+    screen.append(h('section.finish', null, h('div.box.px', null, h('h1.sr', null, title.getAttribute('aria-label')), title, thumb, h('p', null, text), h('div.row', null, buttons))));
+    const first = screen.querySelector('.finish .btn'); if (first) first.focus({ preventScroll: true });
+  }
+
+  /* ---------- Lehrkraft-Menü ---------- */
+  let overlay = null, lastFocus = null;
+  function openTeacher() {
+    S.unlock();
+    hideTip();
+    lastFocus = document.activeElement;
+    overlay = h('div.overlay', { onclick: e => { if (e.target === overlay) closeTeacher(); } });
+    const panel = h('div.panel.px', { role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'tm-title' });
+
+    // Stufe
+    const stageInfo = [
+      [1, 'Stufe 1', 'Erzählen und Sprechen', ['praes', 'praet']],
+      [2, 'Stufe 2', 'Dazu Vergangenes in Rede und nachdem-Sätzen', ['praes', 'praet', 'perf', 'plusq']],
+      [3, 'Stufe 3', 'Dazu Wünsche, Flüche und Versprechen', ['praes', 'praet', 'perf', 'plusq', 'fut1', 'fut2']]
+    ];
+    const stages = h('div.stages', { role: 'radiogroup', 'aria-label': 'Tempus-Stufe' });
+    stageInfo.forEach(([n, name, desc, ts]) => {
+      const inp = h('input', { type: 'radio', name: 'stage', id: 'stage-' + n, value: String(n), checked: state.stage === n ? true : null,
+        onchange: () => { state.stage = n; state.sel = null; state.tray = { mode: 'idle' }; renderBar(); toast(`${name}: ${ts.map(t => E.TNAME[t]).join(', ')} sind verflucht.`); } });
+      stages.append(h('label.stage-opt', { for: 'stage-' + n }, inp, h('b', null, name + ' · ', h('span', null, desc)), h('div.chips', null, ts.map(t => h(`i.t-${t}`, null, E.TNAME[t])))));
+    });
+
+    // Ton
+    const sound = h('label.switch', { for: 'tm-sound' }, h('input', { type: 'checkbox', id: 'tm-sound', checked: S.on ? true : null, onchange: e => { S.on = e.target.checked; renderBar(); } }), 'Klänge abspielen');
+
+    // Eigenes Material
+    const ta = h('textarea', { id: 'tm-md', spellcheck: 'false', 'aria-label': 'Eigenes Märchen im Markdown-Format', placeholder: '# Titel\n\n## Seite 1\nbild: wald\nfiguren: rotkaeppchen, wolf\nEs {war|sein} einmal …' });
+    const file = h('input', { type: 'file', id: 'tm-file', accept: '.md,.txt,text/markdown,text/plain', class: 'sr' });
+    const report = h('div', { id: 'tm-report', 'aria-live': 'polite' });
+    const list = h('ul.custom-list');
+    const renderCustomList = () => {
+      list.innerHTML = '';
+      custom.forEach(st => list.append(h('li', null, h('span', null, `${st.title} · ${st.pages.length} ${st.pages.length === 1 ? 'Seite' : 'Seiten'}`),
+        h('button.btn.px.quiet', { type: 'button', onclick: () => { removeCustom(st.id); renderCustomList(); fillCheckSelect(); } }, 'Entfernen'))));
+    };
+    file.addEventListener('change', () => {
+      const f = file.files && file.files[0]; if (!f) return;
+      const rd = new FileReader();
+      rd.onload = () => { ta.value = String(rd.result || ''); loadCustom(ta.value, report); renderCustomList(); fillCheckSelect(); };
+      rd.readAsText(f, 'utf-8');
+    });
+    const example = `# Die Bremer Stadtmusikanten
+
+## Seite 1
+bild: wald
+figuren: wolf
+Ein alter Esel {lief|fortlaufen} von zu Hause {fort}.
+Er {wollte|wollen} in Bremen Musik machen.
+
+## Seite 2
+bild: nacht
+„Wir {werden|singen} zusammen {singen}!“, {rief|rufen} der Hahn.`;
+
+    // Prüfliste
+    const sel = h('select', { id: 'tm-check', 'aria-label': 'Märchen für die Prüfliste' });
+    const checkOut = h('div.check-wrap');
+    const fillCheckSelect = () => {
+      const cur = sel.value;
+      sel.innerHTML = '';
+      allStories().forEach(st => sel.append(h('option', { value: st.id }, st.title)));
+      if (cur && story(cur)) sel.value = cur; else if (state.sid && story(state.sid)) sel.value = state.sid;
+      renderCheck();
+    };
+    const renderCheck = () => {
+      const st = story(sel.value); checkOut.innerHTML = '';
+      if (!st) return;
+      const tb = h('tbody');
+      st.pages.forEach((pg, pi) => pg.items.forEach(it => {
+        tb.append(h('tr', null,
+          h('td', null, String(pi + 1)),
+          h('td', null, h('b', null, it.correct), h('br'), h('span.small', null, it.inf)),
+          h('td.t', null, it.tense ? h(`span.t-${it.tense}`, null, E.TNAME[it.tense]) : 'unbekannt'),
+          h('td', null, it.cards.map(c => c.label).join(' · '))));
+      }));
+      checkOut.append(h('table.check', null, h('thead', null, h('tr', null, h('th', null, 'S.'), h('th', null, 'Richtige Form'), h('th', null, 'Tempus'), h('th', null, 'Falsche Kärtchen'))), tb));
+    };
+    sel.addEventListener('change', renderCheck);
+
+    // Zurücksetzen
+    let armed = false, armTimer = null;
+    const reset = h('button.btn.px.quiet', { type: 'button' }, 'Fortschritt zurücksetzen');
+    reset.addEventListener('click', () => {
+      if (!armed) { armed = true; reset.textContent = 'Wirklich alles zurücksetzen?'; reset.classList.add('primary'); armTimer = setTimeout(() => { armed = false; reset.textContent = 'Fortschritt zurücksetzen'; reset.classList.remove('primary'); }, 3500); return; }
+      clearTimeout(armTimer);
+      state.repaired.clear(); state.revealed.clear(); state.wrong.clear(); state.introDone = false; state.stickers.clear();
+      reset.textContent = 'Zurückgesetzt'; reset.classList.remove('primary'); armed = false;
+      toast('Alle Verben sind wieder verflucht, das Stickeralbum ist leer.');
+    });
+
+    panel.append(
+      h('header', null, h('h2#tm-title', null, 'Lehrkraft-Menü'), h('button.btn.px.icon', { type: 'button', onclick: closeTeacher, 'aria-label': 'Menü schließen' }, icon('close'))),
+      h('p', null, 'Hier stellst du ein, welche Tempora verflucht sind, lädst eigene Märchen und prüfst alle Formen. Es wird nichts gespeichert und nichts übertragen.'),
+      h('h3', null, 'Tempus-Stufe'), stages,
+      h('p.small', null, 'Verben in anderen Tempora stehen schon repariert im Text. So passt dasselbe Märchen zu jeder Stufe.'),
+      h('h3', null, 'Ton'), sound,
+      h('h3', null, 'Eigenes Märchen laden'),
+      h('p', null, 'Schreibe ein Märchen im Markdown-Format oder wähle eine Datei. ', h('code', null, '{richtige Form|Infinitiv}'), ' markiert ein verfluchtes Verb, ', h('code', null, '{Teil}'), ' ohne Infinitiv den abgetrennten Teil im selben Satz. Eigene falsche Kärtchen hängst du an: ', h('code', null, '{ging|gehen|gehte|geht}'), '.'),
+      ta,
+      h('div.row-btns', null,
+        h('button.btn.px.fairy', { type: 'button', onclick: () => { loadCustom(ta.value, report); renderCustomList(); fillCheckSelect(); } }, 'Märchen laden'),
+        h('label.btn.px.quiet', { for: 'tm-file' }, 'Datei wählen …'), file,
+        h('button.btn.px.quiet', { type: 'button', onclick: () => { ta.value = example; ta.focus(); } }, 'Beispiel einfügen')),
+      report, list,
+      h('details', null, h('summary', null, 'Bilder und Figuren'),
+        h('p.small', null, 'bild: ', A.SCENES.filter(s => s !== 'cover').join(', ')),
+        h('p.small', null, 'figuren: ', A.FIGURES.join(', '))),
+      h('h3', null, 'Formen prüfen'),
+      h('p', null, 'Alle verfluchten Verben eines Märchens mit Tempus und den falschen Kärtchen.'), sel, checkOut,
+      h('h3', null, 'Fortschritt'), reset,
+      h('h3', null, 'Datenschutz'),
+      h('ul.privacy', null,
+        h('li', null, 'Das Spiel lädt nichts aus dem Internet: keine Schriften, Bilder, Skripte oder Statistikdienste. Die Offline-Datei sperrt Verbindungen zusätzlich per Sicherheitsregel.'),
+        h('li', null, 'Es fragt keine Namen, Konten oder Klassen ab und erhebt keine Daten über die Kinder.'),
+        h('li', null, 'Es speichert nichts auf dem Gerät, auch keine Cookies. Fortschritt und Sticker gelten nur, bis das Fenster geschlossen wird.'),
+        h('li', null, 'Der Sticker-Code besteht aus sechs Zeichen und verrät nur, welche Sticker gesammelt sind.'),
+        h('li', null, 'Eigene Märchen werden nur im Browser gelesen und nicht übertragen.'),
+        h('li', null, 'Für den Unterricht die HTML-Datei lokal oder vom USB-Stick öffnen. Dann läuft das Spiel ohne Internet.')),
+      h('h3', null, 'Über das Spiel'),
+      h('p.small', null, 'Texte: eigene Nacherzählungen nach den Kinder- und Hausmärchen der Brüder Grimm. Grafik, Pixelschrift, Klänge und Programm: eigens für dieses Spiel erstellt und in die Datei eingebettet. Lesetext in der Systemschrift des Geräts. Tastatur: 1, 2, 3 wählen ein Kärtchen, Pfeiltasten blättern, F schaltet Vollbild.'));
+    renderCustomList();
+    fillCheckSelect();
+    overlay.append(panel);
+    document.body.append(overlay);
+    panel.querySelector('button, input').focus({ preventScroll: true });
+  }
+  function closeTeacher() {
+    if (!overlay) return;
+    overlay.remove(); overlay = null;
+    render();
+    if (lastFocus && lastFocus.isConnected) lastFocus.focus({ preventScroll: true });
+  }
+
+  function loadCustom(md, report) {
+    report.innerHTML = '';
+    if (!md.trim()) { report.append(h('div.report.err', null, 'Das Feld ist leer. Füge ein Märchen ein oder wähle eine Datei.')); return; }
+    const res = E.parseBook(md, { prefix: 'eigen' + (customSources.length + 1) + '-', custom: true });
+    const sts = res.stories.filter(s => s.pages.length);
+    if (!sts.length) { report.append(h('div.report.err', null, 'Kein Märchen gefunden. Beginne mit einer Zeile wie „# Titel“ und schreibe darunter den Text.')); return; }
+    customSources.push(md);
+    sts.forEach(s => { s.role = ''; custom.push(s); });
+    rebuildIndex();
+    const nItems = sts.reduce((a, s) => a + s.pages.reduce((b, p) => b + p.items.length, 0), 0);
+    report.append(h(`div.report${res.warnings.length ? '.err' : ''}`, null,
+      h('b', null, `Geladen: ${sts.map(s => q(s.title)).join(', ')} mit ${nItems} verfluchten Verben.`), ' Das Märchen steht jetzt im Inhaltsverzeichnis.',
+      res.warnings.length ? h('div', null, 'Diese Formen kennt das Spiel nicht. Sie funktionieren trotzdem, bekommen aber einfache falsche Kärtchen und keine Tempusfarbe:', h('ul', null, res.warnings.map(w => h('li', null, w.replace('Unbekannte Form: ', ''))))) : null));
+  }
+  function removeCustom(id) {
+    const i = custom.findIndex(s => s.id === id);
+    if (i >= 0) { custom.splice(i, 1); customSources.splice(i, 1); }
+    rebuildIndex();
+    if (state.sid === id) { state.screen = 'toc'; state.sid = null; }
+  }
+
+  /* ---------- Tastatur ---------- */
+  document.addEventListener('keydown', e => {
+    if (overlay) { if (e.key === 'Escape') closeTeacher(); return; }
+    const pop = document.querySelector('.sticker-pop');
+    if (pop) { if (e.key === 'Escape') pop.remove(); return; }
+    if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === 'f' || e.key === 'F') { toggleFullscreen(); return; }
+    if (state.screen !== 'page') return;
+    if (e.key === 'ArrowRight') nextPage();
+    else if (e.key === 'ArrowLeft') prevPage();
+    else if (e.key === 'Escape' && state.sel) { state.sel = null; state.tray = { mode: 'idle' }; updateAllVerbs(); renderTray(); }
+    else if (/^[1-3]$/.test(e.key) && state.tray.mode === 'choose') choose(+e.key - 1);
+  });
+
+  /* ---------- Start ---------- */
+  function snapshot() {
+    return {
+      screen: state.screen, sid: state.sid, page: state.page, stage: state.stage, sound: S.on, introDone: state.introDone,
+      repaired: [...state.repaired], revealed: [...state.revealed], wrong: [...state.wrong], customSources: customSources.slice(),
+      stickers: [...state.stickers], prevScreen: state.prevScreen
+    };
+  }
+  function start(data) {
+    data = data || {};
+    try {
+      (data.customSources || []).forEach(md => {
+        const res = E.parseBook(md, { prefix: 'eigen' + (customSources.length + 1) + '-', custom: true });
+        customSources.push(md);
+        res.stories.forEach(s => { s.role = ''; custom.push(s); });
+      });
+    } catch (e) { /* eigenes Material ließ sich nicht wiederherstellen */ }
+    rebuildIndex();
+    if (data.stage) state.stage = data.stage;
+    if (typeof data.sound === 'boolean') S.on = data.sound;
+    (data.repaired || []).forEach(k => items.has(k) && state.repaired.add(k));
+    (data.revealed || []).forEach(k => items.has(k) && state.revealed.add(k));
+    (data.wrong || []).forEach(([k, v]) => items.has(k) && state.wrong.set(k, v));
+    state.introDone = !!data.introDone;
+    (data.stickers || []).forEach(id => STICKERS.some(x => x.id === id) && state.stickers.add(id));
+    if (data.prevScreen) state.prevScreen = data.prevScreen;
+    if (data.screen && (data.screen === 'cover' || data.screen === 'toc' || data.screen === 'album' || (data.sid && story(data.sid)))) {
+      state.screen = data.screen; state.sid = data.sid || null; state.page = data.page || 0;
+      if (state.sid) { const st = story(state.sid); if (!st || state.page >= st.pages.length) { state.screen = 'toc'; state.page = 0; } }
+    }
+    render();
+  }
+  const hot = window.claude && window.claude.hot;
+  if (hot && hot.snapshot) { try { hot.snapshot(snapshot); } catch (e) { /* ohne Vorschau-Update */ } }
+  if (hot && hot.ready) hot.ready(start); else start((hot && hot.data) || {});
+
+  window.ZeitApp = { state, items, allStories, choose, go, openStory, openAlbum, stickerCode, readStickerCode, STICKERS };
+})();
+
+</script>
+
+</body>
+</html>

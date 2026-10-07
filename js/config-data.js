@@ -215,6 +215,19 @@ window.WissOS._configData = {
       "showOnDesktop": false
     },
     {
+      "id": "zeitfaden",
+      "name": "Zeitfaden",
+      "osName": "Der Zeitfaden",
+      "description": "Spiel zum Einüben der Tempusbildung",
+      "icon": "clock",
+      "category": "Spiele",
+      "url": "PROGRAMME/Zeitfaden/Der-Zeitfaden.html",
+      "openInWindow": true,
+      "width": 1050,
+      "height": 720,
+      "showOnDesktop": false
+    },
+    {
       "id": "wortartenlabor",
       "name": "Wortarten-Labor",
       "osName": "Wortarten-Labor",
@@ -296,7 +309,7 @@ window.WissOS._configData = {
       {
         "name": "Spiele",
         "icon": "joystick",
-        "programIds": ["blockkaskade", "spiele-generator", "wortwurfbude", "kasus-teich"]
+        "programIds": ["blockkaskade", "spiele-generator", "wortwurfbude", "kasus-teich", "zeitfaden"]
       }
     ],
     "systemEntries": [

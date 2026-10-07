@@ -2,11 +2,10 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Wortarten-Labor</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:wght@400;700&family=Pixelify+Sans:wght@400;600;700&display=swap">
 <style>
 /* Layout: Laborbank links (Prüfband oben, Maschinen darunter, in Reichweite am Smartboard),
    Laborplan rechts (Baum oben nur zum Ansehen, Schubladen unten zum Tippen).
@@ -21,67 +20,69 @@
   --accent:#ff8fb3; --accent-soft:#ffd6e3;
   --ja:#2fb873; --ja-soft:#d5f5e3; --nein:#f2596b; --nein-soft:#ffe1e5; --off:#d4cfe6;
   --verb:#ffe36e; --adjektiv:#a6e6a0; --nomen:#9dd4f1; --pronomen:#9eacf2; --artikel:#86d9c9; --adverb:#d6b0f0; --praeposition:#ffc08c; --konjunktion:#6ed691; --partikel:#cdd3e0; --satzaequivalent:#ff9e9e;
-  --f-ui:"Pixelify Sans","Courier New",monospace;
-  --f-term:"Courier Prime","Courier New",Courier,monospace;
-  --f-read:"Atkinson Hyperlegible",Verdana,"Segoe UI",system-ui,sans-serif;
-  --b:3px; --sh:4px 4px 0 var(--ink); --sh-s:2px 2px 0 var(--ink);
+  /* Schriften: keine Web-Schriften aus dem Internet. "Labor Pixel" steckt als Datei-Schrift im Dokument,
+     die übrigen sind Schriften des Geräts (wenn vorhanden), sonst Ersatz. */
+  --f-ui:"Labor Pixel","Courier New",monospace;
+  --f-term:"Courier Prime","Courier New",Courier,"Liberation Mono",monospace;
+  --f-read:"Atkinson Hyperlegible",Verdana,"Segoe UI",Tahoma,Roboto,"Noto Sans","DejaVu Sans",system-ui,sans-serif;
+  --b:3px; --sh:0.2667rem 0.2667rem 0 var(--ink); --sh-s:2px 2px 0 var(--ink);
 }
 html{font-size:16px;font-size:clamp(14px, .55vw + 8px, 20px);height:100%}
 body{
   min-height:100%;color:var(--ink);font-family:var(--f-read);
   background-color:var(--ground);
   background-image:linear-gradient(var(--grid) 2px,transparent 2px),linear-gradient(90deg,var(--grid) 2px,transparent 2px);
-  background-size:32px 32px;
+  background-size:2.1333rem 2.1333rem;
 }
 [hidden]{display:none!important}
 canvas{image-rendering:pixelated;image-rendering:crisp-edges}
 button{font:inherit;color:inherit}
 :focus-visible{outline:3px dashed var(--ink);outline-offset:3px}
 
-.app{max-width:1900px;margin:0 auto;padding-inline:16px;padding-block:12px 24px;display:grid;gap:14px}
+.app{max-width:126.6667rem;margin:0 auto;padding-inline:1.0667rem;padding-block:0.8rem 1.6rem;display:grid;gap:0.9333rem}
 
 /* Kopfzeile */
-.topbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;background:var(--panel);border:var(--b) solid var(--ink);box-shadow:var(--sh);padding:8px 12px}
-.brand{display:flex;align-items:center;gap:10px;font-family:var(--f-ui);font-weight:700;font-size:1.3rem;letter-spacing:.05em;text-transform:uppercase}
-.brand canvas{width:38px;height:38px}
-.roundinfo{display:flex;align-items:center;gap:8px 12px;flex:1 1 300px;min-width:0;flex-wrap:wrap;font-family:var(--f-ui)}
-.floor{font-size:.78rem;font-weight:600;background:var(--metal);border:2px solid var(--ink);padding:2px 8px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.topbar{display:flex;flex-wrap:wrap;align-items:center;gap:0.6667rem 0.9333rem;background:var(--panel);border:var(--b) solid var(--ink);box-shadow:var(--sh);padding:0.5333rem 0.8rem}
+.brand{display:flex;align-items:center;gap:0.6667rem;font-family:var(--f-ui);font-weight:700;font-size:1.3rem;letter-spacing:.05em;text-transform:uppercase}
+.brand canvas{width:2.5333rem;height:2.5333rem}
+.roundinfo{display:flex;align-items:center;gap:0.5333rem 0.8rem;flex:1 1 20rem;min-width:0;flex-wrap:wrap;font-family:var(--f-ui)}
+.floor{font-size:.78rem;font-weight:600;background:var(--metal);border:2px solid var(--ink);padding:2px 0.5333rem;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
 .maerchen-title{font-size:1.1rem;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pips{display:flex;gap:5px}
-.pip{width:14px;height:14px;border:2px solid var(--ink);background:var(--panel)}
+.pips{display:flex;gap:0.3333rem}
+.pip{width:0.9333rem;height:0.9333rem;border:2px solid var(--ink);background:var(--panel)}
 .pip.done{background:var(--ink)}
 .pip.now{background:var(--accent)}
-.tools{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap}
+.tools{display:flex;gap:0.5333rem;margin-left:auto;flex-wrap:wrap}
 
 /* Knöpfe */
-.btn{font-family:var(--f-ui);font-weight:600;font-size:1rem;background:var(--panel);border:var(--b) solid var(--ink);box-shadow:var(--sh-s);padding:.4em .8em;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.5em;min-height:46px;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.btn{font-family:var(--f-ui);font-weight:600;font-size:1rem;background:var(--panel);border:var(--b) solid var(--ink);box-shadow:var(--sh-s);padding:.4em .8em;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.5em;min-height:3.0667rem;touch-action:manipulation;user-select:none;-webkit-user-select:none}
 .btn:active:not(:disabled){transform:translate(2px,2px);box-shadow:none}
 .btn.primary{background:var(--accent)}
-.btn.big{font-size:1.25rem;padding:.5em 1.1em;box-shadow:var(--sh);min-height:58px}
+.btn.big{font-size:1.25rem;padding:.5em 1.1em;box-shadow:var(--sh);min-height:3.8667rem}
 .btn:disabled{opacity:.45;cursor:default;box-shadow:none}
-.btn .ico{width:22px;height:22px;flex:none}
+.btn .ico{width:1.4667rem;height:1.4667rem;flex:none}
 .btn .kbd{font-size:.75em;opacity:.7}
 .gear{position:relative;-webkit-touch-callout:none}
-.gear .hold{position:absolute;left:0;bottom:-3px;height:5px;width:0;background:var(--accent)}
+.gear .hold{position:absolute;left:0;bottom:-3px;height:0.3333rem;width:0;background:var(--accent)}
 .gear.holding .hold{animation:hold 2s linear forwards}
 @keyframes hold{to{width:100%}}
 
 /* Arbeitsfläche */
-.labor{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:16px;align-items:start}
-.bench,.plan{display:grid;gap:16px;min-width:0}
+.labor{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:1.0667rem;align-items:start}
+.bench,.plan{display:grid;gap:1.0667rem;min-width:0}
 .panel{background:var(--panel);border:var(--b) solid var(--ink);box-shadow:var(--sh);min-width:0}
-.panel-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:var(--f-ui);font-weight:600;text-transform:uppercase;letter-spacing:.07em;font-size:.82rem;padding:6px 12px;border-bottom:var(--b) solid var(--ink);background:var(--metal)}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:0.5333rem;flex-wrap:wrap;font-family:var(--f-ui);font-weight:600;text-transform:uppercase;letter-spacing:.07em;font-size:.82rem;padding:0.4rem 0.8rem;border-bottom:var(--b) solid var(--ink);background:var(--metal)}
 .panel-head .sub{text-transform:none;letter-spacing:0;font-weight:400;color:var(--ink-soft)}
 .tag{background:var(--accent-soft);border:2px solid var(--ink);padding:0 .5em;text-transform:none;letter-spacing:0}
 
 /* Prüfband */
-.station{background:var(--bench);padding:14px 16px 16px;display:grid;gap:12px}
-.guide{display:flex;gap:14px;align-items:flex-start}
-.guide canvas{width:76px;height:76px;flex:none}
+.station{background:var(--bench);padding:0.9333rem 1.0667rem 1.0667rem;display:grid;gap:0.8rem}
+.guide{display:flex;gap:0.9333rem;align-items:flex-start}
+.guide canvas{width:5.0667rem;height:5.0667rem;flex:none}
 .bubble{position:relative;margin:0;flex:1;min-width:0;background:var(--panel);border:var(--b) solid var(--ink);padding:.55em .9em;font-size:1.08rem;line-height:1.42;min-height:3.3em}
 .bubble::before,.bubble::after{content:"";position:absolute;background:var(--ink)}
-.bubble::before{left:-11px;top:16px;width:8px;height:8px}
-.bubble::after{left:-19px;top:26px;width:5px;height:5px}
+.bubble::before{left:-11px;top:1.0667rem;width:0.5333rem;height:0.5333rem}
+.bubble::after{left:-19px;top:1.7333rem;width:0.3333rem;height:0.3333rem}
 .bubble .term,.term{font-family:var(--f-term);font-weight:700}
 .bubble .w{font-weight:700}
 .sentence{font-size:1.7rem;font-size:clamp(1.3rem, 1rem + 1.05vw, 2.15rem);line-height:1.55;text-align:center;padding:.25em .2em 0;text-wrap:balance}
@@ -98,9 +99,9 @@ button{font:inherit;color:inherit}
 .wordcard.partikel{background:var(--partikel)}
 .wordcard.satzaequivalent{background:var(--satzaequivalent)}
 .flyer{position:fixed;z-index:40;pointer-events:none;margin:0;font-family:var(--f-read);box-sizing:border-box}
-.belt{height:16px;border:var(--b) solid var(--ink);background:repeating-linear-gradient(90deg,var(--belt) 0 16px,var(--belt-2) 16px 32px)}
+.belt{height:1.0667rem;border:var(--b) solid var(--ink);background:repeating-linear-gradient(90deg,var(--belt) 0 1.0667rem,var(--belt-2) 1.0667rem 2.1333rem)}
 .belt.run{animation:belt .5s steps(4) infinite}
-@keyframes belt{to{background-position:32px 0}}
+@keyframes belt{to{background-position:2.1333rem 0}}
 .result{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:.45em .6em;min-height:2.7em;font-size:1.15rem}
 .result .mtag{font-family:var(--f-term);font-weight:700;font-size:.9rem;background:var(--metal);border:2px solid var(--ink);padding:.1em .5em}
 .form{padding:.12em .5em;border:2px dashed var(--ink-soft);background:var(--panel)}
@@ -108,20 +109,20 @@ button{font:inherit;color:inherit}
 .form.ok{border:2px solid var(--ja);background:var(--ja-soft)}
 .form.bad{border:2px solid var(--nein);background:var(--nein-soft);text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:var(--nein)}
 .sep{color:var(--ink-soft);font-family:var(--f-ui)}
-.actions{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:12px;min-height:58px}
+.actions{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:0.8rem;min-height:3.8667rem}
 .thumb{min-width:9.5em}
 .thumb.yes{background:var(--ja-soft)}
 .thumb.no{background:var(--nein-soft)}
-.thumb .ico{width:28px;height:28px}
+.thumb .ico{width:1.8667rem;height:1.8667rem}
 .hint-line{font-family:var(--f-ui);font-size:1.05rem;color:var(--ink-soft);text-align:center}
 
 /* Prüfmaschinen */
-.machines{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:14px}
+.machines{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0.9333rem;padding:0.9333rem}
 .machine{position:relative;display:grid;grid-template-rows:auto 1fr;text-align:center;background:var(--metal);border:var(--b) solid var(--ink);box-shadow:var(--sh);cursor:pointer;min-height:11.2em;padding:0;overflow:hidden;touch-action:manipulation}
 .machines.one{grid-template-columns:minmax(0,24em);justify-content:center}
 .machines.six{grid-template-columns:repeat(3,minmax(0,1fr))}
 .machines.switched .machine{animation:appear .45s steps(5)}
-@keyframes appear{from{transform:translateY(14px);opacity:.2}}
+@keyframes appear{from{transform:translateY(0.9333rem);opacity:.2}}
 .machines.four{grid-template-columns:repeat(2,minmax(0,1fr))}
 .machines.five{grid-template-columns:repeat(6,minmax(0,1fr))}
 .machines.five .machine{grid-column:span 2}
@@ -130,36 +131,36 @@ button{font:inherit;color:inherit}
 .machine:active:not(:disabled){transform:translate(2px,2px);box-shadow:var(--sh-s)}
 .machine:disabled{cursor:default}
 .machine.waiting{opacity:.62}
-.machine.active{background:var(--accent-soft);box-shadow:4px 4px 0 var(--accent)}
-.mhead{display:flex;align-items:center;gap:8px;padding:5px 8px;border-bottom:var(--b) solid var(--ink);background:var(--metal-2)}
+.machine.active{background:var(--accent-soft);box-shadow:0.2667rem 0.2667rem 0 var(--accent)}
+.mhead{display:flex;align-items:center;gap:0.5333rem;padding:0.3333rem 0.5333rem;border-bottom:var(--b) solid var(--ink);background:var(--metal-2)}
 .key{font-family:var(--f-ui);font-weight:700;background:var(--ink);color:var(--panel);min-width:1.6em;padding:0 .3em;font-size:.85rem}
-.dots{display:flex;gap:4px;margin-left:auto}
-.dots i{width:8px;height:8px;border:2px solid var(--ink);background:var(--panel)}
-.lamp{width:26px;height:26px;border:var(--b) solid var(--ink);background:var(--off);display:grid;place-items:center;font-family:var(--f-ui);font-weight:700;font-size:.85rem;color:var(--panel)}
+.dots{display:flex;gap:0.2667rem;margin-left:auto}
+.dots i{width:0.5333rem;height:0.5333rem;border:2px solid var(--ink);background:var(--panel)}
+.lamp{width:1.7333rem;height:1.7333rem;border:var(--b) solid var(--ink);background:var(--off);display:grid;place-items:center;font-family:var(--f-ui);font-weight:700;font-size:.85rem;color:var(--panel)}
 .lamp.ja{background:var(--ja)}
 .lamp.nein{background:var(--nein)}
 .lamp.partizip{background:var(--verb);color:var(--ink)}
-.mbody{position:relative;display:grid;justify-items:center;align-content:center;gap:.35em;padding:10px 10px 14px}
-.iconbox{position:relative;width:52px;height:52px}
-.iconbox canvas{width:52px;height:52px}
+.mbody{position:relative;display:grid;justify-items:center;align-content:center;gap:.35em;padding:0.6667rem 0.6667rem 0.9333rem}
+.iconbox{position:relative;width:3.4667rem;height:3.4667rem}
+.iconbox canvas{width:3.4667rem;height:3.4667rem}
 .das{position:absolute;right:-16px;bottom:-4px;font-family:var(--f-read);font-weight:700;font-size:.72rem;background:var(--panel);border:2px solid var(--ink);padding:0 .3em;line-height:1.3}
 .machine .term{font-size:1.25rem}
 .question{font-size:.95rem;line-height:1.3;max-width:18em}
-.shutter{position:absolute;top:0;right:0;bottom:0;left:0;transform-origin:top;transition:transform .5s steps(6);background:repeating-linear-gradient(0deg,var(--metal-2) 0 12px,var(--ink-soft) 12px 15px)}
+.shutter{position:absolute;top:0;right:0;bottom:0;left:0;transform-origin:top;transition:transform .5s steps(6);background:repeating-linear-gradient(0deg,var(--metal-2) 0 0.8rem,var(--ink-soft) 0.8rem 1rem)}
 .machine:not(.locked) .shutter{transform:scaleY(0)}
 .machine.shake,.drawer.wrong{animation:shake .3s steps(4)}
-@keyframes shake{25%{transform:translate(-4px,0)}50%{transform:translate(4px,-2px)}75%{transform:translate(-3px,2px)}}
+@keyframes shake{25%{transform:translate(-4px,0)}50%{transform:translate(0.2667rem,-2px)}75%{transform:translate(-3px,2px)}}
 
 /* Laborplan */
-.btn.mini{min-height:34px;padding:.15em .6em;font-size:.8rem;box-shadow:none;text-transform:none;letter-spacing:0}
+.btn.mini{min-height:2.2667rem;padding:.15em .6em;font-size:.8rem;box-shadow:none;text-transform:none;letter-spacing:0}
 .plan-full{padding:0;overflow-x:auto}
 .plan-full .treesvg{min-width:720px}
 .plan-note{margin:0;color:var(--ink-soft);line-height:1.4}
-.head-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.legend{display:flex;gap:10px;text-transform:none;letter-spacing:0;font-weight:400}
-.legend span{display:inline-flex;align-items:center;gap:4px}
-.legend i{display:inline-block;width:12px;height:12px;border:2px solid var(--ink)}
-.tree-wrap{padding:10px 12px 12px;overflow-x:auto}
+.head-right{display:flex;align-items:center;gap:0.6667rem;flex-wrap:wrap}
+.legend{display:flex;gap:0.6667rem;text-transform:none;letter-spacing:0;font-weight:400}
+.legend span{display:inline-flex;align-items:center;gap:0.2667rem}
+.legend i{display:inline-block;width:0.8rem;height:0.8rem;border:2px solid var(--ink)}
+.tree-wrap{padding:0.6667rem 0.8rem 0.8rem;overflow-x:auto}
 .treesvg{display:block;width:100%;height:auto;min-width:300px}
 .treesvg .edge{stroke:var(--ink);stroke-width:2.5;fill:none}
 .treesvg .edge.ja{stroke:var(--ja);stroke-width:5}
@@ -191,8 +192,8 @@ button{font:inherit;color:inherit}
 @keyframes blink{50%{stroke:var(--ink)}}
 
 /* Schubladen */
-.cabinet{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:14px;background:var(--metal)}
-.drawer{font-family:var(--f-ui);font-weight:700;font-size:1.25rem;border:var(--b) solid var(--ink);box-shadow:var(--sh);padding:12px 8px 10px;display:grid;justify-items:center;gap:7px;cursor:pointer;min-height:6.2em;touch-action:manipulation;transition:transform .15s steps(2)}
+.cabinet{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0.8rem;padding:0.9333rem;background:var(--metal)}
+.drawer{font-family:var(--f-ui);font-weight:700;font-size:1.25rem;border:var(--b) solid var(--ink);box-shadow:var(--sh);padding:0.8rem 0.5333rem 0.6667rem;display:grid;justify-items:center;gap:0.4667rem;cursor:pointer;min-height:6.2em;touch-action:manipulation;transition:transform .15s steps(2)}
 .drawer.verb{background:var(--verb)}
 .drawer.adjektiv{background:var(--adjektiv)}
 .drawer.nomen{background:var(--nomen)}
@@ -203,16 +204,16 @@ button{font:inherit;color:inherit}
 .drawer.konjunktion{background:var(--konjunktion)}
 .drawer.partikel{background:var(--partikel)}
 .drawer.satzaequivalent{background:var(--satzaequivalent)}
-.cabinet.five{grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
-.cabinet.ten{grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
-.cabinet.ten .drawer{font-size:.95rem;padding:8px 3px;min-height:4.8em}
+.cabinet.five{grid-template-columns:repeat(5,minmax(0,1fr));gap:0.5333rem}
+.cabinet.ten{grid-template-columns:repeat(5,minmax(0,1fr));gap:0.5333rem}
+.cabinet.ten .drawer{font-size:.95rem;padding:0.5333rem 3px;min-height:4.8em}
 .cab-row{grid-column:1/-1;margin:2px 0 -2px;font-family:var(--f-term);font-weight:700;font-size:.85rem;color:var(--ink-soft)}
 .drawer.long{font-size:.92rem;hyphens:manual}
 .machines.six .machine{min-height:9.2em}
-.machines.six .iconbox,.machines.six .iconbox canvas{width:44px;height:44px}
+.machines.six .iconbox,.machines.six .iconbox canvas{width:2.9333rem;height:2.9333rem}
 .cabinet.ten .drawer.long{font-size:.78rem}
-.cabinet.five .drawer{font-size:1.02rem;padding-inline:4px;min-height:5.6em}
-.drawer .handle{width:46px;height:11px;border:var(--b) solid var(--ink);background:var(--panel)}
+.cabinet.five .drawer{font-size:1.02rem;padding-inline:0.2667rem;min-height:5.6em}
+.drawer .handle{width:3.0667rem;height:0.7333rem;border:var(--b) solid var(--ink);background:var(--panel)}
 .drawer .count{font-size:.8rem;font-weight:600;background:var(--panel);border:2px solid var(--ink);padding:0 .5em;font-variant-numeric:tabular-nums}
 .drawer:disabled{cursor:default}
 .cabinet:not(.active) .drawer{box-shadow:var(--sh-s)}
@@ -221,18 +222,21 @@ button{font:inherit;color:inherit}
 @keyframes bump{40%{transform:translateY(-10px)}}
 
 /* Dialoge */
-.overlay{position:fixed;top:0;right:0;bottom:0;left:0;z-index:50;display:grid;place-items:center;padding:16px;overflow:auto;background:rgba(44,42,74,.55)}
-.dialog{width:780px;max-width:100%;box-sizing:border-box;max-height:calc(100% - 8px);overflow:auto;background:var(--panel);border:var(--b) solid var(--ink);box-shadow:6px 6px 0 var(--ink)}
-.dialog.wide{width:980px}
-.dialog-head{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:var(--b) solid var(--ink);background:var(--metal);font-family:var(--f-ui);font-weight:700;font-size:1.1rem}
+.overlay{position:fixed;top:0;right:0;bottom:0;left:0;z-index:50;display:grid;place-items:center;padding:1.0667rem;overflow:auto;background:rgba(44,42,74,.55)}
+.dialog{width:52rem;max-width:100%;box-sizing:border-box;max-height:calc(100% - 0.5333rem);overflow:hidden;display:flex;flex-direction:column;background:var(--panel);border:var(--b) solid var(--ink);box-shadow:0.4rem 0.4rem 0 var(--ink)}
+.dialog.wide{width:65.3333rem}
+.dialog-head{display:flex;align-items:center;gap:0.6667rem;padding:0.5333rem 0.9333rem;border-bottom:var(--b) solid var(--ink);background:var(--metal);font-family:var(--f-ui);font-weight:700;font-size:1.1rem}
 .dialog-head .dots{margin-left:auto}
-.dialog-body{padding:16px;display:grid;gap:14px}
-.scene{display:block;width:100%;height:auto;aspect-ratio:16/9;border:var(--b) solid var(--ink);background:var(--metal)}
+.dialog-body{padding:1.0667rem;display:grid;gap:0.9333rem;flex:1 1 auto;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch}
+.dialog-head{flex:none}
+.dialog-body>.dialog-actions{position:-webkit-sticky;position:sticky;bottom:-16px;z-index:3;margin:0 -16px -16px;padding:0.6667rem 1.0667rem 0.9333rem;background:var(--panel);border-top:2px dashed var(--metal-2)}
+.scene{display:block;width:100%;height:auto;max-width:calc(40vh * 16 / 9);margin:0 auto;aspect-ratio:16/9;border:var(--b) solid var(--ink);background:var(--metal)}
+.scene.tap{cursor:pointer}
 .story-text{margin:0;font-size:1.3rem;line-height:1.45;text-align:center;text-wrap:balance}
 .story-text .say{display:block;font-weight:700;margin-bottom:.3em}
-.dialog-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.dialog-actions .right{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
-.retell{display:grid;gap:.35em;background:var(--bench);border:var(--b) solid var(--ink);padding:12px 16px}
+.dialog-actions{display:flex;justify-content:space-between;align-items:center;gap:0.6667rem;flex-wrap:wrap}
+.dialog-actions .right{display:flex;gap:0.6667rem;margin-left:auto;flex-wrap:wrap}
+.retell{display:grid;gap:.35em;background:var(--bench);border:var(--b) solid var(--ink);padding:0.8rem 1.0667rem}
 .retell p{margin:0;font-size:1.15rem;line-height:1.55}
 .retell mark{color:var(--ink);padding:0 .25em;border:2px solid var(--ink)}
 .retell mark.verb{background:var(--verb)}
@@ -245,35 +249,35 @@ button{font:inherit;color:inherit}
 .retell mark.konjunktion{background:var(--konjunktion)}
 .retell mark.partikel{background:var(--partikel)}
 .retell mark.satzaequivalent{background:var(--satzaequivalent)}
-.legend-box{background:var(--panel);padding:8px 16px}
-.reveal{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.reveal canvas{width:112px;height:112px;background:var(--panel);border:var(--b) solid var(--ink);box-shadow:var(--sh);padding:6px}
+.legend-box{background:var(--panel);padding:0.5333rem 1.0667rem}
+.reveal{display:flex;align-items:center;gap:1.0667rem;flex-wrap:wrap}
+.reveal canvas{width:7.4667rem;height:7.4667rem;background:var(--panel);border:var(--b) solid var(--ink);box-shadow:var(--sh);padding:0.4rem}
 .reveal p{margin:0;font-size:1.1rem;flex:1;min-width:12em}
 .big-title{font-family:var(--f-ui);font-weight:700;font-size:1.6rem;margin:0;text-wrap:balance}
-.album-floor{display:grid;gap:10px}
+.album-floor{display:grid;gap:0.6667rem}
 .album-floor h3{margin:0;font-family:var(--f-ui);font-size:1.05rem;font-weight:600}
-.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
-.slot{display:grid;justify-items:center;align-content:center;gap:6px;border:3px dashed var(--ink-soft);padding:10px;min-height:150px;text-align:center;font-size:.9rem}
-.slot canvas{width:80px;height:80px}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(8.6667rem,1fr));gap:0.8rem}
+.slot{display:grid;justify-items:center;align-content:center;gap:0.4rem;border:3px dashed var(--ink-soft);padding:0.6667rem;min-height:10rem;text-align:center;font-size:.9rem}
+.slot canvas{width:5.3333rem;height:5.3333rem}
 .slot.filled{border-style:solid;border-color:var(--ink);background:var(--bench);box-shadow:var(--sh-s)}
 .slot.new{animation:bump .5s steps(4) 2}
-.slot .empty{width:80px;height:80px;display:grid;place-items:center;font-family:var(--f-ui);font-size:2rem;color:var(--ink-soft)}
-.floor-locked{font-family:var(--f-ui);color:var(--ink-soft);border:2px dashed var(--ink-soft);padding:8px 12px}
+.slot .empty{width:5.3333rem;height:5.3333rem;display:grid;place-items:center;font-family:var(--f-ui);font-size:2rem;color:var(--ink-soft)}
+.floor-locked{font-family:var(--f-ui);color:var(--ink-soft);border:2px dashed var(--ink-soft);padding:0.5333rem 0.8rem}
 
 /* Lehrkraft-Bereich */
-.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tabs{display:flex;gap:0.5333rem;flex-wrap:wrap}
 .tab[aria-selected="true"]{background:var(--accent)}
-.setting{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:10px 0;border-bottom:2px dashed var(--metal-2)}
+.setting{display:flex;justify-content:space-between;align-items:center;gap:0.9333rem;padding:0.6667rem 0;border-bottom:2px dashed var(--metal-2)}
 .setting:last-child{border-bottom:0}
 .setting label,.setting .lbl{font-size:1.02rem;line-height:1.35}
 .setting small{display:block;color:var(--ink-soft);font-size:.85rem}
-.switch{appearance:none;-webkit-appearance:none;width:58px;height:30px;flex:none;border:var(--b) solid var(--ink);background:var(--off);position:relative;cursor:pointer;margin:0}
-.switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;background:var(--panel);border:2px solid var(--ink);transition:left .15s steps(3)}
+.switch{appearance:none;-webkit-appearance:none;width:3.8667rem;height:2rem;flex:none;border:var(--b) solid var(--ink);background:var(--off);position:relative;cursor:pointer;margin:0}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:1.2rem;height:1.2rem;background:var(--panel);border:2px solid var(--ink);transition:left .15s steps(3)}
 .switch:checked{background:var(--ja)}
-.switch:checked::after{left:29px}
-.checks{display:flex;gap:10px;flex-wrap:wrap}
-.check{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-ui);font-weight:600;border:2px solid var(--ink);padding:4px 10px;cursor:pointer}
-.check input{width:20px;height:20px;accent-color:var(--ink)}
+.switch:checked::after{left:1.9333rem}
+.checks{display:flex;gap:0.6667rem;flex-wrap:wrap}
+.check{display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--f-ui);font-weight:600;border:2px solid var(--ink);padding:0.2667rem 0.6667rem;cursor:pointer}
+.check input{width:1.3333rem;height:1.3333rem;accent-color:var(--ink)}
 .check.verb{background:var(--verb)}
 .check.adjektiv{background:var(--adjektiv)}
 .check.nomen{background:var(--nomen)}
@@ -284,21 +288,21 @@ button{font:inherit;color:inherit}
 .check.konjunktion{background:var(--konjunktion)}
 .check.partikel{background:var(--partikel)}
 .check.satzaequivalent{background:var(--satzaequivalent)}
-select.sel{font:inherit;font-size:1rem;border:var(--b) solid var(--ink);background:var(--panel);padding:.35em .5em;min-height:46px;max-width:100%}
-.preset{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+select.sel{font:inherit;font-size:1rem;border:var(--b) solid var(--ink);background:var(--panel);padding:.35em .5em;min-height:3.0667rem;max-width:100%}
+.preset{display:flex;gap:0.5333rem;align-items:center;flex-wrap:wrap}
 .preset code{font-family:var(--f-term);font-weight:700;background:var(--bench);border:2px solid var(--ink);padding:.3em .6em;word-break:break-all}
-.werkstatt{display:grid;gap:12px}
-.guide-text{display:grid;gap:6px;line-height:1.45}
-.guide-text h3{margin:10px 0 0;font-family:var(--f-ui);font-size:1.05rem}
+.werkstatt{display:grid;gap:0.8rem}
+.guide-text{display:grid;gap:0.4rem;line-height:1.45}
+.guide-text h3{margin:0.6667rem 0 0;font-family:var(--f-ui);font-size:1.05rem}
 .guide-text p,.guide-text ul,.guide-text ol{margin:0}
 .guide-text ul,.guide-text ol{padding-left:1.3em}
-.werkstatt textarea{width:100%;min-height:20em;resize:vertical;font-family:var(--f-term);font-size:.95rem;line-height:1.45;border:var(--b) solid var(--ink);padding:10px;background:#fffef8;color:var(--ink);box-sizing:border-box}
+.werkstatt textarea{width:100%;min-height:20em;resize:vertical;font-family:var(--f-term);font-size:.95rem;line-height:1.45;border:var(--b) solid var(--ink);padding:0.6667rem;background:#fffef8;color:var(--ink);box-sizing:border-box}
 .werkstatt p{margin:0;line-height:1.45}
 .msg{margin:0;font-weight:700}
 .msg.err{color:#b3263a}
 .msg.ok{color:#17794a}
 .msg ul{margin:.3em 0 0;padding-left:1.2em;font-weight:400}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:60;background:var(--ink);color:var(--panel);font-family:var(--f-ui);padding:10px 16px;border:var(--b) solid var(--panel);max-width:calc(100% - 32px);text-align:center}
+.toast{position:fixed;left:50%;bottom:1.6rem;transform:translateX(-50%);z-index:60;background:var(--ink);color:var(--panel);font-family:var(--f-ui);padding:0.6667rem 1.0667rem;border:var(--b) solid var(--panel);max-width:calc(100% - 2.1333rem);text-align:center}
 
 @media (min-width:1500px){
   html:not(.staged) .machines.four{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -322,9 +326,9 @@ select.sel{font:inherit;font-size:1rem;border:var(--b) solid var(--ink);backgrou
   html:not(.staged) .cabinet.five .drawer{grid-column:span 2}
   html:not(.staged) .cabinet.five .drawer:nth-child(n+4){grid-column:span 3}
   html:not(.staged) .machine{min-height:0}
-  html:not(.staged) .mbody{grid-template-columns:auto minmax(0,1fr);justify-items:start;text-align:left;column-gap:14px}
+  html:not(.staged) .mbody{grid-template-columns:auto minmax(0,1fr);justify-items:start;text-align:left;column-gap:0.9333rem}
   html:not(.staged) .iconbox{grid-row:span 2}
-  html:not(.staged) .guide canvas{width:54px;height:54px}
+  html:not(.staged) .guide canvas{width:3.6rem;height:3.6rem}
   html:not(.staged) .drawer{font-size:1rem;min-height:5.4em}
   html:not(.staged) .brand span{font-size:1.05rem}
   html:not(.staged) .keys-hint{display:none}
@@ -333,82 +337,84 @@ select.sel{font:inherit;font-size:1rem;border:var(--b) solid var(--ink);backgrou
 
 /* ---------- Phasenfokus (dezent): aktiver Bereich hervorgehoben, nichts verschiebt sich ---------- */
 .panel{transition:opacity .25s,filter .25s,box-shadow .25s}
-.panel.focus{box-shadow:6px 6px 0 var(--accent)}
+.panel.focus{box-shadow:0.4rem 0.4rem 0 var(--accent)}
 .panel.focus>.panel-head{background:var(--accent-soft)}
 .panel.calm{opacity:.7;filter:saturate(.55)}
 
 /* ---------- Bühne: Das ganze Labor passt immer auf einen Bildschirm (quer 1280×800, hoch 800×1140) ---------- */
-html.staged{font-size:15px;height:100%;overflow:auto;overscroll-behavior:none}
-html.staged body{height:100%;overflow:visible;margin:0}
-html.staged .stage{position:absolute;left:0;top:0;transform-origin:0 0;overflow:hidden}
-html.staged.land .stage{width:1280px;height:800px}
-html.staged.port .stage{width:800px;height:1140px}
-html.staged .app{box-sizing:border-box;width:100%;height:100%;max-width:none;margin:0;padding:10px 14px 12px;grid-template-rows:auto minmax(0,1fr);gap:10px}
-html.staged .topbar{padding:5px 10px;gap:6px 12px}
+/* Mitwachsendes Layout: Die Grundschrift (1rem) wird aus der Fenstergröße berechnet, alle Maße sind in rem.
+   Passt es nicht ganz (sehr kleines Fenster), wird gescrollt statt abgeschnitten. */
+html.staged{height:100%;overflow:auto;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html.staged body{min-height:100%;margin:0}
+html.staged .stage{position:relative;width:100%;min-height:100%}
+html.staged .app{box-sizing:border-box;width:100%;height:100vh;height:var(--app-h,100vh);max-width:none;margin:0;padding:0.6667rem 0.9333rem 0.8rem;grid-template-rows:auto minmax(0,1fr);gap:0.6667rem}
+html.staged.land .app{min-width:85.3333rem;min-height:53.3333rem}
+html.staged.port .app{min-width:53.3333rem;min-height:76rem}
+html.staged .topbar{padding:0.3333rem 0.6667rem;gap:0.4rem 0.8rem}
 html.staged .brand{font-size:1.1rem}
-html.staged .brand canvas{width:30px;height:30px}
-html.staged .topbar .btn{min-height:40px;padding:.3em .7em}
-html.staged .labor{height:100%;min-height:0;align-items:stretch;gap:12px}
-html.staged .bench,html.staged .plan{min-height:0;gap:12px;grid-template-rows:minmax(0,1fr) auto}
-html.staged .bench{grid-template-rows:minmax(0,1fr) var(--mach-h,200px)}
-html.staged .bench[data-rows="2"]{--mach-h:300px}
+html.staged .brand canvas{width:2rem;height:2rem}
+html.staged .topbar .btn{min-height:2.6667rem;padding:.3em .7em}
+html.staged .labor{height:100%;min-height:0;align-items:stretch;gap:0.8rem}
+html.staged .bench,html.staged .plan{min-height:0;gap:0.8rem;grid-template-rows:minmax(0,1fr) auto}
+html.staged .bench{grid-template-rows:minmax(0,1fr) var(--mach-h,13.3333rem)}
+html.staged .bench[data-rows="2"]{--mach-h:20rem}
 html.staged .panel{display:flex;flex-direction:column;min-height:0}
 /* Prüfband */
-html.staged .station{flex:1;min-height:0;overflow:hidden;padding:10px 14px 12px;gap:8px;align-content:space-evenly}
-html.staged .guide canvas{width:64px;height:64px}
+html.staged .station{flex:1;min-height:0;overflow:hidden;padding:0.6667rem 0.9333rem 0.8rem;gap:0.5333rem;align-content:space-evenly}
+html.staged .guide canvas{width:4.2667rem;height:4.2667rem}
 html.staged .bubble{font-size:var(--fs-bub,1.08rem);min-height:0}
 html.staged .sentence{font-size:var(--fs-sent,2.1rem);line-height:1.45;padding-top:.1em}
 html.staged .result{font-size:var(--fs-res,1.15rem);min-height:2.4em}
-html.staged .actions{min-height:58px}
+html.staged .actions{min-height:3.8667rem}
 /* Maschinen: flache Karten, Symbol links, Nummer oben und Ergebnislampe unten */
-html.staged .machines{flex:1;min-height:0;padding:12px;gap:12px;grid-auto-rows:minmax(0,1fr);align-content:stretch}
+html.staged .machines{flex:1;min-height:0;padding:0.8rem;gap:0.8rem;grid-auto-rows:minmax(0,1fr);align-content:stretch}
 html.staged .machines.four{grid-template-columns:repeat(2,minmax(0,1fr))}
 html.staged .machines.one{grid-template-columns:minmax(0,24em);justify-content:center;grid-auto-rows:auto;align-content:center}
 html.staged .machines .machine{min-height:0}
-html.staged .machine{min-height:0;grid-template-columns:52px minmax(0,1fr);grid-template-rows:auto auto;align-content:center;align-items:center;column-gap:10px;row-gap:3px;text-align:left;padding:8px 12px 8px 6px}
-html.staged .mhead{position:absolute;top:6px;left:6px;display:flex;flex-direction:row;gap:4px;align-items:center;padding:0;border:0;background:none;pointer-events:none;z-index:1}
+html.staged .machine{min-height:0;grid-template-columns:3.4667rem minmax(0,1fr);grid-template-rows:auto auto;align-content:center;align-items:center;column-gap:0.6667rem;row-gap:3px;text-align:left;padding:0.5333rem 0.8rem 0.5333rem 0.4rem}
+html.staged .mhead{position:absolute;top:0.4rem;left:0.4rem;display:flex;flex-direction:row;gap:0.2667rem;align-items:center;padding:0;border:0;background:none;pointer-events:none;z-index:1}
 html.staged .mhead .dots{display:none}
-html.staged .lamp{width:22px;height:22px;font-size:.8rem}
+html.staged .lamp{width:1.4667rem;height:1.4667rem;font-size:.8rem}
 html.staged .key{font-size:.78rem}
 html.staged .mbody{display:contents}
-html.staged .iconbox{grid-column:1;grid-row:1/span 2;justify-self:center;align-self:center;width:42px;height:42px;margin-top:22px}
-html.staged .iconbox canvas{width:42px;height:42px}
+html.staged .iconbox{grid-column:1;grid-row:1/span 2;justify-self:center;align-self:center;width:2.8rem;height:2.8rem;margin-top:1.4667rem}
+html.staged .iconbox canvas{width:2.8rem;height:2.8rem}
 html.staged .das{right:-8px;bottom:-6px;font-size:.66rem}
 html.staged .machine .term{grid-column:2;grid-row:1;align-self:end;font-size:1.05rem;line-height:1.15;word-break:break-word;overflow-wrap:anywhere}
 html.staged .question{grid-column:2;grid-row:2;align-self:start;font-size:.84rem;line-height:1.25;max-width:none}
 html.staged .shutter{z-index:2}
-html.staged #machinePanel[data-rows="1"] .iconbox,html.staged #machinePanel[data-rows="1"] .iconbox canvas{width:52px;height:52px}
+html.staged #machinePanel[data-rows="1"] .iconbox,html.staged #machinePanel[data-rows="1"] .iconbox canvas{width:3.4667rem;height:3.4667rem}
 html.staged #machinePanel[data-rows="1"] .machine .term{font-size:1.2rem}
 html.staged #machinePanel[data-rows="1"] .question{font-size:.92rem}
 /* Laborplan und Schubladen */
 html.staged #planPanel{flex:1}
-html.staged .tree-wrap{flex:1;min-height:0;display:flex;padding:8px 10px;overflow:hidden}
+html.staged .tree-wrap{flex:1;min-height:0;display:flex;padding:0.5333rem 0.6667rem;overflow:hidden}
 html.staged .tree-wrap .treesvg{width:100%;height:100%;min-width:0}
-html.staged .cabinet{padding:12px}
-html.staged .drawer{min-height:5.2em;padding:9px 6px 8px;gap:6px}
-html.staged .cabinet.ten .drawer{min-height:4.3em;padding:6px 3px}
+html.staged .cabinet{padding:0.8rem}
+html.staged .drawer{min-height:5.2em;padding:0.6rem 0.4rem 0.5333rem;gap:0.4rem}
+html.staged .cabinet.ten .drawer{min-height:4.3em;padding:0.4rem 3px}
 html.staged .cabinet.five .drawer{min-height:5em}
 
 /* Hochformat: Prüfband und Maschinen oben, Laborplan und Schubladen unten nebeneinander */
 html.staged.port .brand span{display:none}
-html.staged.port .labor{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) 340px}
+html.staged.port .labor{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) 22.6667rem}
 html.staged.port .plan{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
 html.staged.port #cabinetPanel{min-height:0}
-html.staged.port .cabinet{flex:1;min-height:0;grid-template-columns:minmax(0,1fr)!important;grid-auto-rows:minmax(0,1fr);align-content:stretch;gap:8px;padding:10px}
-html.staged.port .cabinet.ten{grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:auto repeat(5,minmax(0,1fr));grid-auto-flow:column;gap:6px 8px}
+html.staged.port .cabinet{flex:1;min-height:0;grid-template-columns:minmax(0,1fr)!important;grid-auto-rows:minmax(0,1fr);align-content:stretch;gap:0.5333rem;padding:0.6667rem}
+html.staged.port .cabinet.ten{grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:auto repeat(5,minmax(0,1fr));grid-auto-flow:column;gap:0.4rem 0.5333rem}
 html.staged.port .cab-row{grid-column:auto;margin:0}
-html.staged.port .drawer{min-height:0;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 10px;font-size:1.05rem;text-align:left}
+html.staged.port .drawer{min-height:0;display:flex;align-items:center;justify-content:space-between;gap:0.5333rem;padding:0.2667rem 0.6667rem;font-size:1.05rem;text-align:left}
 html.staged.port .drawer .handle{display:none}
-html.staged.port .cabinet.ten .drawer{font-size:.84rem;padding:3px 6px;min-height:0}
+html.staged.port .cabinet.ten .drawer{font-size:.84rem;padding:3px 0.4rem;min-height:0}
 html.staged.port .cabinet.ten .drawer .count{font-size:.7rem;padding:0 .3em}
 html.staged.port .drawer.long{font-size:.95rem}
 html.staged.port .cabinet.ten .drawer.long{font-size:.78rem}
 html.staged.port .cabinet.active .drawer{transform:translateX(-3px)}
-.album-grid{display:grid;gap:12px 18px}
+.album-grid{display:grid;gap:0.8rem 1.2rem}
 html.staged.land .album-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-html.staged .slots{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
-html.staged .slot{min-height:108px;padding:6px;font-size:.8rem;gap:4px}
-html.staged .slot canvas,html.staged .slot .empty{width:56px;height:56px}
+html.staged .slots{grid-template-columns:repeat(auto-fill,minmax(6.6667rem,1fr));gap:0.5333rem}
+html.staged .slot{min-height:7.2rem;padding:0.4rem;font-size:.8rem;gap:0.2667rem}
+html.staged .slot canvas,html.staged .slot .empty{width:3.7333rem;height:3.7333rem}
 html.staged .drawer .count{white-space:nowrap}
 html.staged.port .cabinet .drawer,html.staged.port .cabinet.five .drawer,html.staged.port .cabinet.ten .drawer{min-height:0}
 
@@ -416,18 +422,23 @@ html.staged.port .cabinet .drawer,html.staged.port .cabinet.five .drawer,html.st
 html.no-flexgap .actions>*,html.no-flexgap .tools>*,html.no-flexgap .dialog-actions .right>*,html.no-flexgap .preset>*,
 html.no-flexgap .checks>*,html.no-flexgap .tabs>*,html.no-flexgap .result>*,html.no-flexgap .head-right>*,html.no-flexgap .legend>*,
 html.no-flexgap .roundinfo>*,html.no-flexgap .pips>*,html.no-flexgap .dots>*,html.no-flexgap .mhead>*{margin:3px}
-html.no-flexgap .guide>canvas{margin-right:14px}
-html.no-flexgap .brand>canvas{margin-right:10px}
+html.no-flexgap .guide>canvas{margin-right:0.9333rem}
+html.no-flexgap .brand>canvas{margin-right:0.6667rem}
 html.no-flexgap .btn .ico{margin-right:.4em}
 /* Technik-Check */
-.tech td,.tech th{padding:6px 8px;border-bottom:2px dashed var(--metal-2);text-align:left;vertical-align:top}
+.tech td,.tech th{padding:0.4rem 0.5333rem;border-bottom:2px dashed var(--metal-2);text-align:left;vertical-align:top}
 .tech{border-collapse:collapse;width:100%}
 .tech .ok{color:#17794a;font-weight:700}
 .tech .no{color:#b3263a;font-weight:700}
-.tech-report{font-family:var(--f-term);font-size:.8rem;white-space:pre-wrap;background:var(--bench);border:2px solid var(--ink);padding:8px;margin:0;max-height:9em;overflow:auto}
+.tech-report{font-family:var(--f-term);font-size:.8rem;white-space:pre-wrap;background:var(--bench);border:2px solid var(--ink);padding:0.5333rem;margin:0;max-height:9em;overflow:auto}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
+</style>
+<style>
+/* Labor Pixel: eigene Pixelschrift, in die Datei eingebettet (keine Web-Schrift aus dem Internet) */
+@font-face{font-family:"Labor Pixel";font-style:normal;font-weight:400;font-display:block;src:url(data:font/woff;base64,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) format("woff")}
+@font-face{font-family:"Labor Pixel";font-style:normal;font-weight:700;font-display:block;src:url(data:font/woff;base64,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) format("woff")}
 </style>
 </head>
 <body>
@@ -511,8 +522,12 @@ html.no-flexgap .btn .ico{margin-right:.4em}
   - deklinierbar:    Labor 2, Pflicht außer bei Verben, z. B. der Esel → des Esels → dem Esel
   - artikelfähig:    Formen, z. B. der Frosch · die Frösche
   - Satzglied:       Labor 2, Pflicht bei Pronomen und Artikel: der Satz mit dem Wort allein vor dem Verb
-                     Possessivpronomen (mein, dein, ihr …) zählen als Pronomen: hier den Satz ohne Nomen angeben,
-                     z. B. Ihre schüttelte das Mädchen jeden Tag.
+                     (bei Artikeln ist das ein Fehlversuch, z. B. Das spann Mädchen am Brunnen.)
+  - zusammen:        Labor 2, optional bei Artikeln: der Satz, in dem Artikel und Nomen gemeinsam vorn stehen,
+                     z. B. Die alte Frau Holle wohnte dort.
+                     Possessivwörter vor einem Nomen (ihre Goldtaler) zählen als Artikel (Possessivartikel),
+                     allein stehende (Die Goldtaler sind ihre!) als Pronomen. Im 1. Stock nur eindeutige Fälle
+                     verwenden; der Possessivartikel ist Stoff für die Turmspitze.
   - Kasusforderung:  Labor 3, Pflicht bei Präpositionen, z. B. mit wem? → mit dem Wolf → Dativ
   - Fügteil:         Labor 3, Pflicht bei Konjunktionen: die zwei getrennten Teile, z. B. Satz 1 · Satz 2
   - Attribut:        Labor 3, optional bei Adverbien, z. B. das Haus dort
@@ -690,6 +705,7 @@ html.no-flexgap .btn .ico{margin-right:.4em}
 ## bunte
 - Satz: Unten lag eine **bunte** Wiese.
 - Wortart: Adjektiv
+- Satzglied: Eine bunte Wiese lag unten.
 - Grundform: bunt
 - komparierbar: bunt → bunter → am buntesten
 - deklinierbar: eine bunte Wiese → einer bunten Wiese
@@ -697,8 +713,9 @@ html.no-flexgap .btn .ico{margin-right:.4em}
 ## die
 - Satz: Dort wohnte **die** alte Frau Holle.
 - Wortart: Artikel
-- deklinierbar: die Frau → der Frau → den Frauen
+- deklinierbar: die alte Frau → der alten Frau
 - Satzglied: Die wohnte dort alte Frau Holle.
+- zusammen: Die alte Frau Holle wohnte dort.
 
 ## mir
 - Satz: „Du kannst **mir** helfen“, sagte Frau Holle.
@@ -706,16 +723,16 @@ html.no-flexgap .btn .ico{margin-right:.4em}
 - deklinierbar: ich → mir → mich
 - Satzglied: „Mir kannst du helfen“, sagte Frau Holle.
 
-## ihre
-- Satz: Das Mädchen schüttelte **ihre** Betten.
+## es
+- Satz: Fleißig schüttelte **es** die Kissen und Decken auf.
 - Wortart: Pronomen
-- deklinierbar: ihre Betten → ihrer Betten → ihren Betten
-- Satzglied: Ihre schüttelte das Mädchen jeden Tag.
-- Hinweis: „ihre“ ist ein Possessivpronomen. Es kann auch ohne sein Nomen stehen.
+- deklinierbar: es → ihm → es
+- Satzglied: Es schüttelte fleißig die Kissen und Decken auf.
 
 ## Kissen
-- Satz: Die Federn flogen aus dem **Kissen**.
+- Satz: Die Federn flogen wie Schnee aus dem **Kissen**.
 - Wortart: Nomen
+- Satzglied: Aus dem Kissen flogen die Federn wie Schnee.
 - artikelfähig: das Kissen · die Kissen
 - deklinierbar: das Kissen → des Kissens → dem Kissen
 
@@ -738,21 +755,23 @@ html.no-flexgap .btn .ico{margin-right:.4em}
 ## klug
 - Satz: Die Katze war besonders **klug**.
 - Wortart: Adjektiv
+- Satzglied: Besonders klug war die Katze.
 - komparierbar: klug → klüger → am klügsten
 - deklinierbar: die kluge Katze → der klugen Katze
 
-## Unsere
-- Satz: „**Unsere** Musik ist die beste!“, riefen die Tiere.
+## wir
+- Satz: „In Bremen machen **wir** Musik!“, riefen die Tiere.
 - Wortart: Pronomen
-- deklinierbar: unsere Musik → unserer Musik → unsere Musik
-- Satzglied: „Unsere ist die beste!“, riefen die Tiere.
-- Hinweis: „unsere“ ist ein Possessivpronomen. Es kann auch ohne sein Nomen stehen.
+- konjugierbar: ich wiere · du wierst · sie wierte
+- deklinierbar: wir → uns → uns
+- Satzglied: „Wir machen in Bremen Musik!“, riefen die Tiere.
 
 ## das
 - Satz: Die Tiere fanden **das** Haus der Räuber.
 - Wortart: Artikel
 - deklinierbar: das Haus → des Hauses → dem Haus
 - Satzglied: Das fanden die Tiere Haus der Räuber.
+- zusammen: Das Haus der Räuber fanden die Tiere.
 
 ## flüchteten
 - Satz: Die Räuber **flüchteten** in den Wald.
@@ -771,18 +790,21 @@ html.no-flexgap .btn .ico{margin-right:.4em}
 ## die
 - Satz: Der König sperrte **die** Müllerstochter ein.
 - Wortart: Artikel
-- deklinierbar: die Tochter → der Tochter → den Töchtern
+- deklinierbar: die Müllerstochter → der Müllerstochter
 - Satzglied: Die sperrte der König Müllerstochter ein.
+- zusammen: Die Müllerstochter sperrte der König ein.
 
 ## Spinnrad
 - Satz: In der Kammer stand ein **Spinnrad**.
 - Wortart: Nomen
+- Satzglied: Ein Spinnrad stand in der Kammer.
 - artikelfähig: das Spinnrad · die Spinnräder
 - deklinierbar: das Spinnrad → des Spinnrads → dem Spinnrad
 
 ## kleines
 - Satz: Da kam ein **kleines** Männchen herein.
 - Wortart: Adjektiv
+- Satzglied: Ein kleines Männchen kam da herein.
 - Grundform: klein
 - komparierbar: klein → kleiner → am kleinsten
 - deklinierbar: ein kleines Männchen → eines kleinen Männchens
@@ -795,14 +817,12 @@ html.no-flexgap .btn .ico{margin-right:.4em}
 - deklinierbar: sie → ihr → sie
 - Satzglied: Ihr half das Männchen dreimal.
 
-## ihr
-- Satz: Dann wollte das Männchen **ihr** Kind haben.
-- Wortart: Pronomen
-- konjugierbar: ich ihrse · du ihrst · sie ihrte
-- komparierbar: ihr → ihrerer → am ihrsten
-- deklinierbar: ihr Kind → ihres Kindes → ihrem Kind
-- Satzglied: Ihres wollte das Männchen haben.
-- Hinweis: Hier ist „ihr“ ein Possessivpronomen (Wessen Kind? Ihr Kind). Ohne Nomen heißt es „ihres“.
+## das
+- Satz: Dann verlangte das Männchen **das** erste Kind der Königin.
+- Wortart: Artikel
+- deklinierbar: das Kind → des Kindes → dem Kind
+- Satzglied: Das verlangte das Männchen dann erste Kind der Königin.
+- zusammen: Das erste Kind der Königin verlangte das Männchen dann.
 
 ## erriet
 - Satz: Endlich **erriet** die Königin den Namen.
@@ -822,17 +842,17 @@ html.no-flexgap .btn .ico{margin-right:.4em}
 <script type="text/markdown" id="wortliste-3">
 # Der Wolf und die sieben Geißlein
 
-## heute
-- Satz: Die alte Geiß ging **heute** in den Wald.
-- Wortart: Adverb
-- Satzglied: Heute ging die alte Geiß in den Wald.
-- Attribut: der Ausflug heute
-
 ## mit
 - Satz: Die Mutter sprach **mit** ihren Kindern.
 - Wortart: Präposition
 - Kasusforderung: mit wem? → mit ihren Kindern → Dativ
 - Satzglied: Mit sprach die Mutter ihren Kindern.
+
+## heute
+- Satz: Die alte Geiß ging **heute** in den Wald.
+- Wortart: Adverb
+- Satzglied: Heute ging die alte Geiß in den Wald.
+- Attribut: der Ausflug heute
 
 ## denn
 - Satz: Die Geißlein öffneten nicht, **denn** der Wolf hatte eine raue Stimme.
@@ -902,16 +922,10 @@ html.no-flexgap .btn .ico{margin-right:.4em}
 - Satzglied: Morgens ging der Igel spazieren.
 
 ## über
-- Satz: Der Hase lachte **über** seine krummen Beine.
+- Satz: Der Hase lachte **über** die krummen Beine des Igels.
 - Wortart: Präposition
-- Kasusforderung: über wen oder was? → über seine krummen Beine → Akkusativ
-- Satzglied: Über lachte der Hase seine krummen Beine.
-
-## Als
-- Satz: **Als** der Hase ankam, war der Igel schon da.
-- Wortart: Konjunktion
-- Fügteil: Der Hase kam an. · Der Igel war schon da.
-- Satzglied: Als kam der Hase an.
+- Kasusforderung: über wen oder was? → über die krummen Beine → Akkusativ
+- Satzglied: Über lachte der Hase die krummen Beine des Igels.
 
 ## unten
 - Satz: Die Igelfrau wartete **unten** am Feld.
@@ -924,6 +938,12 @@ html.no-flexgap .btn .ico{margin-right:.4em}
 - Wortart: Präposition
 - Kasusforderung: gegen wen? → gegen den Igel → Akkusativ
 - Satzglied: Gegen lief der Hase den Igel um die Wette.
+
+## Als
+- Satz: **Als** der Hase ankam, war der Igel schon da.
+- Wortart: Konjunktion
+- Fügteil: Der Hase kam an. · Der Igel war schon da.
+- Satzglied: Als kam der Hase an.
 
 ## sondern
 - Satz: Am Ende gewann nicht der Hase, **sondern** der Igel.
@@ -949,18 +969,18 @@ html.no-flexgap .btn .ico{margin-right:.4em}
 - Wortart: Satzäquivalent
 
 ## sogar
-- Satz: Am Ende schlief **sogar** der Koch ein.
+- Satz: Da schlief **sogar** der Koch ein.
 - Wortart: Partikel
-- Satzglied: Sogar schlief am Ende der Koch ein.
-
-## Pst
-- Satz: „**Pst**, das ganze Schloss schläft!“, flüsterte der Prinz.
-- Wortart: Satzäquivalent
+- Satzglied: Sogar schlief da der Koch ein.
 
 ## etwa
 - Satz: Der Prinz kam nach **etwa** hundert Jahren.
 - Wortart: Partikel
 - Satzglied: Etwa kam der Prinz nach hundert Jahren.
+
+## Pst
+- Satz: „**Pst**, das ganze Schloss schläft!“, flüsterte der Prinz.
+- Wortart: Satzäquivalent
 
 # Aschenputtel
 
@@ -978,14 +998,14 @@ html.no-flexgap .btn .ico{margin-right:.4em}
 - Wortart: Partikel
 - Satzglied: Sehr waren die Stiefschwestern neidisch.
 
-## Au
-- Satz: „**Au**, mein Fuß!“, jammerte die Stiefschwester.
-- Wortart: Satzäquivalent
-
 ## allzu
 - Satz: Der Schuh war ihr **allzu** klein.
 - Wortart: Partikel
 - Satzglied: Allzu war der Schuh ihr klein.
+
+## Au
+- Satz: „**Au**, mein Fuß!“, jammerte die Stiefschwester.
+- Wortart: Satzäquivalent
 
 ## Ja
 - Satz: „**Ja**, der Schuh passt!“, rief der Prinz.
@@ -1009,10 +1029,10 @@ html.no-flexgap .btn .ico{margin-right:.4em}
 - Hinweis: Hier steht „das“ ohne Nomen. Es ist ein Pronomen (Demonstrativpronomen).
 
 ## zu
-- Satz: Rotkäppchen ging **zu** der Großmutter.
+- Satz: Rotkäppchen ging **zu** seiner Großmutter.
 - Wortart: Präposition
-- Kasusforderung: zu wem? → zu der Großmutter → Dativ
-- Satzglied: Zu ging Rotkäppchen der Großmutter.
+- Kasusforderung: zu wem? → zu seiner Großmutter → Dativ
+- Satzglied: Zu ging Rotkäppchen seiner Großmutter.
 
 ## zu
 - Satz: Der Schuh war **zu** klein.
@@ -1046,6 +1066,21 @@ html.no-flexgap .btn .ico{margin-right:.4em}
 - Satzglied: Aber ist das ein schönes Fest!
 - Hinweis: Hier zeigt „aber“ nur Staunen. Es verbindet keine zwei Teile.
 
+## ihre
+- Satz: Die Goldmarie zeigte **ihre** Goldtaler.
+- Wortart: Artikel
+- deklinierbar: ihre Goldtaler → ihrer Goldtaler → ihren Goldtalern
+- Satzglied: Ihre zeigte die Goldmarie Goldtaler.
+- zusammen: Ihre Goldtaler zeigte die Goldmarie.
+- Hinweis: Hier begleitet „ihre“ das Nomen „Goldtaler“ wie ein Artikel. Beide bilden eine feste Wortgruppe (Nominalphrase) und wandern nur zusammen nach vorn. Darum ist „ihre“ hier ein Possessivartikel, obwohl es wie ein Possessivpronomen aussieht.
+
+## ihre
+- Satz: „Die Goldtaler sind **ihre**, nicht deine!“, sagte die Mutter zur Pechmarie.
+- Wortart: Pronomen
+- deklinierbar: ihre → ihrer → ihren
+- Satzglied: „Ihre sind die Goldtaler, nicht deine!“, sagte die Mutter zur Pechmarie.
+- Hinweis: Hier steht „ihre“ allein, ohne Nomen. Es vertritt das Nomen: ihre = ihre Goldtaler. Darum ist es ein Possessivpronomen.
+
 # Die Meisterprüfung
 
 ## verzauberte
@@ -1074,10 +1109,11 @@ html.no-flexgap .btn .ico{margin-right:.4em}
 
 ## ihre
 - Satz: Die Hexe zählte **ihre** Goldstücke.
-- Wortart: Pronomen
+- Wortart: Artikel
 - deklinierbar: ihre Goldstücke → ihrer Goldstücke → ihren Goldstücken
-- Satzglied: Ihre zählte die Hexe.
-- Hinweis: Possessivpronomen – es kann auch ohne sein Nomen stehen.
+- Satzglied: Ihre zählte die Hexe Goldstücke.
+- zusammen: Ihre Goldstücke zählte die Hexe.
+- Hinweis: „ihre“ sieht aus wie ein Possessivpronomen. Hier bildet es aber mit „Goldstücke“ eine feste Wortgruppe (Nominalphrase): Beide wandern nur zusammen nach vorn. Deshalb ist „ihre“ hier ein Possessivartikel. Allein stehend wäre es ein Possessivpronomen: Die Goldstücke sind ihre.
 
 ## Der
 - Satz: **Der** Prinz suchte Aschenputtel.
@@ -1546,6 +1582,7 @@ const KEYMAP = {
   kasusforderung: 'kasus', kasus: 'kasus', fall: 'kasus',
   fuegteil: 'fueg', fugteil: 'fueg', trennprobe: 'fueg',
   syntaktischisoliert: 'isol', isoliert: 'isol', allein: 'isol',
+  zusammen: 'np', nominalphrase: 'np', wortgruppe: 'np',
   partizip: 'partizip'
 };
 function normKey(k){
@@ -1556,8 +1593,8 @@ function normWortart(w){
   if (t === 'verb' || t === 'partizip' || t === 'verbpartizip') return 'Verb';
   if (t === 'adjektiv') return 'Adjektiv';
   if (t === 'nomen' || t === 'substantiv' || t === 'eigenname') return 'Nomen';
-  if (t === 'pronomen' || /^(personal|possessiv|demonstrativ|reflexiv|interrogativ|relativ|indefinit)(pronomen|artikel)$/.test(t)) return 'Pronomen';
-  if (t === 'artikel') return 'Artikel';
+  if (t === 'pronomen' || /^(personal|possessiv|demonstrativ|reflexiv|interrogativ|relativ|indefinit)pronomen$/.test(t)) return 'Pronomen';
+  if (t === 'artikel' || /^(bestimmter|unbestimmter|possessiv|demonstrativ|indefinit)artikel$/.test(t)) return 'Artikel';
   if (t === 'adverb') return 'Adverb';
   if (t === 'praeposition') return 'Präposition';
   if (t === 'konjunktion' || t === 'subjunktion') return 'Konjunktion';
@@ -1672,11 +1709,55 @@ function flexAttempt(lw){
   const b = lw.replace(/e$/, '');
   return [`ich ${b}e`, `${b}er`, `des ${b}es`];
 }
-const LOWER_START = /^(Der|Die|Das|Den|Dem|Des|Ein|Eine|Einen|Einem|Er|Sie|Es|Ich|Wir|Ihr|Ihre|Seine|Sein|Da|Dann|Dort|Im|In|Am|An)\b/;
+/* Satzbau für automatische Proben: Leerzeichen und Satzzeichen ordnen, Anführungszeichen erhalten */
+const LOWER_START = /^(Der|Die|Das|Den|Dem|Des|Ein|Eine|Einen|Einem|Einer|Eines|Er|Sie|Es|Ich|Du|Wir|Ihr|Ihre|Ihren|Ihrem|Seine|Sein|Seinen|Unsere|Da|Dann|Dort|Doch|Im|In|Am|An|Auf|Aus|Mit|Bei|Zum|Zur|Vom|Unten|Oben|Endlich|Wütend|Verzweifelt|Plötzlich|Bald|Jetzt|Nun|Heute|Morgens|Unterwegs|Draußen|Drinnen|Hier|Danach|Zuerst|Jeden|Als|Wenn|Auch|Schon|Trotzdem|Wo|Wer|Was|Wie|Warum)\b/;
+const tidy = s => s.replace(/\s+/g, ' ').replace(/\s+([,.;:!?“])/g, '$1').replace(/([„])\s+/g, '$1').replace(/^[\s,;:]+/, '').trim();
+/* Verbzweitstellung: Nach dem umgestellten Wort folgt das gebeugte Verb (Heute ging die Geiß …) */
+const FUNC = /^(der|die|das|den|dem|des|ein|eine|einen|einem|einer|eines|kein|keine|keinen|mein|meine|dein|deine|sein|seine|seinen|ihr|ihre|ihren|ihrem|unser|unsere|in|an|auf|aus|mit|bei|zu|zum|zur|vom|von|nach|über|unter|vor|hinter|neben|durch|für|gegen|ohne|um|am|im|ins|nicht|sehr|schon|auch|noch|nur|ganz|so|und|oder|aber|denn|sondern|als|wenn|weil|dass|ob|wie|sich|mich|dich|uns|euch|ihm|ihn|ihnen|mir|dir)$/;
+const PRON = /^(ich|du|er|sie|es|wir|ihr|man)$/;
+const isVerbLike = t => !!t && /^[a-zäöüß]/.test(t) && !FUNC.test(t.replace(/[,.;:!?“]+$/, ''));
+function verbSecond(rest){
+  const tk = rest.split(' ');
+  if (tk.length < 2) return rest;
+  let v = -1;
+  if (PRON.test(tk[0]) && isVerbLike(tk[1])) v = 1;                       // er ging … → ging er …
+  else if (/^[a-zäöüß]/.test(tk[0]) && !FUNC.test(tk[0]) && isVerbLike(tk[1])) v = 1;   // da sprang … → sprang da …
+  else {
+    const n = tk.findIndex(t => /^[A-ZÄÖÜ]/.test(t));                        // Subjekt bis zum ersten Nomen
+    if (n >= 0 && tk.slice(0, n).every(t => /^[a-zäöüß]/.test(t)) && isVerbLike(tk[n + 1])) v = n + 1;
+  }
+  if (v < 1 || /[,.;:!?“]$/.test(tk[v - 1])) return rest;
+  const verb = tk.splice(v, 1)[0];
+  return [verb].concat(tk).join(' ');
+}
+function frontOf(before, word, after){
+  if (!before.trim()) return null;   // Wort steht schon vorn
+  const rest = tidy(before + ' ' + after).replace(LOWER_START, m => m.toLowerCase());
+  return `${cap(word)} ${verbSecond(rest)}`;
+}
 function moveFront(e){
-  let rest = (e.parts[0] + e.parts[2]).replace(/\s+/g, ' ').trim();
-  rest = rest.replace(LOWER_START, m => m.toLowerCase());
-  return `${cap(e.wort.toLowerCase())} ${rest}`;
+  const before = e.parts[0], after = e.parts[2];
+  const q1 = before.lastIndexOf('„'), q2 = after.indexOf('“');
+  if (q1 >= 0 && q2 >= 0){   // Wort steht in wörtlicher Rede: nur innerhalb der Rede umstellen
+    const inner = frontOf(before.slice(q1 + 1), e.wort, after.slice(0, q2));
+    return inner ? tidy(before.slice(0, q1) + '„' + inner + after.slice(q2)) : sentenceOf(e);
+  }
+  const moved = frontOf(before.replace(/^[„"]+/, ''), e.wort, after);
+  return moved || sentenceOf(e);
+}
+/* Possessivartikel: Possessivwort vor einem Nomen (ihre Kissen) – zählt als Artikel */
+const isPossessive = e => !!e && e.wortart === 'Artikel' && /^(mein|dein|sein|ihr|unser|euer|eur)/i.test(e.wort);
+/* Satz, in dem das Wort zusammen mit seinem Nomen vorn steht (die Satzglied-Probe für die ganze Wortgruppe) */
+function groupFront(e){
+  if (e.np) return e.np.replace(/^\*+/, '');
+  if (!e.parts[0].replace(/[„"\s]/g, '')) return sentenceOf(e);   // steht schon mit dem Nomen vorn
+  const tk = e.parts[2].trim().split(/\s+/);
+  const n = tk.findIndex(t => /^[A-ZÄÖÜ]/.test(t));
+  if (n < 0) return null;
+  let end = n; while (end + 1 < tk.length && /^[A-ZÄÖÜ]/.test(tk[end + 1])) end++;
+  const group = [e.wort].concat(tk.slice(0, end + 1)).join(' ').replace(/[,.;:!?]+$/, '');
+  const rest = tidy(e.parts[0] + ' ' + tk.slice(end + 1).join(' ')).replace(LOWER_START, m => m.toLowerCase());
+  return `${cap(group)} ${verbSecond(rest)}`;
 }
 function sentenceOf(e){ return (e.parts[0] + e.parts[1] + e.parts[2]).replace(/\s+/g, ' ').trim(); }
 /* Partizip vor einem Nomen: Steigern und Deklinieren klappen, es bleibt aber eine Verbform (attributiver Gebrauch) */
@@ -1719,8 +1800,11 @@ function probe(entry, t){
   }
   if (t === 'fueg'){
     if (given) return { truth, base: null, items: given.split(/\s*(?:·|\|)\s*/).map(x => x.trim()).filter(Boolean) };
-    const a = entry.parts[0].trim().replace(/[,;:]$/, ''), b = entry.parts[2].trim();
-    return { truth, base: null, items: [cap(a || '…') + (/[.!?]$/.test(a) ? '' : '.'), cap(b || '…')] };
+    // Fehlversuch: Satz am Wort zerschneiden (ohne Anführungszeichen, ohne verwaiste Satzzeichen)
+    const clean = s => tidy(s.replace(/[„“"]/g, ' ')).replace(/([!?.]),/g, '$1').replace(/^[,;:.!?\s]+/, '').replace(/[,;:\s]+$/, '');
+    const a = clean(entry.parts[0]), b = clean(entry.parts[2]);
+    const end = s => (/[.!?]$/.test(s) ? s : s + '.');
+    return { truth, base: null, items: [a ? end(cap(a)) : '–', b ? end(cap(b)) : '–'] };
   }
   if (t === 'sg' || t === 'sgatt'){
     const items = [given ? given.replace(/^\*+/, '') : moveFront(entry)];
@@ -1865,7 +1949,7 @@ function fitStation(){
   ['--fs-sent', '--fs-bub', '--fs-res'].forEach(v => st.style.removeProperty(v));
   if (!staged()) return;
   const over = () => st.scrollHeight > st.clientHeight + 1;
-  const steps = [['--fs-sent', [1.95, 1.8, 1.65, 1.5, 1.35]], ['--fs-bub', [1, .94, .88]], ['--fs-res', [1.05, .96]]];
+  const steps = [['--fs-sent', [1.95, 1.8, 1.65, 1.5, 1.35]], ['--fs-bub', [1, .94, .88, .82]], ['--fs-res', [1.05, .96]]];
   for (const [v, vals] of steps) for (const x of vals){ if (!over()) return; st.style.setProperty(v, x + 'rem'); }
 }
 /* Dezenter Phasenfokus: Der Bereich, in dem jetzt etwas zu tun ist, wird hervorgehoben. */
@@ -2023,12 +2107,7 @@ function render(){
 
 /* ---------- Animationen ---------- */
 /* Auf der skalierten Bühne fliegt die Wortkarte in Bühnen-Koordinaten (Bildschirmmaß geteilt durch den Maßstab). */
-function stageFrame(){
-  const st = $('#stage');
-  if (!staged() || !st) return { host: document.body, x: 0, y: 0, s: 1 };
-  const r = st.getBoundingClientRect();
-  return { host: st, x: r.left, y: r.top, s: r.width / st.offsetWidth || 1 };
-}
+function stageFrame(){ return { host: document.body, x: 0, y: 0, s: 1 }; }   // kein skaliertes Bild mehr: Bildschirmkoordinaten gelten direkt
 function flyer(from){
   const F = stageFrame(), r = from.getBoundingClientRect();
   const f = from.cloneNode(true);
@@ -2194,8 +2273,9 @@ function renderTree(){
   const half = LABS[S.lab].half;
   const svg = $('#tree');
   if (half === 'both'){
-    svg.innerHTML = `<g>${halfSVG('left', { live: true })}</g><g transform="translate(730 0)">${halfSVG('right', { live: true })}</g>`;
     const f = S.tests.flex;
+    // Nach der Weiche nur die passende Hälfte zeigen (sonst blitzt bei breiten Bildschirmen die andere am Rand durch)
+    svg.innerHTML = `<g${f === 'nein' ? ' style="display:none"' : ''}>${halfSVG('left', { live: true })}</g><g transform="translate(730 0)"${f === 'ja' ? ' style="display:none"' : ''}>${halfSVG('right', { live: true })}</g>`;
     setViewBox(svg, f === 'ja' ? [0, 0, 700, 500] : f === 'nein' ? [730, 0, 700, 500] : [0, 0, 1430, 500]);
     svg.setAttribute('aria-label', 'Laborplan: ganzer Bestimmungsbaum');
     return;
@@ -2294,6 +2374,12 @@ function commitTest(kidCorrect){
   if (kidCorrect === true) msg = (R.truth ? 'Genau, das klappt! ' : 'Genau, so geht das nicht. ') + fact;
   else if (kidCorrect === false) msg = (R.truth ? `Doch, das klappt: „${first}“. ` : `Schau genau: „${first}“ – so geht das nicht. `) + fact;
   else msg = (R.truth ? 'Das klappt! ' : 'Das klappt nicht. ') + fact;
+  if (t === 'sg' && !R.truth && S.entry.wortart === 'Artikel'){
+    // Nur Teil eines Satzglieds: Das Wort wandert nur zusammen mit seinem Nomen nach vorn
+    const g = groupFront(S.entry);
+    if (g) msg += ` Nur zusammen mit dem Nomen geht es: ${/^„/.test(g) ? esc(g) : `„${esc(g)}“`}`;
+    if (isPossessive(S.entry)) msg += ` ${w} bildet mit dem Nomen eine feste Wortgruppe: Es ist ein <b>Possessivartikel</b>.`;
+  }
   let mood = kidCorrect === false ? 'think' : 'happy';
   const wa = reachedWortart();
   if (!wa && S.lab === 5 && t === 'flex' && R.truth){
@@ -2339,7 +2425,11 @@ async function sortInto(w, auto){
   if (w !== e.wortart){
     S.sortTries++;
     bump(`.drawer[data-w="${w}"]`, 'wrong'); sfx.nein();
-    if (S.sortTries === 1){ setBubble(`Fast! ${qw(e.wort)} ${info.prop()}. ${info.hilfe}`, 'think'); return; }
+    if (S.sortTries === 1){
+      const poss = isPossessive(e) && w === 'Pronomen'
+        ? ` Es sieht zwar aus wie ein Possessivpronomen. Hier ist es aber fest mit dem Nomen verbunden und wandert nur zusammen mit ihm: ein Possessivartikel.` : '';
+      setBubble(`Fast! ${qw(e.wort)} ${info.prop()}.${poss} ${info.hilfe}`, 'think'); return;
+    }
     S.busy = true; renderCabinet();
     setBubble(`Komm, ich zeig's dir: ${info.merksatz}`, 'think');
     await wait(1500);
@@ -2403,7 +2493,7 @@ function storyRender(){
   const st = storyPages[storyStep], last = storyStep === storyPages.length - 1;
   const visual = st.plan
     ? `<div class="tree-wrap plan-full"><svg class="treesvg" viewBox="0 0 1430 500" role="img" aria-label="Fertiger Bestimmungsbaum"><g>${halfSVG('left', { all: true })}</g><g transform="translate(730 0)">${halfSVG('right', { all: true })}</g></svg></div>`
-    : '<canvas class="scene" id="sceneCv" aria-hidden="true"></canvas>';
+    : '<canvas class="scene tap" id="sceneCv" data-act="storyNext" aria-hidden="true"></canvas>';
   openDialog(storyTitle, `${visual}
     <p class="story-text">${st.html}</p>
     <div class="dialog-actions"><button class="btn" type="button" data-act="storySkip">Überspringen</button>
@@ -2646,9 +2736,12 @@ const GUIDE_HTML = `<div class="guide-text">
   <p>Das Labor passt sich jedem Bildschirm an und muss nie gescrollt werden, auf dem Tablet quer und hochkant. Am Smartboard macht „Vollbild“ (oben rechts) alles größer. Der Bereich, in dem gerade etwas zu tun ist, ist rosa umrandet. Läuft das Labor auf einem Gerät nicht richtig, zeigt der Reiter „Technik-Check“, was der Browser kann; den Bericht kannst du an die Schul-IT weitergeben.</p>
   <p>Am Smartboard wird das Daumen-Urteil zur Klassenabstimmung. Für Tablets stellst du hier unter „Einstellungen“ einen Code ein und hängst ihn an den Link, z. B. #labor-3.experte. Eigene Wörter trägst du in der Werkstatt ein (gilt für die Sitzung) oder dauerhaft in der Datei.</p>
   <h3>Konventionen</h3>
-  <p>Partizipien zählen als Verben, auch wenn sie attributiv gebraucht werden (ähnlich wie ein Adjektiv vor einem Nomen). Steigern und Deklinieren klappen dann zwar, die Maschine erklärt aber die Verbform und schickt zum Konjugator. In der Wortliste aktiviert das die Zeile <b>- Partizip:</b> (z. B. verzaubert). Eigennamen zählen als Nomen, Possessivpronomen als Pronomen.</p>
+  <p>Partizipien zählen als Verben, auch wenn sie attributiv gebraucht werden (ähnlich wie ein Adjektiv vor einem Nomen). Steigern und Deklinieren klappen dann zwar, die Maschine erklärt aber die Verbform und schickt zum Konjugator. In der Wortliste aktiviert das die Zeile <b>- Partizip:</b> (z. B. verzaubert). Eigennamen zählen als Nomen.</p>
+  <p><b>Possessivartikel:</b> Steht ein Possessivwort vor einem Nomen (ihre Goldtaler, ihre Goldstücke), bildet es mit dem Nomen eine feste Wortgruppe (Nominalphrase): Beide wandern nur zusammen nach vorn. Deshalb zählt es im Labor als Artikel, genauer als Possessivartikel, obwohl es wie ein Possessivpronomen aussieht. Ein Possessivpronomen steht allein und vertritt das Nomen (Die Goldtaler sind ihre!). In der Schulgrammatik heißen oft beide „Possessivpronomen“; das Labor unterscheidet sie, weil die Proben es verlangen. Die Maschine „kann SG sein“ zeigt bei Artikeln zusätzlich die Probe mit der ganzen Wortgruppe. Im 1. Stock kommen nur eindeutige Fälle vor (der, ein, er, wir …). Possessivartikel und Possessivpronomen begegnen erst in der Turmspitze: als Wortzwilling „ihre“ (Goldmarie) und in der Meisterprüfung.</p>
   <h3>Datenschutz</h3>
-  <p>Das Labor speichert nichts und fragt keine Namen ab. Schubladen und Album gelten nur, solange die Seite geöffnet ist.</p></div>`;
+  <p>Die Datei „Wortarten-Labor.html“ läuft vollständig auf dem Gerät. Sie lädt nichts aus dem Internet (alle Schriften, Bilder und Klänge stecken in der Datei), sendet nichts und enthält weder Statistik noch Werbung. Eine eingebaute Sperre (Content-Security-Policy) blockiert zusätzlich jede Verbindung nach außen. Der Reiter „Technik-Check“ zeigt beides an.</p>
+  <p>Das Labor fragt keine Namen ab und speichert nichts: keine Cookies, kein Browser-Speicher, kein Zwischenstand. Schubladen, Album und Änderungen in der Werkstatt gelten nur, bis die Seite geschlossen oder neu geladen wird. Das Labor selbst verarbeitet damit keine personenbezogenen Daten.</p>
+  <p>Für den Unterricht: Öffne die Datei direkt auf dem Gerät (Doppelklick, auch ohne Internet) oder stelle sie auf euren Schulserver bzw. eure Lernplattform; dort gelten die üblichen Regeln eurer Schule. Gib Schülerinnen und Schülern keinen Vorschau-Link eines fremden Anbieters (z. B. claude.ai). Wenn du die Datei mit eigenen Wörtern weitergibst, trage keine echten Namen von Kindern ein.</p></div>`;
 /* ---------- Technik-Check: zeigt, was Browser und Bildschirm können ---------- */
 function techInfo(){
   const ua = navigator.userAgent || '';
@@ -2660,7 +2753,7 @@ function techInfo(){
   const sys = /Android/.test(ua) ? 'Android' : /iPad|iPhone/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) ? 'iPadOS / iOS'
     : /Windows/.test(ua) ? 'Windows' : /CrOS/.test(ua) ? 'ChromeOS' : /Mac OS/.test(ua) ? 'macOS' : /Linux/.test(ua) ? 'Linux' : 'unbekannt';
   const html = document.documentElement, st = $('#stage');
-  const scale = staged() && st ? st.getBoundingClientRect().width / st.offsetWidth : 1;
+  const scale = layoutScale();
   const mode = staged() ? (html.classList.contains('port') ? 'Bühne hochkant' : 'Bühne quer') : 'normale Seite mit Scrollen (Bildschirm zu klein für die Bühne)';
   const vv = window.visualViewport;
   const css = (p, v) => !!(window.CSS && CSS.supports && CSS.supports(p, v));
@@ -2668,9 +2761,18 @@ function techInfo(){
   try {
     if (document.fonts && document.fonts.forEach){
       fonts = false;
-      document.fonts.forEach(f => { if (String(f.family).replace(/["']/g, '') === 'Pixelify Sans' && f.status === 'loaded') fonts = true; });
+      document.fonts.forEach(f => { if (String(f.family).replace(/["']/g, '') === 'Labor Pixel' && f.status === 'loaded') fonts = true; });
     }
   } catch (e) { fonts = null; }
+  // Datenschutz: Hat diese Fassung etwas von einem fremden Server geladen? (Offline-Datei: nein)
+  let external = null;
+  try {
+    if (window.performance && performance.getEntriesByType){
+      const own = location.protocol === 'file:' ? null : location.origin;
+      external = performance.getEntriesByType('resource').filter(r => /^https?:/i.test(r.name) && (!own || r.name.indexOf(own + '/') !== 0)).length === 0;
+    }
+  } catch (e) { external = null; }
+  const csp = !!document.querySelector('meta[http-equiv="Content-Security-Policy"]');
   const checks = [
     ['Browser aktuell genug (Chrome ab 87, Safari ab 14.1)', !tooOld, 'Das Labor nutzt Ersatzlösungen. Ein Browser-Update wird empfohlen.'],
     ['Abstände in Flex-Zeilen', !html.classList.contains('no-flexgap'), 'Ersatz über Ränder ist aktiv.'],
@@ -2678,7 +2780,9 @@ function techInfo(){
     ['Ton', !!(window.AudioContext || window.webkitAudioContext), 'Ohne Ton spielbar.'],
     ['Vollbild', fsAllowed(), 'Hier nicht erlaubt (z. B. in einer eingebetteten Vorschau). Die Datei direkt im Browser öffnen.'],
     ['Touch', (navigator.maxTouchPoints || 0) > 0, 'Bedienung mit Maus oder Tastatur.'],
-    ['Pixelschrift geladen', fonts, 'Ohne Internet erscheinen Ersatzschriften. Das ist kein Fehler.']
+    ['Labor-Schrift (in der Datei enthalten)', fonts, 'Der Browser zeigt eine Ersatzschrift. Das Labor funktioniert trotzdem.'],
+    ['Nichts aus dem Internet geladen', external, 'Diese Fassung hat Inhalte von einem fremden Server geladen (z. B. eine Vorschau im Netz). Im Unterricht die Datei „Wortarten-Labor.html“ verwenden.'],
+    ['Sperre gegen Verbindungen nach außen', csp, 'Nur in der Datei „Wortarten-Labor.html“ eingebaut, nicht in einer Vorschau im Netz.']
   ];
   const rows = [
     ['Browser', browser], ['System', sys],
@@ -2697,7 +2801,7 @@ function techHTML(){
     <p>${t.tooOld ? '<b>Dieser Browser ist älter.</b> Das Labor läuft mit Ersatzlösungen. Wenn etwas fehlt, hilft ein Browser-Update (bei Smartboards über die Schul-IT).' : 'Dieser Browser kann alles, was das Labor braucht.'}</p>
     <table class="tech"><tbody>${t.rows.map(r => `<tr><th>${esc(r[0])}</th><td>${esc(r[1])}</td></tr>`).join('')}</tbody></table>
     <table class="tech"><tbody>${t.checks.map(c => `<tr><td>${mark(c[1])}</td><td>${esc(c[0])}${c[1] === false ? `<br><small>${esc(c[2])}</small>` : ''}</td></tr>`).join('')}</tbody></table>
-    <p>Bericht zum Weitergeben, zum Beispiel an die Schul-IT:</p>
+    <p>Bericht zum Weitergeben, zum Beispiel an die Schul-IT. Er enthält nur Geräte- und Browserangaben, keine Namen, und verlässt das Gerät nur, wenn du ihn selbst kopierst und weitergibst.</p>
     <pre class="tech-report" id="techReport">${esc(report)}</pre>
     <div class="preset"><button class="btn" type="button" data-act="copyTech">Bericht kopieren</button></div></div>`;
 }
@@ -2733,9 +2837,9 @@ function renderTeacher(){
       <button class="btn" type="button" data-act="resetAll">Zurücksetzen</button></div>`;
   } else if (teacherTab === 'md'){
     const val = mdDraft != null ? mdDraft : S.labMD[S.lab];
-    const need = S.lab === 5 ? ' Im Abschlusslabor gelten die Pflichtzeilen aus Labor 2 und 3. Zwei gleiche Wörter direkt hintereinander zeigt das Spiel als Wortzwillinge an.' : S.lab === 4 ? ' In Labor 4 genügen Satz und Wortart. Bei Satzäquivalenten kannst du mit <b>- isoliert:</b> die Kurzform angeben, z. B. Huch!' : S.lab >= 3 ? ' In Labor 3 brauchen Adverbien eine Zeile <b>- Satzglied:</b> (Wort allein vor dem Verb), Präpositionen <b>- Kasusforderung:</b> (z. B. mit wem? → mit dem Wolf → Dativ) und Konjunktionen <b>- Fügteil:</b> (die zwei getrennten Teile, verbunden mit ·).' : S.lab >= 2 ? ' In Labor 2 brauchen Nomen, Adjektive, Pronomen und Artikel eine Zeile <b>- deklinierbar:</b>, Pronomen und Artikel zusätzlich <b>- Satzglied:</b> mit der Umstellprobe. Possessivpronomen (mein, dein, ihr …) zählen als Pronomen; gib bei ihnen den Satz ohne Nomen an, z. B. „Ihre schüttelte das Mädchen.“' : '';
+    const need = S.lab === 5 ? ' Im Abschlusslabor gelten die Pflichtzeilen aus Labor 2 und 3. Zwei gleiche Wörter direkt hintereinander zeigt das Spiel als Wortzwillinge an.' : S.lab === 4 ? ' In Labor 4 genügen Satz und Wortart. Bei Satzäquivalenten kannst du mit <b>- isoliert:</b> die Kurzform angeben, z. B. Huch!' : S.lab >= 3 ? ' In Labor 3 brauchen Adverbien eine Zeile <b>- Satzglied:</b> (Wort allein vor dem Verb), Präpositionen <b>- Kasusforderung:</b> (z. B. mit wem? → mit dem Wolf → Dativ) und Konjunktionen <b>- Fügteil:</b> (die zwei getrennten Teile, verbunden mit ·).' : S.lab >= 2 ? ' In Labor 2 brauchen Nomen, Adjektive, Pronomen und Artikel eine Zeile <b>- deklinierbar:</b>, Pronomen und Artikel zusätzlich <b>- Satzglied:</b> mit der Umstellprobe. Nimm im 1. Stock nur eindeutige Fälle (der, ein, er, wir …); Possessivwörter gehören in die Turmspitze. Bei Artikeln zeigt <b>- zusammen:</b> den Satz, in dem Artikel und Nomen gemeinsam vorn stehen, z. B. „Die alte Frau Holle wohnte dort.“' : '';
     body = `<div class="werkstatt">
-      <p>Hier änderst oder ergänzt du die Wörter von <b>Labor ${S.lab}</b> für diese Sitzung. Ein Märchen beginnt mit <b>#</b>, jedes Wort mit <b>##</b>. Markiere das Prüfwort im Satz mit <b>**Sternchen**</b>.${need} Dauerhaft speicherst du eine Liste im Abschnitt „wortliste-${S.lab}“ der HTML-Datei.</p>
+      <p>Hier änderst oder ergänzt du die Wörter von <b>Labor ${S.lab}</b> für diese Sitzung. Ein Märchen beginnt mit <b>#</b>, jedes Wort mit <b>##</b>. Markiere das Prüfwort im Satz mit <b>**Sternchen**</b>.${need} Nichts davon wird gespeichert. Dauerhaft änderst du eine Liste im Abschnitt „wortliste-${S.lab}“ der HTML-Datei; trage dort keine echten Namen von Kindern ein, wenn du die Datei weitergibst.</p>
       <textarea id="mdText" spellcheck="false" aria-label="Wortliste im Markdown-Format">${esc(val)}</textarea>
       <div class="preset"><button class="btn primary" type="button" data-act="mdApply">Liste übernehmen</button>
         <button class="btn" type="button" data-act="mdExample">Beispiel anhängen</button>
@@ -2770,7 +2874,7 @@ function applyMD(text, label){
 function onDialogClick(e){
   const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
   const act = b.dataset.act;
-  if (act === 'storyNext'){ if (storyStep >= STORY.length - 1) storyEnd(); else { storyStep++; storyRender(); } }
+  if (act === 'storyNext'){ if (storyStep >= storyPages.length - 1) storyEnd(); else { storyStep++; storyRender(); } }
   else if (act === 'storySkip') storyEnd();
   else if (act === 'stick'){ const key = albumKey(S.lab, S.rounds[S.r].title); S.album[key] = true; sfx.sticker(); showAlbum(key, true); }
   else if (act === 'nextRound'){ closeDialog(); startRound(+b.dataset.r); }
@@ -2902,26 +3006,36 @@ function bindEvents(){
   });
 }
 
-const BUILD = 8;   // Fassung des Labors; ältere Zwischenstände bringen keine alten Wortlisten mit
-/* ---------- Bühne: ganzes Labor ohne Scrollen, quer oder hoch ---------- */
-const STAGE = { land: [1280, 800], port: [800, 1140] };
+/* ---------- Mitwachsendes Layout: ganzes Labor auf einem Bildschirm, quer oder hoch ----------
+   Die Grundschrift (1rem) wird so gewählt, dass die Entwurfsfläche (quer 1280×800, hoch 800×1140 bei 15px)
+   in die sichtbare Fläche passt. Alle Maße sind in rem und wachsen mit; kein Bild wird skaliert oder abgeschnitten. */
+const STAGE = { land: [1280, 800], port: [800, 1140] }, BASE_FS = 15, MIN_FS = 8.5;
+function viewportSize(){
+  const de = document.documentElement, vv = window.visualViewport, std = document.compatMode === 'CSS1Compat';
+  let vw = window.innerWidth || 0, vh = window.innerHeight || 0;
+  if (std && de.clientWidth) vw = vw ? Math.min(vw, de.clientWidth) : de.clientWidth;
+  if (std && de.clientHeight) vh = vh ? Math.min(vh, de.clientHeight) : de.clientHeight;
+  if (vv && Math.abs((vv.scale || 1) - 1) < 0.01){ vw = Math.min(vw || vv.width, vv.width); vh = Math.min(vh || vv.height, vv.height); }
+  return [vw || 1280, vh || 800];
+}
+let lastFit = '';
 function fitStage(){
-  const html = document.documentElement, st = $('#stage');
-  const vv = window.visualViewport;
-  let vw = window.innerWidth, vh = window.innerHeight;
-  if (vv && Math.abs((vv.scale || 1) - 1) < 0.01){ vw = Math.min(vw, vv.width); vh = Math.min(vh, vv.height); }
-  if (!vw || !vh){ vw = document.documentElement.clientWidth || 1280; vh = document.documentElement.clientHeight || 800; }
+  const html = document.documentElement;
+  const [vw, vh] = viewportSize();
   const port = vw / vh < 0.9;
   const [W, H] = port ? STAGE.port : STAGE.land;
-  const s = Math.min(vw / W, vh / H) * 0.998;   // kleiner Sicherheitsabstand gegen Rundungsfehler
-  const ok = s >= 0.6;   // sehr kleine Bildschirme (Handy): normale Seite mit Scrollen
+  let fs = BASE_FS * Math.min(vw / W, vh / H);
+  const ok = !(fs < MIN_FS && vw < 700);   // Handy: normale Seite mit Scrollen
+  fs = Math.max(MIN_FS, Math.floor(fs * 100) / 100);
+  const key = [ok, port, fs, Math.floor(vh)].join(':');
+  if (key === lastFit) return;
+  lastFit = key;
   html.classList.toggle('staged', ok); html.classList.toggle('port', ok && port); html.classList.toggle('land', ok && !port);
-  if (!ok){ st.style.transform = ''; st.style.left = ''; st.style.top = ''; fitStation(); return; }
-  st.style.transform = `scale(${s.toFixed(4)})`;
-  st.style.left = Math.max(0, Math.floor((vw - W * s) / 2)) + 'px';
-  st.style.top = Math.max(0, Math.floor((vh - H * s) / 2)) + 'px';
+  if (ok){ html.style.fontSize = fs + 'px'; html.style.setProperty('--app-h', Math.floor(vh) + 'px'); }
+  else { html.style.fontSize = ''; html.style.removeProperty('--app-h'); }
   fitStation();
 }
+function layoutScale(){ return staged() ? (parseFloat(getComputedStyle(document.documentElement).fontSize) || BASE_FS) / BASE_FS : 1; }
 /* Ältere Browser: Abstände in Flex-Zeilen (gap) erst ab Chrome 84 */
 function flexGapSupported(){
   try {
@@ -2956,20 +3070,14 @@ function toggleFullscreen(){
 }
 
 /* ---------- Start ---------- */
-function boot(data){
+function boot(){
   LAB_IDS.forEach(n => {
     const src = document.getElementById(LABS[n].md);
     ORIGINAL_MD[n] = src ? src.textContent.trim() : '';
   });
   readPresets();
-  const saved = data && data.state;
-  if (saved && saved.settings){
-    Object.assign(settings, saved.settings, { enabled: Object.assign({}, settings.enabled, saved.settings.enabled || {}) });
-  }
   LAB_IDS.forEach(n => {
-    // Nur selbst bearbeitete Wortlisten aus dem Zwischenstand übernehmen; sonst gilt die Liste dieser Fassung
-    const own = saved && saved.v === BUILD && saved.md && saved.md[n];
-    S.labMD[n] = own || ORIGINAL_MD[n];
+    S.labMD[n] = ORIGINAL_MD[n];
     S.labRounds[n] = parseMD(S.labMD[n], n).rounds;
   });
   S.lab = LABS[settings.lab] ? settings.lab : 1;
@@ -2979,29 +3087,18 @@ function boot(data){
   paintAllIcons(document);
   renderFsBtn();
   fitStage();
+  // Manche Geräte melden die endgültige Fenstergröße erst nach dem Laden (Werkzeugleisten)
+  [300, 1200, 3000].forEach(ms => setTimeout(fitStage, ms));
   buildMachines();
   bindEvents();
-  if (saved && S.rounds.length){
-    Object.assign(S.counts, saved.counts || {}); Object.assign(S.named, saved.named || {}); Object.assign(S.album, saved.album || {});
-    Object.assign(S.visited, saved.visited || {});
-    S.r = Math.min(saved.r || 0, S.rounds.length - 1); S.i = saved.i || 0;
-    if (S.i >= activeWords(S.r).length) S.i = 0;
-    loadWord();
-    return;
-  }
   S.entry = DEMOS[S.lab]; S.phase = 'idle'; render();
   setBubble('Hallo! Ich bin die Märchenmaschine.', 'stutter');
   const go = () => { S.visited[S.lab] = true; if (settings.demo) runDemo(null, settings.startRound); else startRound(settings.startRound); };
   if (settings.story) showStory(go); else go();
 }
-try {
-  if (window.claude && window.claude.hot && window.claude.hot.snapshot){
-    window.claude.hot.snapshot(() => ({ state: { v: BUILD, r: S.r, i: S.i, counts: S.counts, named: S.named, album: S.album, visited: S.visited,
-      md: LAB_IDS.reduce((o, n) => { if (S.labMD[n] !== ORIGINAL_MD[n]) o[n] = S.labMD[n]; return o; }, {}), settings: Object.assign(JSON.parse(JSON.stringify(settings)), { lab: S.lab }) } }));
-  }
-} catch (e) { /* ohne Zwischenstand */ }
-if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(boot);
-else boot((window.claude && window.claude.hot && window.claude.hot.data) || {});
+/* Datenschutz: Das Labor speichert keinen Zwischenstand (kein localStorage, keine Cookies, nichts im Netz).
+   Beim Neuladen beginnt es von vorn. */
+boot();
 </script>
 </body>
 </html>
