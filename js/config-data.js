@@ -16,7 +16,7 @@ window.WissOS._configData = {
       "id": "bds-kompakt",
       "name": "Autoren-Bibliothek",
       "osName": "LitDM Social Media",
-      "description": "Literarische Profile im neobrutalistischen Feed",
+      "description": "Literarische Profile im Feed",
       "icon": "speech-bubble",
       "category": "Kommunikation",
       "url": "PROGRAMME/Messenger-Engine/index.html?mode=library",
@@ -79,14 +79,42 @@ window.WissOS._configData = {
     {
       "id": "lapbook-architekt",
       "name": "Lapbook-Architekt",
-      "osName": "Lapbook-Designer",
+      "osName": "Lapbook-Werkstatt",
       "description": "Interaktive Lapbooks gestalten",
       "icon": "paintbrush",
-      "category": "Kreativ",
+      "category": "Kreatives",
       "url": "PROGRAMME/Canvas-Engine/index.html?mode=lapbook",
       "openInWindow": true,
       "showOnDesktop": true,
       "desktopPosition": { "col": 0, "row": 2 }
+    },
+    {
+      "id": "puzzle-generator",
+      "name": "Puzzle-Generator",
+      "osName": "Puzzle-Generator",
+      "description": "Bilderpuzzle-Arbeitsblätter und Bild-Quizze erstellen",
+      "icon": "puzzle",
+      "category": "Kreatives",
+      "url": "PROGRAMME/Quiz-Generator/Der-Puzzle-Generator.html",
+      "openInWindow": true,
+      "width": 1100,
+      "height": 740,
+      "showOnDesktop": true,
+      "desktopPosition": { "col": 1, "row": 2 }
+    },
+    {
+      "id": "quiz-generator",
+      "name": "Quiz-Generator",
+      "osName": "Quiz-Generator",
+      "description": "Interaktive Kachel-Quizze mit Sound erstellen",
+      "icon": "quiz",
+      "category": "Kreatives",
+      "url": "PROGRAMME/Quiz-Generator/Der-Quiz-Generator.html",
+      "openInWindow": true,
+      "width": 1100,
+      "height": 740,
+      "showOnDesktop": true,
+      "desktopPosition": { "col": 2, "row": 2 }
     },
     {
       "id": "maerchen-explorer",
@@ -94,13 +122,13 @@ window.WissOS._configData = {
       "osName": "Romantikwerkstatt",
       "description": "Romantische Märchenstrukturen, Lapbook & Lernkarten",
       "icon": "magnifier",
-      "category": "Kreativ",
+      "category": "Kreatives",
       "url": "PROGRAMME/Maerchen-Werkstatt/index.html",
       "openInWindow": true,
       "width": 1100,
       "height": 720,
       "showOnDesktop": true,
-      "desktopPosition": { "col": 1, "row": 2 }
+      "desktopPosition": { "col": 3, "row": 1 }
     },
     {
       "id": "bewertungsschluessel",
@@ -132,7 +160,7 @@ window.WissOS._configData = {
       "osName": "Lyrik-Annotator",
       "description": "Gedichte interaktiv analysieren und annotieren",
       "icon": "notepad",
-      "category": "Kreativ",
+      "category": "Kreatives",
       "url": "PROGRAMME/Lyrik-Annotator/index.html",
       "openInWindow": true,
       "showOnDesktop": true,
@@ -170,8 +198,7 @@ window.WissOS._configData = {
       "openInWindow": true,
       "width": 800,
       "height": 600,
-      "showOnDesktop": true,
-      "desktopPosition": { "col": 1, "row": 3 }
+      "showOnDesktop": false
     },
     {
       "id": "spiele-generator",
@@ -199,7 +226,7 @@ window.WissOS._configData = {
       "width": 950,
       "height": 680,
       "showOnDesktop": true,
-      "desktopPosition": { "col": 2, "row": 3 }
+      "desktopPosition": { "col": 1, "row": 3 }
     },
     {
       "id": "kasus-teich",
@@ -212,7 +239,8 @@ window.WissOS._configData = {
       "openInWindow": true,
       "width": 1020,
       "height": 720,
-      "showOnDesktop": false
+      "showOnDesktop": true,
+      "desktopPosition": { "col": 2, "row": 3 }
     },
     {
       "id": "zeitfaden",
@@ -222,6 +250,20 @@ window.WissOS._configData = {
       "icon": "clock",
       "category": "Spiele",
       "url": "PROGRAMME/Zeitfaden/Der-Zeitfaden.html",
+      "openInWindow": true,
+      "width": 1050,
+      "height": 720,
+      "showOnDesktop": true,
+      "desktopPosition": { "col": 3, "row": 3 }
+    },
+    {
+      "id": "quiz-player",
+      "name": "Quiz-Player",
+      "osName": "Quiz-Player",
+      "description": "Puzzles und Quizze mit fünfstelligem Code spielen",
+      "icon": "quiz",
+      "category": "Spiele",
+      "url": "PROGRAMME/Quiz-Generator/Der-Quiz-Player.html",
       "openInWindow": true,
       "width": 1050,
       "height": 720,
@@ -239,7 +281,7 @@ window.WissOS._configData = {
       "width": 1280,
       "height": 820,
       "showOnDesktop": true,
-      "desktopPosition": { "col": 2, "row": 2 }
+      "desktopPosition": { "col": 3, "row": 2 }
     },
     {
       "id": "wortartenlabor-backup",
@@ -302,14 +344,14 @@ window.WissOS._configData = {
         "programIds": ["stilmittel-navigator", "strophen-navigator", "bewertungsschluessel", "wortartenlabor", "paed-navigator", "qr-generator", "fullscreen-toggle", "assistant-toggle"]
       },
       {
-        "name": "Kreativ",
+        "name": "Kreatives",
         "icon": "paintbrush",
-        "programIds": ["lapbook-architekt", "maerchen-explorer", "lyrik-annotator"]
+        "programIds": ["lapbook-architekt", "puzzle-generator", "quiz-generator", "maerchen-explorer", "lyrik-annotator"]
       },
       {
         "name": "Spiele",
         "icon": "joystick",
-        "programIds": ["blockkaskade", "spiele-generator", "wortwurfbude", "kasus-teich", "zeitfaden"]
+        "programIds": ["quiz-player", "blockkaskade", "spiele-generator", "wortwurfbude", "kasus-teich", "zeitfaden"]
       }
     ],
     "systemEntries": [

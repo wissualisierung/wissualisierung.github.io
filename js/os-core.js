@@ -270,6 +270,25 @@ WissOS.ICONS = {
     <rect x="28" y="36" width="4" height="4" fill="#000"/>
     <rect x="24" y="20" width="4" height="4" fill="#000"/>
     <rect x="20" y="24" width="4" height="4" fill="#000"/>
+  </svg>`,
+
+  puzzle: `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 16H20C20 11 28 11 28 16H36V24C41 24 41 32 36 32V40H28C28 35 20 35 20 40H12V32C17 32 17 24 12 24Z" fill="#FFE66D" stroke="#000" stroke-width="3" stroke-linejoin="round"/>
+    <circle cx="24" cy="13" r="3" fill="#FF6B9D"/>
+    <circle cx="24" cy="37" r="3" fill="#7DFFC2"/>
+    <rect x="20" y="22" width="8" height="8" fill="#EAE6FF" stroke="#000" stroke-width="2"/>
+  </svg>`,
+
+  quiz: `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="6" y="6" width="36" height="36" fill="#FFF" stroke="#000" stroke-width="3"/>
+    <rect x="9" y="9" width="13" height="13" fill="#FF6B9D" stroke="#000" stroke-width="2"/>
+    <rect x="26" y="9" width="13" height="13" fill="#7DFFC2" stroke="#000" stroke-width="2"/>
+    <rect x="9" y="26" width="13" height="13" fill="#FFE66D" stroke="#000" stroke-width="2"/>
+    <rect x="26" y="26" width="13" height="13" fill="#B967FF" stroke="#000" stroke-width="2"/>
+    <rect x="13" y="13" width="5" height="5" fill="#FFF"/>
+    <rect x="30" y="13" width="5" height="5" fill="#FFF"/>
+    <rect x="13" y="30" width="5" height="5" fill="#FFF"/>
+    <rect x="30" y="30" width="5" height="5" fill="#FFF"/>
   </svg>`
 };
 

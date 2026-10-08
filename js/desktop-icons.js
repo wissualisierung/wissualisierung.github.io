@@ -19,6 +19,14 @@
       _storage = storage;
       _getIconUrl = getIconDataUrl;
 
+      // Migrate / reset cached icon positions if grid layout was updated
+      var LAYOUT_VER = '2.1_quiz_desktop';
+      if (_storage.get('layout_version') !== LAYOUT_VER) {
+        _config.programs.forEach(function(p) { _storage.remove('icon_pos_' + p.id); });
+        (_config.systemPrograms || []).forEach(function(p) { _storage.remove('icon_pos_' + p.id); });
+        _storage.set('layout_version', LAYOUT_VER);
+      }
+
       renderIcons();
 
       // Deselect on desktop click
